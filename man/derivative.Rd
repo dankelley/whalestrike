@@ -4,10 +4,10 @@
 \alias{derivative}
 \title{Calculate derivative using first difference}
 \usage{
-derivative(x, t)
+derivative(var, t)
 }
 \arguments{
-\item{x}{variable.}
+\item{var}{variable.}
 
 \item{t}{time in seconds.}
 }

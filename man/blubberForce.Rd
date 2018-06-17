@@ -4,12 +4,12 @@
 \alias{blubberForce}
 \title{Blubber force}
 \usage{
-blubberForce(x, X, parms)
+blubberForce(xs, xw, parms)
 }
 \arguments{
-\item{x}{Boat position [m]}
+\item{xs}{Ship position [m]}
 
-\item{X}{Whale position [m]}
+\item{xw}{Whale position [m]}
 
 \item{parms}{Parameters of the simulation (as provided to \code{\link{simulate}}).}
 }

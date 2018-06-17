@@ -9,9 +9,9 @@ dynamics(t, y, parms)
 \arguments{
 \item{t}{time [s].}
 
-\item{y}{model state, a vector containing boat position \code{X} [m],
-boat speed \code{V} [m/s], whale position \code{x} [m],
-and whale speed \code{v} [m/s].}
+\item{y}{model state, a vector containing ship position \code{xs} [m],
+ship speed \code{vs} [m/s], whale position \code{xw} [m],
+and whale speed \code{vw} [m/s].}
 
 \item{parms}{model parameters.}
 }

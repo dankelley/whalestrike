@@ -3,4 +3,4 @@ importFrom("deSolve", "lsoda")
 importFrom("utils", "head", "tail")
 importFrom("graphics", "abline", "grid", "legend", "lines", "mtext", "par",
         "plot", "plot.new")
-S3method(plot, whalestrike)
+S3method(plot, whale_strike)
