@@ -4,14 +4,23 @@
 \alias{waterForce}
 \title{Water drag force}
 \usage{
-waterForce(v)
+waterForce(v, CD = 1.4)
 }
 \arguments{
 \item{v}{Whale velocity [m/s]}
+
+\item{CD}{Drag coefficient. The default corresponds to that of the Empire State building.}
 }
 \value{
 Water drag force [N]
 }
 \description{
-Water drag force
+Compute water drag using a quadratic law.
 }
+\section{Development note}{
+
+A fixed plan area of 20m^2 is assumed, although that is subject to change.
+There are published mass-length relationships, and using a shape
+parameter, we should be able to express the area in terms of whale mass.
+}
+

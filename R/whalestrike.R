@@ -17,11 +17,32 @@ contactArea <- function(xs, xw, parms)
 
 #' Blubber force
 #'
+#' The stress model depends on \code{parms$blubbermodel}, a character
+#' string with the following possibilities:
+#' \itemize{
+#' \item \code{"Raymond"}: Raymond's (2007) modulus is used, with
+#' stress [Pa] taken to be 636273*strain, where strain is the relative
+#' compression of the blubber.
+#' \item \code{"linear"}: a similar
+#' linear law is used, but with coefficient 580004.6, resulting from a linear
+#' fit to the data in his figure 2.13, constrained to have zero stress for zero
+#' strain.
+#' \item \code{"exponential"}: an exponential model is used, with
+#' stress=-1.712240e5*(1-exp(strain/0.4185693)). (This is a fit to the
+#' data in Raymond's (2007) Figure 2.13.)
+#'}
+#'
 #' @param xs Ship position [m]
 #' @param xw Whale position [m]
-#' @param parms Parameters of the simulation (as provided to \code{\link{simulate}}).
+#' @param parms Parameters of the simulation (as provided to \code{\link{simulate}}). The
+#' only entries used are blubber thickness \code{B} [m] and blubber model \code{blubbermodel};
+#' the latter is a string which may be \code{"linear"}, \code{"exponential"} or \code{"Raymond"}).
 #'
 #' @return Compression-resisting force [N]
+#' @references
+#' J. J. Raymond. Development of a numerical model to predict impact forces on a
+#' North Atlantic Right Whale during collision with a vessel.
+#' PhD thesis, University of New Hampshire, 2007.
 blubberForce <- function(xs, xw, parms)
 {
     ##. if (is.na(xs[1])) stop("xs is NA")
@@ -70,10 +91,18 @@ skinForce <- function(xs, xw, parms)
 
 #' Water drag force
 #'
+#' Compute water drag using a quadratic law.
+#'
+#' @section Development note:
+#' A fixed plan area of 20m^2 is assumed, although that is subject to change.
+#' There are published mass-length relationships, and using a shape
+#' parameter, we should be able to express the area in terms of whale mass.
+#'
 #' @param v Whale velocity [m/s]
+#' @param CD Drag coefficient. The default corresponds to that of the Empire State building.
 #'
 #' @return Water drag force [N]
-waterForce <- function(v)
+waterForce <- function(v, CD=1.4)
 {
     rho <- 1024
     CD <- 1.4 ## Empire State Building 1.3-1.5 (https://en.wikipedia.org/wiki/Drag_coefficient)
@@ -122,12 +151,20 @@ derivative <- function(var, t)
 
 #' Simulate the collision of a ship and a whale
 #'
+#' Newtonian mechanics are used, taking the ship as undeformable,
+#' and the whale as being cushioned by a skin layer and a blubber layer.
+#' The forces are calculated by
+#' \code{\link{skinForce}},
+#' \code{\link{blubberForce}}, and
+#' \code{\link{waterForce}}.
+#'
 #' @param t time [s].
-#' @param state A named vector describing the initial state of the model. This
-#' must contain ship position \code{xs} [m],
-#' ship speed \code{vs} [m/s], whale position \code{xw} [m],
+#' @param state A named vector holding the initial state of the model:
+#' ship position \code{xs} [m],
+#' ship speed \code{vs} [m/s],
+#' whale position \code{xw} [m]
 #' and whale speed \code{vw} [m/s].
-#' @param parms a named vector holding model parameters.
+#' @param parms A named list holding model parameters:
 #' ship mass \code{"ms"} [kg],
 #' ship beam \code{"beam"} [m],
 #' ship draft \code{"draft"} [m],
@@ -135,9 +172,10 @@ derivative <- function(var, t)
 #' whale skin thickness \code{"delta"} [m],
 #' whale skin elastic modulus \code{"Eskin"} [Pa],
 #' whale skin deformation extension \code{"gamma"} [m],
-#' whale blubber thickness \code{"B"} [m],
-#' and \code{"blubbermodel"} (one of \code{"linear"}, \code{"exponential"}
-#' or \code{"raymond"}).
+#' whale blubber thickness \code{"B"} [m]
+#' and \code{"blubbermodel"} (passed to \code{\link{blubberForce}}.)
+#' @param debug Integer indicating debugging level, 0 for quiet operation and higher values
+#' for more verbose monitoring of progress through the function.
 #'
 #' @return An object of class \code{"whalestrike"}, consisting of a
 #' list containing vectors for time (\code{t} [s]), ship position (\code{xs} [m]),
@@ -153,18 +191,27 @@ derivative <- function(var, t)
 #'               mw=20e3,
 #'               delta=0.02, Eskin=2e7, gamma=0.2,
 #'               B=0.3, blubbermodel="exponential")
-#' sol <- whale_strike(t, state, parms)
+#' sol <- strike(t, state, parms)
 #' par(mfcol=c(3, 3), mar=c(2, 3, 1, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
 #' plot(sol, which="all")
-whale_strike <- function(t, state, parms)
+strike <- function(t, state, parms, debug=0)
 {
-    if (missing(t)) stop("must supply t")
-    if (missing(state)) stop("must supply state")
-    if (missing(parms)) stop("must supply parms")
+    if (missing(t))
+        stop("must supply t")
+    if (missing(state))
+        stop("must supply state")
+    if (debug > 0) {
+        print("state:")
+        print(state)
+        print("parms:")
+        print(parms)
+    }
     if (!all(c("xs", "vs", "xw", "vw") %in% names(state)))
         stop("state must contain items named xs, vs, xw and vw")
+    if (missing(parms))
+        stop("must supply parms")
     if (!all(c("ms", "beam", "draft", "mw", "delta", "Eskin", "gamma", "B", "blubbermodel") %in% names(parms)))
-        stop("parms must contain items named ms, beam, draft, mw, delta, Eskin, gamma, B, and blubbermodel")
+        stop("parms must contain items named ms, beam, draft, mw, delta, Eskin, gamma, B and blubbermodel")
     ##. print("in simulate(), state is:")
     ##. print(state)
     ##. print("in simulate(), parms is:")
@@ -182,18 +229,18 @@ whale_strike <- function(t, state, parms)
                 dvsdt=derivative(sol[, 3], sol[, 1]),
                 dvwdt=derivative(sol[, 5], sol[, 1]),
                 parms=parms)
-    class(res) <- "whale_strike"
+    class(res) <- "strike"
     res
 }
 
-#' Plot a whale_strike object
+#' Plot a strike object
 #'
-#' See \code{\link{whale_strike}} for examples.
+#' See \code{\link{strike}} for examples.
 #'
-#' @param x An object inheriting from class \code{whale_strike}
+#' @param x An object inheriting from class \code{strike}
 #' @param which A character vector that indicates what to plot.
 #' This choices for its entries are:
-#' \code{"location"} for a panel showing time-series of boat location \code{xw} in black,
+#' \code{"location"} for a time-series plot of boat location \code{xw} in black,
 #' whale location \code{x} in red, and skin location in dashed red,
 #' \code{"whale acceleration"} for a time-series plot of whale acceleration,
 #' \code{"water force"} for a time-series plot of the water-drag force on the whale,
@@ -203,12 +250,15 @@ whale_strike <- function(t, state, parms)
 #' \code{"skin force"} for a time-series plot of the normal force resulting from skin tension,
 #' \code{"skin tension"} for a time-series plot of the skin tension, in the along-skin direction,
 #' or \code{"all"} for all of the above.
-#' @param center Logical, indicating whether to center time-series plots
+#' @param center Logical, indicating whether to center time-series plots.
 #' on the time when the vessel and whale and in closest proximity.
 #' @param indicateEvents Logical, indicating whether to draw lines for some events,
 #' such as the moment of closest approach.
+#' @param debug Integer indicating debugging level, 0 for quiet operation and higher values
+#' for more verbose monitoring of progress through the function.
 #' @param ... Other arguments (ignored).
-plot.whale_strike <- function(x, which="all", center=FALSE, indicateEvents=FALSE, ...)
+#' @alias plot
+plot.strike <- function(x, which="all", center=FALSE, indicateEvents=FALSE, debug=0, ...)
 {
     showLegend <- FALSE
     g <- 9.8 # gravity
@@ -230,6 +280,13 @@ plot.whale_strike <- function(x, which="all", center=FALSE, indicateEvents=FALSE
         vw <- vw[look]
         dvsdt <- dvsdt[look]
         dvwddt <- dvwdt[look]
+    }
+    if (debug) {
+        cat("t=",  paste(head(t,  3), collapse=" "), " ... ", paste(head(t,  3), collapse=" "), "\n") 
+        cat("xs=", paste(head(xs, 3), collapse=" "), " ... ", paste(head(xs, 3), collapse=" "), "\n") 
+        cat("vs=", paste(head(vs, 3), collapse=" "), " ... ", paste(head(vs, 3), collapse=" "), "\n") 
+        cat("xw=", paste(head(xw, 3), collapse=" "), " ... ", paste(head(xw, 3), collapse=" "), "\n") 
+        cat("vs=", paste(head(vw, 3), collapse=" "), " ... ", paste(head(vw, 3), collapse=" "), "\n") 
     }
     showEvents <- function(xs, xw) {
         if (indicateEvents) {
@@ -288,6 +345,7 @@ plot.whale_strike <- function(x, which="all", center=FALSE, indicateEvents=FALSE
         showEvents(xs, xw)
     }
     if (all || "blubber stress" %in% which) {
+        stresss <- skinForce(xs, xw, x$parms) / (x$parms$delta*x$parms$draft)
         A <- contactArea(xs, xw, x$parms)
         stressb <- ifelse(A, blubberForce(xs, xw, x$parms) / A, 0)
         plot(t, stressb/1e6, type="l", xlab="Time [s]", ylab="Blubber Stress [MPa]", lwd=2)

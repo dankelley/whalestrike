@@ -11,11 +11,31 @@ blubberForce(xs, xw, parms)
 
 \item{xw}{Whale position [m]}
 
-\item{parms}{Parameters of the simulation (as provided to \code{\link{simulate}}).}
+\item{parms}{Parameters of the simulation (as provided to \code{\link{simulate}}). The
+only entries used are blubber thickness \code{B} [m] and blubber model \code{blubbermodel};
+the latter is a string which may be \code{"linear"}, \code{"exponential"} or \code{"Raymond"}).}
 }
 \value{
 Compression-resisting force [N]
 }
 \description{
-Blubber force
+The stress model depends on \code{parms$blubbermodel}, a character
+string with the following possibilities:
+\itemize{
+\item \code{"Raymond"}: Raymond's (2007) modulus is used, with
+stress [Pa] taken to be 636273*strain, where strain is the relative
+compression of the blubber.
+\item \code{"linear"}: a similar
+linear law is used, but with coefficient 580004.6, resulting from a linear
+fit to the data in his figure 2.13, constrained to have zero stress for zero
+strain.
+\item \code{"exponential"}: an exponential model is used, with
+stress=-1.712240e5*(1-exp(strain/0.4185693)). (This is a fit to the
+data in Raymond's (2007) Figure 2.13.)
+}
+}
+\references{
+J. J. Raymond. Development of a numerical model to predict impact forces on a
+North Atlantic Right Whale during collision with a vessel.
+PhD thesis, University of New Hampshire, 2007.
 }
