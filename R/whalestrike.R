@@ -249,6 +249,7 @@ strike <- function(t, state, parms, debug=0)
 #' \code{"blubber stress"} for a time-series plot of the normal stress on the blubber,
 #' \code{"skin force"} for a time-series plot of the normal force resulting from skin tension,
 #' \code{"skin tension"} for a time-series plot of the skin tension, in the along-skin direction,
+#' \code{"values"} for a listing of \code{param} values.
 #' or \code{"all"} for all of the above.
 #' @param center Logical, indicating whether to center time-series plots.
 #' on the time when the vessel and whale and in closest proximity.
@@ -351,5 +352,16 @@ plot.strike <- function(x, which="all", center=FALSE, indicateEvents=FALSE, debu
         plot(t, stressb/1e6, type="l", xlab="Time [s]", ylab="Blubber Stress [MPa]", lwd=2)
         showEvents(xs, xw)
     }
+    if (all || "values" %in% which) {
+        values <- paste(deparse(x$parms),collapse=" ")
+        values <- strsplit(gsub(".*\\((.*)\\)$", "\\1", values), ",")[[1]]
+        values <- gsub("^ *", "", values)
+        n <- 1 + length(values)
+        plot(1:n, 1:n, type="n", xlab="", ylab="", axes=FALSE)
+        box()
+        for (i in seq_along(values))
+            text(1, i+0.5, values[i], pos=4)
+    }
 }
+
 
