@@ -2,6 +2,7 @@
 % Please edit documentation in R/whalestrike.R
 \name{plot.strike}
 \alias{plot.strike}
+\alias{plot}
 \title{Plot a strike object}
 \usage{
 \method{plot}{strike}(x, which = "all", center = FALSE,

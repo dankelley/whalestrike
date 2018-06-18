@@ -258,7 +258,7 @@ strike <- function(t, state, parms, debug=0)
 #' @param debug Integer indicating debugging level, 0 for quiet operation and higher values
 #' for more verbose monitoring of progress through the function.
 #' @param ... Other arguments (ignored).
-#' @alias plot
+#' @aliases plot
 plot.strike <- function(x, which="all", center=FALSE, indicateEvents=FALSE, debug=0, ...)
 {
     showLegend <- FALSE
