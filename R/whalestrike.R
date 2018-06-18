@@ -356,6 +356,7 @@ plot.strike <- function(x, which="all", center=FALSE, indicateEvents=FALSE, debu
         values <- paste(deparse(x$parms),collapse=" ")
         values <- strsplit(gsub(".*\\((.*)\\)$", "\\1", values), ",")[[1]]
         values <- gsub("^ *", "", values)
+        values <- gsub("([0-9])L$", "\\1", values) # it's ugly to see e.g. 1 as 1L
         n <- 1 + length(values)
         plot(1:n, 1:n, type="n", xlab="", ylab="", axes=FALSE)
         box()
