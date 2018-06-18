@@ -235,13 +235,28 @@ strike <- function(t, state, parms, debug=0)
 
 #' Plot a strike object
 #'
-#' See \code{\link{strike}} for examples.
+#' @description
+#' Creates displays of various results of a simulation performed
+#' with \code{\link{strike}}.
+#'
+#' @details
+#' Some panels may have additional horizontal lines for thresholds:
+#' \itemize{
+#' \item for \code{which="whale acceleration"}, lines will be drawn at 8g and 15g,
+#' which are \strong{provisional} estimates of 50 percent
+#' lethality, determined by visual inspection of the lethality-acceleration diagram
+#' Figure 9 of Ng et al. 2017, for NFL concussions and combat concussions, respectively.
+#' \item for \code{which="blubber thickness"}, a red line is drawn at 2/3 of the
+#' initial thickness, based on the Grear et al. 2018 result (page 144, left column)
+#' that mean (seal) blubber strength is 0.8MPa, whereas mean (seal) blubber
+#' modulus is 1.2MPa, for a ratio of 2/3.
+#'}
 #'
 #' @param x An object inheriting from class \code{strike}
 #' @param which A character vector that indicates what to plot.
 #' This choices for its entries are:
 #' \code{"location"} for a time-series plot of boat location \code{xw} in black,
-#' whale location \code{x} in red, and skin location in dashed red,
+#' whale location \code{x} in blue, and skin location in dashed blue,
 #' \code{"whale acceleration"} for a time-series plot of whale acceleration,
 #' \code{"water force"} for a time-series plot of the water-drag force on the whale,
 #' \code{"blubber thickness"} for a time-series plot of blubber thickness,
@@ -308,15 +323,16 @@ plot.strike <- function(x, which="all", center=FALSE, indicateEvents=FALSE, debu
     if (all || "location" %in% which) {
         ylim <- range(c(xs, xw), na.rm=TRUE)
         plot(t, xs, type="l", xlab="Time [s]", ylab="Location [m]", ylim=ylim, lwd=2)
-        lines(t, xw, col=2, lwd=2)
-        lines(t, xw - x$parms$B, col=2, lty=3, lwd=2)
+        lines(t, xw, col="blue", lwd=2)
+        lines(t, xw - x$parms$B, col="blue", lty=3, lwd=2)
         showEvents(xs, xw)
         if (showLegend)
             legend("topleft", col=c(1, 2, 2), legend=c("Ship", "Whale", "Blubber"),
                    lwd=rep(2, 3), lty=c(1, 1, 3), bg="white", cex=0.8)
     }
     if (all || "whale acceleration" %in% which) {
-        plot(t, derivative(vw, t) / g, xlab="Time [s]", ylab="Whale accel [g]", type="l", lwd=2)
+        plot(t, derivative(vw, t) / g, xlab="Time [s]", ylab="Whale acceleration [g]", type="l", lwd=2)
+        abline(h=c(8, 15), col=c("orange", "red"), lwd=2)
         showEvents(xs, xw)
     }
     if (all || "water force" %in% which) {
@@ -328,16 +344,17 @@ plot.strike <- function(x, which="all", center=FALSE, indicateEvents=FALSE, debu
         plot(t, Fs/1e6, type="l", xlab="Time [s]", ylab="Skin Force [MN]", lwd=2)
         showEvents(xs, xw)
     }
+    if (all || "blubber force" %in% which) {
+        Fb <- blubberForce(xs, xw, x$parms)
+        plot(t, Fb/1e6, type="l", xlab="Time [s]", ylab="Blubber Force [MN]", lwd=2)
+        showEvents(xs, xw)
+    }
     if (all || "blubber thickness" %in% which) {
         touching <- xs < xw & xw < (xs + x$parms$B)
         thickness <- ifelse(touching, xw-xs, x$parms$B)
         ylim <- c(0, max(thickness))
-        plot(t, thickness, xlab="Time [s]", ylab="Blubber thickness", type="l", lwd=2, ylim=ylim)
-        showEvents(xs, xw)
-    }
-    if (all || "blubber force" %in% which) {
-        Fb <- blubberForce(xs, xw, x$parms)
-        plot(t, Fb/1e6, type="l", xlab="Time [s]", ylab="Blubber Force [MN]", lwd=2)
+        plot(t, thickness, xlab="Time [s]", ylab="Blubber thickness [m]", type="l", lwd=2, ylim=ylim)
+        abline(h=x$parms$B*0.7/1.2, col="red")
         showEvents(xs, xw)
     }
     if (all || "skin tension" %in% which) {

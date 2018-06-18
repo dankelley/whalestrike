@@ -14,7 +14,7 @@
 \item{which}{A character vector that indicates what to plot.
 This choices for its entries are:
 \code{"location"} for a time-series plot of boat location \code{xw} in black,
-whale location \code{x} in red, and skin location in dashed red,
+whale location \code{x} in blue, and skin location in dashed blue,
 \code{"whale acceleration"} for a time-series plot of whale acceleration,
 \code{"water force"} for a time-series plot of the water-drag force on the whale,
 \code{"blubber thickness"} for a time-series plot of blubber thickness,
@@ -37,5 +37,19 @@ for more verbose monitoring of progress through the function.}
 \item{...}{Other arguments (ignored).}
 }
 \description{
-See \code{\link{strike}} for examples.
+Creates displays of various results of a simulation performed
+with \code{\link{strike}}.
+}
+\details{
+Some panels may have additional horizontal lines for thresholds:
+\itemize{
+\item for \code{which="whale acceleration"}, lines will be drawn at 8g and 15g,
+which are \strong{provisional} estimates of 50 percent
+lethality, determined by visual inspection of the lethality-acceleration diagram
+Figure 9 of Ng et al. 2017, for NFL concussions and combat concussions, respectively.
+\item for \code{which="blubber thickness"}, a red line is drawn at 2/3 of the
+initial thickness, based on the Grear et al. 2018 result (page 144, left column)
+that mean (seal) blubber strength is 0.8MPa, whereas mean (seal) blubber
+modulus is 1.2MPa, for a ratio of 2/3.
+}
 }
