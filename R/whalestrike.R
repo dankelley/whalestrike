@@ -79,8 +79,10 @@ skinForce <- function(xs, xw, parms)
     ##> if (is.na(touching[1])) stop("skinForce(): touching is NA")
     dx <- parms$B - (xw - xs)
     ##> if (is.na(dx[1])) stop("skinForce(): dx is NA")
-    sarea <- parms$delta * parms$draft # skin cross-section area
+    circumferance <- 2 * parms$beam + 2 * parms$draft
+    sarea <- parms$delta * circumferance
     ##> if (is.na(sarea)) stop("skinForce(): sarea is NA")
+    ## FIXME: check next formula (quite wrong, I think)
     rval <- ifelse(touching,
                    sarea * parms$Eskin*(sqrt(dx^2+parms$gamma^2)-parms$gamma) / (parms$beam/2+parms$gamma),
                    0)
@@ -339,10 +341,10 @@ plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEve
                    lwd=rep(2, 3), lty=c(1, 1, 3), bg="white", cex=0.8)
     }
     if (all || "whale acceleration" %in% which) {
-        plot(t, derivative(vw, t) / g, xlab="Time [s]", ylab="Whale acceleration [g]", type="l", lwd=2)
+        plot(t, derivative(vw, t), xlab="Time [s]", ylab="Whale acceleration [m/s^2]", type="l", lwd=2)
         showEvents(xs, xw)
         if (drawCriteria)
-            abline(h=c(8, 15), col=c("orange", "red"), lwd=2)
+            abline(h=c(8, 15)*9.8, col=c("orange", "red"), lwd=2) # FIXME: determine values more precisely
     }
     if (all || "blubber thickness" %in% which) {
         touching <- xs < xw & xw < (xs + x$parms$B)
@@ -351,7 +353,7 @@ plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEve
         plot(t, thickness, xlab="Time [s]", ylab="Blubber thickness [m]", type="l", lwd=2, ylim=ylim)
         showEvents(xs, xw)
         if (drawCriteria)
-            abline(h=x$parms$B*0.7/1.2, col="red")
+            abline(h=x$parms$B*0.8/1.2, col="red")
     }
     if (all || "water force" %in% which) {
         plot(t, waterForce(vw) / 1e6 , xlab="Time [s]", ylab="Water force [MN]", type="l", lwd=2)
@@ -368,7 +370,8 @@ plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEve
         showEvents(xs, xw)
     }
     if (all || "skin tension" %in% which) {
-        stresss <- skinForce(xs, xw, x$parms) / (x$parms$delta*x$parms$draft)
+        circumferance <- 2 * x$parms$beam + 2 * x$parms$draft
+        stresss <- skinForce(xs, xw, x$parms) / (x$parms$delta * circumferance)
         plot(t, stresss/1e6, type="l", xlab="Time [s]", ylab="Skin Tension [MPa]", lwd=2)
         showEvents(xs, xw)
     }
