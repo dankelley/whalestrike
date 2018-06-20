@@ -46,12 +46,15 @@ contactArea <- function(xs, xw, parms)
 #' PhD thesis, University of New Hampshire, 2007.
 blubberForce <- function(xs, xw, parms)
 {
-    ##. if (is.na(xs[1])) stop("xs is NA")
-    ##. if (is.na(xw[1])) stop("xw is NA")
-    ##. if (is.na(parms$beta)) stop("parms$beta is NA")
+    ##. message("xs: ", paste(xs, collapse=" "))
+    ##. message("xw: ", paste(xw, collapse=" "))
+    if (is.na(xs[1])) stop("xs is NA")
+    if (is.na(xw[1])) stop("xw is NA")
+    if (is.na(parms$beta)) stop("parms$beta is NA")
     touching <- xs < xw & xw < (xs + parms$beta)
     strain <- 1 - (xw - xs) / parms$beta
-    ##. if (!is.na(touching[1]) && touching[1]) {
+    ##. message("strain: ", strain)
+    ##. ##. if (!is.na(touching[1]) && touching[1]) {
     ##.     cat(sprintf("blubberForce(): xs %.3f, xw %.3f, B %.3f\n", xs, xw, parms$B))
     ##.     cat(sprintf("blubberForce(): xs %.3f, xw %.3f, touching %d, strain %.5f\n", xs, xw, touching[1], strain[1]))
     ##. }
@@ -211,12 +214,16 @@ strike <- function(t, state, parms, debug=0)
         print("parms:")
         print(parms)
     }
-    if (!all(c("xs", "vs", "xw", "vw") %in% names(state)))
-        stop("state must contain items named xs, vs, xw and vw")
+    for (need in c("xs", "vs", "xw", "vw")) {
+        if (!(need %in% names(state)))
+            stop("state must contain item named '", need, "'; the names you supplied were: ", paste(names(state), collapse=" "))
+    }
     if (missing(parms))
         stop("must supply parms")
-    if (!all(c("ms", "B", "D", "mw", "delta", "Eskin", "theta", "beta", "blubbermodel") %in% names(parms)))
-        stop("parms must contain items named ms, B, D, mw, delta, Eskin, theta, beta and blubbermodel")
+    for (need in c("ms", "B", "D", "mw", "delta", "Eskin", "theta", "beta", "blubbermodel")) {
+        if (!(need %in% names(parms)))
+            stop("parms must contain item named '", need, "'; the names you supplied were: ", paste(names(parms), collapse=" "))
+    }
     ##. print("in simulate(), state is:")
     ##. print(state)
     ##. print("in simulate(), parms is:")
