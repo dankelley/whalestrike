@@ -11,7 +11,7 @@ skinForce(xs, xw, parms)
 
 \item{xw}{Whale position [m]}
 
-\item{parms}{Parameters of the simulation (as provided to \code{\link{simulate}}).}
+\item{parms}{Parameters of the simulation (as provided to \code{\link{strike}}).}
 }
 \value{
 Stretch-resisting skin force [N]

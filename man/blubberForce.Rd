@@ -12,7 +12,7 @@ blubberForce(xs, xw, parms)
 \item{xw}{Whale position [m]}
 
 \item{parms}{Parameters of the simulation (as provided to \code{\link{simulate}}). The
-only entries used are blubber thickness \code{B} [m] and blubber model \code{blubbermodel};
+only entries used are blubber thickness \code{beta} [m] and blubber model \code{blubbermodel};
 the latter is a string which may be \code{"linear"}, \code{"exponential"} or \code{"Raymond"}).}
 }
 \value{
