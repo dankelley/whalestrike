@@ -19,3 +19,7 @@ Contact area [m^2].
 \description{
 Area of contact between vessel and whale skin
 }
+\section{DEVELOPMENT NOTE}{
+ think about formulation (re theta).
+}
+

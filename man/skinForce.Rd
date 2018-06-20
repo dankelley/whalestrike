@@ -19,3 +19,7 @@ Stretch-resisting skin force [N]
 \description{
 Skin force
 }
+\section{DEVELOPMENT NOTE}{
+ think about formulation (re theta and B).
+}
+

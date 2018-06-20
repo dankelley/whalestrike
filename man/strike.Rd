@@ -17,13 +17,13 @@ and whale speed \code{vw} [m/s].}
 
 \item{parms}{A named list holding model parameters:
 ship mass \code{"ms"} [kg],
-ship beam \code{"beam"} [m],
-ship draft \code{"draft"} [m],
+ship beam \code{"B"} [m],
+ship draft \code{"D"} [m],
 whale mass \code{"mw"} [kg],
 whale skin thickness \code{"delta"} [m],
 whale skin elastic modulus \code{"Eskin"} [Pa],
-whale skin deformation extension \code{"gamma"} [m],
-whale blubber thickness \code{"B"} [m]
+whale skin deformation angle \code{"theta"} [deg],
+whale blubber thickness \code{"beta"} [m]
 and \code{"blubbermodel"} (passed to \code{\link{blubberForce}}.)}
 
 \item{debug}{Integer indicating debugging level, 0 for quiet operation and higher values
@@ -48,10 +48,10 @@ The forces are calculated by
 library(whalestrike)
 t <- seq(0, 1, length.out=500)
 state <- c(xs=-1.5, vs=5, xw=0, vw=0)
-parms <- list(ms=20e3, beam=3, draft=3,
+parms <- list(ms=20e3, B=3, D=3,
               mw=20e3,
-              delta=0.02, Eskin=2e7, gamma=0.2,
-              B=0.3, blubbermodel="exponential")
+              delta=0.02, Eskin=2e7, theta=30,
+              beta=0.3, blubbermodel="exponential")
 sol <- strike(t, state, parms)
 par(mfcol=c(3, 3), mar=c(2, 3, 1, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
 plot(sol, which="all")

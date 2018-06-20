@@ -9,10 +9,11 @@ library(deSolve)
 #' @param parms Parameters of the simulation (as provided to \code{\link{simulate}}).
 #'
 #' @return Contact area [m^2].
+#' @section DEVELOPMENT NOTE: think about formulation (re theta).
 contactArea <- function(xs, xw, parms)
 {
-    touching <- xs < xw & xw < (xs + parms$B)
-    ifelse(touching, parms$beam * parms$draft, 0)
+    touching <- xs < xw & xw < (xs + parms$beta)
+    ifelse(touching, parms$B * parms$D, 0)
 }
 
 #' Blubber force
@@ -47,9 +48,9 @@ blubberForce <- function(xs, xw, parms)
 {
     ##. if (is.na(xs[1])) stop("xs is NA")
     ##. if (is.na(xw[1])) stop("xw is NA")
-    ##. if (is.na(parms$B)) stop("parms$B is NA")
-    touching <- xs < xw & xw < (xs + parms$B)
-    strain <- 1 - (xw - xs) / parms$B
+    ##. if (is.na(parms$beta)) stop("parms$beta is NA")
+    touching <- xs < xw & xw < (xs + parms$beta)
+    strain <- 1 - (xw - xs) / parms$beta
     ##. if (!is.na(touching[1]) && touching[1]) {
     ##.     cat(sprintf("blubberForce(): xs %.3f, xw %.3f, B %.3f\n", xs, xw, parms$B))
     ##.     cat(sprintf("blubberForce(): xs %.3f, xw %.3f, touching %d, strain %.5f\n", xs, xw, touching[1], strain[1]))
@@ -73,18 +74,20 @@ blubberForce <- function(xs, xw, parms)
 #' @param parms Parameters of the simulation (as provided to \code{\link{simulate}}).
 #'
 #' @return Stretch-resisting skin force [N]
+#' @section DEVELOPMENT NOTE: think about formulation (re theta and B).
 skinForce <- function(xs, xw, parms)
 {
-    touching <- xs < xw & xw < (xs + parms$B)
+    touching <- xs < xw & xw < (xs + parms$beta)
     ##> if (is.na(touching[1])) stop("skinForce(): touching is NA")
-    dx <- parms$B - (xw - xs)
+    dx <- parms$beta - (xw - xs)
     ##> if (is.na(dx[1])) stop("skinForce(): dx is NA")
-    circumferance <- 2 * parms$beam + 2 * parms$draft
+    circumferance <- 2 * parms$B + 2 * parms$D
     sarea <- parms$delta * circumferance
     ##> if (is.na(sarea)) stop("skinForce(): sarea is NA")
     ## FIXME: check next formula (quite wrong, I think)
+    gamma <- dx * tan(parms$theta * pi / 180)
     rval <- ifelse(touching,
-                   sarea * parms$Eskin*(sqrt(dx^2+parms$gamma^2)-parms$gamma) / (parms$beam/2+parms$gamma),
+                   sarea * parms$Eskin*(sqrt(dx^2+gamma^2)-gamma) / (parms$B/2+gamma),
                    0)
     ##. if (is.na(rval[1])) browser()
     ##. if (is.na(rval[1])) stop("skinForce(): rval[1] is NA")
@@ -168,13 +171,13 @@ derivative <- function(var, t)
 #' and whale speed \code{vw} [m/s].
 #' @param parms A named list holding model parameters:
 #' ship mass \code{"ms"} [kg],
-#' ship beam \code{"beam"} [m],
-#' ship draft \code{"draft"} [m],
+#' ship beam \code{"B"} [m],
+#' ship draft \code{"D"} [m],
 #' whale mass \code{"mw"} [kg],
 #' whale skin thickness \code{"delta"} [m],
 #' whale skin elastic modulus \code{"Eskin"} [Pa],
-#' whale skin deformation extension \code{"gamma"} [m],
-#' whale blubber thickness \code{"B"} [m]
+#' whale skin deformation angle \code{"theta"} [deg],
+#' whale blubber thickness \code{"beta"} [m]
 #' and \code{"blubbermodel"} (passed to \code{\link{blubberForce}}.)
 #' @param debug Integer indicating debugging level, 0 for quiet operation and higher values
 #' for more verbose monitoring of progress through the function.
@@ -189,10 +192,10 @@ derivative <- function(var, t)
 #' library(whalestrike)
 #' t <- seq(0, 1, length.out=500)
 #' state <- c(xs=-1.5, vs=5, xw=0, vw=0)
-#' parms <- list(ms=20e3, beam=3, draft=3,
+#' parms <- list(ms=20e3, B=3, D=3,
 #'               mw=20e3,
-#'               delta=0.02, Eskin=2e7, gamma=0.2,
-#'               B=0.3, blubbermodel="exponential")
+#'               delta=0.02, Eskin=2e7, theta=30,
+#'               beta=0.3, blubbermodel="exponential")
 #' sol <- strike(t, state, parms)
 #' par(mfcol=c(3, 3), mar=c(2, 3, 1, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
 #' plot(sol, which="all")
@@ -212,8 +215,8 @@ strike <- function(t, state, parms, debug=0)
         stop("state must contain items named xs, vs, xw and vw")
     if (missing(parms))
         stop("must supply parms")
-    if (!all(c("ms", "beam", "draft", "mw", "delta", "Eskin", "gamma", "B", "blubbermodel") %in% names(parms)))
-        stop("parms must contain items named ms, beam, draft, mw, delta, Eskin, gamma, B and blubbermodel")
+    if (!all(c("ms", "B", "D", "mw", "delta", "Eskin", "theta", "beta", "blubbermodel") %in% names(parms)))
+        stop("parms must contain items named ms, B, D, mw, delta, Eskin, theta, beta and blubbermodel")
     ##. print("in simulate(), state is:")
     ##. print(state)
     ##. print("in simulate(), parms is:")
@@ -334,7 +337,7 @@ plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEve
         ylim <- range(c(xs, xw), na.rm=TRUE)
         plot(t, xs, type="l", xlab="Time [s]", ylab="Location [m]", ylim=ylim, lwd=2)
         lines(t, xw, col="blue", lwd=2)
-        lines(t, xw - x$parms$B, col="blue", lty=3, lwd=2)
+        lines(t, xw - x$parms$beta, col="blue", lty=3, lwd=2)
         showEvents(xs, xw)
         if (showLegend)
             legend("topleft", col=c(1, 2, 2), legend=c("Ship", "Whale", "Blubber"),
@@ -347,13 +350,13 @@ plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEve
             abline(h=c(8, 15)*9.8, col=c("orange", "red"), lwd=2) # FIXME: determine values more precisely
     }
     if (all || "blubber thickness" %in% which) {
-        touching <- xs < xw & xw < (xs + x$parms$B)
-        thickness <- ifelse(touching, xw-xs, x$parms$B)
+        touching <- xs < xw & xw < (xs + x$parms$beta)
+        thickness <- ifelse(touching, xw-xs, x$parms$beta)
         ylim <- c(0, max(thickness))
         plot(t, thickness, xlab="Time [s]", ylab="Blubber thickness [m]", type="l", lwd=2, ylim=ylim)
         showEvents(xs, xw)
         if (drawCriteria)
-            abline(h=x$parms$B*0.8/1.2, col="red")
+            abline(h=x$parms$beta*0.8/1.2, col="red")
     }
     if (all || "water force" %in% which) {
         plot(t, waterForce(vw) / 1e6 , xlab="Time [s]", ylab="Water force [MN]", type="l", lwd=2)
@@ -370,13 +373,13 @@ plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEve
         showEvents(xs, xw)
     }
     if (all || "skin tension" %in% which) {
-        circumferance <- 2 * x$parms$beam + 2 * x$parms$draft
+        circumferance <- 2 * x$parms$B + 2 * x$parms$D
         stresss <- skinForce(xs, xw, x$parms) / (x$parms$delta * circumferance)
         plot(t, stresss/1e6, type="l", xlab="Time [s]", ylab="Skin Tension [MPa]", lwd=2)
         showEvents(xs, xw)
     }
     if (all || "blubber stress" %in% which) {
-        stresss <- skinForce(xs, xw, x$parms) / (x$parms$delta*x$parms$draft)
+        stresss <- skinForce(xs, xw, x$parms) / (x$parms$delta*x$parms$D)
         A <- contactArea(xs, xw, x$parms)
         stressb <- ifelse(A, blubberForce(xs, xw, x$parms) / A, 0)
         plot(t, stressb/1e6, type="l", xlab="Time [s]", ylab="Blubber Stress [MPa]", lwd=2)
