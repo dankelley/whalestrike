@@ -392,8 +392,14 @@ plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEve
     if (all || "whale acceleration" %in% which) {
         plot(t, derivative(vw, t), xlab="Time [s]", ylab="Whale acceleration [m/s^2]", type="l", lwd=2)
         showEvents(xs, xw)
-        if (drawCriteria)
-            abline(h=c(8, 15)*9.8, col=c("orange", "red"), lwd=2) # FIXME: determine values more precisely
+        if (drawCriteria) {
+            aCFL <- 8 * 9.8
+            abline(h=aCFL, col="orange", lwd=2) # FIXME: determine values more precisely
+            text(par('usr')[2], aCFL+7, "CFL concussion", pos=2)
+            aConflict <- 15 * 9.8
+            abline(h=aConflict, col="red", lwd=2) # FIXME: determine values more precisely
+            text(par('usr')[2], aConflict+7, "conflict concussion", pos=2)
+        }
     }
     if (all || "blubber thickness" %in% which) {
         touching <- xs < xw & xw < (xs + x$parms$beta)
