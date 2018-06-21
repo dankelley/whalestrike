@@ -333,7 +333,7 @@ strike <- function(t, state, parms, debug=0)
 #' Grear, Molly E., Michael R. Motley, Stephanie B. Crofts, Amanda E. Witt, Adam P. Summers, and Petra Ditsche. “Mechanical Properties of Harbor Seal Skin and Blubber − a Test of Anisotropy.” Zoology 126 (2018): 137–44. \url{https://doi.org/10.1016/j.zool.2017.11.002}
 #'
 #' Ng, Laurel J., Vladislav Volman, Melissa M. Gibbons, Pi Phohomsiri, Jianxia Cui, Darrell J. Swenson, and James H. Stuhmiller. “A Mechanistic End-to-End Concussion Model That Translates Head Kinematics to Neurologic Injury.” Frontiers in Neurology 8, no. JUN (2017): 1–18. \url{https://doi.org/10.3389/fneur.2017.00269}
-plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEvents=FALSE, debug=0, ...)
+plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEvents=TRUE, debug=0, ...)
 {
     showLegend <- FALSE
     g <- 9.8 # gravity
@@ -357,11 +357,11 @@ plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEve
         dvwddt <- dvwdt[look]
     }
     if (debug) {
-        cat("t=",  paste(head(t,  3), collapse=" "), " ... ", paste(head(t,  3), collapse=" "), "\n") 
-        cat("xs=", paste(head(xs, 3), collapse=" "), " ... ", paste(head(xs, 3), collapse=" "), "\n") 
-        cat("vs=", paste(head(vs, 3), collapse=" "), " ... ", paste(head(vs, 3), collapse=" "), "\n") 
-        cat("xw=", paste(head(xw, 3), collapse=" "), " ... ", paste(head(xw, 3), collapse=" "), "\n") 
-        cat("vs=", paste(head(vw, 3), collapse=" "), " ... ", paste(head(vw, 3), collapse=" "), "\n") 
+        cat("t=",  paste(head(t,  3), collapse=" "), " ... ", paste(head(t,  3), collapse=" "), "\n")
+        cat("xs=", paste(head(xs, 3), collapse=" "), " ... ", paste(head(xs, 3), collapse=" "), "\n")
+        cat("vs=", paste(head(vs, 3), collapse=" "), " ... ", paste(head(vs, 3), collapse=" "), "\n")
+        cat("xw=", paste(head(xw, 3), collapse=" "), " ... ", paste(head(xw, 3), collapse=" "), "\n")
+        cat("vs=", paste(head(vw, 3), collapse=" "), " ... ", paste(head(vw, 3), collapse=" "), "\n")
     }
     showEvents <- function(xs, xw) {
         if (drawEvents) {

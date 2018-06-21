@@ -5,7 +5,7 @@
 \title{Plot a strike object}
 \usage{
 \method{plot}{strike}(x, which = "all", center = FALSE,
-  drawCriteria = TRUE, drawEvents = FALSE, debug = 0, ...)
+  drawCriteria = TRUE, drawEvents = TRUE, debug = 0, ...)
 }
 \arguments{
 \item{x}{An object inheriting from class \code{strike}}
