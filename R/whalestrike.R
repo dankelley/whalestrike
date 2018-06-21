@@ -8,21 +8,24 @@ library(deSolve)
 #'\itemize{
 #' \item \code{model=1} yields
 #' \eqn{242.988 * exp(0.4 * length)}{242.988 * exp(0.4 * length)},
-#' which is Equation (?) from Moore 2005 (citation?) for right whales, with length
-#' converted to metres.
+#' which (apart from a unit change) is a regression equation
+#' shown above Figure 1d of Moore et al. (2005) for right whales.
 #'}
 #'
 #' @param L Whale length in m.
 #' @param model A number indicating the model (see \dQuote{Details}).
 #' @return Mass in kg.
-#' @references
-#' Moore (details?)
 #' @examples
 #' library(whalestrike)
 #' L <- seq(5, 15, length.out=100)
 #' plot(L, massFromLength(L)/1000, type='l',
 #'      xlab="Right-whale Length [m]", ylab="Mass [tonne]")
 #' grid()
+#' @references
+#' Moore, M.J., A.R. Knowlton, S.D. Kraus, W.A. McLellan, and R.K. Bonde.
+#' “Morphometry, Gross Morphology and Available Histopathology in North Atlantic
+#' Right Whale (Eubalaena Glacialis) Mortalities (1970 to 2002).” Journal of
+#' Cetacean Research and Management 6, no. 3 (2005): 199–214.
 massFromLength <- function(L, model=1)
 {
     if (model == 1)
