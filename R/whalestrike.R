@@ -137,27 +137,29 @@ blubberForce <- function(xs, xw, parms)
 #'
 #' @param xs Ship position [m]
 #' @param xw Whale position [m]
-#' @param parms Parameters of the simulation (as provided to \code{\link{strike}}).
+#' @param parms Parameters of the simulation (as provided to \code{\link{strike}}). The
+#' quantities used by \code{skinForce} are \code{B} (ship beam width, m),
+#' \code{D} (ship draft, in m), \code{Es} (skin elastic modulus in Pa),
+#' \code{delta} (skin thickness in m), and \code{theta} (skin bevel angle
+#' degrees, measured from a vector normal to undisturbed skin).
 #'
 #' @return Stretch-resisting skin force [N]
-#' @section DEVELOPMENT NOTE: think about formulation (re theta and B).
 skinForce <- function(xs, xw, parms)
 {
     touching <- xs < xw & xw < (xs + parms$beta)
     ##> if (is.na(touching[1])) stop("skinForce(): touching is NA")
     dx <- parms$beta - (xw - xs)
-    ##> if (is.na(dx[1])) stop("skinForce(): dx is NA")
-    circumferance <- 2 * parms$B + 2 * parms$D
-    sarea <- parms$delta * circumferance
-    ##> if (is.na(sarea)) stop("skinForce(): sarea is NA")
-    ## FIXME: check next formula (quite wrong, I think)
-    gamma <- dx * tan(parms$theta * pi / 180)
-    rval <- ifelse(touching,
-                   sarea * parms$Es*(sqrt(dx^2+gamma^2)-gamma) / (parms$B/2+gamma),
-                   0)
-    ##. if (is.na(rval[1])) browser()
-    ##. if (is.na(rval[1])) stop("skinForce(): rval[1] is NA")
-    rval
+    l <- dx * tan(parms$theta * pi / 180) # NB: theta is in deg
+    s <- dx / cos(parms$theta * pi / 180) # NB: theta is in deg
+    ## Strains in y and z
+    epsilony <- 2 * (s - l) / (parms$B + 2 * l)
+    epsilonz <- 2 * (s - l) / (parms$D + 2 * l)
+    ## Stresses in y and z
+    sigmay <- parms$E * epsilony
+    sigmaz <- parms$E * epsilonz
+    ## Net force in x
+    Fx <- 2 * parms$delta * (parms$B * sigmay + parms$D * sigmaz)
+    ifelse(touching, Fx, 0)
 }
 
 #' Water drag force

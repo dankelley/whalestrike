@@ -11,7 +11,11 @@ skinForce(xs, xw, parms)
 
 \item{xw}{Whale position [m]}
 
-\item{parms}{Parameters of the simulation (as provided to \code{\link{strike}}).}
+\item{parms}{Parameters of the simulation (as provided to \code{\link{strike}}). The
+quantities used by \code{skinForce} are \code{B} (ship beam width, m),
+\code{D} (ship draft, in m), \code{Es} (skin elastic modulus in Pa),
+\code{delta} (skin thickness in m), and \code{theta} (skin bevel angle
+degrees, measured from a vector normal to undisturbed skin).}
 }
 \value{
 Stretch-resisting skin force [N]
@@ -19,7 +23,3 @@ Stretch-resisting skin force [N]
 \description{
 Skin force
 }
-\section{DEVELOPMENT NOTE}{
- think about formulation (re theta and B).
-}
-
