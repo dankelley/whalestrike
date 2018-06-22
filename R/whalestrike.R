@@ -7,8 +7,8 @@ library(deSolve)
 #' The permitted values for \code{model} are as follows.
 #'\itemize{
 #' \item \code{"moore2005"} yields
-#' \eqn{242.988 * exp(0.4 * length)}{242.988 * exp(0.4 * length)},
-#' which (apart from a unit change) is a regression equation
+#' \eqn{242.988 * exp(0.4 * length)}{242.988 * exp(0.4 * L)},
+#' which (apart from a unit change on \code{L}) is the regression equation
 #' shown above Figure 1d in Moore et al. (2005) for right whales.
 #'
 #' \item \code{"fortune2012atlantic"} yields the formula
