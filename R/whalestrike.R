@@ -4,33 +4,63 @@ library(deSolve)
 #'
 #' Calculate an estimate of the mass of a whale, based on its length.
 #'
-#' The permitted models are as follows.
+#' The permitted values for \code{model} are as follows.
 #'\itemize{
-#' \item \code{model=1} yields
+#' \item \code{"moore2005"} yields
 #' \eqn{242.988 * exp(0.4 * length)}{242.988 * exp(0.4 * length)},
 #' which (apart from a unit change) is a regression equation
-#' shown above Figure 1d of Moore et al. (2005) for right whales.
+#' shown above Figure 1d in Moore et al. (2005) for right whales.
+#'
+#' \item \code{"fortune2012atlantic"} yields the formula
+#' \eqn{exp(-10.095 + 2.825*log(100*L))}{exp(-10.095 + 2.825*log(100*L))}
+#' for North Atlantic right whales, according to a guess made about
+#' an erroroneous formula given in the caption
+#' of Figure 4 in Fortune et al (2012).
+#' (The assumed error is an exchange of slope and intercept.)
+#'
+#' \item \code{"fortune2012pacific"} yields the formula
+#' for North Atlantic right whales, according to a guess made about
+#' \eqn{exp(-12.286 + 3.158*log(100*L))}{exp(-12.286 + 3.158*log(100*L))}
+#' an erroroneous formula given in the caption
+#' of Figure 4 in Fortune et al (2012).
+#' (The assumed error is an exchange of slope and intercept.)
 #'}
 #'
 #' @param L Whale length in m.
-#' @param model A number indicating the model (see \dQuote{Details}).
+#' @param model Character string specifying the model (see \dQuote{Details}).
 #' @return Mass in kg.
 #' @examples
 #' library(whalestrike)
 #' L <- seq(5, 15, length.out=100)
 #' plot(L, massFromLength(L)/1000, type='l',
 #'      xlab="Right-whale Length [m]", ylab="Mass [tonne]")
+#' lines(L, massFromLength(L, model="fortune2012atlantic")/1000, col=2)
+#' lines(L, massFromLength(L, model="fortune2012pacific")/1000, col=3)
+#' legend("topleft", lwd=1, col=1:3,
+#'        legend=c("moore2005", "fortune2012atlantic", "fortune2012pacific"))
 #' grid()
 #' @references
 #' Moore, M.J., A.R. Knowlton, S.D. Kraus, W.A. McLellan, and R.K. Bonde.
 #' “Morphometry, Gross Morphology and Available Histopathology in North Atlantic
 #' Right Whale (Eubalaena Glacialis) Mortalities (1970 to 2002).” Journal of
 #' Cetacean Research and Management 6, no. 3 (2005): 199–214.
-massFromLength <- function(L, model=1)
+#'
+#' Fortune, Sarah M. E., Andrew W. Trites, Wayne L. Perryman, Michael J. Moore,
+#' Heather M. Pettis, and Morgan S. Lynn. “Growth and Rapid Early Development of
+#' North Atlantic Right Whales (Eubalaena Glacialis).” Journal of Mammalogy 93,
+#' no. 5 (2012): 1342–54. https://doi.org/10.1644/11-MAMM-A-297.1.
+massFromLength <- function(L, model="moore2005")
 {
-    if (model == 1)
+    if (model == "moore2005")
         242.988 * exp(0.4 * L)
-    else stop("model must equal 1")
+    else if (model == "fortune2012atlantic")
+        exp(-10.095 + 2.825*log(100*L))
+        ##exp(2.825-10.095*log(100*L))
+    else if (model == "fortune2012pacific")
+        exp(-12.286 + 3.158*log(100*L))
+        ##exp(3.158-12.286*log(100*L))
+    else
+        stop("unrecognized model '", model, "'")
 }
 
 #' Contact area
