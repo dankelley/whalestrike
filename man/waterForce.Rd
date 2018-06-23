@@ -19,8 +19,7 @@ Compute water drag using a quadratic law.
 }
 \section{Development note}{
 
-A fixed plan area of 20m^2 is assumed, although that is subject to change.
-There are published mass-length relationships, and using a shape
-parameter, we should be able to express the area in terms of whale mass.
+FIXME: A fixed plan area of 20m^2 is assumed, but once I get a formula for shape,
+I will fix this.
 }
 

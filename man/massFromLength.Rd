@@ -4,7 +4,7 @@
 \alias{massFromLength}
 \title{Whale mass inferred from length}
 \usage{
-massFromLength(L, model = "moore2005")
+massFromLength(L, model = "fortune2012atlantic")
 }
 \arguments{
 \item{L}{Whale length in m.}
@@ -23,33 +23,38 @@ The permitted values for \code{model} are as follows.
 \item \code{"moore2005"} yields
 \eqn{242.988 * exp(0.4 * length)}{242.988 * exp(0.4 * L)},
 which (apart from a unit change on \code{L}) is the regression equation
-shown above Figure 1d in Moore et al. (2005) for right whales.
+shown above Figure 1d in Moore et al. (2005) for right whales. A
+difficult in the Moore et al. (2005) use of a single nonzero digit
+in the multiplier on \code{L} is illustrated in \dQuote{Examples}.
 
 \item \code{"fortune2012atlantic"} yields the formula
 \eqn{exp(-10.095 + 2.825*log(100*L))}{exp(-10.095 + 2.825*log(100*L))}
-for North Atlantic right whales, according to a guess made about
-an erroroneous formula given in the caption
-of Figure 4 in Fortune et al (2012).
-(The assumed error is an exchange of slope and intercept.)
+for North Atlantic right whales, according to corrected version of the
+erroneous formula given in the caption of Figure 4 in Fortune et al (2012).
+(The error, an exchange of slope and intercept, was confirmed by
+S. Fortune in an email to D. Kelley dated June 22, 2018.)
 
 \item \code{"fortune2012pacific"} yields the formula
-for North Atlantic right whales, according to a guess made about
 \eqn{exp(-12.286 + 3.158*log(100*L))}{exp(-12.286 + 3.158*log(100*L))}
-an erroroneous formula given in the caption
-of Figure 4 in Fortune et al (2012).
-(The assumed error is an exchange of slope and intercept.)
+for North Pacific right whales, according to corrected version of the
+erroneous formula given in the caption of Figure 4 in Fortune et al (2012).
+(The error, an exchange of slope and intercept, was confirmed by
+S. Fortune in an email to D. Kelley dated June 22, 2018.)
 }
 }
 \examples{
 library(whalestrike)
 L <- seq(5, 15, length.out=100)
-plot(L, massFromLength(L)/1000, type='l',
+kpt <- 1000 # kg per tonne
+plot(L, massFromLength(L, model="moore2005")/kpt, type='l',
      xlab="Right-whale Length [m]", ylab="Mass [tonne]")
-lines(L, massFromLength(L, model="fortune2012atlantic")/1000, col=2)
-lines(L, massFromLength(L, model="fortune2012pacific")/1000, col=3)
+# Demonstrate sensitivity involved in the single-digit parameter in Moore's formula
+lines(L, 242.988 * exp(0.35 * L)/kpt, lty='dotted')
+lines(L, 242.988 * exp(0.45 * L)/kpt, lty='dashed')
+lines(L, massFromLength(L, model="fortune2012atlantic")/kpt, col=2)
+lines(L, massFromLength(L, model="fortune2012pacific")/kpt, col=3)
 legend("topleft", lwd=1, col=1:3,
        legend=c("moore2005", "fortune2012atlantic", "fortune2012pacific"))
-grid()
 }
 \references{
 Moore, M.J., A.R. Knowlton, S.D. Kraus, W.A. McLellan, and R.K. Bonde.

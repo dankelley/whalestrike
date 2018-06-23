@@ -18,7 +18,9 @@ quantities used by \code{skinForce} are \code{B} (ship beam width, m),
 degrees, measured from a vector normal to undisturbed skin).}
 }
 \value{
-Stretch-resisting skin force [N]
+A list containing \code{F}, the normal force [N], along with
+\code{sigmay} and \code{sigmaz}, which are stresses [Pa] in the y (beam)
+and z (draft) directions.
 }
 \description{
 Skin force

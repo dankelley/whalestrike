@@ -20,7 +20,6 @@ whale location \code{x} in blue, and skin location in dashed blue,
 \code{"blubber force"} for a time-series plot of the normal force resulting from blubber compression,
 \code{"blubber stress"} for a time-series plot of the normal stress on the blubber,
 \code{"skin force"} for a time-series plot of the normal force resulting from skin tension,
-\code{"skin tension"} for a time-series plot of the skin tension, in the along-skin direction,
 \code{"values"} for a listing of \code{param} values.
 or \code{"all"} for all of the above.}
 

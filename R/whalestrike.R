@@ -9,21 +9,23 @@ library(deSolve)
 #' \item \code{"moore2005"} yields
 #' \eqn{242.988 * exp(0.4 * length)}{242.988 * exp(0.4 * L)},
 #' which (apart from a unit change on \code{L}) is the regression equation
-#' shown above Figure 1d in Moore et al. (2005) for right whales.
+#' shown above Figure 1d in Moore et al. (2005) for right whales. A
+#' difficult in the Moore et al. (2005) use of a single nonzero digit
+#' in the multiplier on \code{L} is illustrated in \dQuote{Examples}.
 #'
 #' \item \code{"fortune2012atlantic"} yields the formula
 #' \eqn{exp(-10.095 + 2.825*log(100*L))}{exp(-10.095 + 2.825*log(100*L))}
-#' for North Atlantic right whales, according to a guess made about
-#' an erroroneous formula given in the caption
-#' of Figure 4 in Fortune et al (2012).
-#' (The assumed error is an exchange of slope and intercept.)
+#' for North Atlantic right whales, according to corrected version of the
+#' erroneous formula given in the caption of Figure 4 in Fortune et al (2012).
+#' (The error, an exchange of slope and intercept, was confirmed by
+#' S. Fortune in an email to D. Kelley dated June 22, 2018.)
 #'
 #' \item \code{"fortune2012pacific"} yields the formula
-#' for North Atlantic right whales, according to a guess made about
 #' \eqn{exp(-12.286 + 3.158*log(100*L))}{exp(-12.286 + 3.158*log(100*L))}
-#' an erroroneous formula given in the caption
-#' of Figure 4 in Fortune et al (2012).
-#' (The assumed error is an exchange of slope and intercept.)
+#' for North Pacific right whales, according to corrected version of the
+#' erroneous formula given in the caption of Figure 4 in Fortune et al (2012).
+#' (The error, an exchange of slope and intercept, was confirmed by
+#' S. Fortune in an email to D. Kelley dated June 22, 2018.)
 #'}
 #'
 #' @param L Whale length in m.
@@ -32,13 +34,16 @@ library(deSolve)
 #' @examples
 #' library(whalestrike)
 #' L <- seq(5, 15, length.out=100)
-#' plot(L, massFromLength(L)/1000, type='l',
+#' kpt <- 1000 # kg per tonne
+#' plot(L, massFromLength(L, model="moore2005")/kpt, type='l',
 #'      xlab="Right-whale Length [m]", ylab="Mass [tonne]")
-#' lines(L, massFromLength(L, model="fortune2012atlantic")/1000, col=2)
-#' lines(L, massFromLength(L, model="fortune2012pacific")/1000, col=3)
+#' # Demonstrate sensitivity involved in the single-digit parameter in Moore's formula
+#' lines(L, 242.988 * exp(0.35 * L)/kpt, lty='dotted')
+#' lines(L, 242.988 * exp(0.45 * L)/kpt, lty='dashed')
+#' lines(L, massFromLength(L, model="fortune2012atlantic")/kpt, col=2)
+#' lines(L, massFromLength(L, model="fortune2012pacific")/kpt, col=3)
 #' legend("topleft", lwd=1, col=1:3,
 #'        legend=c("moore2005", "fortune2012atlantic", "fortune2012pacific"))
-#' grid()
 #' @references
 #' Moore, M.J., A.R. Knowlton, S.D. Kraus, W.A. McLellan, and R.K. Bonde.
 #' “Morphometry, Gross Morphology and Available Histopathology in North Atlantic
@@ -49,7 +54,7 @@ library(deSolve)
 #' Heather M. Pettis, and Morgan S. Lynn. “Growth and Rapid Early Development of
 #' North Atlantic Right Whales (Eubalaena Glacialis).” Journal of Mammalogy 93,
 #' no. 5 (2012): 1342–54. https://doi.org/10.1644/11-MAMM-A-297.1.
-massFromLength <- function(L, model="moore2005")
+massFromLength <- function(L, model="fortune2012atlantic")
 {
     if (model == "moore2005")
         242.988 * exp(0.4 * L)
@@ -61,6 +66,17 @@ massFromLength <- function(L, model="moore2005")
         ##exp(3.158-12.286*log(100*L))
     else
         stop("unrecognized model '", model, "'")
+}
+
+#' Whale projected area, as function of length
+#' @param L length in m
+#' @param view character string indicating the viewpoint; only 
+#' \code{"side"} is permitted at present.
+areaFromLength <- function(L, view="side")
+{
+    if (view == "side")
+        0.143 * L^2
+    else stop("'view' must be 'side'")
 }
 
 #' Contact area
@@ -143,12 +159,14 @@ blubberForce <- function(xs, xw, parms)
 #' \code{delta} (skin thickness in m), and \code{theta} (skin bevel angle
 #' degrees, measured from a vector normal to undisturbed skin).
 #'
-#' @return Stretch-resisting skin force [N]
+#' @return A list containing \code{F}, the normal force [N], along with
+#' \code{sigmay} and \code{sigmaz}, which are stresses [Pa] in the y (beam)
+#' and z (draft) directions.
 skinForce <- function(xs, xw, parms)
 {
     touching <- xs < xw & xw < (xs + parms$beta)
     ##> if (is.na(touching[1])) stop("skinForce(): touching is NA")
-    dx <- parms$beta - (xw - xs)
+    dx <- ifelse(touching, parms$beta - (xw - xs), 0)
     l <- dx * tan(parms$theta * pi / 180) # NB: theta is in deg
     s <- dx / cos(parms$theta * pi / 180) # NB: theta is in deg
     ## Strains in y and z
@@ -157,9 +175,11 @@ skinForce <- function(xs, xw, parms)
     ## Stresses in y and z
     sigmay <- parms$E * epsilony
     sigmaz <- parms$E * epsilonz
-    ## Net force in x
-    Fx <- 2 * parms$delta * (parms$B * sigmay + parms$D * sigmaz)
-    ifelse(touching, Fx, 0)
+    ## Net normal force in x; note the cosine, to resolve the force to the normal
+    ## direction, and the 2, to account for two sides of length B and two of length D..
+    F <- 2 * parms$delta * cos(parms$theta * pi / 180) * (parms$D * sigmaz + parms$B * sigmay)
+    ##> if (is.na(F[1])) stop("skinForce(): F is NA")
+    list(F=F, sigmay=sigmay, sigmaz=sigmaz)
 }
 
 #' Water drag force
@@ -167,9 +187,8 @@ skinForce <- function(xs, xw, parms)
 #' Compute water drag using a quadratic law.
 #'
 #' @section Development note:
-#' A fixed plan area of 20m^2 is assumed, although that is subject to change.
-#' There are published mass-length relationships, and using a shape
-#' parameter, we should be able to express the area in terms of whale mass.
+#' FIXME: A fixed plan area of 20m^2 is assumed, but once I get a formula for shape,
+#' I will fix this.
 #'
 #' @param v Whale velocity [m/s]
 #' @param CD Drag coefficient. The default corresponds to that of the Empire State building.
@@ -182,7 +201,7 @@ waterForce <- function(v, CD=1.4)
     R <- 2                             # whale radius [m]
     L <- 10                            # whale length [m]
     area <- 2 * R * L                  # frontal area
-    -0.5 * rho * CD * area * v^2
+    -0.5 * rho * CD * area * v * abs(v)
 }
 
 #' Dynamical law
@@ -199,15 +218,9 @@ dynamics <- function(t, y, parms)
     xw <- y[3]                         # whale position
     vw <- y[4]                         # whale velocity
     Fb <- blubberForce(xs, xw, parms)
-    if (is.na(Fb)) stop("Fb is NA")
-    Fs <- skinForce(xs, xw, parms)
-    if (is.na(Fs)) stop("Fs is NA")
+    Fs <- skinForce(xs, xw, parms)$F
     Fw <- waterForce(vw)
-    if (is.na(Fw)) stop("Fw is NA")
-    if (is.na(parms$ms)) stop("parms$ms is NA")
-    if (is.na(parms$mw)) stop("parms$mw is NA")
-    F <- Fb + Fs + Fw
-    list(c(dxsdt=vs, dvsdt=-F/parms$ms, dxwdt=vw, dvwdt=F/parms$mw))
+    list(c(dxsdt=vs, dvsdt=-(Fb + Fs)/parms$ms, dxwdt=vw, dvwdt=(Fb + Fs + Fw)/parms$mw))
 }
 
 #' Calculate derivative using first difference
@@ -350,7 +363,6 @@ strike <- function(t, state, parms, debug=0)
 #' \code{"blubber force"} for a time-series plot of the normal force resulting from blubber compression,
 #' \code{"blubber stress"} for a time-series plot of the normal stress on the blubber,
 #' \code{"skin force"} for a time-series plot of the normal force resulting from skin tension,
-#' \code{"skin tension"} for a time-series plot of the skin tension, in the along-skin direction,
 #' \code{"values"} for a listing of \code{param} values.
 #' or \code{"all"} for all of the above.
 #' @param center Logical, indicating whether to center time-series plots.
@@ -430,10 +442,10 @@ plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEve
         if (drawCriteria) {
             aCFL <- 8 * 9.8
             abline(h=aCFL, col="orange", lwd=2) # FIXME: determine values more precisely
-            text(par('usr')[2], aCFL+7, "CFL concussion", pos=2)
+            mtext("CFL", side=4, at=aCFL)
             aConflict <- 15 * 9.8
             abline(h=aConflict, col="red", lwd=2) # FIXME: determine values more precisely
-            text(par('usr')[2], aConflict+7, "conflict concussion", pos=2)
+            mtext("conflict", side=4, at=aConflict)
         }
     }
     if (all || "blubber thickness" %in% which) {
@@ -451,7 +463,10 @@ plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEve
     }
     if (all || "skin force" %in% which) {
         Fs <- skinForce(xs, xw, x$parms)
-        plot(t, Fs/1e6, type="l", xlab="Time [s]", ylab="Skin Force [MN]", lwd=2)
+        plot(t, Fs$F/1e6, type="l", xlab="Time [s]", ylab="Skin Force [MN]", lwd=2)
+        lines(t, Fs$sigmay*x$parms$delta*x$parms$D/1e6, col=2)
+        lines(t, Fs$sigmaz*x$parms$delta*x$parms$B/1e6, col=3)
+        legend("topright", col=1:3, lwd=1, legend=c("normal", "beamwise", "draftwise"))
         showEvents(xs, xw)
     }
     if (all || "blubber force" %in% which) {
@@ -459,14 +474,7 @@ plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEve
         plot(t, Fb/1e6, type="l", xlab="Time [s]", ylab="Blubber Force [MN]", lwd=2)
         showEvents(xs, xw)
     }
-    if (all || "skin tension" %in% which) {
-        circumferance <- 2 * x$parms$B + 2 * x$parms$D
-        stresss <- skinForce(xs, xw, x$parms) / (x$parms$delta * circumferance)
-        plot(t, stresss/1e6, type="l", xlab="Time [s]", ylab="Skin Tension [MPa]", lwd=2)
-        showEvents(xs, xw)
-    }
     if (all || "blubber stress" %in% which) {
-        stresss <- skinForce(xs, xw, x$parms) / (x$parms$delta*x$parms$D)
         A <- contactArea(xs, xw, x$parms)
         stressb <- ifelse(A, blubberForce(xs, xw, x$parms) / A, 0)
         plot(t, stressb/1e6, type="l", xlab="Time [s]", ylab="Blubber Stress [MPa]", lwd=2)
