@@ -68,9 +68,30 @@ massFromLength <- function(L, model="fortune2012atlantic")
         stop("unrecognized model '", model, "'")
 }
 
+#' Compute whale length from mass
+#'
+#' This works by inverting \code{\link{massFromLength}} using
+#' \code{\link{uniroot}}.
+#'
+#' @param M Whale mass [kg].
+#' @param model Character string specifying the model, with permitted
+#' values \code{"moore2005"}, \code{"fortune2012atlantic"} and
+#" \code{"fortune2012pacific"}. See the documentation
+#' for \code{\link{massFromLength}} for the details of these
+#' formulations.
+#'
+#' @return Whale length [m].
+lengthFromMass <- function(M, model="fortune2012atlantic")
+{
+    rval <- rep(NA, length(M))
+    for (i in seq_along(M))
+        rval[i] <- uniroot(function(x) M[i] - massFromLength(x, model), c(0.1, 100))$root
+    rval
+}
+
 #' Whale projected area, as function of length
 #' @param L length in m
-#' @param view character string indicating the viewpoint; only 
+#' @param view character string indicating the viewpoint; only
 #' \code{"side"} is permitted at present.
 areaFromLength <- function(L, view="side")
 {

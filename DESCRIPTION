@@ -2,10 +2,11 @@ Package: whalestrike
 Type: Package
 Title: Simulate whale ship strikes
 Version: 0.1.0
-Author: Dan Kelley
-Maintainer: The package maintainer <yourself@somewhere.net>
+Authors@R: c(person(given="Dan", family="Kelley", email="Dan.Kelley@Dal.Ca", role=c("aut", "cre"), comment=c(ORCID="https://orcid.org/0000-0001-7808-5911")))
+Maintainer: Dan Kelley <Dan.Kelley@Dal.Ca>
 Description: Simple simulation of the mechanics of a boat striking a whale.
 Depends: deSolve
+Requires: testthat
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true

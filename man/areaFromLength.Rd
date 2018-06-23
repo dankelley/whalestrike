@@ -9,7 +9,7 @@ areaFromLength(L, view = "side")
 \arguments{
 \item{L}{length in m}
 
-\item{view}{character string indicating the viewpoint; only 
+\item{view}{character string indicating the viewpoint; only
 \code{"side"} is permitted at present.}
 }
 \description{

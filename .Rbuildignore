@@ -1,2 +1,3 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+.Rapp.history

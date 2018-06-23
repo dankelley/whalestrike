@@ -1,6 +1,9 @@
 exportPattern("^[[:alpha:]]+")
 importFrom("deSolve", "lsoda")
-importFrom("utils", "head", "tail")
 importFrom("graphics", "abline", "box", "grid", "legend", "lines", "mtext", "par",
         "plot", "plot.new", "text")
+importFrom("stats", "uniroot")
+importFrom("testthat", "expect_equal")
+importFrom("utils", "head", "tail")
+
 S3method(plot, strike)
