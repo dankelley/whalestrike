@@ -1,3 +1,3 @@
-library(shipstrike)
+library(whalestrike)
 
-test_check("shipstrike")
+test_check("whalestrike")
