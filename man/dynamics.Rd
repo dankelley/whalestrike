@@ -13,8 +13,12 @@ dynamics(t, y, parms)
 ship speed \code{vs} [m/s], whale position \code{xw} [m],
 and whale speed \code{vw} [m/s].}
 
-\item{parms}{model parameters.}
+\item{parms}{A named list holding model parameters, as created by
+\code{\link{parameters}}.}
 }
 \description{
 Dynamical law
+}
+\references{
+See \link{whalestrike} for a list of references.
 }

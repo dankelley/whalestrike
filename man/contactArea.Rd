@@ -11,7 +11,8 @@ contactArea(xs, xw, parms)
 
 \item{xw}{Whale position [m]}
 
-\item{parms}{Parameters of the simulation (as provided to \code{\link{simulate}}).}
+\item{parms}{A named list holding model parameters, as created by
+\code{\link{parameters}}.}
 }
 \value{
 Contact area [m^2].

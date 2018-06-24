@@ -11,17 +11,40 @@
 \item{x}{An object inheriting from class \code{strike}}
 
 \item{which}{A character vector that indicates what to plot.
-This choices for its entries are:
-\code{"location"} for a time-series plot of boat location \code{xw} in black,
-whale location \code{x} in blue, and skin location in dashed blue,
-\code{"whale acceleration"} for a time-series plot of whale acceleration,
-\code{"blubber thickness"} for a time-series plot of blubber thickness,
-\code{"water force"} for a time-series plot of the water-drag force on the whale,
-\code{"blubber force"} for a time-series plot of the normal force resulting from blubber compression,
-\code{"blubber stress"} for a time-series plot of the normal stress on the blubber,
-\code{"skin force"} for a time-series plot of the normal force resulting from skin tension,
-\code{"values"} for a listing of \code{param} values.
-or \code{"all"} for all of the above.}
+This choices for its entries are:\itemize{
+
+\item \code{"location"} for a time-series plot of boat location \code{xw} in black,
+whale location \code{x} in blue, and skin location in dashed blue.
+
+\item \code{"whale acceleration"} for a time-series plot of whale acceleration,
+with horizontal lines drawn at 8g and 15g, which are rough estimates of 50 percent
+lethality, determined by visual inspection of the lethality-acceleration diagram
+Figure 9 of Ng et al. 2017, for NFL (National Football League)
+concussions and combat concussions, respectively.
+
+\item \code{"blubber thickness"} for a time-series plot of blubber thickness,
+with a red line drawn at 2/3 of the
+initial thickness, based on the Grear et al. 2018 result (page 144, left column)
+that mean (seal) blubber strength is 0.8MPa, whereas mean (seal) blubber
+modulus is 1.2MPa, for a ratio of 2/3.
+
+\item \code{"whale water force"} for a time-series plot of the water force on the whale.
+
+\item \code{"blubber force"} for a time-series plot of the normal force resulting from blubber compression.
+
+\item \code{"blubber stress"} for a time-series plot of the normal stress on the blubber.
+
+\item \code{"skin force"} for a time-series plot of the normal force resulting from skin tension.
+
+\item \code{"skin stress"} for a time-series plot of the skin stress in the along-skin y and z directions.
+A red horizontal line is drawn at 19.56MPa, if that value is on-scale. This is a suggestion
+of the maximum stress that the skin can accommodate without damage, inferred from an
+entry in Table 3 of Grear et al. (2018) for the strength of seal skin.
+
+\item \code{"values"} for a listing of \code{param} values.
+
+\item \code{"all"} for all of the above.
+}}
 
 \item{center}{Logical, indicating whether to center time-series plots.
 on the time when the vessel and whale and in closest proximity.}
@@ -41,22 +64,6 @@ for more verbose monitoring of progress through the function.}
 Creates displays of various results of a simulation performed
 with \code{\link{strike}}.
 }
-\details{
-Some panels may have additional horizontal lines for thresholds:
-\itemize{
-\item for \code{which="whale acceleration"}, lines will be drawn at 8g and 15g,
-which are \strong{provisional} estimates of 50 percent
-lethality, determined by visual inspection of the lethality-acceleration diagram
-Figure 9 of Ng et al. 2017, for NFL (National Football League)
-concussions and combat concussions, respectively.
-\item for \code{which="blubber thickness"}, a red line is drawn at 2/3 of the
-initial thickness, based on the Grear et al. 2018 result (page 144, left column)
-that mean (seal) blubber strength is 0.8MPa, whereas mean (seal) blubber
-modulus is 1.2MPa, for a ratio of 2/3.
-}
-}
 \references{
-Grear, Molly E., Michael R. Motley, Stephanie B. Crofts, Amanda E. Witt, Adam P. Summers, and Petra Ditsche. “Mechanical Properties of Harbor Seal Skin and Blubber − a Test of Anisotropy.” Zoology 126 (2018): 137–44. \url{https://doi.org/10.1016/j.zool.2017.11.002}
-
-Ng, Laurel J., Vladislav Volman, Melissa M. Gibbons, Pi Phohomsiri, Jianxia Cui, Darrell J. Swenson, and James H. Stuhmiller. “A Mechanistic End-to-End Concussion Model That Translates Head Kinematics to Neurologic Injury.” Frontiers in Neurology 8, no. JUN (2017): 1–18. \url{https://doi.org/10.3389/fneur.2017.00269}
+See \link{whalestrike} for a list of references.
 }

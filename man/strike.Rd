@@ -15,23 +15,11 @@ ship speed \code{vs} [m/s],
 whale position \code{xw} [m]
 and whale speed \code{vw} [m/s].}
 
-\item{parms}{A named list holding model parameters:
-\describe{
-\item{ms}{Ship mass [kg]}
-\item{B}{Ship width beam [m]}
-\item{D}{Ship draft [m]}
-\item{mw}{Whale mass [kg]. (Consider using \code{\link{massFromLength}},
-if length data are easier to obtain than mass data.)}
-\item{delta}{Whale skin thickness [m]. See e.g. Miller et al. (2011), for
-right whales.}
-\item{Es}{Whale skin elastic modulus [Pa]}
-\item{theta}{Whale skin deformation angle [deg]}
-\item{beta}{Whale blubber thickness [m]}
-\item{blubbermodel}{Blubber model to use (passed to \code{\link{blubberForce}})}
-}}
+\item{parms}{A named list holding model parameters, as created by
+\code{\link{parameters}}.}
 
-\item{debug}{Integer indicating debugging level, 0 for quiet operation and higher values
-for more verbose monitoring of progress through the function.}
+\item{debug}{Integer indicating debugging level, 0 for quiet operation and
+higher values for more verbose monitoring of progress through the function.}
 }
 \value{
 An object of class \code{"whalestrike"}, consisting of a
@@ -44,17 +32,17 @@ along with a list containing the model parameters (\code{parms}).
 Newtonian mechanics are used, taking the ship as undeformable,
 and the whale as being cushioned by a skin layer and a blubber layer.
 The forces are calculated by
-\code{\link{skinForce}},
-\code{\link{blubberForce}}, and
-\code{\link{waterForce}}.
+\code{\link{shipWaterForce}},
+\code{\link{whaleSkinForce}},
+\code{\link{whaleBlubberForce}}, and
+\code{\link{whaleWaterForce}}.
 }
 \examples{
 library(whalestrike)
 t <- seq(0, 1, length.out=500)
 state <- c(xs=-1.5, vs=5, xw=0, vw=0)
-parms <- list(ms=20e3, B=3, D=3,
-              mw=20e3,
-              delta=0.02, Es=2e7, theta=30,
+parms <- parameters(ms=20e3, B=3, D=1.5,
+              lw=10, delta=0.02, Es=2e7, theta=45,
               beta=0.3, blubbermodel="exponential")
 sol <- strike(t, state, parms)
 par(mfcol=c(3, 3), mar=c(2, 3, 1, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
@@ -62,7 +50,5 @@ plot(sol, which="all")
 
 }
 \references{
-\itemize{
-\item Miller, Carolyn A., Desray Reeb, Peter B. Best, Amy R. Knowlton, Moira W. Brown, and Michael J. Moore. “Blubber Thickness in Right Whales Eubalaena Glacialis and Eubalaena Australis Related with Reproduction, Life History Status and Prey Abundance.” Marine Ecology Progress Series 438 (2011): 267–83.
-}
+See \link{whalestrike} for a list of references.
 }
