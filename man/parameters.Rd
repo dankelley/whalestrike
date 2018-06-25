@@ -5,8 +5,7 @@
 \title{Control parameters for whale strike simulation}
 \usage{
 parameters(ms, as = 20, B = 3, D = 1.5, mw, lw, delta = 0.01, Es,
-  theta = 45, beta = 0.3, blubbermodel = "nonlinear", CDs = 1,
-  CDw = 1)
+  theta = 45, Eb = 6e+05, beta = 0.3, CDs = 1, CDw = 1)
 }
 \arguments{
 \item{ms}{Ship mass [kg].}
@@ -36,10 +35,10 @@ of Grear et al. (2017).}
 
 \item{theta}{Whale skin deformation angle [deg]; defaults to 45deg if not supplied.}
 
-\item{beta}{Whale blubber thickness [m]; defaults to 0.3m if not supplied.}
+\item{Eb}{Elastic modulus of blubber [Pa]; defaults to 6e5 Pa (the value
+suggested Raymond (2007 fig 37), rounded to 1 digit), if not supplied.}
 
-\item{blubbermodel}{Blubber model (see \code{\link{whaleBlubberForce}}); defaults to \code{"nonlinear"}
-if not supplied.}
+\item{beta}{Whale blubber thickness [m]; defaults to 0.3m if not supplied.}
 
 \item{CDs}{Drag coefficient for ship [dimensionless], used by \code{\link{shipWaterForce}} to estimate ship drag force.}
 

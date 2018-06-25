@@ -95,8 +95,8 @@ NULL
 #' of Grear et al. (2017).
 #' @param theta Whale skin deformation angle [deg]; defaults to 45deg if not supplied.
 #' @param beta Whale blubber thickness [m]; defaults to 0.3m if not supplied.
-#' @param blubbermodel Blubber model (see \code{\link{whaleBlubberForce}}); defaults to \code{"nonlinear"}
-#' if not supplied.
+#' @param Eb Elastic modulus of blubber [Pa]; defaults to 6e5 Pa (the value
+#' suggested Raymond (2007 fig 37), rounded to 1 digit), if not supplied.
 #' @param CDs Drag coefficient for ship [dimensionless], used by \code{\link{shipWaterForce}} to estimate ship drag force.
 #' @param CDw Drag coefficient for whale [dimensionless], used by \code{\link{whaleWaterForce}} to estimate whale drag force.
 #
@@ -107,7 +107,9 @@ NULL
 #' @references
 #' See \link{whalestrike} for a list of references.
 parameters <- function(ms, as=20, B=3, D=1.5,
-                       mw, lw, delta=0.01, Es, theta=45, beta=0.3, blubbermodel="nonlinear",
+                       mw, lw,
+                       delta=0.01, Es, theta=45,
+                       Eb=6e5, beta=0.3,
                        CDs=1, CDw=1)
 {
     if (missing(ms))
@@ -122,7 +124,8 @@ parameters <- function(ms, as=20, B=3, D=1.5,
     }
     if (missing(Es))
         stop("whale skin elastic modulus (Es) must be specified")
-    list(ms=ms, as=as, B=B, D=D, mw=mw, lw=lw, delta=delta, Es=Es, theta=theta, beta=beta, blubbermodel=blubbermodel,
+    list(ms=ms, as=as, B=B, D=D, mw=mw, lw=lw, delta=delta, Es=Es, theta=theta,
+         Eb=Eb, beta=beta,
          CDs=CDs, CDw=CDw)
 }
 
@@ -244,20 +247,13 @@ contactArea <- function(xs, xw, parms)
 
 #' Blubber force
 #'
-#' The stress model depends on \code{parms$blubbermodel}, a character
-#' string with the following possibilities:
-#' \itemize{
-#' \item \code{"Raymond"}: Raymond's (2007) modulus is used, with
-#' stress [Pa] taken to be 636273*strain, where strain is the relative
-#' compression of the blubber.
-#' \item \code{"linear"}: a similar
-#' linear law is used, but with coefficient 580004.6, resulting from a linear
-#' fit to the data in his figure 2.13, constrained to have zero stress for zero
-#' strain.
-#' \item \code{"exponential"}: an exponential model is used, with
-#' stress=-1.712240e5*(1-exp(strain/0.4185693)). (This is a fit to the
-#' data in Raymond's (2007) Figure 2.13.)
-#'}
+#' Calculate the reaction force of blubber, as the product of stress
+#' and area. Stress is computed as the product of blubber elastic
+#' modulus \code{parms$Eb} times strain, where the latter is computed
+#' from ship-whale separation using \code{1-(xw-xs)/parms$beta} if
+#' \code{xw} is between \code{xs} and \code{xs+parms$beta},
+#' or zero otherwise. Area is computed as the product of
+#' \code{parms$B} and \code{parms$D}.
 #'
 #' @param xs Ship position [m]
 #'
@@ -271,28 +267,19 @@ contactArea <- function(xs, xw, parms)
 #' See \link{whalestrike} for a list of references.
 whaleBlubberForce <- function(xs, xw, parms)
 {
-    ##. message("xs: ", paste(xs, collapse=" "))
-    ##. message("xw: ", paste(xw, collapse=" "))
+    ##> message("xs: ", paste(xs, collapse=" "))
+    ##> message("xw: ", paste(xw, collapse=" "))
     if (is.na(xs[1])) stop("xs is NA")
     if (is.na(xw[1])) stop("xw is NA")
     if (is.na(parms$beta)) stop("parms$beta is NA")
     touching <- xs < xw & xw < (xs + parms$beta)
     strain <- 1 - (xw - xs) / parms$beta
-    ##. message("strain: ", strain)
-    ##. ##. if (!is.na(touching[1]) && touching[1]) {
-    ##.     cat(sprintf("whaleBlubberForce(): xs %.3f, xw %.3f, B %.3f\n", xs, xw, parms$B))
-    ##.     cat(sprintf("whaleBlubberForce(): xs %.3f, xw %.3f, touching %d, strain %.5f\n", xs, xw, touching[1], strain[1]))
-    ##. }
-    ## nodd <- sum(strain<0) && touching
-    ## if (is.na(nodd)) {message('BAD'); browser()}
-    ## if (nodd > 0)
-    ##     message('x[1]=', x[1], ', xw[1]=', xw[1], ' # negative strains=', nodd)
-    ifelse(touching,
-           if (parms$blubbermodel=="Raymond") 636273*strain
-           else if (parms$blubbermodel=="linear") 580004.6*strain
-           else if (parms$blubbermodel=="exponential") -1.712240e+05*(1-exp(strain/4.185693e-01))
-           else NA,
-           0) * contactArea(xs, xw, parms)
+    ##> if (strain > 0) cat("strain=", strain, "\n")
+    stress <- ifelse(touching, parms$Eb * strain, 0)
+    ##> if (strain > 0) cat("stress=", stress, "\n")
+    force <- stress * parms$B * parms$D
+    if (is.na(force[1])) stop("Calculated force is NA, probably indicating a programming error.")
+    force
 }
 
 #' Skin force
@@ -325,12 +312,12 @@ whaleSkinForce <- function(xs, xw, parms)
     epsilony <- 2 * (s - l) / (parms$B + 2 * l)
     epsilonz <- 2 * (s - l) / (parms$D + 2 * l)
     ## Stresses in y and z
-    sigmay <- parms$E * epsilony
-    sigmaz <- parms$E * epsilonz
+    sigmay <- parms$Es * epsilony
+    sigmaz <- parms$Es * epsilonz
     ## Net normal force in x; note the cosine, to resolve the force to the normal
     ## direction, and the 2, to account for two sides of length B and two of length D..
     F <- 2 * parms$delta * cos(parms$theta * pi / 180) * (parms$D * sigmaz + parms$B * sigmay)
-    ##> if (is.na(F[1])) stop("skinForce(): F is NA")
+    if (is.na(F[1])) stop("F is NA, probably indicating a programming error.")
     list(F=F, sigmay=sigmay, sigmaz=sigmaz)
 }
 
@@ -395,7 +382,9 @@ dynamics <- function(t, y, parms)
     Fskin <- whaleSkinForce(xs, xw, parms)$F
     Freactive <- Fblubber + Fskin
     Fship <- parms$shipPropulsiveForce + shipWaterForce(vs, parms) - Freactive
+    if (is.na(Fship[1])) stop("Fship[1] is NA, probably indicating a programming error.")
     Fwhale <- Freactive + whaleWaterForce(vw, parms)
+    if (is.na(Fwhale[1])) stop("Fwhale[1] is NA, probably indicating a programming error.")
     list(c(dxsdt=vs, dvsdt=Fship/parms$ms, dxwdt=vw, dvwdt=Fwhale/parms$mw))
 }
 
@@ -445,7 +434,7 @@ derivative <- function(var, t)
 #' state <- c(xs=-1.5, vs=5, xw=0, vw=0)
 #' parms <- parameters(ms=20e3, B=3, D=1.5,
 #'               lw=10, delta=0.02, Es=2e7, theta=45,
-#'               beta=0.3, blubbermodel="exponential")
+#'               Es=1e6, beta=0.3)
 #' sol <- strike(t, state, parms)
 #' par(mfcol=c(3, 3), mar=c(2, 3, 1, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
 #' plot(sol, which="all")
@@ -470,7 +459,7 @@ strike <- function(t, state, parms, debug=0)
     }
     if (missing(parms))
         stop("must supply parms")
-    for (need in c("ms", "B", "D", "mw", "delta", "Es", "theta", "beta", "blubbermodel")) {
+    for (need in c("ms", "B", "D", "mw", "delta", "Es", "theta", "Eb", "beta")) {
         if (!(need %in% names(parms)))
             stop("parms must contain item named '", need, "'; the names you supplied were: ", paste(names(parms), collapse=" "))
     }

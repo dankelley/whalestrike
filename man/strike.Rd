@@ -43,7 +43,7 @@ t <- seq(0, 1, length.out=500)
 state <- c(xs=-1.5, vs=5, xw=0, vw=0)
 parms <- parameters(ms=20e3, B=3, D=1.5,
               lw=10, delta=0.02, Es=2e7, theta=45,
-              beta=0.3, blubbermodel="exponential")
+              Es=1e6, beta=0.3)
 sol <- strike(t, state, parms)
 par(mfcol=c(3, 3), mar=c(2, 3, 1, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
 plot(sol, which="all")

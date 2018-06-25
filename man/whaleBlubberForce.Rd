@@ -18,20 +18,13 @@ whaleBlubberForce(xs, xw, parms)
 Compression-resisting force [N]
 }
 \description{
-The stress model depends on \code{parms$blubbermodel}, a character
-string with the following possibilities:
-\itemize{
-\item \code{"Raymond"}: Raymond's (2007) modulus is used, with
-stress [Pa] taken to be 636273*strain, where strain is the relative
-compression of the blubber.
-\item \code{"linear"}: a similar
-linear law is used, but with coefficient 580004.6, resulting from a linear
-fit to the data in his figure 2.13, constrained to have zero stress for zero
-strain.
-\item \code{"exponential"}: an exponential model is used, with
-stress=-1.712240e5*(1-exp(strain/0.4185693)). (This is a fit to the
-data in Raymond's (2007) Figure 2.13.)
-}
+Calculate the reaction force of blubber, as the product of stress
+and area. Stress is computed as the product of blubber elastic
+modulus \code{parms$Eb} times strain, where the latter is computed
+from ship-whale separation using \code{1-(xw-xs)/parms$beta} if
+\code{xw} is between \code{xs} and \code{xs+parms$beta},
+or zero otherwise. Area is computed as the product of
+\code{parms$B} and \code{parms$D}.
 }
 \references{
 See \link{whalestrike} for a list of references.
