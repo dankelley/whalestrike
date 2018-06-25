@@ -1,0 +1,55 @@
+---
+title: Boat parameters
+author: Dan Kelley
+---
+
+**Abstract.** Some tests on boat properties (especially drag) are carried out.
+
+```{r}
+L <- 11.73
+B <- 4.63
+D <- 1.58
+displacement <- 20.46e3
+knots <- 7
+power <- 110e3
+```
+
+A lobster boat advertised for sail at
+https://www.kijiji.ca/v-powerboat-motorboat/city-of-halifax/1979-atkinson-lobster-boat/1364491142?enableSearchNavigationFlag=true
+lists length `r L`m, beam `r B`m, draft `r D`m, and displacement `r displacement` tonnes.
+The easy-running speed is stated as `r knots` knots with the engine (Detroit 6-71) at
+1300RPM.
+
+The site
+https://web.archive.org/web/20120308222058/http://www.barringtondieselclub.co.za/671DetroitDiesel.html
+suggests the Detroit Diesel 6-71 provides 101kW at 1200RPM and 119kW at
+1400RPM, so the power is likely 110kW.  This is *not* power into the water,
+but, since I don't have any efficiencies handy, I will assume that it is.
+
+Since power is the product of force and speed, we infer force
+```{r}
+F <- power / (knots * 0.514)
+```
+or `r round(F)` N.
+
+As an estimate of wetted area, take the product of length and girth estimated as
+```{r}
+Ss <- L * (2*D * B)
+Ss
+```
+
+These numbers are set as the default for the collision app (version 6) and it
+calculates propulsive force of 1140N. The ratio to the present estimate is thus
+`r 2280/F`. Assuming 45 percent efficiency of a diesel engine, the ratio
+becomes `r 2280/F/0.45`. Assuming 40 percent propellor efficiency (ref 2 guess) gives
+`r 2280/F/0.45/0.4`.
+
+**ASSESSMENT:** the above suggests that the app may be giving reasonable forces.
+
+**TO DO:** (1) get estimates for efficiency of propellor etc, perhaps from. (2) read ref 2, which looks like a great (modern) update on things.
+
+**References**
+
+* 1. http://web.mit.edu/13.012/www/handouts/propellers_reading.pdf
+* 2. https://marine.mandieselturbo.com/docs/librariesprovider6/propeller-aftship/basic-principles-of-propulsion.pdf?sfvrsn=0 (fig 28 gives prop efficiency of 0.51 to 0.56 for VERY big props, decreasing
+  with smaller ones but we likely have 0.5m diameter, way way off scale)

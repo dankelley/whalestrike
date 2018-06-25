@@ -48,6 +48,12 @@ Blubber − a Test of Anisotropy.” Zoology 126 (2018): 137–44.
 https://doi.org/10.1016/j.zool.2017.11.002.
 
 \item
+Manen, J. D. van, and P. van Oossanen. “Resistance.” In Principles of Naval
+Architecture (Second Revision), Volume II - Resistance, Propulsion and
+Vibration, edited by Edward V Lewis, 2nd ed., 1–125. Jersey City, NJ: Society
+of Naval Architects and Marine Engineers (U.S.), 1988.
+
+\item
 Miller, Carolyn A., Desray Reeb, Peter B. Best, Amy R. Knowlton, Moira W.
 Brown, and Michael J. Moore. “Blubber Thickness in Right Whales Eubalaena
 Glacialis and Eubalaena Australis Related with Reproduction, Life History

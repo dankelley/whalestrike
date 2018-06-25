@@ -43,6 +43,12 @@ library(deSolve)
 #' https://doi.org/10.1016/j.zool.2017.11.002.
 #'
 #' \item
+#' Manen, J. D. van, and P. van Oossanen. “Resistance.” In Principles of Naval
+#' Architecture (Second Revision), Volume II - Resistance, Propulsion and
+#' Vibration, edited by Edward V Lewis, 2nd ed., 1–125. Jersey City, NJ: Society
+#' of Naval Architects and Marine Engineers (U.S.), 1988.
+#'
+#' \item
 #' Miller, Carolyn A., Desray Reeb, Peter B. Best, Amy R. Knowlton, Moira W.
 #' Brown, and Michael J. Moore. “Blubber Thickness in Right Whales Eubalaena
 #' Glacialis and Eubalaena Australis Related with Reproduction, Life History
@@ -77,7 +83,7 @@ NULL
 #' and the functions that it calls.
 #'
 #' @param ms Ship mass [kg].
-#' @param as Ship area [m^2]. This, together with \code{CDs}, is used by
+#' @param Ss Ship wetted area [m^2]. This, together with \code{CDs}, is used by
 #' used by \code{\link{shipWaterForce}} to estimate ship drag force.
 #' @param B  Ship impact horizontal extent [m]; defaults to 2m if not specified.
 #' @param D  Ship impact vertical extent [m]; defaults to 1.5m if not specified.
@@ -89,6 +95,8 @@ NULL
 #' an error is reported. The length is used by \code{\link{whaleAreaFromLength}} to
 #' calculate area, which is needed for the water drag calculation done by
 #' \code{\link{whaleWaterForce}}.
+#' @param Sw Whale surface area [m^2]. This, together with \code{CDw}, is used by
+#' used by \code{\link{whaleWaterForce}} to estimate whale drag force.
 #' @param delta Whale skin thickness [m]. Defaults to 0.01 m, if not supplied.
 #' @param Es Whale skin elastic modulus [Pa]. If not provided, defaults to 20e6 Pa,
 #' a rounded value of the 19.56+-4.03MPa estimate for seal skin, provided in Table 3
@@ -97,36 +105,53 @@ NULL
 #' @param beta Whale blubber thickness [m]; defaults to 0.3m if not supplied.
 #' @param Eb Elastic modulus of blubber [Pa]; defaults to 6e5 Pa (the value
 #' suggested Raymond (2007 fig 37), rounded to 1 digit), if not supplied.
-#' @param CDs Drag coefficient for ship [dimensionless], used by \code{\link{shipWaterForce}} to estimate ship drag force.
-#' @param CDw Drag coefficient for whale [dimensionless], used by \code{\link{whaleWaterForce}} to estimate whale drag force.
-#
+#' @param CDs Drag coefficient for ship [dimensionless],
+#' used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults
+#' to 2.5e-3, using Figure 4 of Manen and van Oossanen (1988), assuming
+#' Reynolds number of 5e7, computed from speed 5m/s, lengthscale 10m
+#' and viscosity 1e-6 m^2/s. The drag force is computed with
+#' \code{\link{shipWaterForce}}.
+#' @param CDw Drag coefficient for whale [dimensionless],
+#' used by \code{\link{whaleWaterForce}} to estimate whale drag force.
+#' Defaults to 3.0e-3, for Reynolds number 2e7, computed from speed
+#' 2 m/s, lengthscale 5m (between radius and length) and
+#' viscosity 1e-6 m^2/s.  The drag force is computed with
+#' \code{\link{whaleWaterForce}}.
+#'
 #' @return
 #' A named list holding the parameters, with defaults and alternatives reconciled
 #' according to the system described above.
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
-parameters <- function(ms, as=20, B=3, D=1.5,
+parameters <- function(ms, Ss, B=3, D=1.5,
                        mw, lw,
+                       Sw,
                        delta=0.01, Es, theta=45,
                        Eb=6e5, beta=0.3,
-                       CDs=1, CDw=1)
+                       CDs=2e-3, CDw=3e-3)
 {
     if (missing(ms))
         stop("ship mass must be specified")
     if (missing(mw)) {
         if (missing(lw))
             stop("Whale mass (mw) or length (lw) must be specified, or both")
-        mw <- whaleMassFromLength(lw)
+        mw <- round(whaleMassFromLength(lw))
     } else {
         if (missing(lw))
-            lw <- whaleLengthFromMass(mw)
+            lw <- round(whaleLengthFromMass(mw), 1)
     }
     if (missing(Es))
         stop("whale skin elastic modulus (Es) must be specified")
-    list(ms=ms, as=as, B=B, D=D, mw=mw, lw=lw, delta=delta, Es=Es, theta=theta,
-         Eb=Eb, beta=beta,
-         CDs=CDs, CDw=CDw)
+    if (missing(Ss))
+        stop("Must give Ss, the ship wetted area (length times below-water midship girth")
+    if (missing(Sw))
+        stop("Must give Sw, the whale surface area (length times midbody girth")
+    rval <- list(ms=ms, Ss=Ss, B=B, D=D, mw=mw, Sw=Sw, lw=lw, delta=delta, Es=Es, theta=theta,
+                 Eb=Eb, beta=beta,
+                 CDs=CDs, CDw=CDw)
+    class(rval) <- "parameters"
+    rval
 }
 
 
@@ -339,7 +364,7 @@ whaleSkinForce <- function(xs, xw, parms)
 #' @return Water drag force [N]
 shipWaterForce <- function(vs, parms)
 {
-    -0.5 * 1024 * parms$CDs * parms$as * vs * abs(vs)
+    - (1/2) * 1024 * parms$CDs * parms$Ss * vs * abs(vs)
 }
 
 
@@ -357,7 +382,7 @@ shipWaterForce <- function(vs, parms)
 #' @return Water drag force [N]
 whaleWaterForce <- function(vw, parms)
 {
-    -0.5 * 1024 * parms$CDw * parms$aw * vw * abs(vw)
+    - (1/2) * 1024 * parms$CDw * parms$Sw * vw * abs(vw)
 }
 
 #' Dynamical law
@@ -432,9 +457,9 @@ derivative <- function(var, t)
 #' library(whalestrike)
 #' t <- seq(0, 1, length.out=500)
 #' state <- c(xs=-1.5, vs=5, xw=0, vw=0)
-#' parms <- parameters(ms=20e3, B=3, D=1.5,
-#'               lw=10, delta=0.02, Es=2e7, theta=45,
-#'               Es=1e6, beta=0.3)
+#' parms <- parameters(ms=20e3, Ss=15*pi*3, B=3, D=1.5,
+#'               lw=10, Sw=10*2*pi*3, delta=0.02, Es=2e7, theta=45,
+#'               Eb=1e6, beta=0.3)
 #' sol <- strike(t, state, parms)
 #' par(mfcol=c(3, 3), mar=c(2, 3, 1, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
 #' plot(sol, which="all")
@@ -459,7 +484,7 @@ strike <- function(t, state, parms, debug=0)
     }
     if (missing(parms))
         stop("must supply parms")
-    for (need in c("ms", "B", "D", "mw", "delta", "Es", "theta", "Eb", "beta")) {
+    for (need in c("ms", "B", "D", "Ss", "mw", "Sw", "delta", "Es", "theta", "Eb", "beta")) {
         if (!(need %in% names(parms)))
             stop("parms must contain item named '", need, "'; the names you supplied were: ", paste(names(parms), collapse=" "))
     }
@@ -467,7 +492,7 @@ strike <- function(t, state, parms, debug=0)
     ##> print(state)
     ##> print("in strike(), parms is:")
     ##> print(parms)
-    parms["shipPropulsiveForce"] <- -shipWaterForce(state["vs"], parms) # assumed constant over time
+    parms["shipPropulsiveForce"] <- -round(shipWaterForce(state["vs"], parms), -1) # assumed constant over time
     parms["aw"] <- whaleAreaFromLength(L=parms$lw, view="side")
     sol <- lsoda(state, t, dynamics, parms)
     ##. print("in strike(), head(sol) is:")

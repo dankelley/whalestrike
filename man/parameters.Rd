@@ -4,13 +4,13 @@
 \alias{parameters}
 \title{Control parameters for whale strike simulation}
 \usage{
-parameters(ms, as = 20, B = 3, D = 1.5, mw, lw, delta = 0.01, Es,
-  theta = 45, Eb = 6e+05, beta = 0.3, CDs = 1, CDw = 1)
+parameters(ms, Ss, B = 3, D = 1.5, mw, lw, Sw, delta = 0.01, Es,
+  theta = 45, Eb = 6e+05, beta = 0.3, CDs = 0.002, CDw = 0.003)
 }
 \arguments{
 \item{ms}{Ship mass [kg].}
 
-\item{as}{Ship area [m^2]. This, together with \code{CDs}, is used by
+\item{Ss}{Ship wetted area [m^2]. This, together with \code{CDs}, is used by
 used by \code{\link{shipWaterForce}} to estimate ship drag force.}
 
 \item{B}{Ship impact horizontal extent [m]; defaults to 2m if not specified.}
@@ -27,6 +27,9 @@ an error is reported. The length is used by \code{\link{whaleAreaFromLength}} to
 calculate area, which is needed for the water drag calculation done by
 \code{\link{whaleWaterForce}}.}
 
+\item{Sw}{Whale surface area [m^2]. This, together with \code{CDw}, is used by
+used by \code{\link{whaleWaterForce}} to estimate whale drag force.}
+
 \item{delta}{Whale skin thickness [m]. Defaults to 0.01 m, if not supplied.}
 
 \item{Es}{Whale skin elastic modulus [Pa]. If not provided, defaults to 20e6 Pa,
@@ -40,9 +43,19 @@ suggested Raymond (2007 fig 37), rounded to 1 digit), if not supplied.}
 
 \item{beta}{Whale blubber thickness [m]; defaults to 0.3m if not supplied.}
 
-\item{CDs}{Drag coefficient for ship [dimensionless], used by \code{\link{shipWaterForce}} to estimate ship drag force.}
+\item{CDs}{Drag coefficient for ship [dimensionless],
+used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults
+to 2.5e-3, using Figure 4 of Manen and van Oossanen (1988), assuming
+Reynolds number of 5e7, computed from speed 5m/s, lengthscale 10m
+and viscosity 1e-6 m^2/s. The drag force is computed with
+\code{\link{shipWaterForce}}.}
 
-\item{CDw}{Drag coefficient for whale [dimensionless], used by \code{\link{whaleWaterForce}} to estimate whale drag force.}
+\item{CDw}{Drag coefficient for whale [dimensionless],
+used by \code{\link{whaleWaterForce}} to estimate whale drag force.
+Defaults to 3.0e-3, for Reynolds number 2e7, computed from speed
+2 m/s, lengthscale 5m (between radius and length) and
+viscosity 1e-6 m^2/s.  The drag force is computed with
+\code{\link{whaleWaterForce}}.}
 }
 \value{
 A named list holding the parameters, with defaults and alternatives reconciled
