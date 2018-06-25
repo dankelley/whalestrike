@@ -5,20 +5,27 @@ library(deSolve)
 #' This package solves Newton's second law for a simple model of
 #' a ship colliding with a whale. This is a stripped-down model
 #' that does not attempt to simulate the biomechanical interactions
-#' that are possible in the finite-element treatment of Raymond (2007).
-#' Rather, the goal is to establish a convenient framework for rapid
-#' computation of responses to a variety of conditions. Indeed, the model runs
-#' so quickly that it easily keeps up with mouse movements in an R shiny
-#' app, in which the user can test the effects of e.g. changing contact
-#' area, ship speed, etc., to build intuition on scenarios ranging
-#' from collision with a slow-moving fishing boat to collision
-#' with a thin dagger-board of a rapidly-moving racing sailboat.
-#' The simple formulation also makes it easy to modify the system
-#' by altering various dynamical and biomechanical parameters,
-#' and by adding new forces or criteria for whale damage.
+#' that can be simulated in finite-element treatments such
+#' as that of Raymond (2007).  The goal is to establish a
+#' convenient framework for rapid computation of impacts in a
+#' wide variety of conditions. The model runs
+#' quickly enough to keep up with mouse movements to select
+#' conditions, in a companion R shiny app. That app lets
+#' the user see the effects of changing contact
+#' area, ship speed, etc., as a way to build intuition
+#' for scenarios ranging from collision with a slow-moving
+#' fishing boat to collision with a thin dagger-board of a
+#' much swifter racing sailboat. Another advantage of the
+#' simple formulation is that it makes it easy to
+#' modify various dynamical and biomechanical parameters,
+#' to add new forces, and to explore a range of
+#' criteria for whale damage.
 #'
-#' See the documentation for \code{\link{strike}} for a typical
-#' example of using the main functions of this package.
+#' The documentation for \code{\link{strike}} provides
+#' an example of using the main functions of this package,
+#' and so it is a good place to start. A companion manuscript
+#' is intended to provide more detail about the analysis
+#' and the context.
 #'
 #' @references
 #' \itemize{
@@ -504,10 +511,10 @@ strike <- function(t, state, parms, debug=0)
 #' whale location \code{x} in blue, and skin location in dashed blue.
 #'
 #' \item \code{"whale acceleration"} for a time-series plot of whale acceleration,
-#' with horizontal lines drawn at 8g and 15g, which are rough estimates of 50 percent
-#' lethality, determined by visual inspection of the lethality-acceleration diagram
-#' Figure 9 of Ng et al. 2017, for NFL (National Football League)
-#' concussions and combat concussions, respectively.
+#' with horizontal lines drawn at 433 and 721 m/s^2,
+#' which are estimates of the 10% and 50% probability of concussion
+#' for the National Football League concussoin data presented in
+#' Figure 9 of Ng et al. 2017.
 #'
 #' \item \code{"blubber thickness"} for a time-series plot of blubber thickness,
 #' with a red line drawn at 2/3 of the
@@ -604,12 +611,10 @@ plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEve
         plot(t, derivative(vw, t), xlab="Time [s]", ylab="Whale acceleration [m/s^2]", type="l", lwd=2)
         showEvents(xs, xw)
         if (drawCriteria) {
-            aCFL <- 8 * 9.8
-            abline(h=aCFL, col="orange", lwd=2) # FIXME: determine values more precisely
-            ##mtext("CFL", side=4, at=aCFL)
-            aConflict <- 15 * 9.8
-            abline(h=aConflict, col="red", lwd=2) # FIXME: determine values more precisely
-            ##mtext("conflict", side=4, at=aConflict)
+            NFL10 <- 433
+            NFL50 <- 721
+            abline(h=NFL10, col="orange", lwd=2)
+            abline(h=NFL50, col="red", lwd=2)
         }
     }
     if (all || "blubber thickness" %in% which) {

@@ -9,21 +9,28 @@
 This package solves Newton's second law for a simple model of
 a ship colliding with a whale. This is a stripped-down model
 that does not attempt to simulate the biomechanical interactions
-that are possible in the finite-element treatment of Raymond (2007).
-Rather, the goal is to establish a convenient framework for rapid
-computation of responses to a variety of conditions. Indeed, the model runs
-so quickly that it easily keeps up with mouse movements in an R shiny
-app, in which the user can test the effects of e.g. changing contact
-area, ship speed, etc., to build intuition on scenarios ranging
-from collision with a slow-moving fishing boat to collision
-with a thin dagger-board of a rapidly-moving racing sailboat.
-The simple formulation also makes it easy to modify the system
-by altering various dynamical and biomechanical parameters,
-and by adding new forces or criteria for whale damage.
+that can be simulated in finite-element treatments such
+as that of Raymond (2007).  The goal is to establish a
+convenient framework for rapid computation of impacts in a
+wide variety of conditions. The model runs
+quickly enough to keep up with mouse movements to select
+conditions, in a companion R shiny app. That app lets
+the user see the effects of changing contact
+area, ship speed, etc., as a way to build intuition
+for scenarios ranging from collision with a slow-moving
+fishing boat to collision with a thin dagger-board of a
+much swifter racing sailboat. Another advantage of the
+simple formulation is that it makes it easy to
+modify various dynamical and biomechanical parameters,
+to add new forces, and to explore a range of
+criteria for whale damage.
 }
 \details{
-See the documentation for \code{\link{strike}} for a typical
-example of using the main functions of this package.
+The documentation for \code{\link{strike}} provides
+an example of using the main functions of this package,
+and so it is a good place to start. A companion manuscript
+is intended to provide more detail about the analysis
+and the context.
 }
 \references{
 \itemize{

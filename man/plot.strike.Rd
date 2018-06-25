@@ -17,10 +17,10 @@ This choices for its entries are:\itemize{
 whale location \code{x} in blue, and skin location in dashed blue.
 
 \item \code{"whale acceleration"} for a time-series plot of whale acceleration,
-with horizontal lines drawn at 8g and 15g, which are rough estimates of 50 percent
-lethality, determined by visual inspection of the lethality-acceleration diagram
-Figure 9 of Ng et al. 2017, for NFL (National Football League)
-concussions and combat concussions, respectively.
+with horizontal lines drawn at 433 and 721 m/s^2,
+which are estimates of the 10% and 50% probability of concussion
+for the National Football League concussoin data presented in
+Figure 9 of Ng et al. 2017.
 
 \item \code{"blubber thickness"} for a time-series plot of blubber thickness,
 with a red line drawn at 2/3 of the
