@@ -9,7 +9,7 @@ shipWaterForce(vs, parms)
 \arguments{
 \item{vs}{ship velocity [m/s]}
 
-\item{parms}{A named list holding model parameters, as created by
+\item{parms}{A named list holding model parameters, created by
 \code{\link{parameters}}.}
 }
 \value{
@@ -19,10 +19,10 @@ Water drag force [N]
 Estimate the retarding force of water on the ship, based on a drag law
 \eqn{(1/2)*rho*CD*A*v^2}{(1/2)*rho*CD*A*v^2}
 where \code{rho} is 1024 (kg/m^3), \code{CD} is \code{parms$CDs} and
-\code{A} is \code{parms$as}.
+\code{A} is \code{parms$Ss}.
 }
 \details{
-This function is called by \code{\link{strike}}
-with the initial ship velocity, to find an engine propulsive force that
-is assumed to be constant throughout the impact.
+This function may be called prior to a simulation, to calculate
+the propulsive force required to have the ship at steady velocity
+prior to the collision.
 }

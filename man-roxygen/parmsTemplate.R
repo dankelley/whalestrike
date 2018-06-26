@@ -1,4 +1,4 @@
-#' @param parms A named list holding model parameters, as created by
+#' @param parms A named list holding model parameters, created by
 #' \code{\link{parameters}}.
 
 ## \describe{

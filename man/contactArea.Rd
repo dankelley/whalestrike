@@ -11,7 +11,7 @@ contactArea(xs, xw, parms)
 
 \item{xw}{Whale position [m]}
 
-\item{parms}{A named list holding model parameters, as created by
+\item{parms}{A named list holding model parameters, created by
 \code{\link{parameters}}.}
 }
 \value{

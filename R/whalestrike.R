@@ -351,11 +351,11 @@ whaleSkinForce <- function(xs, xw, parms)
 #' Estimate the retarding force of water on the ship, based on a drag law
 #' \eqn{(1/2)*rho*CD*A*v^2}{(1/2)*rho*CD*A*v^2}
 #' where \code{rho} is 1024 (kg/m^3), \code{CD} is \code{parms$CDs} and
-#' \code{A} is \code{parms$as}.
+#' \code{A} is \code{parms$Ss}.
 #'
-#' This function is called by \code{\link{strike}}
-#' with the initial ship velocity, to find an engine propulsive force that
-#' is assumed to be constant throughout the impact.
+#' This function may be called prior to a simulation, to calculate
+#' the propulsive force required to have the ship at steady velocity
+#' prior to the collision.
 #
 #' @param vs ship velocity [m/s]
 #'
@@ -373,7 +373,7 @@ shipWaterForce <- function(vs, parms)
 #' Estimate the retarding force of water on the whale, based on a drag law
 #' \eqn{(1/2)*rho*CD*A*v^2}{(1/2)*rho*CD*A*v^2}
 #' where \code{rho} is 1024 (kg/m^3), \code{CD} is \code{parms$CDw} and
-#' \code{A} is \code{parms$aw}.
+#' \code{A} is \code{parms$Sw}.
 #'
 #' @param vw Whale velocity [m/s]
 #'
@@ -407,6 +407,8 @@ dynamics <- function(t, y, parms)
     Fskin <- whaleSkinForce(xs, xw, parms)$F
     Freactive <- Fblubber + Fskin
     Fship <- parms$shipPropulsiveForce + shipWaterForce(vs, parms) - Freactive
+    if ((t > 0.1 && t < 0.11) || (t > 0.5 && t < 0.51))
+        cat("t=", t, " vs=", vs, " shipPropulsiveForce=", parms$shipPropulsiveForce, " shipWaterForce=", shipWaterForce(vs, parms), " Freactive=", Freactive, "\n")
     if (is.na(Fship[1])) stop("Fship[1] is NA, probably indicating a programming error.")
     Fwhale <- Freactive + whaleWaterForce(vw, parms)
     if (is.na(Fwhale[1])) stop("Fwhale[1] is NA, probably indicating a programming error.")
@@ -472,6 +474,10 @@ strike <- function(t, state, parms, debug=0)
         stop("must supply t")
     if (missing(state))
         stop("must supply state")
+    if (missing(parms))
+        stop("must supply parms")
+    if (!inherits(parms, "parameters"))
+        stop("parms must be the output of parameters()")
     if (debug > 0) {
         print("state:")
         print(state)
@@ -492,8 +498,12 @@ strike <- function(t, state, parms, debug=0)
     ##> print(state)
     ##> print("in strike(), parms is:")
     ##> print(parms)
-    parms["shipPropulsiveForce"] <- -round(shipWaterForce(state["vs"], parms), -1) # assumed constant over time
-    parms["aw"] <- whaleAreaFromLength(L=parms$lw, view="side")
+    parms["shipPropulsiveForce"] <- -shipWaterForce(state["vs"], parms) # assumed constant over time
+    cat("SETUP vs=", state["vs"], "\n")
+    cat("SETUP shipWaterForce=", shipWaterForce(state["vs"], parms), "\n")
+    cat("SETUP shipWaterForce=", round(shipWaterForce(state["vs"], parms), -1), "\n")
+    cat("SETUP shipPropulsiveForce=", parms[["shipPropulsiveForce"]], "\n")
+    ##? parms["aw"] <- whaleAreaFromLength(L=parms$lw, view="side")
     sol <- lsoda(state, t, dynamics, parms)
     ##. print("in strike(), head(sol) is:")
     ##. print(head(sol))
@@ -678,7 +688,7 @@ plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEve
         plot(1:n, 1:n, type="n", xlab="", ylab="", axes=FALSE)
         box()
         for (i in seq_along(values))
-            text(1, i+0.5, values[i], pos=4)
+            text(1, i+0.5, values[i], pos=4, cex=0.75)
     }
 }
 

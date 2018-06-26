@@ -15,7 +15,7 @@ ship speed \code{vs} [m/s],
 whale position \code{xw} [m]
 and whale speed \code{vw} [m/s].}
 
-\item{parms}{A named list holding model parameters, as created by
+\item{parms}{A named list holding model parameters, created by
 \code{\link{parameters}}.}
 
 \item{debug}{Integer indicating debugging level, 0 for quiet operation and
