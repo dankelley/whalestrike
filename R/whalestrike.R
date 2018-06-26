@@ -665,7 +665,7 @@ plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEve
         plot(t, Fs$sigmay/1e6, type="l", xlab="Time [s]", ylab="Skin Stress [MPa]", lwd=2, ylim=ylim)
         lines(t, Fs$sigmaz/1e6, lty=3)
         legend("topright", lty=c(1,3), legend=c("horiz.", "vert."))
-        abline(h=19.56e6, col="red")
+        abline(h=19.56, col="red")
         showEvents(xs, xw)
     }
     if (all || "blubber force" %in% which) {
