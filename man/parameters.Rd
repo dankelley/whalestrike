@@ -5,7 +5,8 @@
 \title{Control parameters for whale strike simulation}
 \usage{
 parameters(ms, Ss, B = 3, D = 1.5, mw, lw, Sw, delta = 0.01, Es,
-  theta = 45, Eb = 6e+05, beta = 0.3, CDs = 0.002, CDw = 0.003)
+  theta = 45, beta = 0.3, Eb = 6e+05, alpha = 1, Ea = 4e+05,
+  CDs = 0.002, CDw = 0.003)
 }
 \arguments{
 \item{ms}{Ship mass [kg].}
@@ -38,10 +39,19 @@ of Grear et al. (2017).}
 
 \item{theta}{Whale skin deformation angle [deg]; defaults to 45deg if not supplied.}
 
+\item{beta}{Whale blubber thickness [m]; defaults to 0.3m if not supplied.}
+
 \item{Eb}{Elastic modulus of blubber [Pa]; defaults to 6e5 Pa (the value
 suggested Raymond (2007 fig 37), rounded to 1 digit), if not supplied.}
 
-\item{beta}{Whale blubber thickness [m]; defaults to 0.3m if not supplied.}
+\item{alpha}{Thickness of interior region [m]. This defaults to 1m, an 
+estimate of the radius of soft tissue below the blubber. For bone,
+a value in the centimeter range might be reasonable.}
+
+\item{Ea}{Elastic modulus of interior region [Pa]; defaults to 4e5 Pa,
+for soft tissue as stated by Raymond (2007) page 36 (he actually states
+425294 Pa). For bone, the value 9e8 Pa might be reasonable (see Raymond 2007
+Table 2.3, which lists the elastic modulus of cortical bone as 854.2 MPa).}
 
 \item{CDs}{Drag coefficient for ship [dimensionless],
 used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults

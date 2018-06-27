@@ -105,6 +105,13 @@ NULL
 #' @param beta Whale blubber thickness [m]; defaults to 0.3m if not supplied.
 #' @param Eb Elastic modulus of blubber [Pa]; defaults to 6e5 Pa (the value
 #' suggested Raymond (2007 fig 37), rounded to 1 digit), if not supplied.
+#' @param alpha Thickness of interior region [m]. This defaults to 1m, an 
+#' estimate of the radius of soft tissue below the blubber. For bone,
+#' a value in the centimeter range might be reasonable.
+#' @param Ea Elastic modulus of interior region [Pa]; defaults to 4e5 Pa,
+#' for soft tissue as stated by Raymond (2007) page 36 (he actually states
+#' 425294 Pa). For bone, the value 9e8 Pa might be reasonable (see Raymond 2007
+#' Table 2.3, which lists the elastic modulus of cortical bone as 854.2 MPa).
 #' @param CDs Drag coefficient for ship [dimensionless],
 #' used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults
 #' to 2.5e-3, using Figure 4 of Manen and van Oossanen (1988), assuming
@@ -128,7 +135,8 @@ parameters <- function(ms, Ss, B=3, D=1.5,
                        mw, lw,
                        Sw,
                        delta=0.01, Es, theta=45,
-                       Eb=6e5, beta=0.3,
+                       beta=0.3, Eb=6e5,
+                       alpha=1, Ea=4e5,
                        CDs=2e-3, CDw=3e-3)
 {
     if (missing(ms))
