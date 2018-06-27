@@ -131,10 +131,10 @@ mtext("Contours of acceleration [m/s^2]", side=3)
   Propulsion and Vibration. Society of Naval Architects and Marine Engineers
   (U.S.), Jersey City, NJ, pp. 1–125.
 
-* Miller, C.A., Reeb, D., Best, P.B., Knowlton, A.R., Brown, M.W., Moore, M.J.,
-  2011. Blubber thickness in right whales Eubalaena glacialis and Eubalaena
-     australis related with reproduction, life history status and prey
-     abundance. Mar Ecol Prog Ser 438, 267–283.
+* Miller, C.A., Reeb, D., Best, P.B., Knowlton, A.R., Brown, M.W., Moore, M.J., 2011.
+  Blubber thickness in right whales Eubalaena glacialis and Eubalaena
+  australis related with reproduction, life history status and prey
+  abundance. Mar Ecol Prog Ser 438, 267–283.
 
 * Moore, M.J., Knowlton, A.R., Kraus, S.D., McLellan, W.A., Bonde, R.K., 2005.
   Morphometry, gross morphology and available histopathology in North Atlantic
