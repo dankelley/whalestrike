@@ -1,0 +1,151 @@
+---
+title: "Using the whalestrike package"
+author: "Dan Kelley"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: true
+    fig_caption: yes
+    fig_width: 5
+    fig_height: 5
+    dpi: 72
+    dev.args: list(pointsize=11)
+vignette: >
+  %\VignetteIndexEntry{Using the whalestrike package}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+<!-- HOW TO BUILD THE VIGNETTE. -->
+<!-- 1. edit this file in vignettes/whalestrike.Rmd -->
+<!-- 2. run devtools::build_vignettes() -->
+<!-- 3. build the package -->
+
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+**Abstract.** This vignette explains the basics of using the whalestrike
+package to simulate the collision of a ship with a whale.
+
+# Introduction
+
+This package solves Newton's second law for a simple model of a ship colliding
+with a whale. This is a stripped-down model that does not attempt to simulate
+the biomechanical interactions that can be simulated in finite-element
+treatments such as that of Raymond (2007).  The goal is to establish a
+convenient framework for rapid computation of impacts in a wide variety of
+conditions. The model runs quickly enough to keep up with mouse movements to
+select conditions, in a companion R shiny app. That app lets the user see the
+effects of changing contact area, ship speed, etc., as a way to build intuition
+for scenarios ranging from collision with a slow-moving fishing boat to
+collision with a thin dagger-board of a much swifter racing sailboat. Another
+advantage of the simple formulation is that it makes it easy to modify various
+dynamical and biomechanical parameters, to add new forces, and to explore a
+range of criteria for whale damage.
+
+The documentation for \code{\link{strike}} provides an example of using the
+main functions of this package, and so it is a good place to start. A companion
+manuscript is intended to provide more detail about the analysis and the
+context.
+
+# Examples
+
+## Simulation with overview plot
+
+```{r results="hide"}
+library(whalestrike)
+t <- seq(0, 1, length.out=500)
+state <- c(xs=-1.5, vs=5, xw=0, vw=0)
+parms <- parameters(ms=20e3, Ss=15*pi*3, B=3, D=1.5,
+              lw=10, Sw=10*2*pi*3, delta=0.02, Es=2e7, theta=45,
+              Eb=1e6, beta=0.3)
+sol <- strike(t, state, parms)
+par(mfcol=c(3, 3), mar=c(2, 3, 1, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
+plot(sol, which="all")
+```
+
+## Simulation showing sensitivity of acceleration to blubber thickness
+
+```{r results="hide"}
+library(whalestrike)
+t <- seq(0, 1, length.out=500)
+state <- c(xs=-1.5, vs=5, xw=0, vw=0)
+beta <- seq(0.1, 0.3, length.out=100)
+maxAccel <- rep(NA, length(beta))
+for (i in seq_along(beta)) {
+    parms <- parameters(ms=20e3, Ss=15*pi*3, B=3, D=1.5,
+                        lw=10, Sw=10*2*pi*3, delta=0.02, Es=2e7, theta=45,
+                        Eb=1e6, beta=beta[i])
+    sol <- strike(t, state, parms)
+    maxAccel[i] <- max(abs(diff(sol$vw))) / (t[2] - t[1])
+}
+plot(beta, maxAccel, type="l", xlab=expression("Blubber thickness [m]"), ylab="Max. Acceleration [m/s^2]")
+```
+
+## Simulation showing sensitivity of acceleration to blubber thickness and ship speed
+
+```{r results="hide"}
+library(whalestrike)
+t <- seq(0, 1, length.out=500)
+## Hint: making x and y of different lengths, to avoid row,col
+## versus i,j confusion.
+beta <- seq(0.1, 0.4, length.out=19)
+speedK <- seq(2, 15, length.out=20) # in knots
+speed <- 0.5144 * speedK
+maxAccel <- matrix(NA, nrow=length(speed), ncol=length(beta))
+for (i in seq_along(beta)) {
+    for (j in seq_along(speed)) {
+        cat(i, ' ', j, '\n')
+        state <- c(xs=-1.5, vs=speed[j], xw=0, vw=0)
+        parms <- parameters(ms=20e3, Ss=15*pi*3, B=3, D=1.5,
+                            lw=10, Sw=10*2*pi*3, delta=0.02, Es=2e7, theta=45,
+                            Eb=1e6, beta=beta[i])
+        sol <- strike(t, state, parms)
+        maxAccel[j, i] <- max(abs(diff(sol$vw))) / (t[2] - t[1])
+    }
+}
+contour(speedK, beta, maxAccel, xlab="Speed [knots]", ylab="Blubber thickness [m]")
+mtext("Contours of acceleration [m/s^2]", side=3)
+```
+
+
+
+
+# References
+
+
+* Fortune, S.M.E., Trites, A.W., Perryman, W.L., Moore, M.J., Pettis, H.M.,
+  Lynn, M.S., 2012. Growth and rapid early development of North Atlantic right
+  whales (Eubalaena glacialis). Journal of Mammalogy 93, 1342–1354.
+  https://doi.org/10.1644/11-MAMM-A-297.1
+
+* Grear, M.E., Motley, M.R., Crofts, S.B., Witt, A.E., Summers, A.P., Ditsche,
+  P., 2018. Mechanical properties of harbor seal skin and blubber − a test of
+  anisotropy. Zoology 126, 137–144. https://doi.org/10.1016/j.zool.2017.11.002
+
+* van Manen, J.D., van Oossanen, P., 1988. Resistance, in: Lewis, E.V. (Ed.),
+  Principles of Naval Architecture (Second Revision), Volume II - Resistance,
+  Propulsion and Vibration. Society of Naval Architects and Marine Engineers
+  (U.S.), Jersey City, NJ, pp. 1–125.
+
+* Miller, C.A., Reeb, D., Best, P.B., Knowlton, A.R., Brown, M.W., Moore, M.J.,
+  2011. Blubber thickness in right whales Eubalaena glacialis and Eubalaena
+     australis related with reproduction, life history status and prey
+     abundance. Mar Ecol Prog Ser 438, 267–283.
+
+* Moore, M.J., Knowlton, A.R., Kraus, S.D., McLellan, W.A., Bonde, R.K., 2005.
+  Morphometry, gross morphology and available histopathology in North Atlantic
+  right whale (Eubalaena glacialis) mortalities (1970 to 2002). Journal of
+  Cetacean Research and Management 6, 199–214.
+
+* Ng, L.J., Volman, V., Gibbons, M.M., Phohomsiri, P., Cui, J., Swenson, D.J.,
+  Stuhmiller, J.H., 2017. A mechanistic end-to-end concussion model that
+  translates head kinematics to neurologic injury. Frontiers in Neurology 8,
+  1–18. https://doi.org/10.3389/fneur.2017.00269
+
+* Raymond, J.J., 2007. Development of a numerical model to predict impact
+  forces on a North Atlantic Right Whale during collision with a vessel.
+  University of New Hampshire.
