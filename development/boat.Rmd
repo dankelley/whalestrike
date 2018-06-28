@@ -1,57 +1,91 @@
 ---
-title: Boat parameters
+title: Ship propulsion calculations
 author: Dan Kelley
+date: 2018-06-28
 ---
 
-**Abstract.** Some tests on boat properties (especially drag) are carried out.
+**Abstract.** The propulsion calculation of `whalestrike` is compared with published boat horsepower.
+
+# Estimated propulsive for a lobster boat
+
+The following parameters describe a lobster boat advertised at
+https://www.kijiji.ca/v-powerboat-motorboat/city-of-halifax/1979-atkinson-lobster-boat/1364491142?enableSearchNavigationFlag=true
 
 ```{r}
-L <- 11.73
-B <- 4.63
-D <- 1.58
-displacement <- 20.46e3
-knots <- 7
-power <- 110e3
+length <- 11.73                        # m
+beam <- 4.63                           # m
+draft <- 1.58                          # m
+displacement <- 20.46e3                # m^3
+speed <- 0.5144 * 7                    # the stated 7 knots is here converted to m/s
+powerEngine <- 110e3 # power in W
 ```
 
-A lobster boat advertised for sail at
-https://www.kijiji.ca/v-powerboat-motorboat/city-of-halifax/1979-atkinson-lobster-boat/1364491142?enableSearchNavigationFlag=true
-lists length `r L`m, beam `r B`m, draft `r D`m, and displacement $`r displacement`$ tonnes.
-The easy-running speed is stated as `r knots` knots with the engine (Detroit 6-71) at
-1300RPM.
-
-The site
+The advertisement says that it runs easily at this speed, powered by a (Detroit
+6-71) engine at 1300RPM.  The site
 https://web.archive.org/web/20120308222058/http://www.barringtondieselclub.co.za/671DetroitDiesel.html
 suggests the Detroit Diesel 6-71 provides 101kW at 1200RPM and 119kW at
-1400RPM, so the power is likely 110kW.  This is *not* power into the water,
-but, since I don't have any efficiencies handy, I will assume that it is.
-
-Since power is the product of force and speed, we infer force
+1400RPM, so the power may be estimated as 110kW.  This must be multiplied by an
+efficiency $\epsilon_e$ for the engine, and another efficiency $\epsilon_p$ for
+the propeller. Assuming $\epsilon_e=0.45$ (ref 3) and $\epsilon_p=0.4$ (a guess
+based on *much* larger propellers discussed in reference 2), the above suggests that
 ```{r}
-F <- power / (knots * 0.514)
+power <-  0.45 * 0.4 * powerEngine
 ```
-or $`r round(F)`$ N.
+or $`r power`$W is the power applied to the ship. Since power is the product of
+speed and force, that the force is
+```{r}
+F1 <- power / speed
+```
+
+Thus, the advertisement suggests a propulsion force of `F1=`$`r round(F1)`$ N.
+
+# Estimation of force from parameterizations
 
 As an estimate of wetted area, take the product of length and girth estimated as
 ```{r}
-Ss <- L * (2*D * B)
-Ss
+Ss <- length * (beam + 2 * draft)
 ```
+or `r round(Ss, 1)`m^2.
 
-These numbers are set as the default for the collision app (version 6) and it
-calculates propulsive force of 1140N. The ratio to the present estimate is thus
-`r 2280/F`, which is not very close to unity. However, reasonable corrections might be:
+The default `Cs` in `whalestrike` is presently 0.005, and this yields
 
-* Assuming 45 percent efficiency of a diesel engine, the ratio becomes `r 2280/F/0.45`
-* Assuming 40 percent propellor efficiency (ref 2 guess) gives ratio `r 2280/F/0.45/0.4`
-* Assuming skin friction to be 70 percent of total friction gives ratio `r 2280/F/0.45/0.4/0.7`
+```{r}
+library(whalestrike)
+state <- list(xs=-1.2, vs=0.5144*7, xw=0, vw=0)
+parms <- parameters(ms=20000,
+              Ss=Ss,
+              B=4.6, D=1.6, mw=12330, Sw=63,
+              lw=10,
+              delta=0.02,
+              Es=2e7, theta=45, Eb=6e5, beta=0.2, Cs=0.0025*2, Cw=0.003)
+F2 <- -shipWaterForce(7*0.5144, parms)
+```
+or `r round(F2)`N.
+
+Thus, the `whalestrike` application infers a propulsion force of `F1=`$`r round(F2)`$ N.
+
+The ratio of force estimates is `r round(F1/F2, 1)`.
+
+```{r echo=FALSE}
+library(whalestrike)
+state <- list(xs=-1.2, vs=0.5144*7, xw=0, vw=0)
+Cs <- 0.0025 * 3
+parms <- parameters(ms=20000,
+              Ss=Ss,
+              B=4.6, D=1.6, mw=12330, Sw=63,
+              lw=10,
+              delta=0.02,
+              Es=2e7, theta=45, Eb=6e5, beta=0.2, Cs=0.0025*3, Cw=0.003)
+F2b <- -shipWaterForce(7*0.5144, parms)
+```
+However, `Cs`=`r Cs` gives ratio `r round(F1/F2b, 1)`.
+
 
 **ASSESSMENT:** the above suggests that the app may be giving reasonable forces.
-
-**TO DO:** (1) get estimates for efficiency of propellor etc, perhaps from. (2) read ref 2, which looks like a great (modern) update on things.
 
 **References**
 
 * 1. http://web.mit.edu/13.012/www/handouts/propellers_reading.pdf
 * 2. https://marine.mandieselturbo.com/docs/librariesprovider6/propeller-aftship/basic-principles-of-propulsion.pdf?sfvrsn=0 (fig 28 gives prop efficiency of 0.51 to 0.56 for VERY big props, decreasing
   with smaller ones but we likely have 0.5m diameter, way way off scale)
+* 3. https://en.wikipedia.org/wiki/Diesel_engine

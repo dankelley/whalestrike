@@ -6,12 +6,12 @@
 \usage{
 parameters(ms, Ss, B = 3, D = 1.5, mw, lw, Sw, delta = 0.01, Es,
   theta = 45, beta = 0.3, Eb = 6e+05, alpha = 1, Ea = 4e+05,
-  CDs = 0.002, CDw = 0.003)
+  Cs = 0.005, Cw = 0.003)
 }
 \arguments{
 \item{ms}{Ship mass [kg].}
 
-\item{Ss}{Ship wetted area [m^2]. This, together with \code{CDs}, is used by
+\item{Ss}{Ship wetted area [m^2]. This, together with \code{Cs}, is used by
 used by \code{\link{shipWaterForce}} to estimate ship drag force.}
 
 \item{B}{Ship impact horizontal extent [m]; defaults to 2m if not specified.}
@@ -28,7 +28,7 @@ an error is reported. The length is used by \code{\link{whaleAreaFromLength}} to
 calculate area, which is needed for the water drag calculation done by
 \code{\link{whaleWaterForce}}.}
 
-\item{Sw}{Whale surface area [m^2]. This, together with \code{CDw}, is used by
+\item{Sw}{Whale surface area [m^2]. This, together with \code{Cw}, is used by
 used by \code{\link{whaleWaterForce}} to estimate whale drag force.}
 
 \item{delta}{Whale skin thickness [m]. Defaults to 0.01 m, if not supplied.}
@@ -53,14 +53,16 @@ for soft tissue as stated by Raymond (2007) page 36 (he actually states
 425294 Pa). For bone, the value 9e8 Pa might be reasonable (see Raymond 2007
 Table 2.3, which lists the elastic modulus of cortical bone as 854.2 MPa).}
 
-\item{CDs}{Drag coefficient for ship [dimensionless],
+\item{Cs}{Drag coefficient for ship [dimensionless],
 used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults
-to 2.5e-3, using Figure 4 of Manen and van Oossanen (1988), assuming
-Reynolds number of 5e7, computed from speed 5m/s, lengthscale 10m
-and viscosity 1e-6 m^2/s. The drag force is computed with
-\code{\link{shipWaterForce}}.}
+to 5e-3, which is two times the frictional coefficient of 2.5e-3
+inferred from Figure 4 of Manen and van Oossanen (1988), assuming
+a Reynolds number of 5e7, computed from speed 5m/s, lengthscale 10m
+and viscosity 1e-6 m^2/s. (The factor of 2 is under the assumption
+that frictional drag is about half of total drag.)
+The drag force is computed with \code{\link{shipWaterForce}}.}
 
-\item{CDw}{Drag coefficient for whale [dimensionless],
+\item{Cw}{Drag coefficient for whale [dimensionless],
 used by \code{\link{whaleWaterForce}} to estimate whale drag force.
 Defaults to 3.0e-3, for Reynolds number 2e7, computed from speed
 2 m/s, lengthscale 5m (between radius and length) and

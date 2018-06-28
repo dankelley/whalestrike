@@ -83,7 +83,7 @@ NULL
 #' and the functions that it calls.
 #'
 #' @param ms Ship mass [kg].
-#' @param Ss Ship wetted area [m^2]. This, together with \code{CDs}, is used by
+#' @param Ss Ship wetted area [m^2]. This, together with \code{Cs}, is used by
 #' used by \code{\link{shipWaterForce}} to estimate ship drag force.
 #' @param B  Ship impact horizontal extent [m]; defaults to 2m if not specified.
 #' @param D  Ship impact vertical extent [m]; defaults to 1.5m if not specified.
@@ -95,7 +95,7 @@ NULL
 #' an error is reported. The length is used by \code{\link{whaleAreaFromLength}} to
 #' calculate area, which is needed for the water drag calculation done by
 #' \code{\link{whaleWaterForce}}.
-#' @param Sw Whale surface area [m^2]. This, together with \code{CDw}, is used by
+#' @param Sw Whale surface area [m^2]. This, together with \code{Cw}, is used by
 #' used by \code{\link{whaleWaterForce}} to estimate whale drag force.
 #' @param delta Whale skin thickness [m]. Defaults to 0.01 m, if not supplied.
 #' @param Es Whale skin elastic modulus [Pa]. If not provided, defaults to 20e6 Pa,
@@ -112,13 +112,15 @@ NULL
 #' for soft tissue as stated by Raymond (2007) page 36 (he actually states
 #' 425294 Pa). For bone, the value 9e8 Pa might be reasonable (see Raymond 2007
 #' Table 2.3, which lists the elastic modulus of cortical bone as 854.2 MPa).
-#' @param CDs Drag coefficient for ship [dimensionless],
+#' @param Cs Drag coefficient for ship [dimensionless],
 #' used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults
-#' to 2.5e-3, using Figure 4 of Manen and van Oossanen (1988), assuming
-#' Reynolds number of 5e7, computed from speed 5m/s, lengthscale 10m
-#' and viscosity 1e-6 m^2/s. The drag force is computed with
-#' \code{\link{shipWaterForce}}.
-#' @param CDw Drag coefficient for whale [dimensionless],
+#' to 5e-3, which is two times the frictional coefficient of 2.5e-3
+#' inferred from Figure 4 of Manen and van Oossanen (1988), assuming
+#' a Reynolds number of 5e7, computed from speed 5m/s, lengthscale 10m
+#' and viscosity 1e-6 m^2/s. (The factor of 2 is under the assumption
+#' that frictional drag is about half of total drag.)
+#' The drag force is computed with \code{\link{shipWaterForce}}.
+#' @param Cw Drag coefficient for whale [dimensionless],
 #' used by \code{\link{whaleWaterForce}} to estimate whale drag force.
 #' Defaults to 3.0e-3, for Reynolds number 2e7, computed from speed
 #' 2 m/s, lengthscale 5m (between radius and length) and
@@ -137,7 +139,7 @@ parameters <- function(ms, Ss, B=3, D=1.5,
                        delta=0.01, Es, theta=45,
                        beta=0.3, Eb=6e5,
                        alpha=1, Ea=4e5,
-                       CDs=2e-3, CDw=3e-3)
+                       Cs=5e-3, Cw=3e-3)
 {
     if (missing(ms))
         stop("ship mass must be specified")
@@ -157,7 +159,7 @@ parameters <- function(ms, Ss, B=3, D=1.5,
         stop("Must give Sw, the whale surface area (length times midbody girth")
     rval <- list(ms=ms, Ss=Ss, B=B, D=D, mw=mw, Sw=Sw, lw=lw, delta=delta, Es=Es, theta=theta,
                  Eb=Eb, beta=beta,
-                 CDs=CDs, CDw=CDw)
+                 Cs=Cs, Cw=Cw)
     class(rval) <- "parameters"
     rval
 }
@@ -358,7 +360,7 @@ whaleSkinForce <- function(xs, xw, parms)
 #'
 #' Estimate the retarding force of water on the ship, based on a drag law
 #' \eqn{(1/2)*rho*CD*A*v^2}{(1/2)*rho*CD*A*v^2}
-#' where \code{rho} is 1024 (kg/m^3), \code{CD} is \code{parms$CDs} and
+#' where \code{rho} is 1024 (kg/m^3), \code{CD} is \code{parms$Cs} and
 #' \code{A} is \code{parms$Ss}.
 #'
 #' This function may be called prior to a simulation, to calculate
@@ -372,7 +374,7 @@ whaleSkinForce <- function(xs, xw, parms)
 #' @return Water drag force [N]
 shipWaterForce <- function(vs, parms)
 {
-    - (1/2) * 1024 * parms$CDs * parms$Ss * vs * abs(vs)
+    - (1/2) * 1024 * parms$Cs * parms$Ss * vs * abs(vs)
 }
 
 
@@ -380,7 +382,7 @@ shipWaterForce <- function(vs, parms)
 #'
 #' Estimate the retarding force of water on the whale, based on a drag law
 #' \eqn{(1/2)*rho*CD*A*v^2}{(1/2)*rho*CD*A*v^2}
-#' where \code{rho} is 1024 (kg/m^3), \code{CD} is \code{parms$CDw} and
+#' where \code{rho} is 1024 (kg/m^3), \code{CD} is \code{parms$Cw} and
 #' \code{A} is \code{parms$Sw}.
 #'
 #' @param vw Whale velocity [m/s]
@@ -390,7 +392,7 @@ shipWaterForce <- function(vs, parms)
 #' @return Water drag force [N]
 whaleWaterForce <- function(vw, parms)
 {
-    - (1/2) * 1024 * parms$CDw * parms$Sw * vw * abs(vw)
+    - (1/2) * 1024 * parms$Cw * parms$Sw * vw * abs(vw)
 }
 
 #' Dynamical law
