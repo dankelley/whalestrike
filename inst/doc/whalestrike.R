@@ -3,14 +3,13 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 
 ## ----results="hide"------------------------------------------------------
 library(whalestrike)
-t <- seq(0, 1, length.out=500)
+t <- seq(0, 0.5, length.out=500)
 state <- c(xs=-1.5, vs=5, xw=0, vw=0)
 parms <- parameters(ms=20e3, Ss=15*pi*3, B=3, D=1.5,
-              lw=10, Sw=10*2*pi*3, delta=0.02, Es=2e7, theta=45,
-              Eb=1e6, beta=0.3)
+              lw=10, Sw=10*2*pi*3)
 sol <- strike(t, state, parms)
-par(mfcol=c(3, 3), mar=c(2, 3, 1, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
-plot(sol, which="all")
+par(mfcol=c(3, 3), mar=c(2, 3, 0.5, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
+plot(sol)
 
 ## ----results="hide"------------------------------------------------------
 library(whalestrike)

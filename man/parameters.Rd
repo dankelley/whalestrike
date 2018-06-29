@@ -4,9 +4,9 @@
 \alias{parameters}
 \title{Control parameters for whale strike simulation}
 \usage{
-parameters(ms, Ss, B = 3, D = 1.5, mw, lw, Sw, delta = 0.01, Es,
-  theta = 45, beta = 0.3, Eb = 6e+05, alpha = 1, Ea = 4e+05,
-  Cs = 0.005, Cw = 0.003)
+parameters(ms, Ss, B = 3, D = 1.5, mw, lw, Sw, delta = 0.01,
+  Eskin = 2e+07, theta = 45, beta = 0.3, Ebeta = 6e+05, alpha = 0.5,
+  Ealpha = 4e+05, Cs = 0.005, Cw = 0.003)
 }
 \arguments{
 \item{ms}{Ship mass [kg].}
@@ -33,7 +33,7 @@ used by \code{\link{whaleWaterForce}} to estimate whale drag force.}
 
 \item{delta}{Whale skin thickness [m]. Defaults to 0.01 m, if not supplied.}
 
-\item{Es}{Whale skin elastic modulus [Pa]. If not provided, defaults to 20e6 Pa,
+\item{Eskin}{Whale skin elastic modulus [Pa]. If not provided, defaults to 20e6 Pa,
 a rounded value of the 19.56+-4.03MPa estimate for seal skin, provided in Table 3
 of Grear et al. (2017).}
 
@@ -41,16 +41,16 @@ of Grear et al. (2017).}
 
 \item{beta}{Whale blubber thickness [m]; defaults to 0.3m if not supplied.}
 
-\item{Eb}{Elastic modulus of blubber [Pa]; defaults to 6e5 Pa (the value
+\item{Ebeta}{Elastic modulus of blubber [Pa]; defaults to 6e5 Pa (the value
 suggested Raymond (2007 fig 37), rounded to 1 digit), if not supplied.}
 
-\item{alpha}{Thickness of interior region [m]. This defaults to 1m, an 
+\item{alpha}{Thickness of interior region [m]. This defaults to 1m, an
 estimate of the radius of soft tissue below the blubber. For bone,
 a value in the centimeter range might be reasonable.}
 
-\item{Ea}{Elastic modulus of interior region [Pa]; defaults to 4e5 Pa,
-for soft tissue as stated by Raymond (2007) page 36 (he actually states
-425294 Pa). For bone, the value 9e8 Pa might be reasonable (see Raymond 2007
+\item{Ealpha}{Elastic modulus of interior region [Pa]; defaults to 4e5 Pa,
+rounded from the soft-tissue value 425294 Pa stated by Raymond (2007) page 36.
+For bone, the value 9e8 Pa might be reasonable (see Raymond 2007
 Table 2.3, which lists the elastic modulus of cortical bone as 854.2 MPa).}
 
 \item{Cs}{Drag coefficient for ship [dimensionless],

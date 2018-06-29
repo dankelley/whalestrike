@@ -98,19 +98,19 @@ NULL
 #' @param Sw Whale surface area [m^2]. This, together with \code{Cw}, is used by
 #' used by \code{\link{whaleWaterForce}} to estimate whale drag force.
 #' @param delta Whale skin thickness [m]. Defaults to 0.01 m, if not supplied.
-#' @param Es Whale skin elastic modulus [Pa]. If not provided, defaults to 20e6 Pa,
+#' @param Eskin Whale skin elastic modulus [Pa]. If not provided, defaults to 20e6 Pa,
 #' a rounded value of the 19.56+-4.03MPa estimate for seal skin, provided in Table 3
 #' of Grear et al. (2017).
 #' @param theta Whale skin deformation angle [deg]; defaults to 45deg if not supplied.
 #' @param beta Whale blubber thickness [m]; defaults to 0.3m if not supplied.
-#' @param Eb Elastic modulus of blubber [Pa]; defaults to 6e5 Pa (the value
+#' @param Ebeta Elastic modulus of blubber [Pa]; defaults to 6e5 Pa (the value
 #' suggested Raymond (2007 fig 37), rounded to 1 digit), if not supplied.
-#' @param alpha Thickness of interior region [m]. This defaults to 1m, an 
+#' @param alpha Thickness of interior region [m]. This defaults to 1m, an
 #' estimate of the radius of soft tissue below the blubber. For bone,
 #' a value in the centimeter range might be reasonable.
-#' @param Ea Elastic modulus of interior region [Pa]; defaults to 4e5 Pa,
-#' for soft tissue as stated by Raymond (2007) page 36 (he actually states
-#' 425294 Pa). For bone, the value 9e8 Pa might be reasonable (see Raymond 2007
+#' @param Ealpha Elastic modulus of interior region [Pa]; defaults to 4e5 Pa,
+#' rounded from the soft-tissue value 425294 Pa stated by Raymond (2007) page 36.
+#' For bone, the value 9e8 Pa might be reasonable (see Raymond 2007
 #' Table 2.3, which lists the elastic modulus of cortical bone as 854.2 MPa).
 #' @param Cs Drag coefficient for ship [dimensionless],
 #' used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults
@@ -136,13 +136,15 @@ NULL
 parameters <- function(ms, Ss, B=3, D=1.5,
                        mw, lw,
                        Sw,
-                       delta=0.01, Es, theta=45,
-                       beta=0.3, Eb=6e5,
-                       alpha=1, Ea=4e5,
+                       delta=0.01, Eskin=20e6, theta=45,
+                       beta=0.3, Ebeta=6e5,
+                       alpha=0.5, Ealpha=4e5,
                        Cs=5e-3, Cw=3e-3)
 {
-    if (missing(ms))
-        stop("ship mass must be specified")
+    if (missing(ms) || ms <= 0) stop("ship mass (ms) must be given, and a positive number")
+    if (missing(Ss) || Ss <= 0) stop("ship wetted area (Ss) must be given, and a positive number")
+    if (B <= 0) stop("impact width (B) must be a positive number, not ", B)
+    if (D <= 0) stop("impact height (D) must be a positive number, not ", D)
     if (missing(mw)) {
         if (missing(lw))
             stop("Whale mass (mw) or length (lw) must be specified, or both")
@@ -151,14 +153,20 @@ parameters <- function(ms, Ss, B=3, D=1.5,
         if (missing(lw))
             lw <- round(whaleLengthFromMass(mw), 1)
     }
-    if (missing(Es))
-        stop("whale skin elastic modulus (Es) must be specified")
-    if (missing(Ss))
-        stop("Must give Ss, the ship wetted area (length times below-water midship girth")
-    if (missing(Sw))
-        stop("Must give Sw, the whale surface area (length times midbody girth")
-    rval <- list(ms=ms, Ss=Ss, B=B, D=D, mw=mw, Sw=Sw, lw=lw, delta=delta, Es=Es, theta=theta,
-                 Eb=Eb, beta=beta,
+    if (missing(Sw)) stop("Must give Sw, the whale surface area (length times midbody girth)")
+    if (delta < 0) stop("whale skin thickness (delta) must be positive, not ", delta)
+    if (Eskin < 0) stop("whale skin elastic modulus (Eskin) must be positive, not ", Eskin)
+    if (theta < 0 || theta > 89) stop("whale skin deformation angle (theta) must be between 0 and 89 deg, not ", theta)
+    if (beta < 0) stop("whale blubber thickness (beta) must be positive, not ", beta)
+    if (Ebeta < 0) stop("whale blubber elastic modulus (Ebeta) must be positive, not ", Ebeta)
+    if (alpha < 0) stop("whale sub-blubber thickness (alpha) must be positive, not ", alpha)
+    if (Ealpha < 0) stop("whale sub-blubber elastic modulus (Ealpha) must be positive, not ", Ealpha)
+    if (Cs < 0) stop("ship resistance parameter (Cs) must be positive, not ", Cs)
+    if (Cw < 0) stop("ship resistance parameter (Cw) must be positive, not ", Cw)
+    rval <- list(ms=ms, Ss=Ss, B=B, D=D, mw=mw, Sw=Sw, lw=lw,
+                 delta=delta, Eskin=Eskin, theta=theta,
+                 Ebeta=Ebeta, beta=beta,
+                 Ealpha=Ealpha, alpha=alpha,
                  Cs=Cs, Cw=Cw)
     class(rval) <- "parameters"
     rval
@@ -262,33 +270,34 @@ whaleAreaFromLength <- function(L, view="side")
     else stop("'view' must be 'side'")
 }
 
-#' Contact area
-#'
-#' Area of contact between vessel and whale skin
-#'
-#' @param xs Ship position [m]
-#'
-#' @param xw Whale position [m]
-#'
-#' @template parmsTemplate
-#'
-#' @return Contact area [m^2].
-#' @section DEVELOPMENT NOTE: think about formulation (re theta).
-contactArea <- function(xs, xw, parms)
-{
-    touching <- xs < xw & xw < (xs + parms$beta)
-    ifelse(touching, parms$B * parms$D, 0)
-}
+##OLD #' Contact area
+##OLD #'
+##OLD #' Area of contact between vessel and whale skin
+##OLD #'
+##OLD #' @param xs Ship position [m]
+##OLD #'
+##OLD #' @param xw Whale position [m]
+##OLD #'
+##OLD #' @template parmsTemplate
+##OLD #'
+##OLD #' @return Contact area [m^2].
+##OLD #' @section DEVELOPMENT NOTE: think about formulation (re theta).
+##OLD contactArea <- function(xs, xw, parms)
+##OLD {
+##OLD     touching <- xs < xw & xw < (xs + parms$beta + parms$alpha)
+##OLD     ifelse(touching, parms$B * parms$D, 0)
+##OLD }
 
-#' Blubber force
+#' Whale compression force
 #'
 #' Calculate the reaction force of blubber, as the product of stress
 #' and area. Stress is computed as the product of blubber elastic
-#' modulus \code{parms$Eb} times strain, where the latter is computed
+#' modulus \code{parms$Ebeta} times strain, where the latter is computed
 #' from ship-whale separation using \code{1-(xw-xs)/parms$beta} if
 #' \code{xw} is between \code{xs} and \code{xs+parms$beta},
 #' or zero otherwise. Area is computed as the product of
 #' \code{parms$B} and \code{parms$D}.
+#' FIXME: rewrite docs for the new blubber+inner scheme
 #'
 #' @param xs Ship position [m]
 #'
@@ -296,32 +305,30 @@ contactArea <- function(xs, xw, parms)
 #'
 #' @template parmsTemplate
 #'
-#' @return Compression-resisting force [N]
+#' @return Compression-resisting force of whale blubber and the layer underneath it [N].
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
-whaleBlubberForce <- function(xs, xw, parms)
+whaleCompressionForce <- function(xs, xw, parms)
 {
-    ##> message("xs: ", paste(xs, collapse=" "))
-    ##> message("xw: ", paste(xw, collapse=" "))
-    if (is.na(xs[1])) stop("xs is NA")
-    if (is.na(xw[1])) stop("xw is NA")
-    if (is.na(parms$beta)) stop("parms$beta is NA")
-    touching <- xs < xw & xw < (xs + parms$beta)
-    strain <- 1 - (xw - xs) / parms$beta
-    ##> if (strain > 0) cat("strain=", strain, "\n")
-    stress <- ifelse(touching, parms$Eb * strain, 0)
-    ##> if (strain > 0) cat("stress=", stress, "\n")
+    touching <- xs < xw & xw < (xs + parms$beta + parms$alpha)
+    dx <- ifelse(touching, parms$alpha + parms$beta - (xw - xs), 0)
+    strain <- dx / (parms$beta + parms$alpha)
+    E <- (parms$alpha + parms$beta) / (parms$alpha / parms$Ealpha + parms$beta / parms$Ebeta)
+    stress <- E * strain
     force <- stress * parms$B * parms$D
-    if (is.na(force[1])) stop("Calculated force is NA, probably indicating a programming error.")
-    force
+    ## Assume equal stress in blubber and interior layers
+    alphaCompressed <- parms$alpha * (1 - stress / parms$Ealpha)
+    betaCompressed <- parms$beta * (1 - stress / parms$Ebeta)
+    list(force=force, stress=stress, strain=strain,
+         alphaCompressed=alphaCompressed, betaCompressed=betaCompressed)
 }
 
 #' Skin force
 #'
 #' The ship-whale separation is used to calculate the deformation of the skin. The
-#' parameters of the calculation are \code{parms$B} (ship beam width, m),
-#' \code{parms$D} (ship draft, in m), \code{parms$Es} (skin elastic modulus in Pa),
+#' parameters of the calculation are \code{parms$B} (impact area width, m),
+#' \code{parms$D} (impact area height, in m), \code{parms$Eskin} (skin elastic modulus in Pa),
 #' \code{parms$delta} (skin thickness in m), and \code{parms$theta} (skin bevel angle
 #' degrees, measured from a vector normal to undisturbed skin).
 #'
@@ -330,7 +337,7 @@ whaleBlubberForce <- function(xs, xw, parms)
 #'
 #' @template parmsTemplate
 #'
-#' @return A list containing \code{F}, the normal force [N], along with
+#' @return A list containing \code{force}, the normal force [N], along with
 #' \code{sigmay} and \code{sigmaz}, which are stresses [Pa] in the y (beam)
 #' and z (draft) directions.
 #'
@@ -338,34 +345,31 @@ whaleBlubberForce <- function(xs, xw, parms)
 #' See \link{whalestrike} for a list of references.
 whaleSkinForce <- function(xs, xw, parms)
 {
-    touching <- xs < xw & xw < (xs + parms$beta)
-    ##> if (is.na(touching[1])) stop("skinForce(): touching is NA")
-    dx <- ifelse(touching, parms$beta - (xw - xs), 0)
-    l <- dx * tan(parms$theta * pi / 180) # NB: theta is in deg
-    s <- dx / cos(parms$theta * pi / 180) # NB: theta is in deg
+    touching <- xs < xw & xw < (xs + parms$beta + parms$alpha)
+    dx <- ifelse(touching, parms$alpha + parms$beta - (xw - xs), 0)
+    C <- cos(parms$theta * pi / 180) # NB: theta is in deg
+    S <- sin(parms$theta * pi / 180) # NB: theta is in deg
+    l <- dx * S / C
+    s <- dx / C
     ## Strains in y and z
     epsilony <- 2 * (s - l) / (parms$B + 2 * l)
     epsilonz <- 2 * (s - l) / (parms$D + 2 * l)
     ## Stresses in y and z
-    sigmay <- parms$Es * epsilony
-    sigmaz <- parms$Es * epsilonz
+    sigmay <- parms$Eskin * epsilony
+    sigmaz <- parms$Eskin * epsilonz
     ## Net normal force in x; note the cosine, to resolve the force to the normal
     ## direction, and the 2, to account for two sides of length B and two of length D..
-    F <- 2 * parms$delta * cos(parms$theta * pi / 180) * (parms$D * sigmaz + parms$B * sigmay)
-    if (is.na(F[1])) stop("F is NA, probably indicating a programming error.")
-    list(F=F, sigmay=sigmay, sigmaz=sigmaz)
+    force <- 2 * parms$delta * C * (parms$D * sigmaz + parms$B * sigmay)
+    ##> if (is.na(force[1])) stop("force is NA, probably indicating a programming error.")
+    list(force=force, sigmay=sigmay, sigmaz=sigmaz)
 }
 
 #' Ship water force
 #'
-#' Estimate the retarding force of water on the ship, based on a drag law
-#' \eqn{(1/2)*rho*CD*A*v^2}{(1/2)*rho*CD*A*v^2}
-#' where \code{rho} is 1024 (kg/m^3), \code{CD} is \code{parms$Cs} and
+#' Compute the retarding force of water on the ship, based on a drag law
+#' \eqn{(1/2)*rho*Cs*A*vs^2}{(1/2)*rho*Cs*A*vs^2}
+#' where \code{rho} is 1024 (kg/m^3), \code{Cs} is \code{parms$Cs} and
 #' \code{A} is \code{parms$Ss}.
-#'
-#' This function may be called prior to a simulation, to calculate
-#' the propulsive force required to have the ship at steady velocity
-#' prior to the collision.
 #
 #' @param vs ship velocity [m/s]
 #'
@@ -380,9 +384,9 @@ shipWaterForce <- function(vs, parms)
 
 #' Whale force
 #'
-#' Estimate the retarding force of water on the whale, based on a drag law
-#' \eqn{(1/2)*rho*CD*A*v^2}{(1/2)*rho*CD*A*v^2}
-#' where \code{rho} is 1024 (kg/m^3), \code{CD} is \code{parms$Cw} and
+#' Compute the retarding force of water on the whale, based on a drag law
+#' \eqn{(1/2)*rho*Cw*A*vw^2}{(1/2)*rho*Cw*A*vw^2}
+#' where \code{rho} is 1024 (kg/m^3), \code{Cw} is \code{parms$Cw} and
 #' \code{A} is \code{parms$Sw}.
 #'
 #' @param vw Whale velocity [m/s]
@@ -413,12 +417,12 @@ dynamics <- function(t, y, parms)
     vs <- y[2]                         # ship velocity
     xw <- y[3]                         # whale position
     vw <- y[4]                         # whale velocity
-    Fblubber <- whaleBlubberForce(xs, xw, parms)
-    Fskin <- whaleSkinForce(xs, xw, parms)$F
+    Fblubber <- whaleCompressionForce(xs, xw, parms)$force
+    Fskin <- whaleSkinForce(xs, xw, parms)$force
     Freactive <- Fblubber + Fskin
     Fship <- parms$shipPropulsiveForce + shipWaterForce(vs, parms) - Freactive
-    if ((t > 0.1 && t < 0.11) || (t > 0.5 && t < 0.51))
-        cat("t=", t, " vs=", vs, " shipPropulsiveForce=", parms$shipPropulsiveForce, " shipWaterForce=", shipWaterForce(vs, parms), " Freactive=", Freactive, "\n")
+    ##. if ((t > 0.1 && t < 0.11) || (t > 0.5 && t < 0.51))
+    ##.     cat("t=", t, " vs=", vs, " shipPropulsiveForce=", parms$shipPropulsiveForce, " shipWaterForce=", shipWaterForce(vs, parms), " Freactive=", Freactive, "\n")
     if (is.na(Fship[1])) stop("Fship[1] is NA, probably indicating a programming error.")
     Fwhale <- Freactive + whaleWaterForce(vw, parms)
     if (is.na(Fwhale[1])) stop("Fwhale[1] is NA, probably indicating a programming error.")
@@ -444,7 +448,7 @@ derivative <- function(var, t)
 #' The forces are calculated by
 #' \code{\link{shipWaterForce}},
 #' \code{\link{whaleSkinForce}},
-#' \code{\link{whaleBlubberForce}}, and
+#' \code{\link{whaleCompressionForce}}, and
 #' \code{\link{whaleWaterForce}}.
 #'
 #' @param t time [s].
@@ -468,13 +472,23 @@ derivative <- function(var, t)
 #' @examples
 #' library(whalestrike)
 #' t <- seq(0, 1, length.out=500)
-#' state <- c(xs=-1.5, vs=5, xw=0, vw=0)
-#' parms <- parameters(ms=20e3, Ss=15*pi*3, B=3, D=1.5,
-#'               lw=10, Sw=10*2*pi*3, delta=0.02, Es=2e7, theta=45,
-#'               Eb=1e6, beta=0.3)
+#' state <- c(xs=-2, vs=5, xw=0, vw=0)
+#' ls <- 10      # ship length [m]
+#' draft <- 1.5  # ship draft [m]
+#' beam <- 3     # ship beam [m]
+#' lw <- 11      # whale length [m]
+#' Rw <- 1       # whale radius [m]
+#' B <- 2        # impact region width [m]
+#' D <- 1        # impact region height [m]
+#' parms <- parameters(ms=20e3, Ss=ls*(beam+2*draft),
+#'               B=B, D=D,
+#'               lw=lw, Sw=lw*2*pi*Rw^2,
+#'               delta=0.02, Eskin=2e7, theta=45,
+#'               beta=0.3, Ebeta=6e5,
+#'               alpha=0.5, Ealpha=4e5)
 #' sol <- strike(t, state, parms)
-#' par(mfcol=c(3, 3), mar=c(2, 3, 1, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
-#' plot(sol, which="all")
+#' par(mfcol=c(3, 3), mar=c(2, 3, 0.5, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
+#' plot(sol)
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
@@ -500,7 +514,12 @@ strike <- function(t, state, parms, debug=0)
     }
     if (missing(parms))
         stop("must supply parms")
-    for (need in c("ms", "B", "D", "Ss", "mw", "Sw", "delta", "Es", "theta", "Eb", "beta")) {
+    for (need in c("ms", "Ss", # ship mass and wetted area
+                   "mw", "Sw", # whale mass and wetted area
+                   "B", "D", # impact extends, horiz and vert
+                   "delta", "Eskin", "theta", # skin properties
+                   "beta", "Ebeta", # blubber properties
+                   "alpha", "Ealpha")) { # inner-layer properties
         if (!(need %in% names(parms)))
             stop("parms must contain item named '", need, "'; the names you supplied were: ", paste(names(parms), collapse=" "))
     }
@@ -509,23 +528,24 @@ strike <- function(t, state, parms, debug=0)
     ##> print("in strike(), parms is:")
     ##> print(parms)
     parms["shipPropulsiveForce"] <- -shipWaterForce(state["vs"], parms) # assumed constant over time
-    cat("SETUP vs=", state["vs"], "\n")
-    cat("SETUP shipWaterForce=", shipWaterForce(state["vs"], parms), "\n")
-    cat("SETUP shipWaterForce=", round(shipWaterForce(state["vs"], parms), -1), "\n")
-    cat("SETUP shipPropulsiveForce=", parms[["shipPropulsiveForce"]], "\n")
-    ##? parms["aw"] <- whaleAreaFromLength(L=parms$lw, view="side")
     sol <- lsoda(state, t, dynamics, parms)
-    ##. print("in strike(), head(sol) is:")
-    ##. print(head(sol))
-    ## Add extra things for plotting convenience. Perhaps should also
-    ## calculate the forces here.
-    res <- list(t=sol[, 1],
-                xs=sol[, 2],
-                vs=sol[, 3],
-                xw=sol[, 4],
-                vw=sol[, 5],
-                dvsdt=derivative(sol[, 3], sol[, 1]),
-                dvwdt=derivative(sol[, 5], sol[, 1]),
+    ## Add extra things for plotting convenience.
+    t <- sol[, 1]
+    xs <- sol[, 2]
+    vs <- sol[, 3]
+    xw <- sol[, 4]
+    vw <- sol[, 5]
+    res <- list(t=t,
+                xs=xs,
+                vs=vs,
+                xw=xw,
+                vw=vw,
+                dvsdt=derivative(vs, t),
+                dvwdt=derivative(vw, t),
+                SWF=shipWaterForce(vs=vs, parms=parms),
+                WSF=whaleSkinForce(xs=xs, xw=xw, parms=parms),
+                WCF=whaleCompressionForce(xs=xs, xw=xw, parms=parms),
+                WWF=whaleWaterForce(vw=vw, parms=parms),
                 parms=parms)
     class(res) <- "strike"
     res
@@ -556,15 +576,21 @@ strike <- function(t, state, parms, debug=0)
 #' that mean (seal) blubber strength is 0.8MPa, whereas mean (seal) blubber
 #' modulus is 1.2MPa, for a ratio of 2/3.
 #'
-#' \item \code{"whale water force"} for a time-series plot of the water force on the whale.
+#' \item \code{"sublayer thickness"} for a time-series plot of the thickness
+#' of the layer interior to the blubber. A red line is drawn at 2/3 of the initial
+#' thickness, as for \code{"blubber thickness"}.
 #'
-#' \item \code{"blubber force"} for a time-series plot of the normal force resulting from blubber compression.
+#' \item \code{"whale water force"} for timea -series of water force on the whale.
 #'
-#' \item \code{"blubber stress"} for a time-series plot of the normal stress on the blubber.
+#' \item \code{"compression force"} for a time-series of compression force on the blubber
+#' and the layer to its interior. (These stresses are equal, under an equilibrium assumption.)
 #'
-#' \item \code{"skin force"} for a time-series plot of the normal force resulting from skin tension.
+#' \item \code{"compression stress"} for a time-series plot of the compression stress on the blubber
+#' and the layer to its interior. (These stresses are equal, under an equilibrium assumption.)
 #'
-#' \item \code{"skin stress"} for a time-series plot of the skin stress in the along-skin y and z directions.
+#' \item \code{"skin force"} for a time-series of normal force resulting from skin tension.
+#'
+#' \item \code{"skin stress"} for a time-series of skin stress in the along-skin y and z directions.
 #' A red horizontal line is drawn at 19.56MPa, if that value is on-scale. This is a suggestion
 #' of the maximum stress that the skin can accommodate without damage, inferred from an
 #' entry in Table 3 of Grear et al. (2018) for the strength of seal skin.
@@ -572,6 +598,8 @@ strike <- function(t, state, parms, debug=0)
 #' \item \code{"values"} for a listing of \code{param} values.
 #'
 #' \item \code{"all"} for all of the above.
+#'
+#' \item \code{"default"} for all except acceleration.
 #'}
 #' @param center Logical, indicating whether to center time-series plots.
 #' on the time when the vessel and whale and in closest proximity.
@@ -581,11 +609,11 @@ strike <- function(t, state, parms, debug=0)
 #' such as the moment of closest approach.
 #' @param debug Integer indicating debugging level, 0 for quiet operation and higher values
 #' for more verbose monitoring of progress through the function.
-#' @param ... Other arguments (ignored).
+#' @param ... Ignored.
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
-plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEvents=TRUE, debug=0, ...)
+plot.strike <- function(x, which="default", center=FALSE, drawCriteria=TRUE, drawEvents=TRUE, debug=0, ...)
 {
     showLegend <- FALSE
     g <- 9.8 # gravity
@@ -629,20 +657,29 @@ plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEve
         }
     }
     all <- "all" %in% which
+    if (which == "default")
+        which <- c("location", "blubber thickness", "sublayer thickness",
+                   "whale water force", "skin force", "skin stress",
+                   "compression force", "compression stress", "values")
+
+    ## Compute some forces, just in case we need them. FIXME: move to strike()
 
     ## x(t) and xw(t)
     if (all || "location" %in% which) {
         ylim <- range(c(xs, xw), na.rm=TRUE)
         plot(t, xs, type="l", xlab="Time [s]", ylab="Location [m]", ylim=ylim, lwd=2)
         lines(t, xw, col="blue", lwd=2)
-        lines(t, xw - x$parms$beta, col="blue", lty=3, lwd=2)
+        lines(t, xw - x$WCF$alphaCompressed, col="blue", lty="dotted", lwd=0.8)
+        lines(t, xw - x$WCF$alphaCompressed - x$WCF$betaCompressed, col="blue", lwd=1)
+        accel <- derivative(vw, t)
+        mtext(sprintf("max. %.0f m/s^2", max(accel)), side=3, line=-1, cex=par("cex"))
         showEvents(xs, xw)
         if (showLegend)
             legend("topleft", col=c(1, 2, 2), legend=c("Ship", "Whale", "Blubber"),
                    lwd=rep(2, 3), lty=c(1, 1, 3), bg="white", cex=0.8)
     }
     if (all || "whale acceleration" %in% which) {
-        plot(t, derivative(vw, t), xlab="Time [s]", ylab="Whale acceleration [m/s^2]", type="l", lwd=2)
+        plot(t, derivative(vw, t), xlab="Time [s]", ylab="Whale accel. [m/s^2]", type="l", lwd=2)
         showEvents(xs, xw)
         if (drawCriteria) {
             NFL10 <- 433
@@ -652,13 +689,20 @@ plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEve
         }
     }
     if (all || "blubber thickness" %in% which) {
-        touching <- xs < xw & xw < (xs + x$parms$beta)
-        thickness <- ifelse(touching, xw-xs, x$parms$beta)
-        ylim <- c(0, max(thickness))
-        plot(t, thickness, xlab="Time [s]", ylab="Blubber thickness [m]", type="l", lwd=2, ylim=ylim)
+        y <- x$WCF$betaCompressed
+        ylim <- c(min(0, min(y)), max(y)) # include 0 if not there by autoscale
+        plot(t, y, xlab="Time [s]", ylab="Blubber thickness [m]", type="l", lwd=2, ylim=ylim)
         showEvents(xs, xw)
         if (drawCriteria)
             abline(h=x$parms$beta*0.8/1.2, col="red")
+    }
+    if (all || "sublayer thickness" %in% which) {
+        y <- x$WCF$alphaCompressed
+        ylim <- c(min(0, min(y)), max(y)) # include 0 if not there by autoscale
+        plot(t, y, xlab="Time [s]", ylab="Sublayer thickness [m]", type="l", lwd=2, ylim=ylim)
+        showEvents(xs, xw)
+        if (drawCriteria)
+            abline(h=x$parms$alpha*0.8/1.2, col="red")
     }
     if (all || "whale water force" %in% which) {
         plot(t, whaleWaterForce(vw, x$parms) / 1e6 , xlab="Time [s]", ylab="Water force [MN]", type="l", lwd=2)
@@ -666,7 +710,7 @@ plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEve
     }
     if (all || "skin force" %in% which) {
         Fs <- whaleSkinForce(xs, xw, x$parms)
-        plot(t, Fs$F/1e6, type="l", xlab="Time [s]", ylab="Skin Force [MN]", lwd=2)
+        plot(t, Fs$force/1e6, type="l", xlab="Time [s]", ylab="Skin Force [MN]", lwd=2)
         showEvents(xs, xw)
     }
     if (all || "skin stress" %in% which) {
@@ -674,31 +718,34 @@ plot.strike <- function(x, which="all", center=FALSE, drawCriteria=TRUE, drawEve
         ylim <- range(c(Fs$sigmay, Fs$sigmaz)/1e6)
         plot(t, Fs$sigmay/1e6, type="l", xlab="Time [s]", ylab="Skin Stress [MPa]", lwd=2, ylim=ylim)
         lines(t, Fs$sigmaz/1e6, lty=3)
-        legend("topright", lty=c(1,3), legend=c("horiz.", "vert."))
+        ## legend("topright", lty=c(1,3), legend=c("horiz.", "vert."))
         abline(h=19.56, col="red")
         showEvents(xs, xw)
     }
-    if (all || "blubber force" %in% which) {
-        Fb <- whaleBlubberForce(xs, xw, x$parms)
-        plot(t, Fb/1e6, type="l", xlab="Time [s]", ylab="Blubber Force [MN]", lwd=2)
+    if (all || "compression force" %in% which) {
+        plot(t, x$WCF$force/1e6, type="l", xlab="Time [s]", ylab="Compress. Force [MN]", lwd=2)
         showEvents(xs, xw)
     }
-    if (all || "blubber stress" %in% which) {
-        A <- contactArea(xs, xw, x$parms)
-        stressb <- ifelse(A, whaleBlubberForce(xs, xw, x$parms) / A, 0)
-        plot(t, stressb/1e6, type="l", xlab="Time [s]", ylab="Blubber Stress [MPa]", lwd=2)
+    if (all || "compression stress" %in% which) {
+        stress <- x$WCF$force / (x$parms$D*x$parms$B)
+        plot(t, stress/1e6, type="l", xlab="Time [s]", ylab="Compress. Stress [MPa]", lwd=2)
         showEvents(xs, xw)
     }
+    ## FIXME: add items for sub-blubber force and stress
     if (all || "values" %in% which) {
-        values <- paste(deparse(x$parms),collapse=" ")
+        omar <- par("mar")
+        par(mar=rep(0, 4))
+        p <- lapply(x$parms, function(x) signif(x, 4))
+        names(p) <- names(x$parms)
+        values <- paste(deparse(p), collapse=" ")
         values <- strsplit(gsub(".*\\((.*)\\)$", "\\1", values), ",")[[1]]
         values <- gsub("^ *", "", values)
         values <- gsub("([0-9])L$", "\\1", values) # it's ugly to see e.g. 1 as 1L
         n <- 1 + length(values)
         plot(1:n, 1:n, type="n", xlab="", ylab="", axes=FALSE)
-        box()
         for (i in seq_along(values))
             text(1, i+0.5, values[i], pos=4, cex=0.75)
+        par(mar=omar)
     }
 }
 

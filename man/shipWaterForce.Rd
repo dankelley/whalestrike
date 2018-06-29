@@ -16,13 +16,8 @@ shipWaterForce(vs, parms)
 Water drag force [N]
 }
 \description{
-Estimate the retarding force of water on the ship, based on a drag law
-\eqn{(1/2)*rho*CD*A*v^2}{(1/2)*rho*CD*A*v^2}
-where \code{rho} is 1024 (kg/m^3), \code{CD} is \code{parms$Cs} and
+Compute the retarding force of water on the ship, based on a drag law
+\eqn{(1/2)*rho*Cs*A*vs^2}{(1/2)*rho*Cs*A*vs^2}
+where \code{rho} is 1024 (kg/m^3), \code{Cs} is \code{parms$Cs} and
 \code{A} is \code{parms$Ss}.
-}
-\details{
-This function may be called prior to a simulation, to calculate
-the propulsive force required to have the ship at steady velocity
-prior to the collision.
 }

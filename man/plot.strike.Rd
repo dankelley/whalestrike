@@ -4,7 +4,7 @@
 \alias{plot.strike}
 \title{Plot a strike object}
 \usage{
-\method{plot}{strike}(x, which = "all", center = FALSE,
+\method{plot}{strike}(x, which = "default", center = FALSE,
   drawCriteria = TRUE, drawEvents = TRUE, debug = 0, ...)
 }
 \arguments{
@@ -28,15 +28,21 @@ initial thickness, based on the Grear et al. 2018 result (page 144, left column)
 that mean (seal) blubber strength is 0.8MPa, whereas mean (seal) blubber
 modulus is 1.2MPa, for a ratio of 2/3.
 
-\item \code{"whale water force"} for a time-series plot of the water force on the whale.
+\item \code{"sublayer thickness"} for a time-series plot of the thickness
+of the layer interior to the blubber. A red line is drawn at 2/3 of the initial
+thickness, as for \code{"blubber thickness"}.
 
-\item \code{"blubber force"} for a time-series plot of the normal force resulting from blubber compression.
+\item \code{"whale water force"} for timea -series of water force on the whale.
 
-\item \code{"blubber stress"} for a time-series plot of the normal stress on the blubber.
+\item \code{"compression force"} for a time-series of compression force on the blubber
+and the layer to its interior. (These stresses are equal, under an equilibrium assumption.)
 
-\item \code{"skin force"} for a time-series plot of the normal force resulting from skin tension.
+\item \code{"compression stress"} for a time-series plot of the compression stress on the blubber
+and the layer to its interior. (These stresses are equal, under an equilibrium assumption.)
 
-\item \code{"skin stress"} for a time-series plot of the skin stress in the along-skin y and z directions.
+\item \code{"skin force"} for a time-series of normal force resulting from skin tension.
+
+\item \code{"skin stress"} for a time-series of skin stress in the along-skin y and z directions.
 A red horizontal line is drawn at 19.56MPa, if that value is on-scale. This is a suggestion
 of the maximum stress that the skin can accommodate without damage, inferred from an
 entry in Table 3 of Grear et al. (2018) for the strength of seal skin.
@@ -44,6 +50,8 @@ entry in Table 3 of Grear et al. (2018) for the strength of seal skin.
 \item \code{"values"} for a listing of \code{param} values.
 
 \item \code{"all"} for all of the above.
+
+\item \code{"default"} for all except acceleration.
 }}
 
 \item{center}{Logical, indicating whether to center time-series plots.
@@ -58,7 +66,7 @@ such as the moment of closest approach.}
 \item{debug}{Integer indicating debugging level, 0 for quiet operation and higher values
 for more verbose monitoring of progress through the function.}
 
-\item{...}{Other arguments (ignored).}
+\item{...}{Ignored.}
 }
 \description{
 Creates displays of various results of a simulation performed

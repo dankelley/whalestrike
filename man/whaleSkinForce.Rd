@@ -15,14 +15,14 @@ whaleSkinForce(xs, xw, parms)
 \code{\link{parameters}}.}
 }
 \value{
-A list containing \code{F}, the normal force [N], along with
+A list containing \code{force}, the normal force [N], along with
 \code{sigmay} and \code{sigmaz}, which are stresses [Pa] in the y (beam)
 and z (draft) directions.
 }
 \description{
 The ship-whale separation is used to calculate the deformation of the skin. The
-parameters of the calculation are \code{parms$B} (ship beam width, m),
-\code{parms$D} (ship draft, in m), \code{parms$Es} (skin elastic modulus in Pa),
+parameters of the calculation are \code{parms$B} (impact area width, m),
+\code{parms$D} (impact area height, in m), \code{parms$Eskin} (skin elastic modulus in Pa),
 \code{parms$delta} (skin thickness in m), and \code{parms$theta} (skin bevel angle
 degrees, measured from a vector normal to undisturbed skin).
 }

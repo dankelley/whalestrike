@@ -16,8 +16,8 @@ whaleWaterForce(vw, parms)
 Water drag force [N]
 }
 \description{
-Estimate the retarding force of water on the whale, based on a drag law
-\eqn{(1/2)*rho*CD*A*v^2}{(1/2)*rho*CD*A*v^2}
-where \code{rho} is 1024 (kg/m^3), \code{CD} is \code{parms$Cw} and
+Compute the retarding force of water on the whale, based on a drag law
+\eqn{(1/2)*rho*Cw*A*vw^2}{(1/2)*rho*Cw*A*vw^2}
+where \code{rho} is 1024 (kg/m^3), \code{Cw} is \code{parms$Cw} and
 \code{A} is \code{parms$Sw}.
 }
