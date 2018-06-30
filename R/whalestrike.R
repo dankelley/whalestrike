@@ -87,16 +87,15 @@ NULL
 #' used by \code{\link{shipWaterForce}} to estimate ship drag force.
 #' @param B  Ship impact horizontal extent [m]; defaults to 2m if not specified.
 #' @param D  Ship impact vertical extent [m]; defaults to 1.5m if not specified.
-#' @param mw Whale mass [kg]. If not supplied, \code{\link{whaleMassFromLength}} is used
-#' to calculate this, given \code{lw}, but if neither \code{mw} nor \code{ml} is provided,
-#' an error is reported.
 #' @param lw Whale length [m]. If not supplied, \code{\link{whaleLengthFromMass}} is used
 #' to calculate this, given \code{lm}, but if neither \code{mw} nor \code{ml} is provided,
 #' an error is reported. The length is used by \code{\link{whaleAreaFromLength}} to
 #' calculate area, which is needed for the water drag calculation done by
 #' \code{\link{whaleWaterForce}}.
-#' @param Sw Whale surface area [m^2]. This, together with \code{Cw}, is used by
-#' used by \code{\link{whaleWaterForce}} to estimate whale drag force.
+#' @param mw Whale mass [kg]. If length is known, this could be estimated with
+#' \code{\link{whaleMassFromLength}}.
+#' @param Sw Whale surface area [m^2]. If length is known, this could be estimated with
+#' \code{\link{whaleAreaFromLength}}.
 #' @param delta Whale skin thickness [m]. Defaults to 0.01 m, if not supplied.
 #' @param Eskin Whale skin elastic modulus [Pa]. If not provided, defaults to 20e6 Pa,
 #' a rounded value of the 19.56+-4.03MPa estimate for seal skin, provided in Table 3
@@ -134,8 +133,7 @@ NULL
 #' @references
 #' See \link{whalestrike} for a list of references.
 parameters <- function(ms, Ss, B=3, D=1.5,
-                       mw, lw,
-                       Sw,
+                       lw, mw, Sw,
                        delta=0.01, Eskin=20e6, theta=45,
                        beta=0.3, Ebeta=6e5,
                        alpha=0.5, Ealpha=4e5,
@@ -145,15 +143,12 @@ parameters <- function(ms, Ss, B=3, D=1.5,
     if (missing(Ss) || Ss <= 0) stop("ship wetted area (Ss) must be given, and a positive number")
     if (B <= 0) stop("impact width (B) must be a positive number, not ", B)
     if (D <= 0) stop("impact height (D) must be a positive number, not ", D)
-    if (missing(mw)) {
-        if (missing(lw))
-            stop("Whale mass (mw) or length (lw) must be specified, or both")
-        mw <- round(whaleMassFromLength(lw))
-    } else {
-        if (missing(lw))
-            lw <- round(whaleLengthFromMass(mw), 1)
-    }
-    if (missing(Sw)) stop("Must give Sw, the whale surface area (length times midbody girth)")
+    if (missing(lw))
+        stop("Whale length (lm) must be given")
+    if (missing(mw))
+        stop("Whale mass (mw) must be given; try using whaleMassFromLength() to compute")
+    if (missing(Sw))
+        stop("Whale surface area (mw) must be given; try using whaleAreaFromLength() to compute")
     if (delta < 0) stop("whale skin thickness (delta) must be positive, not ", delta)
     if (Eskin < 0) stop("whale skin elastic modulus (Eskin) must be positive, not ", Eskin)
     if (theta < 0 || theta > 89) stop("whale skin deformation angle (theta) must be between 0 and 89 deg, not ", theta)
@@ -226,10 +221,8 @@ whaleMassFromLength <- function(L, model="fortune2012atlantic")
         242.988 * exp(0.4 * L)
     else if (model == "fortune2012atlantic")
         exp(-10.095 + 2.825*log(100*L))
-        ##exp(2.825-10.095*log(100*L))
     else if (model == "fortune2012pacific")
         exp(-12.286 + 3.158*log(100*L))
-        ##exp(3.158-12.286*log(100*L))
     else
         stop("unrecognized model '", model, "'")
 }
@@ -260,14 +253,29 @@ whaleLengthFromMass <- function(M, model="fortune2012atlantic")
 
 #' Whale projected area, as function of length
 #' @param L length in m
-#' @param view character string indicating the viewpoint; only
-#' \code{"side"} is permitted at present, because that is what
-#' is needed by \code{\link{whaleWaterForce}}.
-whaleAreaFromLength <- function(L, view="side")
+#' @param type character string indicating the type of area, with
+#' \code{"projected"} for side-projected area using 0.143L^2,
+#' and \code{"surface"}
+#' for submerged surface wetted, calculated by spinning
+#' the necropsiy side-view presented in Daoust et al. (2018)
+#' along the animal axis, yielding 0.737L^2. The \code{"surface"}
+#' version is suitable for use in \code{\link{whaleWaterForce}}.
+#'
+#' @references
+#' R worksheet \code{dek/20180623_whale_area.Rmd}, available
+#' upon request.
+whaleAreaFromLength <- function(L, type="wetted")
 {
-    if (view == "side")
+    ## below from dek/20180623_whale_area.Rmd
+    ## Projected area, with fins: 0.1466L2 where L is body length in metres.
+    ## Projected area, without fins: 0.1398L2 where L is body length in metres.
+    ## Wetted area, with fins: 0.0737L2 where L is body length in metres.
+    ## Wetted area, without fins: 0.0698L2 where L is body length in metres.
+    if (type == "projected")
         0.143 * L^2
-    else stop("'view' must be 'side'")
+    else if (type == "wetted")
+        0.0737 * L^2
+    else stop("'type' must be 'projected' or 'wetted', not '", type, "' as given")
 }
 
 ##OLD #' Contact area
@@ -480,9 +488,10 @@ derivative <- function(var, t)
 #' Rw <- 1       # whale radius [m]
 #' B <- 2        # impact region width [m]
 #' D <- 1        # impact region height [m]
-#' parms <- parameters(ms=20e3, Ss=ls*(beam+2*draft),
+#' parms <- parameters(ms=20e3, Ss=ls*(2*draft+beam),
 #'               B=B, D=D,
-#'               lw=lw, Sw=lw*2*pi*Rw^2,
+#'               lw=lw, mw=whaleMassFromLength(lw),
+#'               Sw=whaleAreaFromLength(lw, "wetted"),
 #'               delta=0.02, Eskin=2e7, theta=45,
 #'               beta=0.3, Ebeta=6e5,
 #'               alpha=0.5, Ealpha=4e5)
@@ -512,8 +521,6 @@ strike <- function(t, state, parms, debug=0)
         if (!(need %in% names(state)))
             stop("state must contain item named '", need, "'; the names you supplied were: ", paste(names(state), collapse=" "))
     }
-    if (missing(parms))
-        stop("must supply parms")
     for (need in c("ms", "Ss", # ship mass and wetted area
                    "mw", "Sw", # whale mass and wetted area
                    "B", "D", # impact extends, horiz and vert
@@ -523,10 +530,6 @@ strike <- function(t, state, parms, debug=0)
         if (!(need %in% names(parms)))
             stop("parms must contain item named '", need, "'; the names you supplied were: ", paste(names(parms), collapse=" "))
     }
-    ##> print("in strike(), state is:")
-    ##> print(state)
-    ##> print("in strike(), parms is:")
-    ##> print(parms)
     parms["shipPropulsiveForce"] <- -shipWaterForce(state["vs"], parms) # assumed constant over time
     sol <- lsoda(state, t, dynamics, parms)
     ## Add extra things for plotting convenience.
@@ -748,5 +751,4 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=TRUE, dra
         par(mar=omar)
     }
 }
-
 

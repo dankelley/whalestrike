@@ -4,7 +4,7 @@
 \alias{parameters}
 \title{Control parameters for whale strike simulation}
 \usage{
-parameters(ms, Ss, B = 3, D = 1.5, mw, lw, Sw, delta = 0.01,
+parameters(ms, Ss, B = 3, D = 1.5, lw, mw, Sw, delta = 0.01,
   Eskin = 2e+07, theta = 45, beta = 0.3, Ebeta = 6e+05, alpha = 0.5,
   Ealpha = 4e+05, Cs = 0.005, Cw = 0.003)
 }
@@ -18,18 +18,17 @@ used by \code{\link{shipWaterForce}} to estimate ship drag force.}
 
 \item{D}{Ship impact vertical extent [m]; defaults to 1.5m if not specified.}
 
-\item{mw}{Whale mass [kg]. If not supplied, \code{\link{whaleMassFromLength}} is used
-to calculate this, given \code{lw}, but if neither \code{mw} nor \code{ml} is provided,
-an error is reported.}
-
 \item{lw}{Whale length [m]. If not supplied, \code{\link{whaleLengthFromMass}} is used
 to calculate this, given \code{lm}, but if neither \code{mw} nor \code{ml} is provided,
 an error is reported. The length is used by \code{\link{whaleAreaFromLength}} to
 calculate area, which is needed for the water drag calculation done by
 \code{\link{whaleWaterForce}}.}
 
-\item{Sw}{Whale surface area [m^2]. This, together with \code{Cw}, is used by
-used by \code{\link{whaleWaterForce}} to estimate whale drag force.}
+\item{mw}{Whale mass [kg]. If length is known, this could be estimated with
+\code{\link{whaleMassFromLength}}.}
+
+\item{Sw}{Whale surface area [m^2]. If length is known, this could be estimated with
+\code{\link{whaleAreaFromLength}}.}
 
 \item{delta}{Whale skin thickness [m]. Defaults to 0.01 m, if not supplied.}
 

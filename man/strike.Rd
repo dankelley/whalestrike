@@ -48,9 +48,10 @@ lw <- 11      # whale length [m]
 Rw <- 1       # whale radius [m]
 B <- 2        # impact region width [m]
 D <- 1        # impact region height [m]
-parms <- parameters(ms=20e3, Ss=ls*(beam+2*draft),
+parms <- parameters(ms=20e3, Ss=ls*(2*draft+beam),
               B=B, D=D,
-              lw=lw, Sw=lw*2*pi*Rw^2,
+              lw=lw, mw=whaleMassFromLength(lw),
+              Sw=whaleAreaFromLength(lw, "wetted"),
               delta=0.02, Eskin=2e7, theta=45,
               beta=0.3, Ebeta=6e5,
               alpha=0.5, Ealpha=4e5)

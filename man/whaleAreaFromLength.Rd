@@ -4,15 +4,23 @@
 \alias{whaleAreaFromLength}
 \title{Whale projected area, as function of length}
 \usage{
-whaleAreaFromLength(L, view = "side")
+whaleAreaFromLength(L, type = "wetted")
 }
 \arguments{
 \item{L}{length in m}
 
-\item{view}{character string indicating the viewpoint; only
-\code{"side"} is permitted at present, because that is what
-is needed by \code{\link{whaleWaterForce}}.}
+\item{type}{character string indicating the type of area, with
+\code{"projected"} for side-projected area using 0.143L^2,
+and \code{"surface"}
+for submerged surface wetted, calculated by spinning
+the necropsiy side-view presented in Daoust et al. (2018)
+along the animal axis, yielding 0.737L^2. The \code{"surface"}
+version is suitable for use in \code{\link{whaleWaterForce}}.}
 }
 \description{
 Whale projected area, as function of length
+}
+\references{
+R worksheet \code{dek/20180623_whale_area.Rmd}, available
+upon request.
 }
