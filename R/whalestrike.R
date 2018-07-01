@@ -370,20 +370,19 @@ whaleSkinForce <- function(xs, xw, parms)
     dx <- ifelse(touching, parms$alpha + parms$beta - (xw - xs), 0)
     C <- cos(parms$theta * pi / 180) # NB: theta is in deg
     S <- sin(parms$theta * pi / 180) # NB: theta is in deg
-    l <- dx * S / C
-    s <- dx / C
+    l <- dx * S / C                    # dek20180622_skin_strain eq 1
+    s <- dx / C                        # dek20180622_skin_strain eq 2
     ## Strains in y and z
-    epsilony <- 2 * (s - l) / (parms$impactWidth + 2 * l)
-    epsilonz <- 2 * (s - l) / (parms$impactHeight + 2 * l)
+    epsilony <- 2 * (s - l) / (parms$impactWidth + 2 * l) # dek20180622_skin_strain  eq 3
+    epsilonz <- 2 * (s - l) / (parms$impactHeight + 2 * l) # analogous to dek20180622 eq 3
     ## Stresses in y and z
-    sigmay <- parms$Eskin * epsilony
-    sigmaz <- parms$Eskin * epsilonz
+    sigmay <- parms$Eskin * epsilony   # dek20180622_skin_strain eq 6
+    sigmaz <- parms$Eskin * epsilonz   # dek20180622_skin_strain eq 7
     ## Net normal force in x; note the cosine, to resolve the force to the normal
     ## direction, and the 2, to account for two sides of length
     ## impactWidth and two of length impactHeight.
-    force <- 2 * parms$delta * C * (parms$impactHeight * sigmaz + parms$impactWidth * sigmay)
-    ##> if (is.na(force[1])) stop("force is NA, probably indicating a programming error.")
-    list(force=force, sigmay=sigmay, sigmaz=sigmaz)
+    F <- 2*parms$delta*(parms$impactHeight*sigmaz+parms$impactWidth*sigmay)*C # dek20180622_skin_strain eq 8
+    list(force=F, sigmay=sigmay, sigmaz=sigmaz)
 }
 
 #' Ship water force

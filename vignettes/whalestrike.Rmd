@@ -53,7 +53,7 @@ context.
 
 # Examples
 
-## Simulation with overview plot
+## Overview plot
 
 ```{r results="hide"}
 library(whalestrike)
@@ -74,7 +74,7 @@ par(mfcol=c(3, 3), mar=c(2, 3, 0.5, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
 plot(sol)
 ```
 
-## Simulation showing sensitivity of acceleration to blubber thickness
+## Acceleration dependence on blubber thickness
 
 ```{r results="hide"}
 library(whalestrike)
@@ -93,14 +93,14 @@ for (i in seq_along(beta)) {
 plot(beta, maxAccel, type="l", xlab=expression("Blubber thickness [m]"), ylab="Max. Acceleration [m/s^2]")
 ```
 
-## Simulation showing sensitivity of acceleration to blubber thickness and ship speed
+## Blubber-damage dependence on blubber thickness and ship speed
 
 ```{r results="hide"}
 library(whalestrike)
 t <- seq(0, 1, length.out=500)
 ## Hint: making x and y of different lengths, to avoid row,col
 ## versus i,j confusion.
-beta <- seq(0.1, 0.4, length.out=9)
+beta <- seq(0.1, 0.3, length.out=9)
 speedK <- seq(2, 15, length.out=10) # in knots
 speed <- 0.5144 * speedK
 maxStrain <- matrix(NA, nrow=length(speed), ncol=length(beta))

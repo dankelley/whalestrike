@@ -40,7 +40,7 @@ library(whalestrike)
 t <- seq(0, 1, length.out=500)
 ## Hint: making x and y of different lengths, to avoid row,col
 ## versus i,j confusion.
-beta <- seq(0.1, 0.4, length.out=9)
+beta <- seq(0.1, 0.3, length.out=9)
 speedK <- seq(2, 15, length.out=10) # in knots
 speed <- 0.5144 * speedK
 maxStrain <- matrix(NA, nrow=length(speed), ncol=length(beta))
