@@ -24,7 +24,7 @@ modulus \code{parms$Ebeta} times strain, where the latter is computed
 from ship-whale separation using \code{1-(xw-xs)/parms$beta} if
 \code{xw} is between \code{xs} and \code{xs+parms$beta},
 or zero otherwise. Area is computed as the product of
-\code{parms$B} and \code{parms$D}.
+\code{parms$impactWidth} and \code{parms$impactHeight}.
 FIXME: rewrite docs for the new blubber+inner scheme
 }
 \references{

@@ -85,8 +85,8 @@ NULL
 #' @param ms Ship mass [kg].
 #' @param Ss Ship wetted area [m^2]. This, together with \code{Cs}, is used by
 #' used by \code{\link{shipWaterForce}} to estimate ship drag force.
-#' @param B  Ship impact horizontal extent [m]; defaults to 2m if not specified.
-#' @param D  Ship impact vertical extent [m]; defaults to 1.5m if not specified.
+#' @param impactWidth Ship impact horizontal extent [m]; defaults to 2m if not specified.
+#' @param impactHeight Ship impact vertical extent [m]; defaults to 1.5m if not specified.
 #' @param lw Whale length [m]. If not supplied, \code{\link{whaleLengthFromMass}} is used
 #' to calculate this, given \code{lm}, but if neither \code{mw} nor \code{ml} is provided,
 #' an error is reported. The length is used by \code{\link{whaleAreaFromLength}} to
@@ -132,33 +132,46 @@ NULL
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
-parameters <- function(ms, Ss, B=3, D=1.5,
+parameters <- function(ms, Ss, impactWidth=3, impactHeight=1.5,
                        lw, mw, Sw,
                        delta=0.01, Eskin=20e6, theta=45,
                        beta=0.3, Ebeta=6e5,
                        alpha=0.5, Ealpha=4e5,
                        Cs=5e-3, Cw=3e-3)
 {
-    if (missing(ms) || ms <= 0) stop("ship mass (ms) must be given, and a positive number")
-    if (missing(Ss) || Ss <= 0) stop("ship wetted area (Ss) must be given, and a positive number")
-    if (B <= 0) stop("impact width (B) must be a positive number, not ", B)
-    if (D <= 0) stop("impact height (D) must be a positive number, not ", D)
+    if (missing(ms) || ms <= 0)
+        stop("ship mass (ms) must be given, and a positive number")
+    if (missing(Ss) || Ss <= 0)
+        stop("ship wetted area (Ss) must be given, and a positive number")
+    if (impactWidth <= 0)
+        stop("impact width (impactWidth) must be a positive number, not ", impactWidth)
+    if (impactHeight <= 0)
+        stop("impact height (impactHeight) must be a positive number, not ", impactHeight)
     if (missing(lw))
         stop("Whale length (lm) must be given")
     if (missing(mw))
         stop("Whale mass (mw) must be given; try using whaleMassFromLength() to compute")
     if (missing(Sw))
         stop("Whale surface area (mw) must be given; try using whaleAreaFromLength() to compute")
-    if (delta < 0) stop("whale skin thickness (delta) must be positive, not ", delta)
-    if (Eskin < 0) stop("whale skin elastic modulus (Eskin) must be positive, not ", Eskin)
-    if (theta < 0 || theta > 89) stop("whale skin deformation angle (theta) must be between 0 and 89 deg, not ", theta)
-    if (beta < 0) stop("whale blubber thickness (beta) must be positive, not ", beta)
-    if (Ebeta < 0) stop("whale blubber elastic modulus (Ebeta) must be positive, not ", Ebeta)
-    if (alpha < 0) stop("whale sub-blubber thickness (alpha) must be positive, not ", alpha)
-    if (Ealpha < 0) stop("whale sub-blubber elastic modulus (Ealpha) must be positive, not ", Ealpha)
-    if (Cs < 0) stop("ship resistance parameter (Cs) must be positive, not ", Cs)
-    if (Cw < 0) stop("ship resistance parameter (Cw) must be positive, not ", Cw)
-    rval <- list(ms=ms, Ss=Ss, B=B, D=D, mw=mw, Sw=Sw, lw=lw,
+    if (delta < 0)
+        stop("whale skin thickness (delta) must be positive, not ", delta)
+    if (Eskin < 0)
+        stop("whale skin elastic modulus (Eskin) must be positive, not ", Eskin)
+    if (theta < 0 || theta > 89)
+        stop("whale skin deformation angle (theta) must be between 0 and 89 deg, not ", theta)
+    if (beta < 0)
+        stop("whale blubber thickness (beta) must be positive, not ", beta)
+    if (Ebeta < 0)
+        stop("whale blubber elastic modulus (Ebeta) must be positive, not ", Ebeta)
+    if (alpha < 0)
+        stop("whale sub-blubber thickness (alpha) must be positive, not ", alpha)
+    if (Ealpha < 0)
+        stop("whale sub-blubber elastic modulus (Ealpha) must be positive, not ", Ealpha)
+    if (Cs < 0)
+        stop("ship resistance parameter (Cs) must be positive, not ", Cs)
+    if (Cw < 0)
+        stop("ship resistance parameter (Cw) must be positive, not ", Cw)
+    rval <- list(ms=ms, Ss=Ss, impactWidth=impactWidth, impactHeight=impactHeight, mw=mw, Sw=Sw, lw=lw,
                  delta=delta, Eskin=Eskin, theta=theta,
                  Ebeta=Ebeta, beta=beta,
                  Ealpha=Ealpha, alpha=alpha,
@@ -293,7 +306,7 @@ whaleAreaFromLength <- function(L, type="wetted")
 ##OLD contactArea <- function(xs, xw, parms)
 ##OLD {
 ##OLD     touching <- xs < xw & xw < (xs + parms$beta + parms$alpha)
-##OLD     ifelse(touching, parms$B * parms$D, 0)
+##OLD     ifelse(touching, parms$impactWidth * parms$impactHeight, 0)
 ##OLD }
 
 #' Whale compression force
@@ -304,7 +317,7 @@ whaleAreaFromLength <- function(L, type="wetted")
 #' from ship-whale separation using \code{1-(xw-xs)/parms$beta} if
 #' \code{xw} is between \code{xs} and \code{xs+parms$beta},
 #' or zero otherwise. Area is computed as the product of
-#' \code{parms$B} and \code{parms$D}.
+#' \code{parms$impactWidth} and \code{parms$impactHeight}.
 #' FIXME: rewrite docs for the new blubber+inner scheme
 #'
 #' @param xs Ship position [m]
@@ -324,7 +337,7 @@ whaleCompressionForce <- function(xs, xw, parms)
     strain <- dx / (parms$beta + parms$alpha)
     E <- (parms$alpha + parms$beta) / (parms$alpha / parms$Ealpha + parms$beta / parms$Ebeta)
     stress <- E * strain
-    force <- stress * parms$B * parms$D
+    force <- stress * parms$impactWidth * parms$impactHeight
     ## Assume equal stress in blubber and interior layers
     alphaCompressed <- parms$alpha * (1 - stress / parms$Ealpha)
     betaCompressed <- parms$beta * (1 - stress / parms$Ebeta)
@@ -335,8 +348,8 @@ whaleCompressionForce <- function(xs, xw, parms)
 #' Skin force
 #'
 #' The ship-whale separation is used to calculate the deformation of the skin. The
-#' parameters of the calculation are \code{parms$B} (impact area width, m),
-#' \code{parms$D} (impact area height, in m), \code{parms$Eskin} (skin elastic modulus in Pa),
+#' parameters of the calculation are \code{parms$impactWidth} (impact area width, m),
+#' \code{parms$impactHeight} (impact area height, in m), \code{parms$Eskin} (skin elastic modulus in Pa),
 #' \code{parms$delta} (skin thickness in m), and \code{parms$theta} (skin bevel angle
 #' degrees, measured from a vector normal to undisturbed skin).
 #'
@@ -360,14 +373,15 @@ whaleSkinForce <- function(xs, xw, parms)
     l <- dx * S / C
     s <- dx / C
     ## Strains in y and z
-    epsilony <- 2 * (s - l) / (parms$B + 2 * l)
-    epsilonz <- 2 * (s - l) / (parms$D + 2 * l)
+    epsilony <- 2 * (s - l) / (parms$impactWidth + 2 * l)
+    epsilonz <- 2 * (s - l) / (parms$impactHeight + 2 * l)
     ## Stresses in y and z
     sigmay <- parms$Eskin * epsilony
     sigmaz <- parms$Eskin * epsilonz
     ## Net normal force in x; note the cosine, to resolve the force to the normal
-    ## direction, and the 2, to account for two sides of length B and two of length D..
-    force <- 2 * parms$delta * C * (parms$D * sigmaz + parms$B * sigmay)
+    ## direction, and the 2, to account for two sides of length
+    ## impactWidth and two of length impactHeight.
+    force <- 2 * parms$delta * C * (parms$impactHeight * sigmaz + parms$impactWidth * sigmay)
     ##> if (is.na(force[1])) stop("force is NA, probably indicating a programming error.")
     list(force=force, sigmay=sigmay, sigmaz=sigmaz)
 }
@@ -481,15 +495,15 @@ derivative <- function(var, t)
 #' library(whalestrike)
 #' t <- seq(0, 1, length.out=500)
 #' state <- c(xs=-2, vs=5, xw=0, vw=0)
-#' ls <- 10      # ship length [m]
-#' draft <- 1.5  # ship draft [m]
-#' beam <- 3     # ship beam [m]
-#' lw <- 11      # whale length [m]
-#' Rw <- 1       # whale radius [m]
-#' B <- 2        # impact region width [m]
-#' D <- 1        # impact region height [m]
+#' ls <- 10           # ship length [m]
+#' draft <- 1.5       # ship draft [m]
+#' beam <- 3          # ship beam [m]
+#' lw <- 11           # whale length [m]
+#' Rw <- 1            # whale radius [m]
+#' impactWidth <- 2   # impact region width [m]
+#' impactHeight <- 1  # impact region height [m]
 #' parms <- parameters(ms=20e3, Ss=ls*(2*draft+beam),
-#'               B=B, D=D,
+#'               impactWidth=impactWidth, impactHeight=impactHeight,
 #'               lw=lw, mw=whaleMassFromLength(lw),
 #'               Sw=whaleAreaFromLength(lw, "wetted"),
 #'               delta=0.02, Eskin=2e7, theta=45,
@@ -523,7 +537,7 @@ strike <- function(t, state, parms, debug=0)
     }
     for (need in c("ms", "Ss", # ship mass and wetted area
                    "mw", "Sw", # whale mass and wetted area
-                   "B", "D", # impact extends, horiz and vert
+                   "impactWidth", "impactHeight", # linear extents of impact region
                    "delta", "Eskin", "theta", # skin properties
                    "beta", "Ebeta", # blubber properties
                    "alpha", "Ealpha")) { # inner-layer properties
@@ -730,7 +744,7 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=TRUE, dra
         showEvents(xs, xw)
     }
     if (all || "compression stress" %in% which) {
-        stress <- x$WCF$force / (x$parms$D*x$parms$B)
+        stress <- x$WCF$force / (x$parms$impactHeight*x$parms$impactWidth)
         plot(t, stress/1e6, type="l", xlab="Time [s]", ylab="Compress. Stress [MPa]", lwd=2)
         showEvents(xs, xw)
     }

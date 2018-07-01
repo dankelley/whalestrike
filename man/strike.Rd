@@ -41,15 +41,15 @@ The forces are calculated by
 library(whalestrike)
 t <- seq(0, 1, length.out=500)
 state <- c(xs=-2, vs=5, xw=0, vw=0)
-ls <- 10      # ship length [m]
-draft <- 1.5  # ship draft [m]
-beam <- 3     # ship beam [m]
-lw <- 11      # whale length [m]
-Rw <- 1       # whale radius [m]
-B <- 2        # impact region width [m]
-D <- 1        # impact region height [m]
+ls <- 10           # ship length [m]
+draft <- 1.5       # ship draft [m]
+beam <- 3          # ship beam [m]
+lw <- 11           # whale length [m]
+Rw <- 1            # whale radius [m]
+impactWidth <- 2   # impact region width [m]
+impactHeight <- 1  # impact region height [m]
 parms <- parameters(ms=20e3, Ss=ls*(2*draft+beam),
-              B=B, D=D,
+              impactWidth=impactWidth, impactHeight=impactHeight,
               lw=lw, mw=whaleMassFromLength(lw),
               Sw=whaleAreaFromLength(lw, "wetted"),
               delta=0.02, Eskin=2e7, theta=45,
