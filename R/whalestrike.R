@@ -494,13 +494,13 @@ derivative <- function(var, t)
 #' library(whalestrike)
 #' t <- seq(0, 1, length.out=500)
 #' state <- c(xs=-2, vs=5, xw=0, vw=0)
-#' ls <- 10           # ship length [m]
-#' draft <- 1.5       # ship draft [m]
-#' beam <- 3          # ship beam [m]
-#' lw <- 11           # whale length [m]
-#' Rw <- 1            # whale radius [m]
-#' impactWidth <- 2   # impact region width [m]
-#' impactHeight <- 1  # impact region height [m]
+#' ls <- 10            # ship length [m]
+#' draft <- 1.5        # ship draft [m]
+#' beam <- 3           # ship beam [m]
+#' lw <- 11            # whale length [m]
+#' Rw <- 1             # whale radius [m]
+#' impactWidth <- 0.5  # impact region width [m]
+#' impactHeight <- 1.5 # impact region height [m]
 #' parms <- parameters(ms=20e3, Ss=ls*(2*draft+beam),
 #'               impactWidth=impactWidth, impactHeight=impactHeight,
 #'               lw=lw, mw=whaleMassFromLength(lw),
@@ -509,7 +509,7 @@ derivative <- function(var, t)
 #'               beta=0.3, Ebeta=6e5,
 #'               alpha=0.5, Ealpha=4e5)
 #' sol <- strike(t, state, parms)
-#' par(mfcol=c(3, 3), mar=c(2, 3, 0.5, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
+#' par(mfcol=c(2, 3), mar=c(2, 3, 1, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
 #' plot(sol)
 #'
 #' @references
@@ -598,13 +598,12 @@ strike <- function(t, state, parms, debug=0)
 #'
 #' \item \code{"whale water force"} for timea -series of water force on the whale.
 #'
-#' \item \code{"compression force"} for a time-series of compression force on the blubber
-#' and the layer to its interior. (These stresses are equal, under an equilibrium assumption.)
+#' \item \code{"reactive forces"} for a time-series showing the reactive
+#' forces associated with skin stretching and the compression of the
+#' blubber and sublayer layers undernaeath the skin.
 #'
 #' \item \code{"compression stress"} for a time-series plot of the compression stress on the blubber
 #' and the layer to its interior. (These stresses are equal, under an equilibrium assumption.)
-#'
-#' \item \code{"skin force"} for a time-series of normal force resulting from skin tension.
 #'
 #' \item \code{"skin stress"} for a time-series of skin stress in the along-skin y and z directions.
 #' A red horizontal line is drawn at 19.56MPa, if that value is on-scale. This is a suggestion
@@ -615,7 +614,9 @@ strike <- function(t, state, parms, debug=0)
 #'
 #' \item \code{"all"} for all of the above.
 #'
-#' \item \code{"default"} for all except acceleration.
+#' \item \code{"default"} for all except acceleration (not needed, since
+#' maximal value is in the \code{"location"} panel) and water force (not
+#' needed, since it is usually 100s of times smaller than other forces).
 #'}
 #' @param center Logical, indicating whether to center time-series plots.
 #' on the time when the vessel and whale and in closest proximity.
@@ -674,9 +675,8 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=TRUE, dra
     }
     all <- "all" %in% which
     if (which == "default")
-        which <- c("location", "blubber thickness", "sublayer thickness",
-                   "whale water force", "skin force", "skin stress",
-                   "compression force", "compression stress", "values")
+        which <- c("location", "thickness", "reactive forces", "skin stress",
+                   "compression stress", "values")
 
     ## Compute some forces, just in case we need them. FIXME: move to strike()
 
@@ -688,7 +688,7 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=TRUE, dra
         lines(t, xw - x$WCF$alphaCompressed, col="blue", lty="dotted", lwd=0.8)
         lines(t, xw - x$WCF$alphaCompressed - x$WCF$betaCompressed, col="blue", lwd=1)
         accel <- derivative(vw, t)
-        mtext(sprintf("max. %.0f m/s^2", max(accel)), side=3, line=-1, cex=par("cex"))
+        mtext(sprintf("max. %.0f m/s^2 ", max(accel)), side=1, line=-1, cex=par("cex"), adj=1)
         showEvents(xs, xw)
         if (showLegend)
             legend("topleft", col=c(1, 2, 2), legend=c("Ship", "Whale", "Blubber"),
@@ -704,6 +704,20 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=TRUE, dra
             abline(h=NFL50, col="red", lwd=2)
         }
     }
+    if (all || "thickness" %in% which) {
+        blubber <- x$WCF$betaCompressed
+        sublayer <- x$WCF$alphaCompressed
+        maxy <- max(c(blubber+sublayer))
+        ylim <- c(0, maxy)
+        plot(t, sublayer+blubber, xlab="Time [s]", ylab="Thickness [m]", type="l", lwd=2, ylim=ylim)
+        lines(t, sublayer, lty=3, lwd=2)
+        showEvents(xs, xw)
+        ## mtext(" sublayer", side=1, line=-1, adj=0, col=2, cex=par("cex"))
+        ## mtext("blubber ", side=1, line=-1, adj=1, cex=par("cex"))
+        legend("bottomright", lwd=2, lty=c(1, 3), legend=c("Blubber", "Sublayer"))
+        danger <- blubber < 0.8/1.2 * x$parms$beta
+        points(t, rep(par("usr")[4], length(t)), col=1+danger, pch=20, cex=1/2)
+    }
     if (all || "blubber thickness" %in% which) {
         y <- x$WCF$betaCompressed
         ylim <- c(min(0, min(y)), max(y)) # include 0 if not there by autoscale
@@ -717,25 +731,36 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=TRUE, dra
         ylim <- c(min(0, min(y)), max(y)) # include 0 if not there by autoscale
         plot(t, y, xlab="Time [s]", ylab="Sublayer thickness [m]", type="l", lwd=2, ylim=ylim)
         showEvents(xs, xw)
-        if (drawCriteria)
-            abline(h=x$parms$alpha*(1-0.8/1.2), col="red")
     }
     if (all || "whale water force" %in% which) {
         plot(t, whaleWaterForce(vw, x$parms) / 1e6 , xlab="Time [s]", ylab="Water force [MN]", type="l", lwd=2)
         showEvents(xs, xw)
     }
-    if (all || "skin force" %in% which) {
-        Fs <- whaleSkinForce(xs, xw, x$parms)
-        plot(t, Fs$force/1e6, type="l", xlab="Time [s]", ylab="Skin Force [MN]", lwd=2)
+    if (all || "reactive forces" %in% which) {
+        SF <- x$WSF$force
+        CF <- x$WCF$force
+        ylim <- range(c(SF/1e6, CF/1e6), na.rm=TRUE)
+        plot(t, SF/1e6, type="l", xlab="Time [s]", ylab="Force [MN]", lwd=2, ylim=ylim)
+        lines(t, CF/1e6, col=2, lwd=2)
+        #legend("topleft", col=1:2, lwd=2, legend=c("Skin", "Blubber"))
+        mtext(" skin", side=3, line=-1, adj=0, col=2, cex=par("cex"))
+        mtext("interior ", side=3, line=-1, adj=1, cex=par("cex"))
         showEvents(xs, xw)
     }
+    ## if (all || "skin force" %in% which) {
+    ##     Fs <- whaleSkinForce(xs, xw, x$parms)
+    ##     plot(t, Fs$force/1e6, type="l", xlab="Time [s]", ylab="Skin Force [MN]", lwd=2)
+    ##     showEvents(xs, xw)
+    ## }
     if (all || "skin stress" %in% which) {
         Fs <- whaleSkinForce(xs, xw, x$parms)
         ylim <- range(c(Fs$sigmay, Fs$sigmaz)/1e6)
         plot(t, Fs$sigmay/1e6, type="l", xlab="Time [s]", ylab="Skin Stress [MPa]", lwd=2, ylim=ylim)
-        lines(t, Fs$sigmaz/1e6, lty=3)
+        lines(t, Fs$sigmaz/1e6, col=2)
         ## legend("topright", lty=c(1,3), legend=c("horiz.", "vert."))
-        abline(h=19.56, col="red")
+        abline(h=19.56, lty="dotted")
+        mtext(" horiz.", side=3, line=-1, adj=0, col=2, cex=par("cex"))
+        mtext("vert. ", side=3, line=-1, adj=1, cex=par("cex"))
         showEvents(xs, xw)
     }
     if (all || "compression force" %in% which) {

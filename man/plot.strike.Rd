@@ -34,13 +34,12 @@ thickness, as for \code{"blubber thickness"}.
 
 \item \code{"whale water force"} for timea -series of water force on the whale.
 
-\item \code{"compression force"} for a time-series of compression force on the blubber
-and the layer to its interior. (These stresses are equal, under an equilibrium assumption.)
+\item \code{"reactive forces"} for a time-series showing the reactive
+forces associated with skin stretching and the compression of the
+blubber and sublayer layers undernaeath the skin.
 
 \item \code{"compression stress"} for a time-series plot of the compression stress on the blubber
 and the layer to its interior. (These stresses are equal, under an equilibrium assumption.)
-
-\item \code{"skin force"} for a time-series of normal force resulting from skin tension.
 
 \item \code{"skin stress"} for a time-series of skin stress in the along-skin y and z directions.
 A red horizontal line is drawn at 19.56MPa, if that value is on-scale. This is a suggestion
@@ -51,7 +50,9 @@ entry in Table 3 of Grear et al. (2018) for the strength of seal skin.
 
 \item \code{"all"} for all of the above.
 
-\item \code{"default"} for all except acceleration.
+\item \code{"default"} for all except acceleration (not needed, since
+maximal value is in the \code{"location"} panel) and water force (not
+needed, since it is usually 100s of times smaller than other forces).
 }}
 
 \item{center}{Logical, indicating whether to center time-series plots.
