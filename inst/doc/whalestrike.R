@@ -3,7 +3,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 
 ## ----results="hide"------------------------------------------------------
 library(whalestrike)
-t <- seq(0, 0.5, length.out=500)
+t <- seq(0, 0.8, length.out=500)
 state <- c(xs=-1.5, vs=5, xw=0, vw=0)
 
 ms <- 20e3                             # ship mass

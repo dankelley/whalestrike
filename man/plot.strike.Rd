@@ -5,7 +5,7 @@
 \title{Plot a strike object}
 \usage{
 \method{plot}{strike}(x, which = "default", center = FALSE,
-  drawCriteria = TRUE, drawEvents = TRUE, debug = 0, ...)
+  drawCriteria = rep(TRUE, 2), drawEvents = TRUE, debug = 0, ...)
 }
 \arguments{
 \item{x}{An object inheriting from class \code{strike}}
@@ -19,20 +19,34 @@ whale location \code{x} in blue, and skin location in dashed blue.
 \item \code{"whale acceleration"} for a time-series plot of whale acceleration,
 with horizontal lines drawn at 433 and 721 m/s^2,
 which are estimates of the 10% and 50% probability of concussion
-for the National Football League concussoin data presented in
+for the National Football League concussion data presented in
 Figure 9 of Ng et al. 2017.
 
-\item \code{"blubber thickness"} for a time-series plot of blubber thickness,
-with a red line drawn at 2/3 of the
+\item \code{"blubber thickness"} for a time-series plot of blubber thickness.
+If \code{drawCriteria[1]} is \code{TRUE} then a red line drawn at 2/3 of the
 initial thickness, based on the Grear et al. 2018 result (page 144, left column)
 that mean (seal) blubber strength is 0.8MPa, whereas mean (seal) blubber
 modulus is 1.2MPa, for a ratio of about 2/3.
 
 \item \code{"sublayer thickness"} for a time-series plot of the thickness
-of the layer interior to the blubber. A red line is drawn at 2/3 of the initial
-thickness, as for \code{"blubber thickness"}.
+of the layer interior to the blubber.
+If \code{drawCriteria[1]} is \code{TRUE} then a red line drawn at 2/3 of the
+initial thickness, based on the Grear et al. 2018 result (page 144, left column)
+that mean (seal) blubber strength is 0.8MPa, whereas mean (seal) blubber
+modulus is 1.2MPa, for a ratio of about 2/3. This is really just a provisional
+guess at a criterion for muscle or organs. (If the simulation resulted from a
+call to \code{\link{strike}} with \code{Ealpha} corresponding to bone, it is
+quite unlikely that this criterion will be met.)
 
-\item \code{"whale water force"} for timea -series of water force on the whale.
+\item \code{"thickness"} to plot both blubber thickness and sublayer thickness
+in one panel, creating a cross-section diagram.   If \code{drawCriteria[1]}
+is \code{TRUE}, then bold lines are used for any times during
+which the criterion described under \code{"blubber thickness"} suggests
+blubber damage. If \code{drawCriteria} is of length 2 and the second
+element is \code{TRUE}, then the same criterion is used to indicate excessive
+thinning of the sublayer; this should only be used if the \code{Ealpha} value
+provided to \code{\link{strike}} represented soft tissue, not bone, and
+it should be noted that the notion of identical criteria is just a guess.
 
 \item \code{"reactive forces"} for a time-series showing the reactive
 forces associated with skin stretching and the compression of the
@@ -58,8 +72,11 @@ needed, since it is usually 100s of times smaller than other forces).
 \item{center}{Logical, indicating whether to center time-series plots.
 on the time when the vessel and whale and in closest proximity.}
 
-\item{drawCriteria}{Logical, indicating whether to draw coloured horizontal lines
-on some panels, suggesting critical values (see \dQuote{Details}).}
+\item{drawCriteria}{Logical value indicating whether to
+indicate dangerous conditions by thickening lines in time series
+plots. Those conditions are stated in the documentation for individual
+panels, and for multivariate plots, \code{drawCriteria} can be of
+length exceeding 1, to control individual curves in the plot.}
 
 \item{drawEvents}{Logical, indicating whether to draw lines for some events,
 such as the moment of closest approach.}

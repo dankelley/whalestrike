@@ -494,13 +494,12 @@ derivative <- function(var, t)
 #' library(whalestrike)
 #' t <- seq(0, 1, length.out=500)
 #' state <- c(xs=-2, vs=5, xw=0, vw=0)
-#' ls <- 10            # ship length [m]
-#' draft <- 1.5        # ship draft [m]
-#' beam <- 3           # ship beam [m]
-#' lw <- 11            # whale length [m]
-#' Rw <- 1             # whale radius [m]
-#' impactWidth <- 0.5  # impact region width [m]
-#' impactHeight <- 1.5 # impact region height [m]
+#' ls <- 10           # ship length [m]
+#' draft <- 1.5       # ship draft [m]
+#' beam <- 3          # ship beam [m]
+#' lw <- 11           # whale length [m]
+#' impactWidth <- 0.5 # impact region width [m]
+#' impactHeight <- 1  # impact region height [m]
 #' parms <- parameters(ms=20e3, Ss=ls*(2*draft+beam),
 #'               impactWidth=impactWidth, impactHeight=impactHeight,
 #'               lw=lw, mw=whaleMassFromLength(lw),
@@ -583,20 +582,34 @@ strike <- function(t, state, parms, debug=0)
 #' \item \code{"whale acceleration"} for a time-series plot of whale acceleration,
 #' with horizontal lines drawn at 433 and 721 m/s^2,
 #' which are estimates of the 10% and 50% probability of concussion
-#' for the National Football League concussoin data presented in
+#' for the National Football League concussion data presented in
 #' Figure 9 of Ng et al. 2017.
 #'
-#' \item \code{"blubber thickness"} for a time-series plot of blubber thickness,
-#' with a red line drawn at 2/3 of the
+#' \item \code{"blubber thickness"} for a time-series plot of blubber thickness.
+#' If \code{drawCriteria[1]} is \code{TRUE} then a red line drawn at 2/3 of the
 #' initial thickness, based on the Grear et al. 2018 result (page 144, left column)
 #' that mean (seal) blubber strength is 0.8MPa, whereas mean (seal) blubber
 #' modulus is 1.2MPa, for a ratio of about 2/3.
 #'
 #' \item \code{"sublayer thickness"} for a time-series plot of the thickness
-#' of the layer interior to the blubber. A red line is drawn at 2/3 of the initial
-#' thickness, as for \code{"blubber thickness"}.
+#' of the layer interior to the blubber.
+#' If \code{drawCriteria[1]} is \code{TRUE} then a red line drawn at 2/3 of the
+#' initial thickness, based on the Grear et al. 2018 result (page 144, left column)
+#' that mean (seal) blubber strength is 0.8MPa, whereas mean (seal) blubber
+#' modulus is 1.2MPa, for a ratio of about 2/3. This is really just a provisional
+#' guess at a criterion for muscle or organs. (If the simulation resulted from a
+#' call to \code{\link{strike}} with \code{Ealpha} corresponding to bone, it is
+#' quite unlikely that this criterion will be met.)
 #'
-#' \item \code{"whale water force"} for timea -series of water force on the whale.
+#' \item \code{"thickness"} to plot both blubber thickness and sublayer thickness
+#' in one panel, creating a cross-section diagram.   If \code{drawCriteria[1]}
+#' is \code{TRUE}, then bold lines are used for any times during
+#' which the criterion described under \code{"blubber thickness"} suggests
+#' blubber damage. If \code{drawCriteria} is of length 2 and the second
+#' element is \code{TRUE}, then the same criterion is used to indicate excessive
+#' thinning of the sublayer; this should only be used if the \code{Ealpha} value
+#' provided to \code{\link{strike}} represented soft tissue, not bone, and
+#' it should be noted that the notion of identical criteria is just a guess.
 #'
 #' \item \code{"reactive forces"} for a time-series showing the reactive
 #' forces associated with skin stretching and the compression of the
@@ -620,19 +633,28 @@ strike <- function(t, state, parms, debug=0)
 #'}
 #' @param center Logical, indicating whether to center time-series plots.
 #' on the time when the vessel and whale and in closest proximity.
-#' @param drawCriteria Logical, indicating whether to draw coloured horizontal lines
-#' on some panels, suggesting critical values (see \dQuote{Details}).
+#'
+#' @param drawCriteria Logical value indicating whether to
+#' indicate dangerous conditions by thickening lines in time series
+#' plots. Those conditions are stated in the documentation for individual
+#' panels, and for multivariate plots, \code{drawCriteria} can be of
+#' length exceeding 1, to control individual curves in the plot.
+#'
 #' @param drawEvents Logical, indicating whether to draw lines for some events,
 #' such as the moment of closest approach.
+#'
 #' @param debug Integer indicating debugging level, 0 for quiet operation and higher values
 #' for more verbose monitoring of progress through the function.
+#'
 #' @param ... Ignored.
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
-plot.strike <- function(x, which="default", center=FALSE, drawCriteria=TRUE, drawEvents=TRUE, debug=0, ...)
+plot.strike <- function(x, which="default", center=FALSE, drawCriteria=rep(TRUE, 2), drawEvents=TRUE, debug=0, ...)
 {
     showLegend <- FALSE
+    if (!is.logical(drawCriteria))
+        stop("drawCriteria must be a logical, not ", paste(drawCriteria, collapse=" "), ", as given")
     g <- 9.8 # gravity
     t <- x$t
     xs <- x$xs
@@ -667,7 +689,7 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=TRUE, dra
             tdeath <- if (is.finite(death)) t[death] else NA
             if (is.finite(tdeath)) {
                 abline(v=tdeath, lwd=2, col="blue")
-                mtext("Fatality", at=tdeath, side=3, line=0, col="blue", font=2)
+                mtext("Fatality", at=tdeath, side=3, line=0, col="blue", font=2, cex=par("cex"))
             }
             ## tclosest <- t[which.min(abs(xs-xw))]
             ## abline(v=tclosest, col="darkgreen", lwd=2, lty=3)
@@ -683,10 +705,10 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=TRUE, dra
     ## x(t) and xw(t)
     if (all || "location" %in% which) {
         ylim <- range(c(xs, xw), na.rm=TRUE)
-        plot(t, xs, type="l", xlab="Time [s]", ylab="Location [m]", ylim=ylim, lwd=2)
-        lines(t, xw, col="blue", lwd=2)
-        lines(t, xw - x$WCF$alphaCompressed, col="blue", lty="dotted", lwd=0.8)
-        lines(t, xw - x$WCF$alphaCompressed - x$WCF$betaCompressed, col="blue", lwd=1)
+        plot(t, xs, type="l", xlab="Time [s]", ylab="Location [m]", col=rgb(0.3,.8,.3,.4), ylim=ylim, lwd=4)
+        lines(t, xw, lwd=4, col="gray")
+        lines(t, xw - x$WCF$alphaCompressed, col=2, lwd=2)
+        lines(t, xw - x$WCF$alphaCompressed - x$WCF$betaCompressed, lwd=2)
         accel <- derivative(vw, t)
         mtext(sprintf("max. %.0f m/s^2 ", max(accel)), side=1, line=-1, cex=par("cex"), adj=1)
         showEvents(xs, xw)
@@ -708,15 +730,28 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=TRUE, dra
         blubber <- x$WCF$betaCompressed
         sublayer <- x$WCF$alphaCompressed
         maxy <- max(c(blubber+sublayer))
-        ylim <- c(0, maxy)
-        plot(t, sublayer+blubber, xlab="Time [s]", ylab="Thickness [m]", type="l", lwd=2, ylim=ylim)
-        lines(t, sublayer, lty=3, lwd=2)
+        ylim <- c(0, maxy*1.04) # put y=0 at bottom, so gray line (for whale centre) is there
+        plot(t, sublayer+blubber, xlab="Time [s]", ylab="Thickness [m]", type="l", lwd=2, ylim=ylim, yaxs="i")
+        lines(t, sublayer, col=2, lwd=2)
+        abline(h=0, col="gray", lwd=8)
         showEvents(xs, xw)
-        ## mtext(" sublayer", side=1, line=-1, adj=0, col=2, cex=par("cex"))
-        ## mtext("blubber ", side=1, line=-1, adj=1, cex=par("cex"))
-        legend("bottomright", lwd=2, lty=c(1, 3), legend=c("Blubber", "Sublayer"))
-        danger <- blubber < 0.8/1.2 * x$parms$beta
-        points(t, rep(par("usr")[4], length(t)), col=1+danger, pch=20, cex=1/2)
+        mtext(" blubber", side=1, line=-1.5, adj=0, cex=par("cex"), font=2)
+        mtext("sublayer ", side=1, line=-1.5, adj=1, col=2, cex=par("cex"), font=2)
+        ##legend("bottomright", lwd=2, lty=c(1, 3), legend=c("Blubber", "Sublayer"))
+        if (drawCriteria[1]) {
+            ## Blubber
+            danger <- blubber < (1 - 0.8/1.2) * x$parms$beta
+            tt <- t
+            tt[!danger] <- NA
+            lines(tt, sublayer+blubber, lwd=4)
+        }
+        if (length(drawCriteria) > 1 && drawCriteria[2]) {
+            ## Sublayer
+            danger <- sublayer < (1 - 0.8/1.2) * x$parms$alpha
+            tt <- t
+            tt[!danger] <- NA
+            lines(tt, sublayer, lwd=4, col=2)
+         }
     }
     if (all || "blubber thickness" %in% which) {
         y <- x$WCF$betaCompressed
@@ -731,6 +766,8 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=TRUE, dra
         ylim <- c(min(0, min(y)), max(y)) # include 0 if not there by autoscale
         plot(t, y, xlab="Time [s]", ylab="Sublayer thickness [m]", type="l", lwd=2, ylim=ylim)
         showEvents(xs, xw)
+        if (drawCriteria)
+            abline(h=x$parms$beta*(1-0.8/1.2), col="red")
     }
     if (all || "whale water force" %in% which) {
         plot(t, whaleWaterForce(vw, x$parms) / 1e6 , xlab="Time [s]", ylab="Water force [MN]", type="l", lwd=2)
@@ -740,11 +777,12 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=TRUE, dra
         SF <- x$WSF$force
         CF <- x$WCF$force
         ylim <- range(c(SF/1e6, CF/1e6), na.rm=TRUE)
-        plot(t, SF/1e6, type="l", xlab="Time [s]", ylab="Force [MN]", lwd=2, ylim=ylim)
+        plot(t, SF/1e6, type="l", xlab="Time [s]", ylab="Forces [MN]", lwd=2, ylim=ylim)
         lines(t, CF/1e6, col=2, lwd=2)
         #legend("topleft", col=1:2, lwd=2, legend=c("Skin", "Blubber"))
-        mtext(" skin", side=3, line=-1, adj=0, col=2, cex=par("cex"))
-        mtext("interior ", side=3, line=-1, adj=1, cex=par("cex"))
+        mtext(" skin", side=3, line=-1, adj=0, col=2, cex=par("cex"), font=2)
+        mtext("blubber ", side=3, line=-1, adj=1, cex=par("cex"), font=2)
+        mtext("& sublayer ", side=3, line=-2, adj=1, cex=par("cex"), font=2)
         showEvents(xs, xw)
     }
     ## if (all || "skin force" %in% which) {
@@ -756,11 +794,11 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=TRUE, dra
         Fs <- whaleSkinForce(xs, xw, x$parms)
         ylim <- range(c(Fs$sigmay, Fs$sigmaz)/1e6)
         plot(t, Fs$sigmay/1e6, type="l", xlab="Time [s]", ylab="Skin Stress [MPa]", lwd=2, ylim=ylim)
-        lines(t, Fs$sigmaz/1e6, col=2)
+        lines(t, Fs$sigmaz/1e6, col=2, lwd=2)
         ## legend("topright", lty=c(1,3), legend=c("horiz.", "vert."))
         abline(h=19.56, lty="dotted")
-        mtext(" horiz.", side=3, line=-1, adj=0, col=2, cex=par("cex"))
-        mtext("vert. ", side=3, line=-1, adj=1, cex=par("cex"))
+        mtext(" horiz.", side=3, line=-1, adj=0, col=2, cex=par("cex"), font=2)
+        mtext("vert. ", side=3, line=-1, adj=1, cex=par("cex"), font=2)
         showEvents(xs, xw)
     }
     if (all || "compression force" %in% which) {

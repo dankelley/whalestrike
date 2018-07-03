@@ -2,6 +2,7 @@ exportPattern("^[[:alpha:]]+")
 importFrom("deSolve", "lsoda")
 importFrom("graphics", "abline", "box", "grid", "legend", "lines", "mtext", "par",
         "plot", "plot.new", "points", "text")
+importFrom("grDevices", "rgb")
 importFrom("stats", "uniroot")
 importFrom("testthat", "expect_equal")
 importFrom("utils", "head", "tail")
