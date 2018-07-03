@@ -54,7 +54,7 @@ library(whalestrike)
 state <- list(xs=-1.2, vs=0.5144*7, xw=0, vw=0)
 parms <- parameters(ms=20000,
               Ss=Ss,
-              B=4.6, D=1.6, mw=12330, Sw=63,
+              impactWidth=4.6, impactHeight=1.6, mw=12330, Sw=63,
               lw=10,
               delta=0.02,
               Es=2e7, theta=45, Eb=6e5, beta=0.2, Cs=0.0025*2, Cw=0.003)
@@ -72,7 +72,7 @@ state <- list(xs=-1.2, vs=0.5144*7, xw=0, vw=0)
 Cs <- 0.0025 * 3
 parms <- parameters(ms=20000,
               Ss=Ss,
-              B=4.6, D=1.6, mw=12330, Sw=63,
+              impactWidth=4.6, impactHeight=1.6, mw=12330, Sw=63,
               lw=10,
               delta=0.02,
               Es=2e7, theta=45, Eb=6e5, beta=0.2, Cs=0.0025*3, Cw=0.003)
