@@ -8,8 +8,8 @@ state <- c(xs=-1.5, vs=5, xw=0, vw=0)
 
 ms <- 20e3                             # ship mass
 Ss <- 11.73*(2*1.58+4.63)              # ship wetted area (max)
-impactWidth <- 4.6                     # impact width
-impactHeight <- 1.6                    # impact height
+impactWidth <- 0.5                     # impact width (guess, for pointed bow)
+impactHeight <- 1.58                   # impact height (draft)
 lw <- 10                               # whale length
 mw <- whaleMassFromLength(lw)          # whale mass
 Sw <- whaleAreaFromLength(lw,"wetted") # whale area
@@ -55,8 +55,13 @@ for (i in seq_along(beta)) {
         maxStrain[j, i] <- max(sol$WCF$strain)
     }
 }
-contour(speedK, beta, maxStrain, level=seq(0, 0.3, 0.05),
+danger <- 0.8 / 1.2
+contour(speedK, beta, maxStrain, level=seq(0, danger, 0.1),
         xlab="Speed [knots]", ylab="Blubber thickness [m]")
-contour(speedK, beta, maxStrain, level=seq(0.3, 1, 0.05), lwd=3, add=TRUE)
-mtext("Contours of max strain (bold if unsafe)", side=3)
+contour(speedK, beta, maxStrain, level=seq(1, danger, -0.1), lwd=3, add=TRUE)
+contour(speedK, beta, maxStrain, level=2/3, lwd=3, lty=2, add=TRUE)
+## 2/3 = 0.8/1.2 is Grear et al. 2038 result (page 144, left column) that
+## mean (seal) blubber strength is 0.8MPa, whereas mean (seal) blubber
+## modulus is 1.2MPa.
+mtext("Contours of max strain (dangerous if > 2/3)", side=3)
 

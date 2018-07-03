@@ -26,7 +26,7 @@ Figure 9 of Ng et al. 2017.
 with a red line drawn at 2/3 of the
 initial thickness, based on the Grear et al. 2018 result (page 144, left column)
 that mean (seal) blubber strength is 0.8MPa, whereas mean (seal) blubber
-modulus is 1.2MPa, for a ratio of 2/3.
+modulus is 1.2MPa, for a ratio of about 2/3.
 
 \item \code{"sublayer thickness"} for a time-series plot of the thickness
 of the layer interior to the blubber. A red line is drawn at 2/3 of the initial
