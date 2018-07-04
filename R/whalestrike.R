@@ -779,9 +779,9 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=rep(TRUE,
         plot(t, SF/1e6, type="l", xlab="Time [s]", ylab="Forces [MN]", lwd=lwd, ylim=ylim)
         lines(t, CF/1e6, col=2, lwd=lwd)
         ## legend("topleft", col=1:2, lwd=lwd, legend=c("Skin", "Blubber"))
-        mtext(" skin", side=3, line=-1, adj=0, col=2, cex=par("cex"), font=2)
-        mtext("blubber ", side=3, line=-1, adj=1, cex=par("cex"), font=2)
-        mtext("& sublayer ", side=3, line=-2, adj=1, cex=par("cex"), font=2)
+        mtext(" skin", side=3, line=-1, adj=0, cex=par("cex"))
+        mtext("blubber ", side=3, line=-1, adj=1, col=2, cex=par("cex"))
+        mtext("& sublayer ", side=3, line=-2, adj=1, col=2, cex=par("cex"))
         showEvents(xs, xw)
     }
     ## if (all || "skin force" %in% which) {
@@ -796,8 +796,8 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=rep(TRUE,
         lines(t, Fs$sigmaz/1e6, col=2, lwd=lwd)
         ## legend("topright", lty=c(1,3), legend=c("horiz.", "vert."))
         abline(h=19.56, lty="dotted")
-        mtext(" horiz.", side=3, line=-1, adj=0, col=2, cex=par("cex"), font=2)
-        mtext("vert. ", side=3, line=-1, adj=1, cex=par("cex"), font=2)
+        mtext(" horiz.", side=3, line=-1, adj=0, cex=par("cex"))
+        mtext("vert. ", side=3, line=-1, adj=1, col=2, cex=par("cex"))
         showEvents(xs, xw)
     }
     if (all || "compression force" %in% which) {
