@@ -13,8 +13,9 @@
 \item{which}{A character vector that indicates what to plot.
 This choices for its entries are:\itemize{
 
-\item \code{"location"} for a time-series plot of boat location \code{xw} in black,
-whale location \code{x} in blue, and skin location in dashed blue.
+\item \code{"location"} for a time-series plot of boat location \code{xw} in
+dashed black, whale centerline \code{xs} in solid gray,
+blubber-interior interface in red, and skin in blue.
 
 \item \code{"whale acceleration"} for a time-series plot of whale acceleration,
 with horizontal lines drawn at 433 and 721 m/s^2,
@@ -40,9 +41,10 @@ quite unlikely that this criterion will be met.)
 
 \item \code{"thickness"} to plot both blubber thickness and sublayer thickness
 in one panel, creating a cross-section diagram.   If \code{drawCriteria[1]}
-is \code{TRUE}, then bold lines are used for any times during
-which the criterion described under \code{"blubber thickness"} suggests
-blubber damage. If \code{drawCriteria} is of length 2 and the second
+is \code{TRUE}, then the curve is drawn with a wider pen to
+indicate times when the blubber is excessively thinned (see
+\code{"blubber thickness"}).
+If \code{drawCriteria} is of length 2 and the second
 element is \code{TRUE}, then the same criterion is used to indicate excessive
 thinning of the sublayer; this should only be used if the \code{Ealpha} value
 provided to \code{\link{strike}} represented soft tissue, not bone, and
@@ -56,8 +58,9 @@ blubber and sublayer layers undernaeath the skin.
 and the layer to its interior. (These stresses are equal, under an equilibrium assumption.)
 
 \item \code{"skin stress"} for a time-series of skin stress in the along-skin y and z directions.
-A red horizontal line is drawn at 19.56MPa, if that value is on-scale. This is a suggestion
-of the maximum stress that the skin can accommodate without damage, inferred from an
+If \code{drawCriteria[1]} is \code{TRUE} then these traces are thickened
+during any times when the stress exceeds 19.5MPa, which is taken as
+the maximum stress that the skin can accommodate without damage, inferred from an
 entry in Table 3 of Grear et al. (2018) for the strength of seal skin.
 
 \item \code{"values"} for a listing of \code{param} values.
