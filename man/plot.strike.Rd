@@ -5,7 +5,9 @@
 \title{Plot a strike object}
 \usage{
 \method{plot}{strike}(x, which = "default", center = FALSE,
-  drawCriteria = rep(TRUE, 2), drawEvents = TRUE, debug = 0, ...)
+  drawCriteria = rep(TRUE, 2), drawEvents = TRUE, colw = c("Slate Gray",
+  "Firebrick", "Dodger Blue 4"), cols = "black", lwd = 1.4, D = 3,
+  debug = 0, ...)
 }
 \arguments{
 \item{x}{An object inheriting from class \code{strike}}
@@ -17,11 +19,11 @@ This choices for its entries are:\itemize{
 dashed black, whale centerline \code{xs} in solid gray,
 blubber-interior interface in red, and skin in blue.
 
-\item \code{"whale acceleration"} for a time-series plot of whale acceleration,
-with horizontal lines drawn at 433 and 721 m/s^2,
-which are estimates of the 10% and 50% probability of concussion
-for the National Football League concussion data presented in
-Figure 9 of Ng et al. 2017.
+\item \code{"whale acceleration"} for a time-series plot of whale acceleration.
+If \code{drawCriteria} is \code{TRUE}, the line is thickened during
+times when the acceleration exceeds 433 m/s^2, which is an estimate of
+the 10% probability of concussion for the National Football League
+concussion data presented in Figure 9 of Ng et al. 2017.
 
 \item \code{"blubber thickness"} for a time-series plot of blubber thickness.
 If \code{drawCriteria[1]} is \code{TRUE} then a red line drawn at 2/3 of the
@@ -83,6 +85,20 @@ length exceeding 1, to control individual curves in the plot.}
 
 \item{drawEvents}{Logical, indicating whether to draw lines for some events,
 such as the moment of closest approach.}
+
+\item{colw}{A three-element colour specification for indications of whale centre,
+the interface between blubber and the interior and whale skin, for use in the
+result of using \code{"location"} for \code{which}. The default has
+a gray tone, a red tone, and a blue tone, respepectively.}
+
+\item{cols}{As \code{colw}, but the colour to be used for the ship bow location,
+which is drawn with a dashed line.}
+
+\item{lwd}{Line width used in plots for time intervals in which damage
+criteria are not exceed (or if \code{drawCriteria} is \code{FALSE}).}
+
+\item{D}{Factor by which to thicken lines during times during which damage
+criteria are exceeded. Ignored unless \code{drawCriteria} is \code{TRUE}.}
 
 \item{debug}{Integer indicating debugging level, 0 for quiet operation and higher values
 for more verbose monitoring of progress through the function.}

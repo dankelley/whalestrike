@@ -580,11 +580,11 @@ strike <- function(t, state, parms, debug=0)
 #' dashed black, whale centerline \code{xs} in solid gray,
 #' blubber-interior interface in red, and skin in blue.
 #'
-#' \item \code{"whale acceleration"} for a time-series plot of whale acceleration,
-#' with horizontal lines drawn at 433 and 721 m/s^2,
-#' which are estimates of the 10% and 50% probability of concussion
-#' for the National Football League concussion data presented in
-#' Figure 9 of Ng et al. 2017.
+#' \item \code{"whale acceleration"} for a time-series plot of whale acceleration.
+#' If \code{drawCriteria} is \code{TRUE}, the line is thickened during
+#' times when the acceleration exceeds 433 m/s^2, which is an estimate of
+#' the 10% probability of concussion for the National Football League
+#' concussion data presented in Figure 9 of Ng et al. 2017.
 #'
 #' \item \code{"blubber thickness"} for a time-series plot of blubber thickness.
 #' If \code{drawCriteria[1]} is \code{TRUE} then a red line drawn at 2/3 of the
@@ -646,6 +646,20 @@ strike <- function(t, state, parms, debug=0)
 #' @param drawEvents Logical, indicating whether to draw lines for some events,
 #' such as the moment of closest approach.
 #'
+#' @param colw A three-element colour specification for indications of whale centre,
+#' the interface between blubber and the interior and whale skin, for use in the
+#' result of using \code{"location"} for \code{which}. The default has
+#' a gray tone, a red tone, and a blue tone, respepectively.
+#'
+#' @param cols As \code{colw}, but the colour to be used for the ship bow location,
+#' which is drawn with a dashed line.
+#'
+#' @param lwd Line width used in plots for time intervals in which damage
+#' criteria are not exceed (or if \code{drawCriteria} is \code{FALSE}).
+#'
+#' @param D Factor by which to thicken lines during times during which damage
+#' criteria are exceeded. Ignored unless \code{drawCriteria} is \code{TRUE}.
+#'
 #' @param debug Integer indicating debugging level, 0 for quiet operation and higher values
 #' for more verbose monitoring of progress through the function.
 #'
@@ -653,7 +667,9 @@ strike <- function(t, state, parms, debug=0)
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
-plot.strike <- function(x, which="default", center=FALSE, drawCriteria=rep(TRUE, 2), drawEvents=TRUE, debug=0, ...)
+plot.strike <- function(x, which="default", center=FALSE, drawCriteria=rep(TRUE, 2), drawEvents=TRUE,
+                       colw=c("Slate Gray", "Firebrick", "Dodger Blue 4"), cols="black",
+                       lwd=1.4, D=3, debug=0, ...)
 {
     showLegend <- FALSE
     if (!is.logical(drawCriteria))
@@ -703,10 +719,6 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=rep(TRUE,
         which <- c("location", "thickness", "reactive forces", "skin stress",
                    "compression stress", "values")
 
-    ## Compute some forces, just in case we need them. FIXME: move to strike()
-    cols <- "black"                    # ship colour
-    colw <- c("Slate Gray", "Firebrick", "Dodger Blue 4") # whale colour (centre, interface, skin)
-    lwd <- 2
     ## x(t) and xw(t)
     if (all || "location" %in% which) {
         ylim <- range(c(xs, xw), na.rm=TRUE)
@@ -719,13 +731,13 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=rep(TRUE,
         showEvents(xs, xw)
     }
     if (all || "whale acceleration" %in% which) {
-        plot(t, derivative(vw, t), xlab="Time [s]", ylab="Whale accel. [m/s^2]", type="l", lwd=lwd)
+        a <- derivative(vw, t)
+        plot(t, a, xlab="Time [s]", ylab="Whale accel. [m/s^2]", type="l", lwd=lwd)
         showEvents(xs, xw)
         if (drawCriteria) {
-            NFL10 <- 433
-            NFL50 <- 721
-            abline(h=NFL10, col="orange", lwd=lwd)
-            abline(h=NFL50, col="red", lwd=lwd)
+            tt <- t
+            tt[a < 433/20] <- NA
+            lines(tt, a, lwd=D*lwd)
         }
     }
     if (all || "thickness" %in% which) {
@@ -735,24 +747,22 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=rep(TRUE,
         ylim <- c(0, maxy*1.04) # put y=0 at bottom, so whale-centre is visible
         plot(t, sublayer+blubber, xlab="Time [s]", ylab="Thickness [m]", type="l", lwd=lwd, ylim=ylim, yaxs="i", col=colw[3])
         lines(t, sublayer, col=colw[2], lwd=lwd)
-        abline(h=0, col=colw[1], lwd=2*lwd)
+        abline(h=0, col=colw[1], lwd=D*lwd)
         showEvents(xs, xw)
         text(0, x$parms$alpha + 0.5*x$parms$beta, "Blubber", pos=4)
         text(0, 0.5*x$parms$alpha, "Sublayer", pos=4)
         ## legend("bottomright", lwd=lwd, lty=c(1, 3), legend=c("Blubber", "Sublayer"))
         if (drawCriteria[1]) {
             ## Blubber
-            danger <- blubber < (1 - 0.8/1.2) * x$parms$beta
             tt <- t
-            tt[!danger] <- NA
-            lines(tt, sublayer+blubber, lwd=2*lwd)
+            tt[blubber > (1 - 0.8/1.2) * x$parms$beta] <- NA
+            lines(tt, sublayer+blubber, lwd=D*lwd)
         }
         if (length(drawCriteria) > 1 && drawCriteria[2]) {
             ## Sublayer
-            danger <- sublayer < (1 - 0.8/1.2) * x$parms$alpha
             tt <- t
-            tt[!danger] <- NA
-            lines(tt, sublayer, lwd=2*lwd, col=colw[2])
+            tt[sublayer > (1 - 0.8/1.2) * x$parms$alpha] <- NA
+            lines(tt, sublayer, lwd=D*lwd, col=colw[2])
          }
     }
     if (all || "blubber thickness" %in% which) {
@@ -760,16 +770,22 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=rep(TRUE,
         ylim <- c(min(0, min(y)), max(y)) # include 0 if not there by autoscale
         plot(t, y, xlab="Time [s]", ylab="Blubber thickness [m]", type="l", lwd=lwd, ylim=ylim)
         showEvents(xs, xw)
-        if (drawCriteria)
-            abline(h=x$parms$beta*(1-0.8/1.2), col="red")
+        if (drawCriteria) {
+            tt <- t
+            tt[blubber > (1 - 0.8/1.2) * x$parms$beta] <- NA
+            lines(tt, sublayer+blubber, lwd=D*lwd)
+        }
     }
     if (all || "sublayer thickness" %in% which) {
         y <- x$WCF$alphaCompressed
         ylim <- c(min(0, min(y)), max(y)) # include 0 if not there by autoscale
         plot(t, y, xlab="Time [s]", ylab="Sublayer thickness [m]", type="l", lwd=lwd, ylim=ylim)
         showEvents(xs, xw)
-        if (drawCriteria)
-            abline(h=x$parms$beta*(1-0.8/1.2), col="red")
+        if (drawCriteria) {
+            tt <- t
+            tt[sublayer > (1 - 0.8/1.2) * x$parms$alpha] <- NA
+            lines(tt, sublayer+blubber, lwd=D*lwd)
+        }
     }
     if (all || "whale water force" %in% which) {
         plot(t, whaleWaterForce(vw, x$parms) / 1e6 , xlab="Time [s]", ylab="Water force [MN]", type="l", lwd=lwd)
@@ -802,10 +818,10 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=rep(TRUE,
         if (drawCriteria[1]) {
             tt <- t
             tt[Fs$sigmay < 19.5e6] <- NA
-            lines(tt, Fs$sigmay/1e6, lwd=2*lwd)
+            lines(tt, Fs$sigmay/1e6, lwd=D*lwd)
             tt <- t
             tt[Fs$sigmaz < 19.5e6] <- NA
-            lines(tt, Fs$sigmaz/1e6, col=2, lwd=2*lwd)
+            lines(tt, Fs$sigmaz/1e6, col=2, lwd=D*lwd)
         }
         showEvents(xs, xw)
     }
