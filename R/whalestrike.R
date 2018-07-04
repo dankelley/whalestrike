@@ -113,15 +113,15 @@ NULL
 #' Table 2.3, which lists the elastic modulus of cortical bone as 854.2 MPa).
 #' @param Cs Drag coefficient for ship [dimensionless],
 #' used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults
-#' to 5e-3, which is two times the frictional coefficient of 2.5e-3
+#' to 1e-2, which is 4 times the frictional coefficient of 2.5e-3
 #' inferred from Figure 4 of Manen and van Oossanen (1988), assuming
 #' a Reynolds number of 5e7, computed from speed 5m/s, lengthscale 10m
-#' and viscosity 1e-6 m^2/s. (The factor of 2 is under the assumption
-#' that frictional drag is about half of total drag.)
+#' and viscosity 1e-6 m^2/s. (The factor of 4 is under the assumption
+#' that frictional drag is about a quarter of total drag.)
 #' The drag force is computed with \code{\link{shipWaterForce}}.
 #' @param Cw Drag coefficient for whale [dimensionless],
 #' used by \code{\link{whaleWaterForce}} to estimate whale drag force.
-#' Defaults to 3.0e-3, for Reynolds number 2e7, computed from speed
+#' Defaults to 2.5e-3, for Reynolds number 2e7, computed from speed
 #' 2 m/s, lengthscale 5m (between radius and length) and
 #' viscosity 1e-6 m^2/s.  The drag force is computed with
 #' \code{\link{whaleWaterForce}}.
@@ -137,7 +137,7 @@ parameters <- function(ms, Ss, impactWidth=3, impactHeight=1.5,
                        delta=0.01, Eskin=20e6, theta=45,
                        beta=0.3, Ebeta=6e5,
                        alpha=0.5, Ealpha=4e5,
-                       Cs=5e-3, Cw=3e-3)
+                       Cs=0.01, Cw=0.0025)
 {
     if (missing(ms) || ms <= 0)
         stop("ship mass (ms) must be given, and a positive number")
