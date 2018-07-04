@@ -55,7 +55,7 @@ context.
 
 ## Overview plot
 
-```{r results="hide"}
+```{r results="hide", fig.width=8, fig.height=4}
 library(whalestrike)
 t <- seq(0, 0.8, length.out=500)
 state <- c(xs=-1.5, vs=5, xw=0, vw=0)
@@ -70,7 +70,7 @@ Sw <- whaleAreaFromLength(lw,"wetted") # whale area
 parms <- parameters(ms=ms, Ss=Ss, impactWidth=impactWidth, impactHeight=impactHeight,
                     lw=lw, mw=mw, Sw=Sw)
 sol <- strike(t, state, parms)
-par(mfcol=c(3, 3), mar=c(2, 3, 0.5, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
+par(mfcol=c(2, 3), mar=c(2, 3, 0.5, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
 plot(sol)
 ```
 

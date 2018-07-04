@@ -441,9 +441,9 @@ dynamics <- function(t, y, parms)
     Fblubber <- whaleCompressionForce(xs, xw, parms)$force
     Fskin <- whaleSkinForce(xs, xw, parms)$force
     Freactive <- Fblubber + Fskin
-    Fship <- parms$shipPropulsiveForce + shipWaterForce(vs, parms) - Freactive
+    Fship <- parms$engineForce + shipWaterForce(vs, parms) - Freactive
     ##. if ((t > 0.1 && t < 0.11) || (t > 0.5 && t < 0.51))
-    ##.     cat("t=", t, " vs=", vs, " shipPropulsiveForce=", parms$shipPropulsiveForce, " shipWaterForce=", shipWaterForce(vs, parms), " Freactive=", Freactive, "\n")
+    ##.     cat("t=", t, " vs=", vs, " shipEngineForce=", parms$shipEngineForce, " shipWaterForce=", shipWaterForce(vs, parms), " Freactive=", Freactive, "\n")
     if (is.na(Fship[1])) stop("Fship[1] is NA, probably indicating a programming error.")
     Fwhale <- Freactive + whaleWaterForce(vw, parms)
     if (is.na(Fwhale[1])) stop("Fwhale[1] is NA, probably indicating a programming error.")
@@ -542,7 +542,7 @@ strike <- function(t, state, parms, debug=0)
         if (!(need %in% names(parms)))
             stop("parms must contain item named '", need, "'; the names you supplied were: ", paste(names(parms), collapse=" "))
     }
-    parms["shipPropulsiveForce"] <- -shipWaterForce(state["vs"], parms) # assumed constant over time
+    parms["engineForce"] <- -shipWaterForce(state["vs"], parms) # assumed constant over time
     sol <- lsoda(state, t, dynamics, parms)
     ## Add extra things for plotting convenience.
     t <- sol[, 1]
@@ -688,11 +688,11 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=rep(TRUE,
             death <- which(xs >= xw)[1]
             tdeath <- if (is.finite(death)) t[death] else NA
             if (is.finite(tdeath)) {
-                abline(v=tdeath, lwd=2, col="blue")
+                abline(v=tdeath, lwd=lwd, col="blue")
                 mtext("Fatality", at=tdeath, side=3, line=0, col="blue", font=2, cex=par("cex"))
             }
             ## tclosest <- t[which.min(abs(xs-xw))]
-            ## abline(v=tclosest, col="darkgreen", lwd=2, lty=3)
+            ## abline(v=tclosest, col="darkgreen", lwd=lwd, lty=3)
         }
     }
     all <- "all" %in% which
@@ -701,62 +701,61 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=rep(TRUE,
                    "compression stress", "values")
 
     ## Compute some forces, just in case we need them. FIXME: move to strike()
-
+    cols <- "black"                    # ship colour
+    colw <- c("Slate Gray", "Firebrick", "Dodger Blue 4") # whale colour (centre, interface, skin)
+    lwd <- 2
     ## x(t) and xw(t)
     if (all || "location" %in% which) {
         ylim <- range(c(xs, xw), na.rm=TRUE)
-        plot(t, xs, type="l", xlab="Time [s]", ylab="Location [m]", col=rgb(0.3,.8,.3,.4), ylim=ylim, lwd=4)
-        lines(t, xw, lwd=4, col="gray")
-        lines(t, xw - x$WCF$alphaCompressed, col=2, lwd=2)
-        lines(t, xw - x$WCF$alphaCompressed - x$WCF$betaCompressed, lwd=2)
+        plot(t, xs, type="l", xlab="Time [s]", ylab="Location [m]", col=cols, ylim=ylim, lwd=lwd, lty=2)
+        lines(t, xw, lwd=lwd, col=colw[1])
+        lines(t, xw - x$WCF$alphaCompressed, col=colw[2], lwd=lwd)
+        lines(t, xw - x$WCF$alphaCompressed - x$WCF$betaCompressed, col=colw[3], lwd=lwd)
         accel <- derivative(vw, t)
-        mtext(sprintf("max. %.0f m/s^2 ", max(accel)), side=1, line=-1, cex=par("cex"), adj=1)
+        mtext(sprintf("Max. acceleration %.0f m/s^2 ", max(accel)), side=1, line=-1, cex=par("cex"), adj=1)
         showEvents(xs, xw)
-        if (showLegend)
-            legend("topleft", col=c(1, 2, 2), legend=c("Ship", "Whale", "Blubber"),
-                   lwd=rep(2, 3), lty=c(1, 1, 3), bg="white", cex=0.8)
     }
     if (all || "whale acceleration" %in% which) {
-        plot(t, derivative(vw, t), xlab="Time [s]", ylab="Whale accel. [m/s^2]", type="l", lwd=2)
+        plot(t, derivative(vw, t), xlab="Time [s]", ylab="Whale accel. [m/s^2]", type="l", lwd=lwd)
         showEvents(xs, xw)
         if (drawCriteria) {
             NFL10 <- 433
             NFL50 <- 721
-            abline(h=NFL10, col="orange", lwd=2)
-            abline(h=NFL50, col="red", lwd=2)
+            abline(h=NFL10, col="orange", lwd=lwd)
+            abline(h=NFL50, col="red", lwd=lwd)
         }
     }
     if (all || "thickness" %in% which) {
         blubber <- x$WCF$betaCompressed
         sublayer <- x$WCF$alphaCompressed
         maxy <- max(c(blubber+sublayer))
-        ylim <- c(0, maxy*1.04) # put y=0 at bottom, so gray line (for whale centre) is there
-        plot(t, sublayer+blubber, xlab="Time [s]", ylab="Thickness [m]", type="l", lwd=2, ylim=ylim, yaxs="i")
-        lines(t, sublayer, col=2, lwd=2)
-        abline(h=0, col="gray", lwd=8)
+        ylim <- c(0, maxy*1.04) # put y=0 at bottom, so whale-centre is visible
+        plot(t, sublayer+blubber, xlab="Time [s]", ylab="Thickness [m]", type="l", lwd=lwd, ylim=ylim, yaxs="i", col=colw[3])
+        lines(t, sublayer, col=colw[2], lwd=lwd)
+        abline(h=0, col=colw[1], lwd=2*lwd)
         showEvents(xs, xw)
-        mtext(" blubber", side=1, line=-1.5, adj=0, cex=par("cex"), font=2)
-        mtext("sublayer ", side=1, line=-1.5, adj=1, col=2, cex=par("cex"), font=2)
-        ##legend("bottomright", lwd=2, lty=c(1, 3), legend=c("Blubber", "Sublayer"))
+        text(0, x$parms$alpha + 0.5*x$parms$beta, "Blubber", pos=4)
+        text(0, 0.5*x$parms$alpha, "Sublayer", pos=4)
+        ## legend("bottomright", lwd=lwd, lty=c(1, 3), legend=c("Blubber", "Sublayer"))
         if (drawCriteria[1]) {
             ## Blubber
             danger <- blubber < (1 - 0.8/1.2) * x$parms$beta
             tt <- t
             tt[!danger] <- NA
-            lines(tt, sublayer+blubber, lwd=4)
+            lines(tt, sublayer+blubber, lwd=2*lwd)
         }
         if (length(drawCriteria) > 1 && drawCriteria[2]) {
             ## Sublayer
             danger <- sublayer < (1 - 0.8/1.2) * x$parms$alpha
             tt <- t
             tt[!danger] <- NA
-            lines(tt, sublayer, lwd=4, col=2)
+            lines(tt, sublayer, lwd=2*lwd, col=colw[2])
          }
     }
     if (all || "blubber thickness" %in% which) {
         y <- x$WCF$betaCompressed
         ylim <- c(min(0, min(y)), max(y)) # include 0 if not there by autoscale
-        plot(t, y, xlab="Time [s]", ylab="Blubber thickness [m]", type="l", lwd=2, ylim=ylim)
+        plot(t, y, xlab="Time [s]", ylab="Blubber thickness [m]", type="l", lwd=lwd, ylim=ylim)
         showEvents(xs, xw)
         if (drawCriteria)
             abline(h=x$parms$beta*(1-0.8/1.2), col="red")
@@ -764,22 +763,22 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=rep(TRUE,
     if (all || "sublayer thickness" %in% which) {
         y <- x$WCF$alphaCompressed
         ylim <- c(min(0, min(y)), max(y)) # include 0 if not there by autoscale
-        plot(t, y, xlab="Time [s]", ylab="Sublayer thickness [m]", type="l", lwd=2, ylim=ylim)
+        plot(t, y, xlab="Time [s]", ylab="Sublayer thickness [m]", type="l", lwd=lwd, ylim=ylim)
         showEvents(xs, xw)
         if (drawCriteria)
             abline(h=x$parms$beta*(1-0.8/1.2), col="red")
     }
     if (all || "whale water force" %in% which) {
-        plot(t, whaleWaterForce(vw, x$parms) / 1e6 , xlab="Time [s]", ylab="Water force [MN]", type="l", lwd=2)
+        plot(t, whaleWaterForce(vw, x$parms) / 1e6 , xlab="Time [s]", ylab="Water force [MN]", type="l", lwd=lwd)
         showEvents(xs, xw)
     }
     if (all || "reactive forces" %in% which) {
         SF <- x$WSF$force
         CF <- x$WCF$force
         ylim <- range(c(SF/1e6, CF/1e6), na.rm=TRUE)
-        plot(t, SF/1e6, type="l", xlab="Time [s]", ylab="Forces [MN]", lwd=2, ylim=ylim)
-        lines(t, CF/1e6, col=2, lwd=2)
-        #legend("topleft", col=1:2, lwd=2, legend=c("Skin", "Blubber"))
+        plot(t, SF/1e6, type="l", xlab="Time [s]", ylab="Forces [MN]", lwd=lwd, ylim=ylim)
+        lines(t, CF/1e6, col=2, lwd=lwd)
+        ## legend("topleft", col=1:2, lwd=lwd, legend=c("Skin", "Blubber"))
         mtext(" skin", side=3, line=-1, adj=0, col=2, cex=par("cex"), font=2)
         mtext("blubber ", side=3, line=-1, adj=1, cex=par("cex"), font=2)
         mtext("& sublayer ", side=3, line=-2, adj=1, cex=par("cex"), font=2)
@@ -787,14 +786,14 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=rep(TRUE,
     }
     ## if (all || "skin force" %in% which) {
     ##     Fs <- whaleSkinForce(xs, xw, x$parms)
-    ##     plot(t, Fs$force/1e6, type="l", xlab="Time [s]", ylab="Skin Force [MN]", lwd=2)
+    ##     plot(t, Fs$force/1e6, type="l", xlab="Time [s]", ylab="Skin Force [MN]", lwd=lwd)
     ##     showEvents(xs, xw)
     ## }
     if (all || "skin stress" %in% which) {
         Fs <- whaleSkinForce(xs, xw, x$parms)
         ylim <- range(c(Fs$sigmay, Fs$sigmaz)/1e6)
-        plot(t, Fs$sigmay/1e6, type="l", xlab="Time [s]", ylab="Skin Stress [MPa]", lwd=2, ylim=ylim)
-        lines(t, Fs$sigmaz/1e6, col=2, lwd=2)
+        plot(t, Fs$sigmay/1e6, type="l", xlab="Time [s]", ylab="Skin Stress [MPa]", lwd=lwd, ylim=ylim)
+        lines(t, Fs$sigmaz/1e6, col=2, lwd=lwd)
         ## legend("topright", lty=c(1,3), legend=c("horiz.", "vert."))
         abline(h=19.56, lty="dotted")
         mtext(" horiz.", side=3, line=-1, adj=0, col=2, cex=par("cex"), font=2)
@@ -802,12 +801,12 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=rep(TRUE,
         showEvents(xs, xw)
     }
     if (all || "compression force" %in% which) {
-        plot(t, x$WCF$force/1e6, type="l", xlab="Time [s]", ylab="Compress. Force [MN]", lwd=2)
+        plot(t, x$WCF$force/1e6, type="l", xlab="Time [s]", ylab="Compress. Force [MN]", lwd=lwd)
         showEvents(xs, xw)
     }
     if (all || "compression stress" %in% which) {
         stress <- x$WCF$force / (x$parms$impactHeight*x$parms$impactWidth)
-        plot(t, stress/1e6, type="l", xlab="Time [s]", ylab="Compress. Stress [MPa]", lwd=2)
+        plot(t, stress/1e6, type="l", xlab="Time [s]", ylab="Compress. Stress [MPa]", lwd=lwd)
         showEvents(xs, xw)
     }
     ## FIXME: add items for sub-blubber force and stress
@@ -823,7 +822,7 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=rep(TRUE,
         n <- 1 + length(values)
         plot(1:n, 1:n, type="n", xlab="", ylab="", axes=FALSE)
         for (i in seq_along(values))
-            text(1, i+0.5, values[i], pos=4, cex=0.75)
+            text(1, i+0.5, values[i], pos=4, cex=1)
         par(mar=omar)
     }
 }
