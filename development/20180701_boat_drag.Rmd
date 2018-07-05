@@ -1,7 +1,8 @@
 ---
-title: Ship propulsion calculations
-author: Dan Kelley
-date: 2018-06-28
+title: "Ship propulsion calculations"
+author: "Dan Kelley"
+date: "2018-07-01^[Document reference: dek20180701]"
+output: pdf_document
 ---
 
 **Abstract.** The propulsion calculation of `whalestrike` is compared with published boat horsepower.
@@ -16,8 +17,8 @@ length <- 11.73                        # m
 beam <- 4.63                           # m
 draft <- 1.58                          # m
 displacement <- 20.46e3                # m^3
-speed <- 0.5144 * 7                    # the stated 7 knots is here converted to m/s
-powerEngine <- 110e3 # power in W
+speed <- 0.5144 * 7                    # 7 knots converted to m/s
+powerEngine <- 110e3                   # power in W
 ```
 
 The advertisement says that it runs easily at this speed, powered by a (Detroit
@@ -31,7 +32,7 @@ based on *much* larger propellers discussed in reference 2), the above suggests 
 ```{r}
 power <-  0.45 * 0.4 * powerEngine
 ```
-or $`r power`$W is the power applied to the ship. Since power is the product of
+or `power=`$`r power`$W is the power applied to the ship. Since power is the product of
 speed and force, that the force is
 ```{r}
 F1 <- power / speed
@@ -45,47 +46,52 @@ As an estimate of wetted area, take the product of length and girth estimated as
 ```{r}
 Ss <- length * (beam + 2 * draft)
 ```
-or `r round(Ss, 1)`m^2.
+or `Ss=`$`r round(Ss, 1)`$m^2.
 
-The default `Cs` in `whalestrike` is presently 0.005, and this yields
+The default `Cs` in `whalestrike` is presently 0.01, and this yields
 
 ```{r}
 library(whalestrike)
 state <- list(xs=-1.2, vs=0.5144*7, xw=0, vw=0)
 parms <- parameters(ms=20000,
               Ss=Ss,
-              impactWidth=4.6, impactHeight=1.6, mw=12330, Sw=63,
+              mw=12330, Sw=63,
               lw=10,
               delta=0.02,
-              Es=2e7, theta=45, Eb=6e5, beta=0.2, Cs=0.0025*2, Cw=0.003)
+              Es=2e7, theta=45, Eb=6e5, beta=0.2, Cs=0.01, Cw=0.0025)
 F2 <- -shipWaterForce(7*0.5144, parms)
 ```
-or `r round(F2)`N.
+or `F2=`$`r round(F2)`$N.
 
-Thus, the `whalestrike` application infers a propulsion force of `F1=`$`r round(F2)`$ N.
+Thus, the `whalestrike` application infers a propulsion force of `F1=`$`r round(F2)`$N.
 
-The ratio of force estimates is `r round(F1/F2, 1)`.
+The ratio of force estimates is $F1/F2=`r round(F1/F2, 2)`$.
 
 ```{r echo=FALSE}
 library(whalestrike)
 state <- list(xs=-1.2, vs=0.5144*7, xw=0, vw=0)
-Cs <- 0.0025 * 3
 parms <- parameters(ms=20000,
               Ss=Ss,
-              impactWidth=4.6, impactHeight=1.6, mw=12330, Sw=63,
-              lw=10,
+              mw=12330, Sw=63, lw=10,
               delta=0.02,
-              Es=2e7, theta=45, Eb=6e5, beta=0.2, Cs=0.0025*3, Cw=0.003)
+              Es=2e7, theta=45, Eb=6e5, beta=0.2, Cs=0.01, Cw=0.0025)
 F2b <- -shipWaterForce(7*0.5144, parms)
 ```
-However, `Cs`=`r Cs` gives ratio `r round(F1/F2b, 1)`.
 
+**ASSESSMENT:** the above suggests that the ship drag calculated by the
+`whalecollision` R-app (which uses `whalestrike` for its calculations) is
+reliable within a factor of about 2.  This can be judged a successful result,
+since ship fouling can yield factor-of-2 variations in ship drag force (e.g.
+fig 1 of ref 4), and since the use in `whalecollision` is only to determine
+post-collision drag forces, which are so small that they barely affect
+velocities on the sub-second timescales of the simulation.
 
-**ASSESSMENT:** the above suggests that the app may be giving reasonable forces.
 
 **References**
 
-* 1. http://web.mit.edu/13.012/www/handouts/propellers_reading.pdf
-* 2. https://marine.mandieselturbo.com/docs/librariesprovider6/propeller-aftship/basic-principles-of-propulsion.pdf?sfvrsn=0 (fig 28 gives prop efficiency of 0.51 to 0.56 for VERY big props, decreasing
-  with smaller ones but we likely have 0.5m diameter, way way off scale)
-* 3. https://en.wikipedia.org/wiki/Diesel_engine
+1. http://web.mit.edu/13.012/www/handouts/propellers_reading.pdf
+2.  https://marine.mandieselturbo.com/docs/librariesprovider6/propeller-aftship/basic-principles-of-propulsion.pdf?sfvrsn=0
+(fig 28 gives prop efficiency of 0.51 to 0.56 for VERY big props, decreasing with smaller ones but we likely have 0.5m diameter, way way off scale)
+3. https://en.wikipedia.org/wiki/Diesel_engine
+4. Woods Hole Oceanographic Institution, 1952. Marine fouling and its prevention. United States Naval Institute, Annapolis MD.
+
