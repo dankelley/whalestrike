@@ -271,7 +271,7 @@ whaleLengthFromMass <- function(M, model="fortune2012atlantic")
 #' and \code{"surface"}
 #' for submerged surface wetted, calculated by spinning
 #' the necropsiy side-view presented in Daoust et al. (2018)
-#' along the animal axis, yielding 0.737L^2. The \code{"surface"}
+#' along the animal axis, yielding 0.451L^2. The \code{"surface"}
 #' version is suitable for use in \code{\link{whaleWaterForce}}.
 #'
 #' @references
@@ -282,12 +282,15 @@ whaleAreaFromLength <- function(L, type="wetted")
     ## below from dek/20180623_whale_area.Rmd
     ## Projected area, with fins: 0.1466L2 where L is body length in metres.
     ## Projected area, without fins: 0.1398L2 where L is body length in metres.
-    ## Wetted area, with fins: 0.0737L2 where L is body length in metres.
-    ## Wetted area, without fins: 0.0698L2 where L is body length in metres.
+    ## > mean(c(.1466,.1398)) [1] 0.1432
+    ##
+    ## Wetted area, with fins: 0.4631L2 where L is body length in metres.
+    ## Wetted area, without fins: 0.4389L2 where L is body length in metres.
+    ## > mean(c(.4631,.4389)) # [1] 0.451
     if (type == "projected")
         0.143 * L^2
     else if (type == "wetted")
-        0.0737 * L^2
+        0.451 * L^2
     else stop("'type' must be 'projected' or 'wetted', not '", type, "' as given")
 }
 

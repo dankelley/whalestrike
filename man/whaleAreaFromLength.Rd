@@ -14,7 +14,7 @@ whaleAreaFromLength(L, type = "wetted")
 and \code{"surface"}
 for submerged surface wetted, calculated by spinning
 the necropsiy side-view presented in Daoust et al. (2018)
-along the animal axis, yielding 0.737L^2. The \code{"surface"}
+along the animal axis, yielding 0.451L^2. The \code{"surface"}
 version is suitable for use in \code{\link{whaleWaterForce}}.}
 }
 \description{
