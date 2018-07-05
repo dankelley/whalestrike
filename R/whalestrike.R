@@ -137,7 +137,7 @@ parameters <- function(ms, Ss, impactWidth=3, impactHeight=1.5,
                        delta=0.01, Eskin=20e6, theta=45,
                        beta=0.3, Ebeta=6e5,
                        alpha=0.5, Ealpha=4e5,
-                       Cs=5e-3, Cw=3e-3)
+                       Cs=10e-3, Cw=2.5e-3)
 {
     if (missing(ms) || ms <= 0)
         stop("ship mass (ms) must be given, and a positive number")
