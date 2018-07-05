@@ -15,17 +15,25 @@ whaleCompressionForce(xs, xw, parms)
 \code{\link{parameters}}.}
 }
 \value{
-Compression-resisting force of whale blubber and the layer underneath it [N].
+A list containing \code{force} [N], the
+compression-resisting force, \code{stress} [Pa], the ratio
+of that force to the impact area, \code{betaCompressed} [m],
+the blubber thickness and \code{alphaCompressed} [m],
+the sublayer thickness.
 }
 \description{
-Calculate the reaction force of blubber, as the product of stress
-and area. Stress is computed as the product of blubber elastic
-modulus \code{parms$Ebeta} times strain, where the latter is computed
-from ship-whale separation using \code{1-(xw-xs)/parms$beta} if
-\code{xw} is between \code{xs} and \code{xs+parms$beta},
-or zero otherwise. Area is computed as the product of
-\code{parms$impactWidth} and \code{parms$impactHeight}.
-FIXME: rewrite docs for the new blubber+inner scheme
+Calculate the reaction force of blubber and the sublayer to
+its interior, as the product of stress and area.
+Linear compression dynamics is assumed for each layer, i.e. that
+stress is strain times elastic modulus. Static dynamics is assumed,
+so that the stresses match in the the two layers. The calculation
+is done in a two-step process. First, the stress for an equivalent
+layer is computed, based on a combined elastic modulus. If this
+stress exceeds the blubber modulus, the blubber thickness is set to zero
+and the calculation is redone with just the sublayer. If not,
+the layer thickness are computed assuming equal stress in each layer.
+Force is calculated as the product of stress and the area
+given by the product of \code{parms$impactWidth} and \code{parms$impactHeight}.
 }
 \references{
 See \link{whalestrike} for a list of references.

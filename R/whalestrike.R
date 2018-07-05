@@ -311,14 +311,18 @@ whaleAreaFromLength <- function(L, type="wetted")
 
 #' Whale compression force
 #'
-#' Calculate the reaction force of blubber, as the product of stress
-#' and area. Stress is computed as the product of blubber elastic
-#' modulus \code{parms$Ebeta} times strain, where the latter is computed
-#' from ship-whale separation using \code{1-(xw-xs)/parms$beta} if
-#' \code{xw} is between \code{xs} and \code{xs+parms$beta},
-#' or zero otherwise. Area is computed as the product of
-#' \code{parms$impactWidth} and \code{parms$impactHeight}.
-#' FIXME: rewrite docs for the new blubber+inner scheme
+#' Calculate the reaction force of blubber and the sublayer to
+#' its interior, as the product of stress and area.
+#' Linear compression dynamics is assumed for each layer, i.e. that
+#' stress is strain times elastic modulus. Static dynamics is assumed,
+#' so that the stresses match in the the two layers. The calculation
+#' is done in a two-step process. First, the stress for an equivalent
+#' layer is computed, based on a combined elastic modulus. If this
+#' stress exceeds the blubber modulus, the blubber thickness is set to zero
+#' and the calculation is redone with just the sublayer. If not,
+#' the layer thickness are computed assuming equal stress in each layer.
+#' Force is calculated as the product of stress and the area
+#' given by the product of \code{parms$impactWidth} and \code{parms$impactHeight}.
 #'
 #' @param xs Ship position [m]
 #'
@@ -326,21 +330,33 @@ whaleAreaFromLength <- function(L, type="wetted")
 #'
 #' @template parmsTemplate
 #'
-#' @return Compression-resisting force of whale blubber and the layer underneath it [N].
+#' @return A list containing \code{force} [N], the
+#' compression-resisting force, \code{stress} [Pa], the ratio
+#' of that force to the impact area, \code{betaCompressed} [m],
+#' the blubber thickness and \code{alphaCompressed} [m],
+#' the sublayer thickness.
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
 whaleCompressionForce <- function(xs, xw, parms)
 {
-    touching <- xs < xw & xw < (xs + parms$beta + parms$alpha)
-    dx <- ifelse(touching, parms$alpha + parms$beta - (xw - xs), 0)
+    touching <- xs < xw & xs > (xw - parms$beta - parms$alpha)
+    dx <- ifelse(touching, xs - (xw - parms$alpha - parms$beta), 0) # penetration distance
     strain <- dx / (parms$beta + parms$alpha)
     E <- (parms$alpha + parms$beta) / (parms$alpha / parms$Ealpha + parms$beta / parms$Ebeta)
     stress <- E * strain
+    ## Assume equal stress in blubber and interior layers. Do not
+    ## permit compression past zero thickness.
+    betaTMP <- parms$beta * (1 - stress / parms$Ebeta)
+    betaCompressed <- ifelse(0 < betaTMP, betaTMP, 0)
+    blubberCrushed <- betaCompressed == 0
+    if (any(blubberCrushed)) {         # no blubber left; redo calculation
+        strain[blubberCrushed] <- ((dx - parms$beta) / parms$alpha)[blubberCrushed]
+        stress[blubberCrushed] <- (parms$Ealpha * strain)[blubberCrushed]
+    }
+    alphaTMP <- parms$alpha * (1 - stress / parms$Ealpha)
+    alphaCompressed <- ifelse(0 < alphaTMP, alphaTMP, 0)
     force <- stress * parms$impactWidth * parms$impactHeight
-    ## Assume equal stress in blubber and interior layers
-    alphaCompressed <- parms$alpha * (1 - stress / parms$Ealpha)
-    betaCompressed <- parms$beta * (1 - stress / parms$Ebeta)
     list(force=force, stress=stress, strain=strain,
          alphaCompressed=alphaCompressed, betaCompressed=betaCompressed)
 }
@@ -366,8 +382,8 @@ whaleCompressionForce <- function(xs, xw, parms)
 #' See \link{whalestrike} for a list of references.
 whaleSkinForce <- function(xs, xw, parms)
 {
-    touching <- xs < xw & xw < (xs + parms$beta + parms$alpha)
-    dx <- ifelse(touching, parms$alpha + parms$beta - (xw - xs), 0)
+    touching <- xs < xw & xs > (xw - parms$beta - parms$alpha)
+    dx <- ifelse(touching, xs - (xw - parms$alpha - parms$beta), 0) # penetration distance
     C <- cos(parms$theta * pi / 180) # NB: theta is in deg
     S <- sin(parms$theta * pi / 180) # NB: theta is in deg
     l <- dx * S / C                    # dek20180622_skin_strain eq 1
@@ -438,9 +454,9 @@ dynamics <- function(t, y, parms)
     vs <- y[2]                         # ship velocity
     xw <- y[3]                         # whale position
     vw <- y[4]                         # whale velocity
-    Fblubber <- whaleCompressionForce(xs, xw, parms)$force
-    Fskin <- whaleSkinForce(xs, xw, parms)$force
-    Freactive <- Fblubber + Fskin
+    Fcompression <- whaleCompressionForce(xs, xw, parms)$force
+    Fextension <- whaleSkinForce(xs, xw, parms)$force
+    Freactive <- Fcompression + Fextension
     Fship <- parms$engineForce + shipWaterForce(vs, parms) - Freactive
     ##. if ((t > 0.1 && t < 0.11) || (t > 0.5 && t < 0.51))
     ##.     cat("t=", t, " vs=", vs, " shipEngineForce=", parms$shipEngineForce, " shipWaterForce=", shipWaterForce(vs, parms), " Freactive=", Freactive, "\n")
@@ -634,8 +650,6 @@ strike <- function(t, state, parms, debug=0)
 #' maximal value is in the \code{"location"} panel) and water force (not
 #' needed, since it is usually 100s of times smaller than other forces).
 #'}
-#' @param center Logical, indicating whether to center time-series plots.
-#' on the time when the vessel and whale and in closest proximity.
 #'
 #' @param drawCriteria Logical value indicating whether to
 #' indicate dangerous conditions by thickening lines in time series
@@ -646,10 +660,12 @@ strike <- function(t, state, parms, debug=0)
 #' @param drawEvents Logical, indicating whether to draw lines for some events,
 #' such as the moment of closest approach.
 #'
-#' @param colw A three-element colour specification for indications of whale centre,
-#' the interface between blubber and the interior and whale skin, for use in the
-#' result of using \code{"location"} for \code{which}. The default has
-#' a gray tone, a red tone, and a blue tone, respepectively.
+#' @param colwcenter Colour used to indicate the whale centre.
+#'
+#' @param colwinterface Colour used to indicate the interface
+#' between whale blubber and sublayer.
+#'
+#' @param colwskin Colour used to indicate the whale skin.
 #'
 #' @param cols As \code{colw}, but the colour to be used for the ship bow location,
 #' which is drawn with a dashed line.
@@ -667,9 +683,10 @@ strike <- function(t, state, parms, debug=0)
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
-plot.strike <- function(x, which="default", center=FALSE, drawCriteria=rep(TRUE, 2), drawEvents=TRUE,
-                       colw=c("Slate Gray", "Firebrick", "Dodger Blue 4"), cols="black",
-                       lwd=1.4, D=3, debug=0, ...)
+plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvents=TRUE,
+                        colwcenter="Slate Gray", colwinterface="Firebrick", colwskin="Dodger Blue 4",
+                        cols="black",
+                        lwd=1.4, D=3, debug=0, ...)
 {
     showLegend <- FALSE
     if (!is.logical(drawCriteria))
@@ -682,25 +699,15 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=rep(TRUE,
     vw <- x$vw
     dvsdt <- x$dvsdt
     dvwdt <- x$dvwdt
-    if (center) {
-        ## Trim so event is centered (maybe; not a big deal)
-        end <- 3 * which.min(abs(xs-xw))
-        look <- 1:end
-        t <- t[look]
-        xs <- xs[look]
-        vs <- vs[look]
-        xw <- xw[look]
-        vw <- vw[look]
-        dvsdt <- dvsdt[look]
-        dvwddt <- dvwdt[look]
+    death <- xs >= xw
+    if (any(death)) {
+        firstDead <- which(death)[1]
+        dead <- firstDead:length(t)
+        xw[dead] <- xw[firstDead]
+        x$WCF$alphaCompressed[dead] <- 0
+        x$WCF$betaCompressed[dead] <- 0
     }
-    if (debug) {
-        cat("t=",  paste(head(t,  3), collapse=" "), " ... ", paste(head(t,  3), collapse=" "), "\n")
-        cat("xs=", paste(head(xs, 3), collapse=" "), " ... ", paste(head(xs, 3), collapse=" "), "\n")
-        cat("vs=", paste(head(vs, 3), collapse=" "), " ... ", paste(head(vs, 3), collapse=" "), "\n")
-        cat("xw=", paste(head(xw, 3), collapse=" "), " ... ", paste(head(xw, 3), collapse=" "), "\n")
-        cat("vs=", paste(head(vw, 3), collapse=" "), " ... ", paste(head(vw, 3), collapse=" "), "\n")
-    }
+    ## t[death] <- NA
     showEvents <- function(xs, xw) {
         if (drawEvents) {
             ##grid()
@@ -723,11 +730,11 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=rep(TRUE,
     if (all || "location" %in% which) {
         ylim <- range(c(xs, xw), na.rm=TRUE)
         plot(t, xs, type="l", xlab="Time [s]", ylab="Location [m]", col=cols, ylim=ylim, lwd=lwd, lty=2)
-        lines(t, xw, lwd=lwd, col=colw[1])
-        lines(t, xw - x$WCF$alphaCompressed, col=colw[2], lwd=lwd)
-        lines(t, xw - x$WCF$alphaCompressed - x$WCF$betaCompressed, col=colw[3], lwd=lwd)
+        lines(t, xw, lwd=lwd, col=colwcenter)
+        lines(t, xw - x$WCF$alphaCompressed, col=colwinterface, lwd=lwd)
+        lines(t, xw - x$WCF$alphaCompressed - x$WCF$betaCompressed, col=colwskin, lwd=lwd)
         accel <- derivative(vw, t)
-        mtext(sprintf("Max. acceleration %.0f m/s^2 ", max(accel)), side=1, line=-1, cex=par("cex"), adj=1)
+        mtext(sprintf("Max. accel. %.0f m/s^2 ", max(accel)), side=1, line=-1, cex=par("cex"), adj=1)
         showEvents(xs, xw)
     }
     if (all || "whale acceleration" %in% which) {
@@ -744,25 +751,27 @@ plot.strike <- function(x, which="default", center=FALSE, drawCriteria=rep(TRUE,
         blubber <- x$WCF$betaCompressed
         sublayer <- x$WCF$alphaCompressed
         maxy <- max(c(blubber+sublayer))
-        ylim <- c(0, maxy*1.04) # put y=0 at bottom, so whale-centre is visible
-        plot(t, sublayer+blubber, xlab="Time [s]", ylab="Thickness [m]", type="l", lwd=lwd, ylim=ylim, yaxs="i", col=colw[3])
-        lines(t, sublayer, col=colw[2], lwd=lwd)
-        abline(h=0, col=colw[1], lwd=D*lwd)
+        ylim <- c(0, maxy*1.2) # put y=0 at bottom, so whale-centre is visible
+        plot(t, sublayer+blubber, xlab="Time [s]", ylab="Thickness [m]", type="l", lwd=lwd, ylim=ylim, yaxs="i", col=colwskin)
+        lines(t, sublayer, col=colwinterface, lwd=lwd)
+        abline(h=0, col=colwcenter, lwd=D*lwd)
         showEvents(xs, xw)
-        text(0, x$parms$alpha + 0.5*x$parms$beta, "Blubber", pos=4)
-        text(0, 0.5*x$parms$alpha, "Sublayer", pos=4)
+        ##text(0, x$parms$alpha + 0.5*x$parms$beta, "Blubber", pos=4)
+        ##text(0, 0.5*x$parms$alpha, "Sublayer", pos=4)
+        mtext(" skin", side=3, line=-1, adj=0, col=colwskin, cex=par("cex"))
+        mtext("interface ", side=3, line=-1, adj=1, col=colwinterface, cex=par("cex"))
         ## legend("bottomright", lwd=lwd, lty=c(1, 3), legend=c("Blubber", "Sublayer"))
         if (drawCriteria[1]) {
             ## Blubber
             tt <- t
             tt[blubber > (1 - 0.8/1.2) * x$parms$beta] <- NA
-            lines(tt, sublayer+blubber, lwd=D*lwd)
+            lines(tt, sublayer+blubber, lwd=D*lwd, col=colwskin)
         }
         if (length(drawCriteria) > 1 && drawCriteria[2]) {
             ## Sublayer
             tt <- t
             tt[sublayer > (1 - 0.8/1.2) * x$parms$alpha] <- NA
-            lines(tt, sublayer, lwd=D*lwd, col=colw[2])
+            lines(tt, sublayer, lwd=D*lwd, col=colwinterface)
          }
     }
     if (all || "blubber thickness" %in% which) {

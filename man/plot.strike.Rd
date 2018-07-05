@@ -4,10 +4,10 @@
 \alias{plot.strike}
 \title{Plot a strike object}
 \usage{
-\method{plot}{strike}(x, which = "default", center = FALSE,
-  drawCriteria = rep(TRUE, 2), drawEvents = TRUE, colw = c("Slate Gray",
-  "Firebrick", "Dodger Blue 4"), cols = "black", lwd = 1.4, D = 3,
-  debug = 0, ...)
+\method{plot}{strike}(x, which = "default", drawCriteria = rep(TRUE, 2),
+  drawEvents = TRUE, colwcenter = "Slate Gray",
+  colwinterface = "Firebrick", colwskin = "Dodger Blue 4", cols = "black",
+  lwd = 1.4, D = 3, debug = 0, ...)
 }
 \arguments{
 \item{x}{An object inheriting from class \code{strike}}
@@ -74,9 +74,6 @@ maximal value is in the \code{"location"} panel) and water force (not
 needed, since it is usually 100s of times smaller than other forces).
 }}
 
-\item{center}{Logical, indicating whether to center time-series plots.
-on the time when the vessel and whale and in closest proximity.}
-
 \item{drawCriteria}{Logical value indicating whether to
 indicate dangerous conditions by thickening lines in time series
 plots. Those conditions are stated in the documentation for individual
@@ -86,10 +83,12 @@ length exceeding 1, to control individual curves in the plot.}
 \item{drawEvents}{Logical, indicating whether to draw lines for some events,
 such as the moment of closest approach.}
 
-\item{colw}{A three-element colour specification for indications of whale centre,
-the interface between blubber and the interior and whale skin, for use in the
-result of using \code{"location"} for \code{which}. The default has
-a gray tone, a red tone, and a blue tone, respepectively.}
+\item{colwcenter}{Colour used to indicate the whale centre.}
+
+\item{colwinterface}{Colour used to indicate the interface
+between whale blubber and sublayer.}
+
+\item{colwskin}{Colour used to indicate the whale skin.}
 
 \item{cols}{As \code{colw}, but the colour to be used for the ship bow location,
 which is drawn with a dashed line.}
