@@ -85,8 +85,8 @@ maxAccel <- rep(NA, length(beta))
 for (i in seq_along(beta)) {
     parms <- parameters(ms=ms, Ss=Ss, impactWidth=impactWidth, impactHeight=impactHeight,
                         lw=lw, mw=mw, Sw=Sw,
-                        delta=0.02, Es=2e7, theta=45,
-                        Eb=1e6, beta=beta[i])
+                        gamma=0.02, Es=2e7, theta=45,
+                        beta=beta[i], Ebeta=1e6)
     sol <- strike(t, state, parms)
     maxAccel[i] <- max(abs(diff(sol$vw))) / (t[2] - t[1])
 }
@@ -109,8 +109,8 @@ for (i in seq_along(beta)) {
         state <- c(xs=-1.5, vs=speed[j], xw=0, vw=0)
         parms <- parameters(ms=ms, Ss=Ss, impactWidth=impactWidth, impactHeight=impactHeight,
                             lw=lw, mw=mw, Sw=Sw,
-                            delta=0.02, Es=2e7, theta=45,
-                            Eb=1e6, beta=beta[i])
+                            gamma=0.02, Es=2e7, theta=45,
+                            beta=beta[i], Ebeta=1e6)
         sol <- strike(t, state, parms)
         maxStrain[j, i] <- max(sol$WCF$strain)
     }

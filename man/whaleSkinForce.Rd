@@ -23,7 +23,7 @@ and z (draft) directions.
 The ship-whale separation is used to calculate the deformation of the skin. The
 parameters of the calculation are \code{parms$impactWidth} (impact area width, m),
 \code{parms$impactHeight} (impact area height, in m), \code{parms$Eskin} (skin elastic modulus in Pa),
-\code{parms$delta} (skin thickness in m), and \code{parms$theta} (skin bevel angle
+\code{parms$gamma} (skin thickness in m), and \code{parms$theta} (skin bevel angle
 degrees, measured from a vector normal to undisturbed skin).
 }
 \references{

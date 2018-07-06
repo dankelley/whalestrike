@@ -5,8 +5,9 @@
 \title{Control parameters for whale strike simulation}
 \usage{
 parameters(ms, Ss, impactWidth = 3, impactHeight = 1.5, lw, mw, Sw,
-  delta = 0.01, Eskin = 2e+07, theta = 45, beta = 0.3, Ebeta = 6e+05,
-  alpha = 0.5, Ealpha = 4e+05, Cs = 0.01, Cw = 0.0025)
+  gamma = 0.01, Eskin = 2e+07, theta = 45, beta = 0.3, Ebeta = 6e+05,
+  UTSbeta = (0.8/1.2) * 6e+05, alpha = 0.5, Ealpha = 4e+05,
+  UTSalpha = (0.8/1.2) * 4e+05, Cs = 0.01, Cw = 0.0025)
 }
 \arguments{
 \item{ms}{Ship mass [kg].}
@@ -30,7 +31,7 @@ calculate area, which is needed for the water drag calculation done by
 \item{Sw}{Whale surface area [m^2]. If length is known, this could be estimated with
 \code{\link{whaleAreaFromLength}}.}
 
-\item{delta}{Whale skin thickness [m]. Defaults to 0.01 m, if not supplied.}
+\item{gamma}{Whale skin thickness [m]. Defaults to 0.01 m, if not supplied.}
 
 \item{Eskin}{Whale skin elastic modulus [Pa]. If not provided, defaults to 20e6 Pa,
 a rounded value of the 19.56+-4.03MPa estimate for seal skin, provided in Table 3
@@ -40,17 +41,28 @@ of Grear et al. (2017).}
 
 \item{beta}{Whale blubber thickness [m]; defaults to 0.3m if not supplied.}
 
-\item{Ebeta}{Elastic modulus of blubber [Pa]; defaults to 6e5 Pa (the value
+\item{Ebeta}{Elastic modulus of blubber [Pa]; defaults to 0.6 MPa (the value
 suggested Raymond (2007 fig 37), rounded to 1 digit), if not supplied.}
 
-\item{alpha}{Thickness of interior region [m]. This defaults to 1m, an
-estimate of the radius of soft tissue below the blubber. For bone,
-a value in the centimeter range might be reasonable.}
+\item{UTSbeta}{Numerical value indicating the ultimate tensile strength
+of the blubber; if not \code{NA}, then this is used to indicate
+problems in plots made if \code{which} is \code{"compression stress"}.
+The default is the product of the default whale blubber modulus (see
+\code{Ebeta}, above) and the strength/modulus ratio for seal
+blubber, given by (Grear et al. 2018 #' page 144).}
 
-\item{Ealpha}{Elastic modulus of interior region [Pa]; defaults to 4e5 Pa,
-rounded from the soft-tissue value 425294 Pa stated by Raymond (2007) page 36.
-For bone, the value 9e8 Pa might be reasonable (see Raymond 2007
-Table 2.3, which lists the elastic modulus of cortical bone as 854.2 MPa).}
+\item{alpha}{Thickness of interior region [m].
+The default, 0.5m, may be in an appropriate range for soft tissue;
+perhaps 0.05m would be more reasonable for bone.}
+
+\item{Ealpha}{Elastic modulus of interior region [Pa].
+The default, 0.4MPa, may be in an appropriate range for soft tissue;
+perhaps 854MPa would be more reasonable for bone.}
+
+\item{UTSalpha}{Numerical value indicating the ultimate tensile strength
+of the sublayer.
+The default, (0.8/1.2)*0.4MPa, may be in an appropriate range for soft tissue;
+perhaps 22.9MPa would be more reasonable for bone.}
 
 \item{Cs}{Drag coefficient for ship [dimensionless],
 used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults

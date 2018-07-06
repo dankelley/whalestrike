@@ -51,7 +51,7 @@ parms <- parameters(ms=20e3, Ss=ls*(2*draft+beam),
               impactWidth=impactWidth, impactHeight=impactHeight,
               lw=lw, mw=whaleMassFromLength(lw),
               Sw=whaleAreaFromLength(lw, "wetted"),
-              delta=0.02, Eskin=2e7, theta=45,
+              gamma=0.02, Eskin=2e7, theta=45,
               beta=0.3, Ebeta=6e5,
               alpha=0.5, Ealpha=4e5)
 sol <- strike(t, state, parms)

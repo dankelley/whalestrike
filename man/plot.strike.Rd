@@ -58,6 +58,8 @@ blubber and sublayer layers undernaeath the skin.
 
 \item \code{"compression stress"} for a time-series plot of the compression stress on the blubber
 and the layer to its interior. (These stresses are equal, under an equilibrium assumption.)
+If \code{drawCriteria[1]} is \code{TRUE} then these traces are thickened if the compression
+stress exceeds 22.9MPa if the sublayer is bone (Table 2.3 of Raymond, 2007).
 
 \item \code{"skin stress"} for a time-series of skin stress in the along-skin y and z directions.
 If \code{drawCriteria[1]} is \code{TRUE} then these traces are thickened
