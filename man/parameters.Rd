@@ -5,9 +5,9 @@
 \title{Control parameters for whale strike simulation}
 \usage{
 parameters(ms, Ss, impactWidth = 3, impactHeight = 1.5, lw, mw, Sw,
-  gamma = 0.01, Eskin = 2e+07, theta = 45, beta = 0.3, Ebeta = 6e+05,
-  UTSbeta = (0.8/1.2) * 6e+05, alpha = 0.5, Ealpha = 4e+05,
-  UTSalpha = (0.8/1.2) * 4e+05, Cs = 0.01, Cw = 0.0025)
+  alpha = 0.0256, Ealpha = 17800000, UTSalpha = 19560000, theta = 45,
+  beta = 0.3, Ebeta = 6e+05, UTSbeta = (0.8/1.2) * 6e+05, gamma = 0.5,
+  Egamma = 4e+05, UTSgamma = (0.8/1.2) * 4e+05, Cs = 0.01, Cw = 0.0025)
 }
 \arguments{
 \item{ms}{Ship mass [kg].}
@@ -31,11 +31,13 @@ calculate area, which is needed for the water drag calculation done by
 \item{Sw}{Whale surface area [m^2]. If length is known, this could be estimated with
 \code{\link{whaleAreaFromLength}}.}
 
-\item{gamma}{Whale skin thickness [m]. Defaults to 0.01 m, if not supplied.}
+\item{alpha}{Whale skin thickness [m], with a of 0.0256 m.}
 
-\item{Eskin}{Whale skin elastic modulus [Pa]. If not provided, defaults to 20e6 Pa,
-a rounded value of the 19.56+-4.03MPa estimate for seal skin, provided in Table 3
-of Grear et al. (2017).}
+\item{Ealpha}{Whale skin elastic modulus [Pa], with a default of 17.80e6 Pa,
+a value for adult seals, given in Table 3 of Grear et al. (2017).}
+
+\item{UTSalpha}{Ultimate tensile strength of skin [Pa], with a default of 19.56e6 Pa,
+a value reported by Grear et al. (2017) for adult seals.}
 
 \item{theta}{Whale skin deformation angle [deg]; defaults to 45deg if not supplied.}
 
@@ -51,15 +53,15 @@ The default is the product of the default whale blubber modulus (see
 \code{Ebeta}, above) and the strength/modulus ratio for seal
 blubber, given by (Grear et al. 2018 #' page 144).}
 
-\item{alpha}{Thickness of interior region [m].
+\item{gamma}{Thickness of interior region [m].
 The default, 0.5m, may be in an appropriate range for soft tissue;
 perhaps 0.05m would be more reasonable for bone.}
 
-\item{Ealpha}{Elastic modulus of interior region [Pa].
+\item{Egamma}{Elastic modulus of interior region [Pa].
 The default, 0.4MPa, may be in an appropriate range for soft tissue;
 perhaps 854MPa would be more reasonable for bone.}
 
-\item{UTSalpha}{Numerical value indicating the ultimate tensile strength
+\item{UTSgamma}{Numerical value indicating the ultimate tensile strength
 of the sublayer.
 The default, (0.8/1.2)*0.4MPa, may be in an appropriate range for soft tissue;
 perhaps 22.9MPa would be more reasonable for bone.}

@@ -26,40 +26,27 @@ the 10% probability of concussion for the National Football League
 concussion data presented in Figure 9 of Ng et al. 2017.
 
 \item \code{"blubber thickness"} for a time-series plot of blubber thickness.
-If \code{drawCriteria[1]} is \code{TRUE} then a red line drawn at 2/3 of the
-initial thickness, based on the Grear et al. 2018 result (page 144, left column)
-that mean (seal) blubber strength is 0.8MPa, whereas mean (seal) blubber
-modulus is 1.2MPa, for a ratio of about 2/3.
+If \code{drawCriteria[1]} is \code{TRUE} then the line is thickened
+if the stress within the blubber exceeds \code{parms$UTSbeta}.
 
 \item \code{"sublayer thickness"} for a time-series plot of the thickness
 of the layer interior to the blubber.
-If \code{drawCriteria[1]} is \code{TRUE} then a red line drawn at 2/3 of the
-initial thickness, based on the Grear et al. 2018 result (page 144, left column)
-that mean (seal) blubber strength is 0.8MPa, whereas mean (seal) blubber
-modulus is 1.2MPa, for a ratio of about 2/3. This is really just a provisional
-guess at a criterion for muscle or organs. (If the simulation resulted from a
-call to \code{\link{strike}} with \code{Ealpha} corresponding to bone, it is
-quite unlikely that this criterion will be met.)
+If \code{drawCriteria[1]} is \code{TRUE} then the line is thickened
+if the stress within the sublayer exceeds \code{parms$UTSgamma}.
 
 \item \code{"thickness"} to plot both blubber thickness and sublayer thickness
 in one panel, creating a cross-section diagram.   If \code{drawCriteria[1]}
-is \code{TRUE}, then the curve is drawn with a wider pen to
-indicate times when the blubber is excessively thinned (see
-\code{"blubber thickness"}).
-If \code{drawCriteria} is of length 2 and the second
-element is \code{TRUE}, then the same criterion is used to indicate excessive
-thinning of the sublayer; this should only be used if the \code{Ealpha} value
-provided to \code{\link{strike}} represented soft tissue, not bone, and
-it should be noted that the notion of identical criteria is just a guess.
+is \code{TRUE}, then curves are thickned as described for \code{which}
+equal to \code{blubber thickness} and \code{sublayer thickness}.
 
 \item \code{"reactive forces"} for a time-series showing the reactive
 forces associated with skin stretching and the compression of the
-blubber and sublayer layers undernaeath the skin.
+blubber and sublayer components.
 
 \item \code{"compression stress"} for a time-series plot of the compression stress on the blubber
 and the layer to its interior. (These stresses are equal, under an equilibrium assumption.)
 If \code{drawCriteria[1]} is \code{TRUE} then these traces are thickened if the compression
-stress exceeds 22.9MPa if the sublayer is bone (Table 2.3 of Raymond, 2007).
+stress exceeds the minimum of \code{parms$UTSgamma} and \code{parms$UTSbeta}.
 
 \item \code{"skin stress"} for a time-series of skin stress in the along-skin y and z directions.
 If \code{drawCriteria[1]} is \code{TRUE} then these traces are thickened
