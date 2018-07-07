@@ -282,14 +282,20 @@ whaleLengthFromMass <- function(M, model="fortune2012atlantic")
 #' @param L length in m
 #' @param type character string indicating the type of area, with
 #' \code{"projected"} for side-projected area using 0.143L^2,
-#' and \code{"surface"}
+#' and \code{"wetted"}
 #' for submerged surface wetted, calculated by spinning
 #' the necropsiy side-view presented in Daoust et al. (2018)
-#' along the animal axis, yielding 0.451L^2. The \code{"surface"}
-#' version is suitable for use in \code{\link{whaleWaterForce}}.
+#' along the animal axis, yielding 
+#' 0.451 * (0.8715 * L)^2, where the direct factor on L
+#' was developed by comparing similarly-predicted masses to
+#' the results of \code{\link{whaleMassFromLength}}, as described
+#' in [2].
 #'
 #' @references
-#' R worksheet \code{dek/20180623_whale_area.Rmd}, available
+#' 1. Dan Kelley's internal document \code{dek/20180623_whale_area.Rmd}, available
+#' upon request.
+#'
+#' 2. Dan Kelley's internal document \code{dek/20180707_whale_mass.Rmd}, available
 #' upon request.
 whaleAreaFromLength <- function(L, type="wetted")
 {
@@ -304,7 +310,7 @@ whaleAreaFromLength <- function(L, type="wetted")
     if (type == "projected")
         0.143 * L^2
     else if (type == "wetted")
-        0.451 * L^2
+        0.451 * (0.8715 * L)^2
     else stop("'type' must be 'projected' or 'wetted', not '", type, "' as given")
 }
 
