@@ -14,6 +14,18 @@
 #' https://doi.org/10.1016/j.zool.2017.11.002.
 #'
 #' \item
+#' Kelley, Dan E. “Composite Spring,” May 28, 2018. 20180528_composite_string. Dan Kelley’s working notes.
+#'
+#' \item
+#' Kelley, Dan. “Whale Area,” June 23, 2018. 20180623_whale_area. Dan Kelley’s working notes.
+#'
+#' \item
+#' Kelley, Dan. “Ship Propulsion,” July 1, 2018. 20180701_ship_propulsion. Dan Kelley’s working notes.
+#'
+#' \item
+#' Kelley, Dan. “Whale Mass,” July 7, 2018. 20180707_whale_mass. Dan Kelley’s working notes.
+#'
+#' \item
 #' Miller, Carolyn A., Desray Reeb, Peter B. Best, Amy R. Knowlton, Moira W.
 #' Brown, and Michael J. Moore. “Blubber Thickness in Right Whales Eubalaena
 #' Glacialis and Eubalaena Australis Related with Reproduction, Life History

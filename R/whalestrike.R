@@ -80,7 +80,8 @@ NULL
 #' Control parameters for whale strike simulation
 #'
 #' Assembles control parameters into a list suitable for passing to \code{\link{strike}}
-#' and the functions that it calls.
+#' and the functions that it calls. If \code{file} is provided, then all the other
+#' arguments are read from that source.
 #'
 #' @param ms Ship mass [kg].
 #' @param Ss Ship wetted area [m^2]. This, together with \code{Cs}, is used by
@@ -135,6 +136,12 @@ NULL
 #' 2 m/s, lengthscale 5m (between radius and length) and
 #' viscosity 1e-6 m^2/s.  The drag force is computed with
 #' \code{\link{whaleWaterForce}}.
+#' @param file Optional name a comma-separated file that holds all of the
+#' previous values. If this is provided, then the other parameters
+#' are ignored and all values are sought from the file. The purpose of
+#' this is in shiny apps that want to save a simulation framework.
+#' The file should be saved \code{\link{write.csv}} with
+#' \code{row.names=FALSE}.
 #'
 #' @return
 #' A named list holding the parameters, with defaults and alternatives reconciled
@@ -145,56 +152,60 @@ NULL
 parameters <- function(ms, Ss, impactWidth=3, impactHeight=1.5,
                        lw, mw, Sw,
                        alpha=0.0256, Ealpha=17.80e6, UTSalpha=19.56e6,
-                       theta=45, # FIXME: add UTSalpha
+                       theta=45,
                        beta=0.3, Ebeta=0.6e6, UTSbeta=(0.8/1.2)*0.6e6,
                        gamma=0.5, Egamma=0.4e6, UTSgamma=(0.8/1.2)*0.4e6,
-                       ##gamma=0.2, Egamma=22.9e6, UTSgamma=22.9e6,
-                       Cs=0.01, Cw=0.0025)
+                       Cs=0.01, Cw=0.0025, file)
 {
-    if (missing(ms) || ms <= 0)
-        stop("ship mass (ms) must be given, and a positive number")
-    if (missing(Ss) || Ss <= 0)
-        stop("ship wetted area (Ss) must be given, and a positive number")
-    if (impactWidth <= 0)
-        stop("impact width (impactWidth) must be a positive number, not ", impactWidth)
-    if (impactHeight <= 0)
-        stop("impact height (impactHeight) must be a positive number, not ", impactHeight)
-    if (missing(lw))
-        stop("Whale length (lm) must be given")
-    if (missing(mw))
-        stop("Whale mass (mw) must be given; try using whaleMassFromLength() to compute")
-    if (missing(Sw))
-        stop("Whale surface area (mw) must be given; try using whaleAreaFromLength() to compute")
-    if (alpha < 0)
-        stop("whale skin thickness (alpha) must be positive, not ", alpha)
-    if (Ealpha< 0)
-        stop("whale skin elastic modulus (Ealpha) must be positive, not ", Ealpha)
-    if (UTSalpha< 0)
-        stop("whale skin elastic modulus (UTSalpha) must be positive, not ", UTSalpha)
-    if (theta < 0 || theta > 89)
-        stop("whale skin deformation angle (theta) must be between 0 and 89 deg, not ", theta)
-    if (beta < 0)
-        stop("whale blubber thickness (beta) must be positive, not ", beta)
-    if (Ebeta < 0)
-        stop("whale blubber elastic modulus (Ebeta) must be positive, not ", Ebeta)
-    if (UTSbeta < 0)
-        stop("whale blubber ultimate strength (UTSbeta) must be positive, not ", UTSbeta)
-    if (gamma < 0)
-        stop("whale sublayer thickness (gamma) must be positive, not ", gamma)
-    if (Egamma < 0)
-        stop("whale sublayer elastic modulus (Egamma) must be positive, not ", Egamma)
-    if (UTSgamma < 0)
-        stop("whale sublayer ultimate strength (UTSgamma) must be positive, not ", UTSgamma)
-    if (Cs < 0)
-        stop("ship resistance parameter (Cs) must be positive, not ", Cs)
-    if (Cw < 0)
-        stop("ship resistance parameter (Cw) must be positive, not ", Cw)
-    rval <- list(ms=ms, Ss=Ss, impactWidth=impactWidth, impactHeight=impactHeight, mw=mw, Sw=Sw, lw=lw,
-                 alpha=alpha, Ealpha=Ealpha, UTSalpha=UTSalpha,
-                 theta=theta,
-                 Ebeta=Ebeta, beta=beta, UTSbeta=UTSbeta,
-                 Egamma=Egamma, gamma=gamma, UTSgamma=UTSgamma,
-                 Cs=Cs, Cw=Cw)
+    if (!missing(file)) {
+        rval <- read.csv(file)
+        rval$Ss <- shipAreaFromMass(rval$ms)
+    } else {
+        if (missing(ms) || ms <= 0)
+            stop("ship mass (ms) must be given, and a positive number")
+        if (missing(Ss) || Ss <= 0)
+            stop("ship wetted area (Ss) must be given, and a positive number")
+        if (impactWidth <= 0)
+            stop("impact width (impactWidth) must be a positive number, not ", impactWidth)
+        if (impactHeight <= 0)
+            stop("impact height (impactHeight) must be a positive number, not ", impactHeight)
+        if (missing(lw))
+            stop("Whale length (lm) must be given")
+        if (missing(mw))
+            stop("Whale mass (mw) must be given; try using whaleMassFromLength() to compute")
+        if (missing(Sw))
+            stop("Whale surface area (mw) must be given; try using whaleAreaFromLength() to compute")
+        if (alpha < 0)
+            stop("whale skin thickness (alpha) must be positive, not ", alpha)
+        if (Ealpha< 0)
+            stop("whale skin elastic modulus (Ealpha) must be positive, not ", Ealpha)
+        if (UTSalpha< 0)
+            stop("whale skin elastic modulus (UTSalpha) must be positive, not ", UTSalpha)
+        if (theta < 0 || theta > 89)
+            stop("whale skin deformation angle (theta) must be between 0 and 89 deg, not ", theta)
+        if (beta < 0)
+            stop("whale blubber thickness (beta) must be positive, not ", beta)
+        if (Ebeta < 0)
+            stop("whale blubber elastic modulus (Ebeta) must be positive, not ", Ebeta)
+        if (UTSbeta < 0)
+            stop("whale blubber ultimate strength (UTSbeta) must be positive, not ", UTSbeta)
+        if (gamma < 0)
+            stop("whale sublayer thickness (gamma) must be positive, not ", gamma)
+        if (Egamma < 0)
+            stop("whale sublayer elastic modulus (Egamma) must be positive, not ", Egamma)
+        if (UTSgamma < 0)
+            stop("whale sublayer ultimate strength (UTSgamma) must be positive, not ", UTSgamma)
+        if (Cs < 0)
+            stop("ship resistance parameter (Cs) must be positive, not ", Cs)
+        if (Cw < 0)
+            stop("ship resistance parameter (Cw) must be positive, not ", Cw)
+        rval <- list(ms=ms, Ss=Ss, impactWidth=impactWidth, impactHeight=impactHeight, mw=mw, Sw=Sw, lw=lw,
+                     alpha=alpha, Ealpha=Ealpha, UTSalpha=UTSalpha,
+                     theta=theta,
+                     Ebeta=Ebeta, beta=beta, UTSbeta=UTSbeta,
+                     Egamma=Egamma, gamma=gamma, UTSgamma=UTSgamma,
+                     Cs=Cs, Cw=Cw)
+    }
     class(rval) <- "parameters"
     rval
 }
@@ -412,6 +423,26 @@ whaleSkinForce <- function(xs, xw, parms)
     F <- 2*parms$alpha*(parms$impactHeight*sigmaz+parms$impactWidth*sigmay)*C # dek20180622_skin_strain eq 8
     list(force=F, sigmay=sigmay, sigmaz=sigmaz)
 }
+
+
+#' Compute ship wetted area from mass
+#'
+#' The calculation is used by \code{\link{shipWaterForce}}. The method
+#' is to scale up the results for a known Cape
+#' Islander ship, of displacement 20.46 tonnes, length 11.73m,
+#' beam 4.63m, and draft 1.58m, on the assumption that the wetted area
+#' is length*(2*draft+beam). This is a very crude model, but it is not
+#' likely the weakest link in the modelling of ship dynamics.
+shipAreaFromMass <- function(ms)
+{
+    length <- 11.73                        # m
+    beam <- 4.63                           # m
+    draft <- 1.58                          # m
+    displacement <- 20.46e3                # m^3
+    factor <- (ms / displacement)^(1/3) # lengthscale factor
+    length * (beam + 2 * draft) * factor^2
+}
+
 
 #' Ship water force
 #'

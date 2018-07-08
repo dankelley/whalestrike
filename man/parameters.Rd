@@ -7,7 +7,8 @@
 parameters(ms, Ss, impactWidth = 3, impactHeight = 1.5, lw, mw, Sw,
   alpha = 0.0256, Ealpha = 17800000, UTSalpha = 19560000, theta = 45,
   beta = 0.3, Ebeta = 6e+05, UTSbeta = (0.8/1.2) * 6e+05, gamma = 0.5,
-  Egamma = 4e+05, UTSgamma = (0.8/1.2) * 4e+05, Cs = 0.01, Cw = 0.0025)
+  Egamma = 4e+05, UTSgamma = (0.8/1.2) * 4e+05, Cs = 0.01, Cw = 0.0025,
+  file)
 }
 \arguments{
 \item{ms}{Ship mass [kg].}
@@ -81,6 +82,13 @@ Defaults to 2.5e-3, for Reynolds number 2e7, computed from speed
 2 m/s, lengthscale 5m (between radius and length) and
 viscosity 1e-6 m^2/s.  The drag force is computed with
 \code{\link{whaleWaterForce}}.}
+
+\item{file}{Optional name a comma-separated file that holds all of the
+previous values. If this is provided, then the other parameters
+are ignored and all values are sought from the file. The purpose of
+this is in shiny apps that want to save a simulation framework.
+The file should be saved \code{\link{write.csv}} with
+\code{row.names=FALSE}.}
 }
 \value{
 A named list holding the parameters, with defaults and alternatives reconciled
@@ -88,7 +96,8 @@ according to the system described above.
 }
 \description{
 Assembles control parameters into a list suitable for passing to \code{\link{strike}}
-and the functions that it calls.
+and the functions that it calls. If \code{file} is provided, then all the other
+arguments are read from that source.
 }
 \references{
 See \link{whalestrike} for a list of references.
