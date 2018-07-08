@@ -14,7 +14,9 @@ parameters(ms, Ss, impactWidth = 3, impactHeight = 1.5, lw, mw, Sw,
 \item{ms}{Ship mass [kg].}
 
 \item{Ss}{Ship wetted area [m^2]. This, together with \code{Cs}, is used by
-used by \code{\link{shipWaterForce}} to estimate ship drag force.}
+used by \code{\link{shipWaterForce}} to estimate ship drag force. If \code{Ss}
+is not given, then an esimate is made by calling \code{\link{shipAreaFromMass}} with
+the provided value of \code{ms}.}
 
 \item{impactWidth}{Ship impact horizontal extent [m]; defaults to 2m if not specified.}
 

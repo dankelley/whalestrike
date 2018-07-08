@@ -7,13 +7,12 @@ t <- seq(0, 0.8, length.out=500)
 state <- c(xs=-1.5, vs=5, xw=0, vw=0)
 
 ms <- 20e3                             # ship mass
-Ss <- 11.73*(2*1.58+4.63)              # ship wetted area (max)
 impactWidth <- 0.5                     # impact width (guess, for pointed bow)
 impactHeight <- 1.58                   # impact height (draft)
 lw <- 10                               # whale length
 mw <- whaleMassFromLength(lw)          # whale mass
 Sw <- whaleAreaFromLength(lw,"wetted") # whale area
-parms <- parameters(ms=ms, Ss=Ss, impactWidth=impactWidth, impactHeight=impactHeight,
+parms <- parameters(ms=ms, impactWidth=impactWidth, impactHeight=impactHeight,
                     lw=lw, mw=mw, Sw=Sw)
 sol <- strike(t, state, parms)
 par(mfcol=c(2, 3), mar=c(2, 3, 0.5, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
@@ -26,7 +25,7 @@ state <- c(xs=-1.5, vs=5, xw=0, vw=0)
 beta <- seq(0.1, 0.3, length.out=100)
 maxAccel <- rep(NA, length(beta))
 for (i in seq_along(beta)) {
-    parms <- parameters(ms=ms, Ss=Ss, impactWidth=impactWidth, impactHeight=impactHeight,
+    parms <- parameters(ms=ms, impactWidth=impactWidth, impactHeight=impactHeight,
                         lw=lw, mw=mw, Sw=Sw,
                         alpha=0.02, Ealpha=2e7, theta=45,
                         beta=beta[i], Ebeta=1e6)
@@ -47,7 +46,7 @@ maxStrain <- matrix(NA, nrow=length(speed), ncol=length(beta))
 for (i in seq_along(beta)) {
     for (j in seq_along(speed)) {
         state <- c(xs=-1.5, vs=speed[j], xw=0, vw=0)
-        parms <- parameters(ms=ms, Ss=Ss, impactWidth=impactWidth, impactHeight=impactHeight,
+        parms <- parameters(ms=ms, impactWidth=impactWidth, impactHeight=impactHeight,
                             lw=lw, mw=mw, Sw=Sw,
                             alpha=0.02, Ealpha=2e7, theta=45,
                             beta=beta[i], Ebeta=1e6)

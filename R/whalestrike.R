@@ -85,7 +85,9 @@ NULL
 #'
 #' @param ms Ship mass [kg].
 #' @param Ss Ship wetted area [m^2]. This, together with \code{Cs}, is used by
-#' used by \code{\link{shipWaterForce}} to estimate ship drag force.
+#' used by \code{\link{shipWaterForce}} to estimate ship drag force. If \code{Ss}
+#' is not given, then an esimate is made by calling \code{\link{shipAreaFromMass}} with
+#' the provided value of \code{ms}.
 #' @param impactWidth Ship impact horizontal extent [m]; defaults to 2m if not specified.
 #' @param impactHeight Ship impact vertical extent [m]; defaults to 1.5m if not specified.
 #' @param lw Whale length [m]. If not supplied, \code{\link{whaleLengthFromMass}} is used
@@ -163,8 +165,10 @@ parameters <- function(ms, Ss, impactWidth=3, impactHeight=1.5,
     } else {
         if (missing(ms) || ms <= 0)
             stop("ship mass (ms) must be given, and a positive number")
-        if (missing(Ss) || Ss <= 0)
-            stop("ship wetted area (Ss) must be given, and a positive number")
+        if (missing(Ss))
+            Ss <- shipAreaFromMass(ms)
+        if (Ss <= 0)
+            stop("ship wetted area (Ss) must be a positive number, not ", Ss)
         if (impactWidth <= 0)
             stop("impact width (impactWidth) must be a positive number, not ", impactWidth)
         if (impactHeight <= 0)
@@ -427,12 +431,18 @@ whaleSkinForce <- function(xs, xw, parms)
 
 #' Compute ship wetted area from mass
 #'
-#' The calculation is used by \code{\link{shipWaterForce}}. The method
-#' is to scale up the results for a known Cape
+#' The method is based on scaling up the results for a single Cape
 #' Islander ship, of displacement 20.46 tonnes, length 11.73m,
 #' beam 4.63m, and draft 1.58m, on the assumption that the wetted area
-#' is length*(2*draft+beam). This is a very crude model, but it is not
-#' likely the weakest link in the modelling of ship dynamics.
+#' is length*(2*draft+beam). This reference area is scaled to
+#' the specified mass, \code{ms}, by multiplying by the 2/3
+#' power of mass ratio.
+#' This is a crude calculation meant as a stop-gap measure, for
+#' estimates values of the \code{Ss} argument to \code{\link{parameters}}.
+#' It would be much preferable, for a particular simulation, to use the
+#' wetted area for a particular ship.
+#'
+#' @return Estimated area in m^2.
 shipAreaFromMass <- function(ms)
 {
     length <- 11.73                        # m
@@ -559,7 +569,7 @@ derivative <- function(var, t)
 #' lw <- 11           # whale length [m]
 #' impactWidth <- 0.5 # impact region width [m]
 #' impactHeight <- 1  # impact region height [m]
-#' parms <- parameters(ms=20e3, Ss=ls*(2*draft+beam),
+#' parms <- parameters(ms=20e3,
 #'               impactWidth=impactWidth, impactHeight=impactHeight,
 #'               lw=lw, mw=whaleMassFromLength(lw),
 #'               Sw=whaleAreaFromLength(lw, "wetted"),

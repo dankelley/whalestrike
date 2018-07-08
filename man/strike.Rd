@@ -47,7 +47,7 @@ beam <- 3          # ship beam [m]
 lw <- 11           # whale length [m]
 impactWidth <- 0.5 # impact region width [m]
 impactHeight <- 1  # impact region height [m]
-parms <- parameters(ms=20e3, Ss=ls*(2*draft+beam),
+parms <- parameters(ms=20e3,
               impactWidth=impactWidth, impactHeight=impactHeight,
               lw=lw, mw=whaleMassFromLength(lw),
               Sw=whaleAreaFromLength(lw, "wetted"),
