@@ -342,34 +342,35 @@ whaleAreaFromLength <- function(L, type="wetted")
 #'
 #' @return A list containing \code{force} [N], the
 #' compression-resisting force, \code{stress} [Pa], the ratio
-#' of that force to the impact area, \code{betaCompressed} [m],
-#' the blubber thickness and \code{alphaCompressed} [m],
+#' of that force to the impact area, \code{strain}, the total
+#' strain, #' \code{alphaCompressed} [m],
+#' the skin thickness, \code{betaCompressed} [m],
+#' the blubber thickness, and \code{gammaCompressed} [m],
 #' the sublayer thickness.
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
 whaleCompressionForce <- function(xs, xw, parms)
 {
+    zeroTrim <- function(x) # turn negatives into zeros
+        ifelse(0 < x, x, 0)
     touching <- xs < xw & xs > (xw - parms$alpha - parms$beta - parms$gamma)
     dx <- ifelse(touching, xs - (xw - parms$alpha - parms$beta - parms$gamma), 0) # penetration distance
+    ## Note that the denominator of the strain expression vanishes in the stress calculation,
+    ## so the next three lines could be simplified. However, retaining it might be clearer,
+    ## if a nonlinear stress-strain relationship becomes desirable in the future.
     strain <- dx / (parms$alpha + parms$beta + parms$gamma)
-    E <- (parms$alpha + parms$beta + parms$gamma) / (parms$alpha / parms$Ealpha + parms$beta / parms$Ebeta + parms$gamma / parms$Egamma)
-    ## E <- (parms$beta + parms$gamma) / (parms$beta / parms$Ebeta + parms$gamma / parms$Egamma)
+    E <- (parms$alpha + parms$beta + parms$gamma) / (parms$alpha/parms$Ealpha + parms$beta/parms$Ebeta + parms$gamma/parms$Egamma)
     stress <- E * strain
-    ## Assume equal stress in blubber and interior layers. Do not
-    ## permit compression past zero thickness.
-    betaTMP <- parms$beta * (1 - stress / parms$Ebeta)
-    betaCompressed <- ifelse(0 < betaTMP, betaTMP, 0)
-    blubberCrushed <- betaCompressed == 0
-    if (any(blubberCrushed)) {         # no blubber left; redo calculation
-        strain[blubberCrushed] <- ((dx - parms$alpha - parms$beta) / parms$gamma)[blubberCrushed]
-        stress[blubberCrushed] <- (parms$Egamma * strain)[blubberCrushed]
-    }
-    gammaTMP <- parms$gamma * (1 - stress / parms$Egamma)
-    gammaCompressed <- ifelse(0 < gammaTMP, gammaTMP, 0)
     force <- stress * parms$impactWidth * parms$impactHeight
+    ## Prevent strains exceeding 1, i.e. do not permit negative thickness.
+    alphaCompressed <- zeroTrim(parms$alpha * (1 - stress / parms$Ealpha))
+    betaCompressed <- zeroTrim(parms$beta * (1 - stress / parms$Ebeta))
+    gammaCompressed <- zeroTrim(parms$gamma * (1 - stress / parms$Egamma))
     list(force=force, stress=stress, strain=strain,
-         betaCompressed=betaCompressed, gammaCompressed=gammaCompressed)
+         alphaCompressed=alphaCompressed,
+         betaCompressed=betaCompressed,
+         gammaCompressed=gammaCompressed)
 }
 
 #' Skin force
