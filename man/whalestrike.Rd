@@ -32,7 +32,8 @@ and so it is a good place to start. A companion manuscript
 is intended to provide more detail about the analysis
 and the context.
 }
-\references{
+\section{Further reading}{
+
 \itemize{
 
 \item
@@ -46,6 +47,21 @@ Grear, Molly E., Michael R. Motley, Stephanie B. Crofts, Amanda E. Witt, Adam
 P. Summers, and Petra Ditsche. “Mechanical Properties of Harbor Seal Skin and
 Blubber − a Test of Anisotropy.” Zoology 126 (2018): 137–44.
 https://doi.org/10.1016/j.zool.2017.11.002.
+
+\item
+Kelley, Dan E. “Composite Spring,” May 28, 2018. 20180528_composite_string. Dan Kelley’s working notes.
+
+\item
+Kelley, Dan. “Whale Area,” June 23, 2018. 20180623_whale_area. Dan Kelley’s working notes.
+
+\item
+Kelley, Dan. “Ship Propulsion,” July 1, 2018. 20180701_ship_propulsion. Dan Kelley’s working notes.
+
+\item
+Kelley, Dan. “Whale Mass,” July 7, 2018. 20180707_whale_mass. Dan Kelley’s working notes.
+
+\item
+MAN Diesel & Turbo. “Basic Principles of Propulsion.” MAN Diesel & Turbo, 2011. https://marine.mandieselturbo.com/docs/librariesprovider6/propeller-aftship/basic-principles-of-propulsion.pdf?sfvrsn=0.
 
 \item
 Manen, J. D. van, and P. van Oossanen. “Resistance.” In Principles of Naval
@@ -76,5 +92,7 @@ Frontiers in Neurology 8, no. JUN (2017): 1–18.
 Raymond, J. J. “Development of a Numerical Model to Predict Impact Forces on a
 North Atlantic Right Whale during Collision with a Vessel.” University of New
 Hampshire, 2007. https://scholars.unh.edu/thesis/309.
+
 }
 }
+

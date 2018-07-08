@@ -27,7 +27,7 @@ library(deSolve)
 #' is intended to provide more detail about the analysis
 #' and the context.
 #'
-#' @references
+#' @section Further reading:
 #' \itemize{
 #'
 #' \item
@@ -41,6 +41,21 @@ library(deSolve)
 #' P. Summers, and Petra Ditsche. “Mechanical Properties of Harbor Seal Skin and
 #' Blubber − a Test of Anisotropy.” Zoology 126 (2018): 137–44.
 #' https://doi.org/10.1016/j.zool.2017.11.002.
+#'
+#' \item
+#' Kelley, Dan E. “Composite Spring,” May 28, 2018. 20180528_composite_string. Dan Kelley’s working notes.
+#'
+#' \item
+#' Kelley, Dan. “Whale Area,” June 23, 2018. 20180623_whale_area. Dan Kelley’s working notes.
+#'
+#' \item
+#' Kelley, Dan. “Ship Propulsion,” July 1, 2018. 20180701_ship_propulsion. Dan Kelley’s working notes.
+#'
+#' \item
+#' Kelley, Dan. “Whale Mass,” July 7, 2018. 20180707_whale_mass. Dan Kelley’s working notes.
+#'
+#' \item
+#' MAN Diesel & Turbo. “Basic Principles of Propulsion.” MAN Diesel & Turbo, 2011. https://marine.mandieselturbo.com/docs/librariesprovider6/propeller-aftship/basic-principles-of-propulsion.pdf?sfvrsn=0.
 #'
 #' \item
 #' Manen, J. D. van, and P. van Oossanen. “Resistance.” In Principles of Naval
@@ -71,6 +86,7 @@ library(deSolve)
 #' Raymond, J. J. “Development of a Numerical Model to Predict Impact Forces on a
 #' North Atlantic Right Whale during Collision with a Vessel.” University of New
 #' Hampshire, 2007. https://scholars.unh.edu/thesis/309.
+#'
 #'}
 #'
 #' @docType package
@@ -139,8 +155,9 @@ NULL
 #' viscosity 1e-6 m^2/s.  The drag force is computed with
 #' \code{\link{whaleWaterForce}}.
 #' @param file Optional name a comma-separated file that holds all of the
-#' previous values. If this is provided, then the other parameters
-#' are ignored and all values are sought from the file. The purpose of
+#' previous values, except \code{Cs} and \code{Cw}. If provided,
+#' then other parameters (except \code{Cs} and \code{Cw}) are
+#' ignored, because values are sought from the file. The purpose of
 #' this is in shiny apps that want to save a simulation framework.
 #' The file should be saved \code{\link{write.csv}} with
 #' \code{row.names=FALSE}.
@@ -162,6 +179,28 @@ parameters <- function(ms, Ss, impactWidth=3, impactHeight=1.5,
     if (!missing(file)) {
         rval <- read.csv(file)
         rval$Ss <- shipAreaFromMass(rval$ms)
+        rval$mw <- whaleMassFromLength(rval$lw)
+        rval$Sw <- whaleAreaFromLength(rval$lw, "wetted")
+        if ("gammaType" %in% names(rval)) {
+            if (rval$gammaType == 1) {
+                rval$gamma <- rval$gamma1
+                rval$Egamma <- rval$Egamma1
+                rval$UTSgamma <- rval$UTSgamma1
+            } else {
+                rval$gamma <- rval$gamma2
+                rval$Egamma <- rval$Egamma2
+                rval$UTSgamma <- rval$UTSgamma2
+            }
+            rval$gamma1 <- rval$Egamma1 <- rval$UTSgamma1 <- NULL
+            rval$gamma2 <- rval$Egamma2 <- rval$UTSgamma2 <- NULL
+            rval$gammaType <- NULL
+        }
+        rval$tmax <- NULL
+        rval$vs <- NULL
+        rval$Cs <- Cs
+        rval$Cw <- Cw
+        o <- sort(names(rval))
+        rval <- rval[o]
     } else {
         if (missing(ms) || ms <= 0)
             stop("ship mass (ms) must be given, and a positive number")
@@ -203,7 +242,9 @@ parameters <- function(ms, Ss, impactWidth=3, impactHeight=1.5,
             stop("ship resistance parameter (Cs) must be positive, not ", Cs)
         if (Cw < 0)
             stop("ship resistance parameter (Cw) must be positive, not ", Cw)
-        rval <- list(ms=ms, Ss=Ss, impactWidth=impactWidth, impactHeight=impactHeight, mw=mw, Sw=Sw, lw=lw,
+        rval <- list(ms=ms, Ss=Ss,
+                     impactWidth=impactWidth, impactHeight=impactHeight,
+                     mw=mw, Sw=Sw, lw=lw,
                      alpha=alpha, Ealpha=Ealpha, UTSalpha=UTSalpha,
                      theta=theta,
                      Ebeta=Ebeta, beta=beta, UTSbeta=UTSbeta,
@@ -393,7 +434,7 @@ whaleCompressionForce <- function(xs, xw, parms)
 #' The ship-whale separation is used to calculate the deformation of the skin. The
 #' parameters of the calculation are \code{parms$impactWidth} (impact area width, m),
 #' \code{parms$impactHeight} (impact area height, in m), \code{parms$Ealpha} (skin elastic modulus in Pa),
-#' \code{parms$gamma} (skin thickness in m), and \code{parms$theta} (skin bevel angle
+#' \code{parms$alpha} (skin thickness in m), and \code{parms$theta} (skin bevel angle
 #' degrees, measured from a vector normal to undisturbed skin).
 #'
 #' @param xs Ship position [m]

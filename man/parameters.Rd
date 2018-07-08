@@ -86,8 +86,9 @@ viscosity 1e-6 m^2/s.  The drag force is computed with
 \code{\link{whaleWaterForce}}.}
 
 \item{file}{Optional name a comma-separated file that holds all of the
-previous values. If this is provided, then the other parameters
-are ignored and all values are sought from the file. The purpose of
+previous values, except \code{Cs} and \code{Cw}. If provided,
+then other parameters (except \code{Cs} and \code{Cw}) are
+ignored, because values are sought from the file. The purpose of
 this is in shiny apps that want to save a simulation framework.
 The file should be saved \code{\link{write.csv}} with
 \code{row.names=FALSE}.}
