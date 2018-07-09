@@ -5,6 +5,6 @@ importFrom("graphics", "abline", "box", "grid", "legend", "lines", "mtext", "par
 importFrom("grDevices", "rgb")
 importFrom("stats", "uniroot")
 importFrom("testthat", "expect_equal")
-importFrom("utils", "head", "tail")
+importFrom("utils", "head", "read.csv", "tail")
 
 S3method(plot, strike)
