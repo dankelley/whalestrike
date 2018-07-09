@@ -111,10 +111,10 @@ NULL
 #' an error is reported. The length is used by \code{\link{whaleAreaFromLength}} to
 #' calculate area, which is needed for the water drag calculation done by
 #' \code{\link{whaleWaterForce}}.
-#' @param mw Whale mass [kg]. If length is known, this could be estimated with
-#' \code{\link{whaleMassFromLength}}.
-#' @param Sw Whale surface area [m^2]. If length is known, this could be estimated with
-#' \code{\link{whaleAreaFromLength}}.
+#' @param mw Whale mass [kg]. If not provided, this is calculated from whale
+#' length, using \code{\link{whaleMassFromLength}} with \code{type="wetted"}.
+#' @param Sw Whale surface area [m^2]. If not provided, this is calculated
+#' from whale length using \code{\link{whaleAreaFromLength}}.
 #' @param alpha Whale skin thickness [m], with a of 0.0256 m.
 #' @param Ealpha Whale skin elastic modulus [Pa], with a default of 17.80e6 Pa,
 #' a value for adult seals, given in Table 3 of Grear et al. (2017).
@@ -180,7 +180,7 @@ parameters <- function(ms, Ss, impactWidth=3, impactHeight=1.5,
         rval <- read.csv(file)
         rval$Ss <- shipAreaFromMass(rval$ms)
         rval$mw <- whaleMassFromLength(rval$lw)
-        rval$Sw <- whaleAreaFromLength(rval$lw, "wetted")
+        rval$Sw <- whaleAreaFromLength(rval$lw, type="wetted")
         if ("gammaType" %in% names(rval)) {
             if (rval$gammaType == 1) {
                 rval$gamma <- rval$gamma1
@@ -215,9 +215,9 @@ parameters <- function(ms, Ss, impactWidth=3, impactHeight=1.5,
         if (missing(lw))
             stop("Whale length (lm) must be given")
         if (missing(mw))
-            stop("Whale mass (mw) must be given; try using whaleMassFromLength() to compute")
+            mw <- whaleMassFromLength(lw)
         if (missing(Sw))
-            stop("Whale surface area (mw) must be given; try using whaleAreaFromLength() to compute")
+            Sw <- whaleAreaFromLength(lw, type="wetted")
         if (alpha < 0)
             stop("whale skin thickness (alpha) must be positive, not ", alpha)
         if (Ealpha< 0)
@@ -483,6 +483,8 @@ whaleSkinForce <- function(xs, xw, parms)
 #' It would be much preferable, for a particular simulation, to use the
 #' wetted area for a particular ship.
 #'
+#' @param ms Ship mass [kg].
+#'
 #' @return Estimated area in m^2.
 shipAreaFromMass <- function(ms)
 {
@@ -711,8 +713,8 @@ strike <- function(t, state, parms, debug=0)
 #' equal to \code{blubber thickness} and \code{sublayer thickness}.
 #'
 #' \item \code{"reactive forces"} for a time-series showing the reactive
-#' forces associated with skin stretching and the compression of the
-#' blubber and sublayer components.
+#' forces associated with skin stretching (solid) and the compression of the
+#' blubber and sublayer components (dashed).
 #'
 #' \item \code{"compression stress"} for a time-series plot of the compression stress on the blubber
 #' and the layer to its interior. (These stresses are equal, under an equilibrium assumption.)
@@ -886,11 +888,13 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         CF <- x$WCF$force
         ylim <- range(c(SF/1e6, CF/1e6), na.rm=TRUE)
         plot(t, SF/1e6, type="l", xlab="Time [s]", ylab="Forces [MN]", lwd=lwd, ylim=ylim)
-        lines(t, CF/1e6, col=2, lwd=lwd)
+        ##lines(t, CF/1e6, lty="dotdash", lwd=lwd)
+        lines(t, CF/1e6, lty="dotted", lwd=lwd)
         ## legend("topleft", col=1:2, lwd=lwd, legend=c("Skin", "Blubber"))
-        mtext(" skin", side=3, line=-1, adj=0, cex=par("cex"))
-        mtext("blubber ", side=3, line=-1, adj=1, col=2, cex=par("cex"))
-        mtext("& sublayer ", side=3, line=-2, adj=1, col=2, cex=par("cex"))
+        mtext(expression(" "*F[E]), side=3, line=-1.2, adj=0, cex=par("cex"))
+        mtext(" (solid)", side=3, line=-2.2, adj=0, cex=par("cex"))
+        mtext(expression(F[C]*" "), side=3, line=-1.2, adj=1, cex=par("cex"))
+        mtext(" (dotted) ", side=3, line=-2.2, adj=1, cex=par("cex"))
         showEvents(xs, xw)
     }
     ## if (all || "skin force" %in% which) {
@@ -902,16 +906,18 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         Fs <- whaleSkinForce(xs, xw, x$parms)
         ylim <- range(c(Fs$sigmay, Fs$sigmaz)/1e6)
         plot(t, Fs$sigmay/1e6, type="l", xlab="Time [s]", ylab="Skin Stress [MPa]", lwd=lwd, ylim=ylim)
-        lines(t, Fs$sigmaz/1e6, col=2, lwd=lwd)
-        mtext(" horiz.", side=3, line=-1, adj=0, cex=par("cex"))
-        mtext("vert. ", side=3, line=-1, adj=1, col=2, cex=par("cex"))
+        lines(t, Fs$sigmaz/1e6, lty="dotted", lwd=lwd)
+        mtext(" horiz.", side=3, line=-1.2, adj=0, cex=par("cex"))
+        mtext(" (solid)", side=3, line=-2.2, adj=0, cex=par("cex"))
+        mtext("vert. ", side=3, line=-1.2, adj=1, cex=par("cex"))
+        mtext("(dotted) ", side=3, line=-2.2, adj=1, cex=par("cex"))
         if (drawCriteria[1]) {
             tt <- t
             tt[Fs$sigmay < x$parms$UTSalpha] <- NA
             lines(tt, Fs$sigmay/1e6, lwd=D*lwd)
             tt <- t
             tt[Fs$sigmaz < x$parms$UTSalpha] <- NA
-            lines(tt, Fs$sigmaz/1e6, col=2, lwd=D*lwd)
+            lines(tt, Fs$sigmaz/1e6, lty="dashed", lwd=D*lwd)
         }
         showEvents(xs, xw)
     }

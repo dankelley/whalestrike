@@ -28,11 +28,11 @@ an error is reported. The length is used by \code{\link{whaleAreaFromLength}} to
 calculate area, which is needed for the water drag calculation done by
 \code{\link{whaleWaterForce}}.}
 
-\item{mw}{Whale mass [kg]. If length is known, this could be estimated with
-\code{\link{whaleMassFromLength}}.}
+\item{mw}{Whale mass [kg]. If not provided, this is calculated from whale
+length, using \code{\link{whaleMassFromLength}} with \code{type="wetted"}.}
 
-\item{Sw}{Whale surface area [m^2]. If length is known, this could be estimated with
-\code{\link{whaleAreaFromLength}}.}
+\item{Sw}{Whale surface area [m^2]. If not provided, this is calculated
+from whale length using \code{\link{whaleAreaFromLength}}.}
 
 \item{alpha}{Whale skin thickness [m], with a of 0.0256 m.}
 

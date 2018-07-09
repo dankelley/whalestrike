@@ -40,8 +40,8 @@ is \code{TRUE}, then curves are thickned as described for \code{which}
 equal to \code{blubber thickness} and \code{sublayer thickness}.
 
 \item \code{"reactive forces"} for a time-series showing the reactive
-forces associated with skin stretching and the compression of the
-blubber and sublayer components.
+forces associated with skin stretching (solid) and the compression of the
+blubber and sublayer components (dashed).
 
 \item \code{"compression stress"} for a time-series plot of the compression stress on the blubber
 and the layer to its interior. (These stresses are equal, under an equilibrium assumption.)

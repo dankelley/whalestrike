@@ -6,6 +6,9 @@
 \usage{
 shipAreaFromMass(ms)
 }
+\arguments{
+\item{ms}{Ship mass [kg].}
+}
 \value{
 Estimated area in m^2.
 }
