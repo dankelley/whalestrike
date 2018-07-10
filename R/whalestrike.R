@@ -857,8 +857,8 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         ##mtext(" skin", side=3, line=-1, adj=0, col=colwskin, cex=par("cex"))
         ##mtext("interface ", side=3, line=-1, adj=1, col=colwinterface, cex=par("cex"))
         x0 <- par("usr")[1]
-        text(x0, 0.5*parms$gamma, "sublayer", pos=4)
-        text(x0, parms$gamma+0.5*parms$beta, "blubber", pos=4)
+        text(x0, 0.5*x$parms$gamma, "sublayer", pos=4)
+        text(x0, x$parms$gamma+0.5*x$parms$beta, "blubber", pos=4)
         if (drawCriteria[1]) {         # Blubber
             bad <- x$WCF$stress >= x$parms$UTSbeta
             ##OLD tt <- t
