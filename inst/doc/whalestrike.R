@@ -1,21 +1,18 @@
 ## ---- echo = FALSE-------------------------------------------------------
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 
-## ----results="hide", fig.width=8, fig.height=4---------------------------
+## ----results="hide"------------------------------------------------------
 library(whalestrike)
-t <- seq(0, 0.8, length.out=500)
-state <- c(xs=-1.5, vs=5, xw=0, vw=0)
-
-ms <- 20e3                             # ship mass
-impactWidth <- 0.5                     # impact width (guess, for pointed bow)
-impactHeight <- 1.58                   # impact height (draft)
-lw <- 10                               # whale length
-mw <- whaleMassFromLength(lw)          # whale mass
-Sw <- whaleAreaFromLength(lw,"wetted") # whale area
-parms <- parameters(ms=ms, impactWidth=impactWidth, impactHeight=impactHeight,
-                    lw=lw, mw=mw, Sw=Sw)
+t <- seq(0, 1, length.out=500)
+state <- c(xs=-2.5, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
+parms <- parameters(ms=20e3,
+                    impactWidth=0.5, impactHeight=1,
+                    lw=13,
+                    alpha=0.02, Ealpha=2e7, theta=45,
+                    beta=0.3, Ebeta=6e5,
+                    gamma=0.5, Egamma=4e5)
 sol <- strike(t, state, parms)
-par(mfcol=c(2, 3), mar=c(2, 3, 0.5, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
+par(mfcol=c(2, 2), mar=c(2, 3, 0.5, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
 plot(sol)
 
 ## ----results="hide"------------------------------------------------------

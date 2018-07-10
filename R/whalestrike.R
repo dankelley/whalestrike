@@ -606,21 +606,14 @@ derivative <- function(var, t)
 #' library(whalestrike)
 #' t <- seq(0, 1, length.out=500)
 #' state <- c(xs=-2.5, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
-#' ls <- 10           # ship length [m]
-#' draft <- 1.5       # ship draft [m]
-#' beam <- 3          # ship beam [m]
-#' lw <- 11           # whale length [m]
-#' impactWidth <- 0.5 # impact region width [m]
-#' impactHeight <- 1  # impact region height [m]
 #' parms <- parameters(ms=20e3,
-#'               impactWidth=impactWidth, impactHeight=impactHeight,
-#'               lw=lw, mw=whaleMassFromLength(lw),
-#'               Sw=whaleAreaFromLength(lw, "wetted"),
+#'               impactWidth=0.5, impactHeight=1,
+#'               lw=13,
 #'               alpha=0.02, Ealpha=2e7, theta=45,
 #'               beta=0.3, Ebeta=6e5,
 #'               gamma=0.5, Egamma=4e5)
 #' sol <- strike(t, state, parms)
-#' par(mfcol=c(2, 3), mar=c(2, 3, 1, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
+#' par(mfcol=c(2, 2), mar=c(2, 3, 1, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
 #' plot(sol)
 #'
 #' @references
@@ -686,13 +679,23 @@ strike <- function(t, state, parms, debug=0)
 #'
 #' @param x An object inheriting from class \code{strike}
 #' @param which A character vector that indicates what to plot.
-#' This choices for its entries are:\itemize{
+#' This choices for its entries are listed below, in no particular order.
+#' \itemize{
 #'
 #' \item \code{"location"} for a time-series plot of boat location \code{xw} in
 #' dashed black, whale centerline \code{xs} in solid gray,
 #' blubber-interior interface in red, and skin in blue. The maximum
 #' acceleration of ship and whale (in "G" units) are indicated in notes
 #' placed near the horizontal axes.
+#'
+#' \item \code{"thickness"} to plot both blubber thickness and sublayer thickness
+#' in one panel, creating a cross-section diagram.   If \code{drawCriteria[1]}
+#' is \code{TRUE}, then curves are thickned as described for \code{which}
+#' equal to \code{blubber thickness} and \code{sublayer thickness}.
+#'
+#' \item \code{"injury"} a stacked plot showing time series of health
+#' indicators for skin extension, blubber compression, sub-layer compression,
+#' and acceleration. The lines are made thick during intervals of injury.
 #'
 #' \item \code{"whale acceleration"} for a time-series plot of whale acceleration.
 #' If \code{drawCriteria} is \code{TRUE}, the line is thickened during
@@ -708,11 +711,6 @@ strike <- function(t, state, parms, debug=0)
 #' of the layer interior to the blubber.
 #' If \code{drawCriteria[1]} is \code{TRUE} then the line is thickened
 #' if the stress within the sublayer exceeds \code{parms$UTSgamma}.
-#'
-#' \item \code{"thickness"} to plot both blubber thickness and sublayer thickness
-#' in one panel, creating a cross-section diagram.   If \code{drawCriteria[1]}
-#' is \code{TRUE}, then curves are thickned as described for \code{which}
-#' equal to \code{blubber thickness} and \code{sublayer thickness}.
 #'
 #' \item \code{"reactive forces"} for a time-series showing the reactive
 #' forces associated with skin stretching (solid) and the compression of the
@@ -733,9 +731,8 @@ strike <- function(t, state, parms, debug=0)
 #'
 #' \item \code{"all"} for all of the above.
 #'
-#' \item \code{"default"} for all except acceleration (not needed, since
-#' maximal value is in the \code{"location"} panel) and water force (not
-#' needed, since it is usually 100s of times smaller than other forces).
+#' \item \code{"default"} for a four-element plot showing \code{"location"},
+#' \code{"thickness"}, \code{"injury"} and \code{"values"}.
 #'}
 #'
 #' @param drawCriteria Logical value indicating whether to
@@ -811,8 +808,7 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
     }
     all <- "all" %in% which
     if (which == "default")
-        which <- c("location", "thickness", "reactive forces", "skin stress",
-                   "compression stress", "values")
+        which <- c("location", "thickness", "injury", "values")
 
     ## x(t) and xw(t)
     if (all || "location" %in% which) {
@@ -830,16 +826,6 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         mtext(sprintf("whale: %.1fG", max(abs(waccel))/g),
                       side=3, line=-1, cex=par("cex"), adj=0.5)
         showEvents(xs, xw)
-    }
-    if (all || "whale acceleration" %in% which) {
-        a <- derivative(vw, t)
-        plot(t, a, xlab="Time [s]", ylab="Whale accel. [m/s^2]", type="l", lwd=lwd)
-        showEvents(xs, xw)
-        if (drawCriteria) {
-            tt <- t
-            tt[a < 433/20] <- NA
-            lines(tt, a, lwd=D*lwd)
-        }
     }
     if (all || "thickness" %in% which) {
         WCF <- x$WCF
@@ -883,6 +869,58 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
             polygon(px, py, col="gray", border=NA)
          }
     }
+    if (all || "injury" %in% which) {
+        skinzOK <- x$WSF$sigmaz < x$parms$UTSalpha
+        skinyOK <- x$WSF$sigmay < x$parms$UTSalpha
+        blubberOK <- x$WCF$stress <  x$parms$UTSbeta
+        sublayerOK <- x$WCF$stress <  x$parms$UTSgamma
+        accelerationOK <- derivative(x$xw, x$t) < 3 * g
+        plot(range(t), c(1, 5.5), type="n", xlab="Time [s]", ylab="", axes=FALSE)
+        mtext("Risk of Injury", side=2, line=1, cex=par("cex"))
+        axis(1)
+        box()
+        ## axis(2)
+        dy <- -1
+        y0 <- 5
+        xlim <- par('usr')[1:2]
+        for (i in 1:6) {
+            abline(h=y0+(i-1)*dy, lwd=lwd/2)
+            ##text(xlim[2]-(xlim[2]-xlim[1])/10, y+(i-1)*dy, "BAD")
+            ##text(xlim[2]-(xlim[2]-xlim[1])/10, y+(i-1)*dy+0.5, "OK")
+        }
+        x0 <- xlim[1] #+ 0.04 * (xlim[2] - xlim[1])
+        dylab <- 0.2
+        text(x0, y0     +dylab, "skinz", pos=4)
+        text(x0, y0+  dy+dylab, "skiny", pos=4)
+        text(x0, y0+2*dy+dylab, "blubber", pos=4)
+        text(x0, y0+3*dy+dylab, "sublayer", pos=4)
+        text(x0, y0+4*dy+dylab, "acceleration", pos=4)
+        cex <- 1
+        pch <- 20
+        del <- 3
+        n <- length(t)
+        y <- ifelse(!skinzOK, y0, NA)
+        lines(t, y, lwd=5*lwd)
+        y <- ifelse(!skinyOK, y0+dy, NA)
+        lines(t, y, lwd=5*lwd)
+        y <- ifelse(!blubberOK, y0+2*dy, NA)
+        lines(t, y, lwd=5*lwd)
+        y <- ifelse(!sublayerOK, y0+3*dy, NA)
+        lines(t, y, lwd=5*lwd)
+        y <- ifelse(!accelerationOK, y0+4*dy, NA)
+        lines(t, y, lwd=5*lwd)
+    }
+    if (all || "whale acceleration" %in% which) {
+        a <- derivative(vw, t)
+        plot(t, a, xlab="Time [s]", ylab="Whale accel. [m/s^2]", type="l", lwd=lwd)
+        showEvents(xs, xw)
+        if (drawCriteria) {
+            tt <- t
+            tt[a < 433/20] <- NA
+            lines(tt, a, lwd=D*lwd)
+        }
+    }
+
     if (all || "blubber thickness" %in% which) {
         WCF <- x$WCF
         y <- WCF$betaCompressed

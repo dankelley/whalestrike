@@ -13,13 +13,23 @@
 \item{x}{An object inheriting from class \code{strike}}
 
 \item{which}{A character vector that indicates what to plot.
-This choices for its entries are:\itemize{
+This choices for its entries are listed below, in no particular order.
+\itemize{
 
 \item \code{"location"} for a time-series plot of boat location \code{xw} in
 dashed black, whale centerline \code{xs} in solid gray,
 blubber-interior interface in red, and skin in blue. The maximum
 acceleration of ship and whale (in "G" units) are indicated in notes
 placed near the horizontal axes.
+
+\item \code{"thickness"} to plot both blubber thickness and sublayer thickness
+in one panel, creating a cross-section diagram.   If \code{drawCriteria[1]}
+is \code{TRUE}, then curves are thickned as described for \code{which}
+equal to \code{blubber thickness} and \code{sublayer thickness}.
+
+\item \code{"injury"} a stacked plot showing time series of health
+indicators for skin extension, blubber compression, sub-layer compression,
+and acceleration. The lines are made thick during intervals of injury.
 
 \item \code{"whale acceleration"} for a time-series plot of whale acceleration.
 If \code{drawCriteria} is \code{TRUE}, the line is thickened during
@@ -35,11 +45,6 @@ if the stress within the blubber exceeds \code{parms$UTSbeta}.
 of the layer interior to the blubber.
 If \code{drawCriteria[1]} is \code{TRUE} then the line is thickened
 if the stress within the sublayer exceeds \code{parms$UTSgamma}.
-
-\item \code{"thickness"} to plot both blubber thickness and sublayer thickness
-in one panel, creating a cross-section diagram.   If \code{drawCriteria[1]}
-is \code{TRUE}, then curves are thickned as described for \code{which}
-equal to \code{blubber thickness} and \code{sublayer thickness}.
 
 \item \code{"reactive forces"} for a time-series showing the reactive
 forces associated with skin stretching (solid) and the compression of the
@@ -60,9 +65,8 @@ entry in Table 3 of Grear et al. (2018) for the strength of seal skin.
 
 \item \code{"all"} for all of the above.
 
-\item \code{"default"} for all except acceleration (not needed, since
-maximal value is in the \code{"location"} panel) and water force (not
-needed, since it is usually 100s of times smaller than other forces).
+\item \code{"default"} for a four-element plot showing \code{"location"},
+\code{"thickness"}, \code{"injury"} and \code{"values"}.
 }}
 
 \item{drawCriteria}{Logical value indicating whether to
