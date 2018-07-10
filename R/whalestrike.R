@@ -817,12 +817,12 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
     ## x(t) and xw(t)
     if (all || "location" %in% which) {
         ylim <- range(c(xs, xw), na.rm=TRUE)
-        plot(t, xs, type="l", xlab="Time [s]", ylab="Location [m]", col=cols, ylim=ylim, lwd=lwd, lty="22")
+        plot(t, xs, type="l", xlab="Time [s]", ylab="Location [m]", col=cols, ylim=ylim, lwd=lwd, lty="84")
         lines(t, xw, lwd=lwd, col=colwcenter)
         lines(t, xw - x$WCF$gammaCompressed, col=colwinterface, lwd=lwd)
-        lines(t, xw - x$WCF$gammaCompressed - x$WCF$betaCompressed, col=colwskin, lwd=lwd/2)
+        lines(t, xw - x$WCF$gammaCompressed - x$WCF$betaCompressed, col=colwskin, lwd=lwd)
         lines(t, xw - x$WCF$gammaCompressed - x$WCF$betaCompressed - x$WCF$alphaCompressed,
-              col=colwskin, lwd=lwd/2)
+              col=colwskin, lwd=lwd)
         waccel <- derivative(vw, t)
         saccel <- derivative(vs, t)
         mtext(sprintf("ship: %.1fG", max(abs(saccel))/g),
@@ -849,9 +849,9 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         maxy <- max(c(blubber+sublayer))
         ylim <- c(0, maxy*1.2) # put y=0 at bottom, so whale-centre is visible
         plot(t, sublayer+blubber+skin, xlab="Time [s]", ylab="Thickness [m]",
-             type="l", lwd=lwd/2, ylim=ylim, yaxs="i", col=colwskin)
-        lines(t, sublayer+blubber, lwd=lwd/2, col=colwskin)
-        lines(t, sublayer, col=colwinterface, lwd=lwd)# , lty="42")
+             type="l", lwd=lwd, ylim=ylim, yaxs="i", col=colwskin)# outside skin margin
+        lines(t, sublayer+blubber, lwd=lwd, col=colwskin)
+        lines(t, sublayer, lwd=lwd, col=colwinterface)# , lty="42")
         abline(h=0, col=colwcenter, lwd=D*lwd)
         showEvents(xs, xw)
         ##mtext(" skin", side=3, line=-1, adj=0, col=colwskin, cex=par("cex"))
@@ -868,7 +868,7 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
             py <- c(sublayer+blubber,
                     ifelse(rev(bad), rev(sublayer), rev(sublayer+blubber)))
             ##polygon(px, py, density=10, angle=-45)
-            polygon(px, py, col=gray(0.9))
+            polygon(px, py, col=gray(0.9), border=NA)
         }
         if (length(drawCriteria) > 1 && drawCriteria[2]) { # Sublayer
             bad <- x$WCF$stress >= x$parms$UTSgamma
@@ -880,7 +880,7 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
             px <- t
             py <- ifelse(bad, sublayer, 0)
             ##polygon(px, py, density=30)
-            polygon(px, py, col="gray")
+            polygon(px, py, col="gray", border=NA)
          }
     }
     if (all || "blubber thickness" %in% which) {
