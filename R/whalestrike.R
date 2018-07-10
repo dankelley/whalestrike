@@ -872,8 +872,8 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
     if (all || "injury" %in% which) {
         skinzOK <- x$WSF$sigmaz < x$parms$UTSalpha
         skinyOK <- x$WSF$sigmay < x$parms$UTSalpha
-        blubberOK <- x$WCF$stress <  x$parms$UTSbeta
-        sublayerOK <- x$WCF$stress <  x$parms$UTSgamma
+        blubberOK <- x$WCF$stress <  x$parms$UTSbeta & x$WCF$betaCompressed > 0
+        sublayerOK <- x$WCF$stress <  x$parms$UTSgamma & x$WCF$gammaCompressed > 0
         accelerationOK <- derivative(x$xw, x$t) < 3 * g
         plot(range(t), c(1, 5.5), type="n", xlab="Time [s]", ylab="", axes=FALSE)
         mtext("Risk of Injury", side=2, line=1, cex=par("cex"))
