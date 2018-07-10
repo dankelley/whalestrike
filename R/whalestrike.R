@@ -605,7 +605,7 @@ derivative <- function(var, t)
 #' @examples
 #' library(whalestrike)
 #' t <- seq(0, 1, length.out=500)
-#' state <- c(xs=-2, vs=5, xw=0, vw=0)
+#' state <- c(xs=-2.5, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
 #' ls <- 10           # ship length [m]
 #' draft <- 1.5       # ship draft [m]
 #' beam <- 3          # ship beam [m]
@@ -690,7 +690,9 @@ strike <- function(t, state, parms, debug=0)
 #'
 #' \item \code{"location"} for a time-series plot of boat location \code{xw} in
 #' dashed black, whale centerline \code{xs} in solid gray,
-#' blubber-interior interface in red, and skin in blue.
+#' blubber-interior interface in red, and skin in blue. The maximum
+#' acceleration of ship and whale (in "G" units) are indicated in notes
+#' placed near the horizontal axes.
 #'
 #' \item \code{"whale acceleration"} for a time-series plot of whale acceleration.
 #' If \code{drawCriteria} is \code{TRUE}, the line is thickened during
@@ -769,7 +771,9 @@ strike <- function(t, state, parms, debug=0)
 #' @references
 #' See \link{whalestrike} for a list of references.
 plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvents=TRUE,
-                        colwcenter="Slate Gray", colwinterface="Firebrick", colwskin="Dodger Blue 4",
+                        colwcenter="Slate Gray",
+                        colwinterface="black", #colwinterface="Firebrick",
+                        colwskin="black", #colwskin="Dodger Blue 4",
                         cols="black",
                         lwd=1.4, D=3, debug=0, ...)
 {
@@ -813,12 +817,18 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
     ## x(t) and xw(t)
     if (all || "location" %in% which) {
         ylim <- range(c(xs, xw), na.rm=TRUE)
-        plot(t, xs, type="l", xlab="Time [s]", ylab="Location [m]", col=cols, ylim=ylim, lwd=lwd, lty=2)
+        plot(t, xs, type="l", xlab="Time [s]", ylab="Location [m]", col=cols, ylim=ylim, lwd=lwd, lty="22")
         lines(t, xw, lwd=lwd, col=colwcenter)
         lines(t, xw - x$WCF$gammaCompressed, col=colwinterface, lwd=lwd)
-        lines(t, xw - x$WCF$gammaCompressed - x$WCF$betaCompressed, col=colwskin, lwd=lwd)
-        accel <- derivative(vw, t)
-        mtext(sprintf("Max. accel. %.0f m/s^2 ", max(accel)), side=1, line=-1, cex=par("cex"), adj=1)
+        lines(t, xw - x$WCF$gammaCompressed - x$WCF$betaCompressed, col=colwskin, lwd=lwd/2)
+        lines(t, xw - x$WCF$gammaCompressed - x$WCF$betaCompressed - x$WCF$alphaCompressed,
+              col=colwskin, lwd=lwd/2)
+        waccel <- derivative(vw, t)
+        saccel <- derivative(vs, t)
+        mtext(sprintf("ship: %.1fG", max(abs(saccel))/g),
+                      side=1, line=-1.25, cex=par("cex"), adj=0.5)
+        mtext(sprintf("whale: %.1fG", max(abs(waccel))/g),
+                      side=3, line=-1, cex=par("cex"), adj=0.5)
         showEvents(xs, xw)
     }
     if (all || "whale acceleration" %in% which) {
@@ -833,26 +843,44 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
     }
     if (all || "thickness" %in% which) {
         WCF <- x$WCF
+        skin <- WCF$alphaCompressed
         blubber <- WCF$betaCompressed
         sublayer <- WCF$gammaCompressed
         maxy <- max(c(blubber+sublayer))
         ylim <- c(0, maxy*1.2) # put y=0 at bottom, so whale-centre is visible
-        plot(t, sublayer+blubber, xlab="Time [s]", ylab="Thickness [m]",
-             type="l", lwd=lwd, ylim=ylim, yaxs="i", col=colwskin)
-        lines(t, sublayer, col=colwinterface, lwd=lwd)
+        plot(t, sublayer+blubber+skin, xlab="Time [s]", ylab="Thickness [m]",
+             type="l", lwd=lwd/2, ylim=ylim, yaxs="i", col=colwskin)
+        lines(t, sublayer+blubber, lwd=lwd/2, col=colwskin)
+        lines(t, sublayer, col=colwinterface, lwd=lwd)# , lty="42")
         abline(h=0, col=colwcenter, lwd=D*lwd)
         showEvents(xs, xw)
-        mtext(" skin", side=3, line=-1, adj=0, col=colwskin, cex=par("cex"))
-        mtext("interface ", side=3, line=-1, adj=1, col=colwinterface, cex=par("cex"))
+        ##mtext(" skin", side=3, line=-1, adj=0, col=colwskin, cex=par("cex"))
+        ##mtext("interface ", side=3, line=-1, adj=1, col=colwinterface, cex=par("cex"))
+        x0 <- par("usr")[1]
+        text(x0, 0.5*parms$gamma, "sublayer", pos=4)
+        text(x0, parms$gamma+0.5*parms$beta, "blubber", pos=4)
         if (drawCriteria[1]) {         # Blubber
-            tt <- t
-            tt[WCF$stress < x$parms$UTSbeta] <- NA
-            lines(tt, sublayer+blubber, lwd=D*lwd, col=colwskin)
+            bad <- x$WCF$stress >= x$parms$UTSbeta
+            ##OLD tt <- t
+            ##OLD tt[!bad] <- NA
+            ##OLD lines(tt, sublayer+blubber, lwd=D*lwd, col=colwskin)
+            px <- c(t, rev(t))
+            py <- c(sublayer+blubber,
+                    ifelse(rev(bad), rev(sublayer), rev(sublayer+blubber)))
+            ##polygon(px, py, density=10, angle=-45)
+            polygon(px, py, col=gray(0.9))
         }
         if (length(drawCriteria) > 1 && drawCriteria[2]) { # Sublayer
-            tt <- t
-            tt[WCF$stress < x$parms$UTSgamma] <- NA
-            lines(tt, sublayer, lwd=D*lwd, col=colwinterface)
+            bad <- x$WCF$stress >= x$parms$UTSgamma
+            ##OLD## thick-line method
+            ##OLD tt <- t
+            ##OLD tt[!bad] <- NA
+            ##OLD lines(tt, sublayer, lwd=D*lwd, col=2)# colwinterface)
+            ## polygon method
+            px <- t
+            py <- ifelse(bad, sublayer, 0)
+            ##polygon(px, py, density=30)
+            polygon(px, py, col="gray")
          }
     }
     if (all || "blubber thickness" %in% which) {

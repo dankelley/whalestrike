@@ -5,9 +5,9 @@
 \title{Plot a strike object}
 \usage{
 \method{plot}{strike}(x, which = "default", drawCriteria = rep(TRUE, 2),
-  drawEvents = TRUE, colwcenter = "Slate Gray",
-  colwinterface = "Firebrick", colwskin = "Dodger Blue 4", cols = "black",
-  lwd = 1.4, D = 3, debug = 0, ...)
+  drawEvents = TRUE, colwcenter = "Slate Gray", colwinterface = "black",
+  colwskin = "black", cols = "black", lwd = 1.4, D = 3, debug = 0,
+  ...)
 }
 \arguments{
 \item{x}{An object inheriting from class \code{strike}}
@@ -17,7 +17,9 @@ This choices for its entries are:\itemize{
 
 \item \code{"location"} for a time-series plot of boat location \code{xw} in
 dashed black, whale centerline \code{xs} in solid gray,
-blubber-interior interface in red, and skin in blue.
+blubber-interior interface in red, and skin in blue. The maximum
+acceleration of ship and whale (in "G" units) are indicated in notes
+placed near the horizontal axes.
 
 \item \code{"whale acceleration"} for a time-series plot of whale acceleration.
 If \code{drawCriteria} is \code{TRUE}, the line is thickened during

@@ -40,7 +40,7 @@ The forces are calculated by
 \examples{
 library(whalestrike)
 t <- seq(0, 1, length.out=500)
-state <- c(xs=-2, vs=5, xw=0, vw=0)
+state <- c(xs=-2.5, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
 ls <- 10           # ship length [m]
 draft <- 1.5       # ship draft [m]
 beam <- 3          # ship beam [m]
