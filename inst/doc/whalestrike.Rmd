@@ -55,15 +55,37 @@ context.
 
 ## Overview plot
 
+The following shows how to run a simulation and produce a simple summary plot.
+(Setting the second argument of `plot()` gives access to about a dozen plot
+types.) The top-left panel shows position of ship as a dashed curve, while the
+whale is indicated with three curves, the top being an imagined point mass in
+the whale interior, the one below it being the interface between sublayer and
+blubber, and the one below that being the whale skin. (Actually, the skin is
+so thin that what seems to be a thick line is actually two lines.)
+
+The bottom-left panel shows a cross section of whale skin, blubber and
+sublayer. Cross-hatching is used to indicate stresses (force/area values) that
+exceed the strength of a given region; in this example, the sublayer exceeds
+the stated strength at about 0.5s into the simulation.
+
+The top-right panel shows an indication of injury for each component. Gray
+lines indicate that the crition is met halfway, and thick lines indicate that
+the criterion is exceeded. Again, this is an indication of damage to the
+sublayer, but we see also a suggestion of possible damage to the blubber.
+
+The bottom-right panel shows the values of this simulation, so of which were
+calculated by `parameters()`, e.g. the whale mass `mw` and area `Sw` were
+computed from the supplied value of `lw`, the whale length.
+
 ```{r results="hide"}
 library(whalestrike)
 t <- seq(0, 1, length.out=500)
 state <- c(xs=-2.5, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
 parms <- parameters(ms=20e3,
                     impactWidth=0.5, impactHeight=1,
-                    lw=13,
-                    alpha=0.02, Ealpha=2e7, theta=45,
-                    beta=0.3, Ebeta=6e5,
+                    lw=10,
+                    alpha=0.025, Ealpha=2e7, theta=45,
+                    beta=0.25, Ebeta=6e5,
                     gamma=0.5, Egamma=4e5)
 sol <- strike(t, state, parms)
 par(mfcol=c(2, 2), mar=c(2, 3, 0.5, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
@@ -72,17 +94,21 @@ plot(sol)
 
 ## Acceleration dependence on blubber thickness
 
+This example shows how to extract information from a sequence of simulations,
+to create a graphical display that is not part of the default list. For
+clarity, this is done with a loop rather than using e.g `lapply`.
 ```{r results="hide"}
 library(whalestrike)
 t <- seq(0, 1, length.out=500)
 state <- c(xs=-1.5, vs=5, xw=0, vw=0)
 beta <- seq(0.1, 0.3, length.out=100)
 maxAccel <- rep(NA, length(beta))
+ms <- 20e3
 for (i in seq_along(beta)) {
-    parms <- parameters(ms=ms, impactWidth=impactWidth, impactHeight=impactHeight,
-                        lw=lw, mw=mw, Sw=Sw,
-                        alpha=0.02, Ealpha=2e7, theta=45,
-                        beta=beta[i], Ebeta=1e6)
+    parms <- parameters(ms=ms, impactWidth=0.5, impactHeight=1,
+                        lw=10,
+                        alpha=0.025, Ealpha=2e7, theta=45,
+                        beta=beta[i], Ebeta=6e5)
     sol <- strike(t, state, parms)
     maxAccel[i] <- max(abs(diff(sol$vw))) / (t[2] - t[1])
 }
@@ -90,6 +116,13 @@ plot(beta, maxAccel, type="l", xlab=expression("Blubber thickness [m]"), ylab="M
 ```
 
 ## Blubber-damage dependence on blubber thickness and ship speed
+
+This example shows how to create a matrix of simulation results, in order to
+display dependence of a result upon two parameters. Here, the display shows the
+maximum compressive strain as a function of ship speed and blubber thickness.
+Note that the contour lines are thickened when the strain exceeds an estimate
+of the ratio of blubber ultimate tensile strength to blubber modulus.
+
 
 ```{r results="hide"}
 library(whalestrike)
@@ -103,10 +136,10 @@ maxStrain <- matrix(NA, nrow=length(speed), ncol=length(beta))
 for (i in seq_along(beta)) {
     for (j in seq_along(speed)) {
         state <- c(xs=-1.5, vs=speed[j], xw=0, vw=0)
-        parms <- parameters(ms=ms, impactWidth=impactWidth, impactHeight=impactHeight,
-                            lw=lw, mw=mw, Sw=Sw,
-                            alpha=0.02, Ealpha=2e7, theta=45,
-                            beta=beta[i], Ebeta=1e6)
+        parms <- parameters(ms=ms, impactWidth=0.5, impactHeight=1,
+                            lw=10,
+                            alpha=0.025, Ealpha=2e7, theta=45,
+                            beta=beta[i], Ebeta=6e5)
         sol <- strike(t, state, parms)
         maxStrain[j, i] <- max(sol$WCF$strain)
     }

@@ -7,9 +7,9 @@ t <- seq(0, 1, length.out=500)
 state <- c(xs=-2.5, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
 parms <- parameters(ms=20e3,
                     impactWidth=0.5, impactHeight=1,
-                    lw=13,
-                    alpha=0.02, Ealpha=2e7, theta=45,
-                    beta=0.3, Ebeta=6e5,
+                    lw=10,
+                    alpha=0.025, Ealpha=2e7, theta=45,
+                    beta=0.25, Ebeta=6e5,
                     gamma=0.5, Egamma=4e5)
 sol <- strike(t, state, parms)
 par(mfcol=c(2, 2), mar=c(2, 3, 0.5, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
@@ -21,11 +21,12 @@ t <- seq(0, 1, length.out=500)
 state <- c(xs=-1.5, vs=5, xw=0, vw=0)
 beta <- seq(0.1, 0.3, length.out=100)
 maxAccel <- rep(NA, length(beta))
+ms <- 20e3
 for (i in seq_along(beta)) {
-    parms <- parameters(ms=ms, impactWidth=impactWidth, impactHeight=impactHeight,
-                        lw=lw, mw=mw, Sw=Sw,
-                        alpha=0.02, Ealpha=2e7, theta=45,
-                        beta=beta[i], Ebeta=1e6)
+    parms <- parameters(ms=ms, impactWidth=0.5, impactHeight=1,
+                        lw=10,
+                        alpha=0.025, Ealpha=2e7, theta=45,
+                        beta=beta[i], Ebeta=6e5)
     sol <- strike(t, state, parms)
     maxAccel[i] <- max(abs(diff(sol$vw))) / (t[2] - t[1])
 }
@@ -43,10 +44,10 @@ maxStrain <- matrix(NA, nrow=length(speed), ncol=length(beta))
 for (i in seq_along(beta)) {
     for (j in seq_along(speed)) {
         state <- c(xs=-1.5, vs=speed[j], xw=0, vw=0)
-        parms <- parameters(ms=ms, impactWidth=impactWidth, impactHeight=impactHeight,
-                            lw=lw, mw=mw, Sw=Sw,
-                            alpha=0.02, Ealpha=2e7, theta=45,
-                            beta=beta[i], Ebeta=1e6)
+        parms <- parameters(ms=ms, impactWidth=0.5, impactHeight=1,
+                            lw=10,
+                            alpha=0.025, Ealpha=2e7, theta=45,
+                            beta=beta[i], Ebeta=6e5)
         sol <- strike(t, state, parms)
         maxStrain[j, i] <- max(sol$WCF$strain)
     }

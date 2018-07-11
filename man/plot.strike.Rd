@@ -6,8 +6,8 @@
 \usage{
 \method{plot}{strike}(x, which = "default", drawCriteria = rep(TRUE, 2),
   drawEvents = TRUE, colwcenter = "Slate Gray", colwinterface = "black",
-  colwskin = "black", cols = "black", lwd = 1.4, D = 3, debug = 0,
-  ...)
+  colwskin = "black", cols = "black", colInjury = c("gray", "black"),
+  lwd = 1.4, D = 3, debug = 0, ...)
 }
 \arguments{
 \item{x}{An object inheriting from class \code{strike}}
@@ -24,12 +24,16 @@ placed near the horizontal axes.
 
 \item \code{"thickness"} to plot both blubber thickness and sublayer thickness
 in one panel, creating a cross-section diagram.   If \code{drawCriteria[1]}
-is \code{TRUE}, then curves are thickned as described for \code{which}
-equal to \code{blubber thickness} and \code{sublayer thickness}.
+is \code{TRUE}, then the blubber and sub-layer regions are 
+cross-hatched during time intervals when the stress exceeds the
+ultimate tensile strength of the material, i.e. when
+injury is to be expected.
 
 \item \code{"injury"} a stacked plot showing time series of health
 indicators for skin extension, blubber compression, sub-layer compression,
-and acceleration. The lines are made thick during intervals of injury.
+and acceleration. During times when an injury criterion is halfway met,
+the line is thickened and drawn in gray, and the colour shifts to black
+if the criterion is fully met.
 
 \item \code{"whale acceleration"} for a time-series plot of whale acceleration.
 If \code{drawCriteria} is \code{TRUE}, the line is thickened during
@@ -65,8 +69,8 @@ entry in Table 3 of Grear et al. (2018) for the strength of seal skin.
 
 \item \code{"all"} for all of the above.
 
-\item \code{"default"} for a four-element plot showing \code{"location"},
-\code{"thickness"}, \code{"injury"} and \code{"values"}.
+\item \code{"default"} for a three-element plot showing \code{"location"},
+\code{"thickness"}, and \code{"injury"}.
 }}
 
 \item{drawCriteria}{Logical value indicating whether to
@@ -87,6 +91,11 @@ between whale blubber and sublayer.}
 
 \item{cols}{As \code{colw}, but the colour to be used for the ship bow location,
 which is drawn with a dashed line.}
+
+\item{colInjury}{Two-element colour specification used in \code{"injury"}
+panels. The first colour is used to indicate values that are halfway to the
+injury crition, and the second is used to indicte values that exceed the
+criterion.}
 
 \item{lwd}{Line width used in plots for time intervals in which damage
 criteria are not exceed (or if \code{drawCriteria} is \code{FALSE}).}

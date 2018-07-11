@@ -4,7 +4,7 @@
 \alias{parameters}
 \title{Control parameters for whale strike simulation}
 \usage{
-parameters(ms, Ss, impactWidth = 3, impactHeight = 1.5, lw, mw, Sw,
+parameters(ms, Ss, impactWidth = 0.5, impactHeight = 1.5, lw, mw, Sw,
   alpha = 0.0256, Ealpha = 17800000, UTSalpha = 19560000, theta = 45,
   beta = 0.3, Ebeta = 6e+05, UTSbeta = (0.8/1.2) * 6e+05, gamma = 0.5,
   Egamma = 4e+05, UTSgamma = (0.8/1.2) * 4e+05, Cs = 0.01, Cw = 0.0025,
@@ -18,7 +18,7 @@ used by \code{\link{shipWaterForce}} to estimate ship drag force. If \code{Ss}
 is not given, then an esimate is made by calling \code{\link{shipAreaFromMass}} with
 the provided value of \code{ms}.}
 
-\item{impactWidth}{Ship impact horizontal extent [m]; defaults to 2m if not specified.}
+\item{impactWidth}{Ship impact horizontal extent [m]; defaults to 0.5m if not specified.}
 
 \item{impactHeight}{Ship impact vertical extent [m]; defaults to 1.5m if not specified.}
 
