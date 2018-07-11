@@ -123,7 +123,6 @@ maximum compressive strain as a function of ship speed and blubber thickness.
 Note that the contour lines are thickened when the strain exceeds an estimate
 of the ratio of blubber ultimate tensile strength to blubber modulus.
 
-
 ```{r results="hide"}
 library(whalestrike)
 t <- seq(0, 1, length.out=500)
