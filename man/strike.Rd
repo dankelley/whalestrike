@@ -42,13 +42,13 @@ library(whalestrike)
 t <- seq(0, 1, length.out=500)
 state <- c(xs=-2.5, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
 parms <- parameters(ms=20e3,
-              impactWidth=0.5, impactHeight=1,
+              Ly=0.5, Lz=1,
               lw=13,
-              alpha=0.02, Ealpha=2e7, theta=45,
+              alpha=0.025, Ealpha=2e7, theta=45,
               beta=0.25, Ebeta=6e5,
               gamma=0.5, Egamma=4e5)
 sol <- strike(t, state, parms)
-par(mfcol=c(2, 2), mar=c(3, 3, 1, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
+par(mfcol=c(1, 3), mar=c(3, 3, 1, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
 plot(sol)
 
 }

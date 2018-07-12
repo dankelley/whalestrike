@@ -35,7 +35,7 @@ stress exceeds the blubber modulus, the blubber thickness is set to zero
 and the calculation is redone with just the sublayer. If not,
 the layer thickness are computed assuming equal stress in each layer.
 Force is calculated as the product of stress and the area
-given by the product of \code{parms$impactWidth} and \code{parms$impactHeight}.
+given by the product of \code{parms$Ly} and \code{parms$Lz}.
 }
 \references{
 See \link{whalestrike} for a list of references.

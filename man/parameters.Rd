@@ -4,9 +4,9 @@
 \alias{parameters}
 \title{Control parameters for whale strike simulation}
 \usage{
-parameters(ms, Ss, impactWidth = 0.5, impactHeight = 1.5, lw, mw, Sw,
-  alpha = 0.0256, Ealpha = 17800000, UTSalpha = 19560000, theta = 45,
-  beta = 0.3, Ebeta = 6e+05, UTSbeta = (0.8/1.2) * 6e+05, gamma = 0.5,
+parameters(ms, Ss, Ly = 0.5, Lz = 1.5, lw, mw, Sw, alpha = 0.0256,
+  Ealpha = 17800000, UTSalpha = 19560000, theta = 45, beta = 0.3,
+  Ebeta = 6e+05, UTSbeta = (0.8/1.2) * 6e+05, gamma = 0.5,
   Egamma = 4e+05, UTSgamma = (0.8/1.2) * 4e+05, Cs = 0.01, Cw = 0.0025,
   file)
 }
@@ -18,9 +18,9 @@ used by \code{\link{shipWaterForce}} to estimate ship drag force. If \code{Ss}
 is not given, then an esimate is made by calling \code{\link{shipAreaFromMass}} with
 the provided value of \code{ms}.}
 
-\item{impactWidth}{Ship impact horizontal extent [m]; defaults to 0.5m if not specified.}
+\item{Ly}{Ship impact horizontal extent [m]; defaults to 0.5m if not specified.}
 
-\item{impactHeight}{Ship impact vertical extent [m]; defaults to 1.5m if not specified.}
+\item{Lz}{Ship impact vertical extent [m]; defaults to 1.5m if not specified.}
 
 \item{lw}{Whale length [m]. If not supplied, \code{\link{whaleLengthFromMass}} is used
 to calculate this, given \code{lm}, but if neither \code{mw} nor \code{ml} is provided,

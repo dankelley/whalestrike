@@ -24,16 +24,18 @@ placed near the horizontal axes.
 
 \item \code{"thickness"} to plot both blubber thickness and sublayer thickness
 in one panel, creating a cross-section diagram.   If \code{drawCriteria[1]}
-is \code{TRUE}, then the blubber and sub-layer regions are 
+is \code{TRUE}, then the blubber and sub-layer regions are
 cross-hatched during time intervals when the stress exceeds the
 ultimate tensile strength of the material, i.e. when
 injury is to be expected.
 
-\item \code{"injury"} a stacked plot showing time series of health
-indicators for skin extension, blubber compression, sub-layer compression,
-and acceleration. During times when an injury criterion is halfway met,
-the line is thickened and drawn in gray, and the colour shifts to black
-if the criterion is fully met.
+\item \code{"injury"} a stacked plot showing time-series traces of health
+indicators for skin extension, blubber compression, and sub-layer compression.
+These take the form of dotted horizontal lines, with labels above and at the
+left side of the panel.  During times when an injury criterion is halfway met,
+e.g. that blubber stress 1/2 the value of blubber strength, then the dotted
+line is overdrawn with a thick gray line. During times when the criterion
+is exceeded, the colour shifts to black.
 
 \item \code{"whale acceleration"} for a time-series plot of whale acceleration.
 If \code{drawCriteria} is \code{TRUE}, the line is thickened during

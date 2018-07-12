@@ -1,10 +1,11 @@
 exportPattern("^[[:alpha:]]+")
 importFrom("deSolve", "lsoda")
-importFrom("graphics", "abline", "box", "grid", "legend", "lines", "mtext", "par",
-        "plot", "plot.new", "points", "text")
+importFrom("graphics", "abline", "axis", "box", "grid", "legend", "lines",
+           "mtext", "par", "plot", "plot.new", "points", "polygon", "text")
 importFrom("grDevices", "rgb")
 importFrom("stats", "uniroot")
 importFrom("testthat", "expect_equal")
 importFrom("utils", "head", "read.csv", "tail")
+importFrom("xtable", "xtable")
 
 S3method(plot, strike)
