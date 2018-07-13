@@ -7,7 +7,8 @@
 \method{plot}{strike}(x, which = "default", drawCriteria = rep(TRUE, 2),
   drawEvents = TRUE, colwcenter = "Slate Gray", colwinterface = "black",
   colwskin = "black", cols = "black", colInjury = c("gray", "black"),
-  lwd = 1.4, D = 3, debug = 0, ...)
+  colThreat = c("lightgray", "gray", "black"), lwd = 1.4, D = 3,
+  debug = 0, ...)
 }
 \arguments{
 \item{x}{An object inheriting from class \code{strike}}
@@ -19,15 +20,11 @@ This choices for its entries are listed below, in no particular order.
 \item \code{"location"} for a time-series plot of boat location \code{xw} in
 dashed black, whale centerline \code{xs} in solid gray,
 blubber-interior interface in red, and skin in blue. The maximum
-acceleration of ship and whale (in "G" units) are indicated in notes
+acceleration of ship and whale (in "g" units) are indicated in notes
 placed near the horizontal axes.
 
-\item \code{"thickness"} to plot both blubber thickness and sublayer thickness
-in one panel, creating a cross-section diagram.   If \code{drawCriteria[1]}
-is \code{TRUE}, then the blubber and sub-layer regions are
-cross-hatched during time intervals when the stress exceeds the
-ultimate tensile strength of the material, i.e. when
-injury is to be expected.
+\item \code{"section"} to plot skin thickness, blubber thickness and sublayer thickness
+in one panel, creating a cross-section diagram.
 
 \item \code{"injury"} a stacked plot showing time-series traces of health
 indicators for skin extension, blubber compression, and sub-layer compression.
@@ -36,6 +33,14 @@ left side of the panel.  During times when an injury criterion is halfway met,
 e.g. that blubber stress 1/2 the value of blubber strength, then the dotted
 line is overdrawn with a thick gray line. During times when the criterion
 is exceeded, the colour shifts to black.
+
+\item \code{"threat"} a stacked plot showing time-series traces of an
+ad-hoc measure of the possible threat to skin, blubber and sublayer.
+The threat level is computed as the ratio
+of stress to ultimate strength, e.g. for blubber, it is
+\code{x$WCF$stress/x$parms$UTSbeta}. Colour-coding indicates levels
+from 0 to 1/2, from 1/2 to 1, and above 1. An axis categorizes
+threat level 0 as "L", 0.5 as "M", and 1 as "H".
 
 \item \code{"whale acceleration"} for a time-series plot of whale acceleration.
 If \code{drawCriteria} is \code{TRUE}, the line is thickened during
@@ -72,7 +77,7 @@ entry in Table 3 of Grear et al. (2018) for the strength of seal skin.
 \item \code{"all"} for all of the above.
 
 \item \code{"default"} for a three-element plot showing \code{"location"},
-\code{"thickness"}, and \code{"injury"}.
+\code{"section"}, and \code{"threat"}.
 }}
 
 \item{drawCriteria}{Logical value indicating whether to
@@ -98,6 +103,10 @@ which is drawn with a dashed line.}
 panels. The first colour is used to indicate values that are halfway to the
 injury crition, and the second is used to indicte values that exceed the
 criterion.}
+
+\item{colThreat}{Three-element colour specification used in \code{"threat"}.
+The first colour is used for threat levels between 0 and 0.5, the second
+from 0.5 to 1, and the third above 1.}
 
 \item{lwd}{Line width used in plots for time intervals in which damage
 criteria are not exceed (or if \code{drawCriteria} is \code{FALSE}).}

@@ -1,7 +1,7 @@
 ## ---- echo=FALSE---------------------------------------------------------
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 
-## ----results="hide", fig.width=6, fig.height=4---------------------------
+## ----results="hide", fig.width=6, fig.height=3---------------------------
 library(whalestrike)
 t <- seq(0, 1, length.out=500)
 state <- c(xs=-2.5, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
@@ -12,7 +12,7 @@ parms <- parameters(ms=20e3,
                     beta=0.25, Ebeta=6e5,
                     gamma=0.5, Egamma=4e5)
 sol <- strike(t, state, parms)
-par(mfcol=c(1, 3), mar=c(2, 3, 0.5, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
+par(mfcol=c(1, 3), mar=c(2, 3, 0.5, 2), mgp=c(2, 0.7, 0), cex=0.7)
 plot(sol)
 
 ## ----results="hide"------------------------------------------------------

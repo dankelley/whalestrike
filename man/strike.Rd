@@ -48,7 +48,7 @@ parms <- parameters(ms=20e3,
               beta=0.25, Ebeta=6e5,
               gamma=0.5, Egamma=4e5)
 sol <- strike(t, state, parms)
-par(mfcol=c(1, 3), mar=c(3, 3, 1, 0.5), mgp=c(2, 0.7, 0), cex=0.7)
+par(mfcol=c(1, 3), mar=c(3, 3, 0.5, 2), mgp=c(2, 0.7, 0), cex=0.7)
 plot(sol)
 
 }
