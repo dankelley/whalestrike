@@ -7,7 +7,7 @@ t <- seq(0, 1, length.out=500)
 state <- c(xs=-2.5, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
 parms <- parameters(ms=20e3,
                     Ly=0.5, Lz=1,
-                    lw=10,
+                    lw=13,
                     alpha=0.025, Ealpha=2e7, theta=45,
                     beta=0.25, Ebeta=6e5,
                     gamma=0.5, Egamma=4e5)
@@ -24,7 +24,7 @@ maxAccel <- rep(NA, length(beta))
 ms <- 20e3
 for (i in seq_along(beta)) {
     parms <- parameters(ms=ms, Ly=0.5, Lz=1,
-                        lw=10,
+                        lw=13,
                         alpha=0.025, Ealpha=2e7, theta=45,
                         beta=beta[i], Ebeta=6e5)
     sol <- strike(t, state, parms)
@@ -45,20 +45,18 @@ for (i in seq_along(beta)) {
     for (j in seq_along(speed)) {
         state <- c(xs=-1.5, vs=speed[j], xw=0, vw=0)
         parms <- parameters(ms=ms, Ly=0.5, Lz=1,
-                            lw=10,
+                            lw=13,
                             alpha=0.025, Ealpha=2e7, theta=45,
                             beta=beta[i], Ebeta=6e5)
         sol <- strike(t, state, parms)
         maxStrain[j, i] <- max(sol$WCF$strain)
     }
 }
-danger <- 0.8 / 1.2
+danger <- sol$parm$UTSbeta / sol$parm$Ebeta
 contour(speedK, beta, maxStrain, level=seq(0, danger, 0.1),
         xlab="Speed [knots]", ylab="Blubber thickness [m]")
 contour(speedK, beta, maxStrain, level=seq(1, danger, -0.1), lwd=3, add=TRUE)
+
 contour(speedK, beta, maxStrain, level=2/3, lwd=3, lty=2, add=TRUE)
-## 2/3 = 0.8/1.2 is Grear et al. 2038 result (page 144, left column) that
-## mean (seal) blubber strength is 0.8MPa, whereas mean (seal) blubber
-## modulus is 1.2MPa.
 mtext("Contours of max strain (dangerous if > 2/3)", side=3)
 
