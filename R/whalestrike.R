@@ -869,7 +869,8 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         lines(t, sublayer, lwd=lwd, col=colwinterface)# , lty="42")
         abline(h=0, col=colwcenter, lwd=D*lwd)
         showEvents(xs, xw)
-        x0 <- par("usr")[1]
+        xusr <- par("usr")[1:2]
+        x0 <- xusr[1] - 0.01*(xusr[2] - xusr[1]) # snuggle up to axis
         text(x0, 0.5*x$parms$gamma, "sublayer", pos=4)
         text(x0, x$parms$gamma+0.5*x$parms$beta, "blubber", pos=4)
         hatchPolygon <- FALSE
@@ -895,7 +896,6 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
             } else {
                 polygon(px, py, col=colInjury[2], border=NA)
             }
-             
         }
         ## Sublayer
         if (length(drawCriteria) > 1 && drawCriteria[2] && !REMOVE_CRITERIA) {
