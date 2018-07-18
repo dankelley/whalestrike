@@ -17,8 +17,10 @@ stressFromStrainFunction(l, a, b, N = 1000)
 }
 \value{
 A spline function, created with \code{\link{splinefun}},
-that returns stress as a function of
-change in the combined thickness of the compressing layers.
+that returns stress as a function of total strain of the
+system of compressing layers. For the purposes of the whale-strike
+analysis, the strain should be between 0 and 1, i.e. there is
+no notion of compressing blubber, etc. to negative thickess.
 }
 \description{
 Assuming that unforced layer thicknesses are \eqn{l_i}, and that within each layer
