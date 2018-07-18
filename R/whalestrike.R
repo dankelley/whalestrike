@@ -1,6 +1,19 @@
 library(deSolve)
 library(xtable)
 
+#' Whale blubber stress-strain relationship
+#'
+#' This is a data frame with elements \code{strain} and \code{stess},
+#' found by digitizing (accurate to perhaps 1 percent) the curve shown in Figure 2.13
+#' of Raymond (2007).
+#'
+#' @template ref_raymond
+#'
+#' @name raymond2007
+#' @docType data
+NULL
+
+
 #' whalestrike: A Package to Simulate Ship-Whale Collisions
 #'
 #' This package solves Newton's second law for a simple model of
@@ -100,6 +113,61 @@ library(xtable)
 #' @docType package
 #' @name whalestrike
 NULL
+
+#' Create a function for stress in laminated layers
+#'
+#' Assuming that unforced layer thicknesses are \eqn{l_i}, and that within each layer
+#' the stress is given by
+#' \deqn{a_i*[exp(b_i*\epsilon)-1]}
+#' with strain \eqn{\epsilon}
+#' being \eqn{\Delta l_i/l_i}, then the change in the
+#' total thickness \eqn{L=\sum l_i} obeys
+#' \deqn{0 = \Delta L - \sum (l_i /b_i) ln(1+\sigma / a_i)}
+#' where \eqn{ln} is the natural logarithm. This formula rests on the assumption
+#' that the stress, \eqn{\sigma}, is the same in each layer.
+#' This expression is not easily inverted to get
+#' \eqn{\sigma} in terms of \eqn{\Delta L}, but it may be solved
+#' easily for particular numerical vaues, using \code{\link{uniroot}}.
+#' This is done for a sequence of \code{N} values of strain \eqn{\epsilon}
+#' that range from 0 to 1. Then a cubic spline is created to represent these
+#' the relationship between \eqn{\sigma} and \eqn{\Delta L} values,
+#' and this spline function is returned.
+#' The purpose is to speed up processing of simulations carried out
+#' with \code{\link{strike}}. In the authors tests, the speedup was by
+#' an order of magnitude, and the loss of accuracy was
+#' negligible, amounting to fractional errors in the 8th decimal place.
+#'
+#' @param l vector of layer thicknesses
+#' @param a vector of multipliers
+#' @param b vector of e-fold parameters
+#'
+#' @return A spline function, created with \code{\link{splinefun}},
+#' that returns stress as a function of
+#' change in the combined thickness of the compressing layers.
+#'
+#' @examples
+#' library(whalestrike)
+#' param <- parameters(ms=20e3, lw=13, l=1, a=1.58e5, b=2.54)
+#' x <- seq(0, 0.5, length.out=100)
+#' y <- param$stressFromStrain(x)
+#' plot(x, y, type='l', lwd=4, col="gray")
+#' data("raymond2007")
+#' points(raymond2007$strain, raymond2007$stress, col=2)
+stressFromStrainFunction <- function(l, a, b, N=1e3)
+{
+    fcn <- function(sigma)
+        DL - sum((l/b) * log(1 + sigma / a))
+    L <- sum(l)
+    sigma <- rep(NA, N)
+    epsilon <- seq(0, 1, length.out=N)
+    for (i in seq_along(epsilon)) {
+        DL <- epsilon[i] * L
+        sigma[i] <- uniroot(fcn, interval=c(0, 1e8))$root
+        ##cat("i=", i, ", epsilon=", epsilon[i], ", sigma=", sigma[i], "\n")
+    }
+    splinefun(epsilon, sigma)
+}
+
 
 #' Control parameters for whale strike simulation
 #'
@@ -313,14 +381,19 @@ parameters <- function(ms, Ss, Ly=0.5, Lz=1.5,
             stop("ship resistance parameter (Cs) must be positive, not ", Cs)
         if (Cw < 0)
             stop("ship resistance parameter (Cw) must be positive, not ", Cw)
+
+        ## overall-stress from overall-strain function
+        stressFromStrain <- stressFromStrainFunction(l, a, b)
         rval <- list(ms=ms, Ss=Ss,
                      Ly=Ly, Lz=Lz,
                      mw=mw, Sw=Sw, lw=lw,
+                     l=l, a=a, b=b, s=s,
                      alpha=alpha, Ealpha=Ealpha, UTSalpha=UTSalpha,
                      theta=theta,
                      Ebeta=Ebeta, beta=beta, UTSbeta=UTSbeta,
                      Egamma=Egamma, gamma=gamma, UTSgamma=UTSgamma,
-                     Cs=Cs, Cw=Cw)
+                     Cs=Cs, Cw=Cw,
+                     stressFromStrain=stressFromStrain)
     }
     class(rval) <- "parameters"
     rval

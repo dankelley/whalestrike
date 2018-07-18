@@ -1,5 +1,3 @@
-man-roxygen
+create_data
 ^.*\.Rproj$
 ^\.Rproj\.user$
-.Rapp.history
-development
