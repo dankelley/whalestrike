@@ -32,6 +32,13 @@ library(xtable)
 #' \itemize{
 #'
 #' \item
+#' Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
+#' “Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
+#' Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
+#' Socieity, and Fisheries and Oceans Canada, 2018.
+#' http://publications.gc.ca/site/eng/9.850838/publication.html.
+#'
+#' \item
 #' Fortune, Sarah M. E., Andrew W. Trites, Wayne L. Perryman, Michael J. Moore,
 #' Heather M. Pettis, and Morgan S. Lynn. “Growth and Rapid Early Development of
 #' North Atlantic Right Whales (Eubalaena Glacialis).” Journal of Mammalogy 93,
@@ -116,6 +123,61 @@ NULL
 #' length, using \code{\link{whaleMassFromLength}} with \code{type="wetted"}.
 #' @param Sw Whale surface area [m^2]. If not provided, this is calculated
 #' from whale length using \code{\link{whaleAreaFromLength}}.
+#'
+#' @param l Numerical vector of length 4, giving thickness [m] of skin, blubber,
+#' sub-layer, and bone. If not provided, this is set to
+#' \code{c(0.025, 0.16, 1.15, 0.05)}.
+#' The skin thicknes default of 0.025 m represents the 0.9-1.0 inch value
+#' stated in Section 2.2.3 of Raymond (2007).
+#' The blubber default of 0.16 m is a rounded average of the values inferred
+#' by whale necropsy, reported in Appendix 2 of Daoust et al., 2018.
+## mean(c(17,14,18.13,18,21.25,16.75,13.33,7)) # cm
+## [1] 15.6825
+#' The sub-layer default of 1.15 m is found by computing mid-body radius
+#' 1.34 m based on the half-circumferance of 4.2 m reported in Table 2.2
+#' of Raymond (2007), after subtracting an assumed blubber thickness
+#' of 0.16m and bone thickness of 0.05m.
+#' The bone thickness, as noted, defaults to 0.05m.
+#'
+#' @param a,b Numerical vectors of length 4, giving values to use in the
+#' stress-strain law \code{stress=a*(exp(b*strain)-1)}. \code{a} is in Pa
+#' and \code{b} is unitless.  Note that \code{a*b} is the local modulus at
+#' low strain, and that \code{b} is the efolding scale for nonlinear increase
+#' in stress with strain. This exponential relationship has been mapped out
+#' for whale blubber, using a curve fit to Figure 2.13 of Raymond (2007), and
+#' these values are used for the second layer (blubber). If not provided,
+#' \code{a} defaults to
+#' \code{c(17.80e6/0.1, 1.58e5, 1.58e5, 854.2e6/0.1)}
+#' and \code{b} defaults to
+#' \code{c(0.1, 2.54, 2.54, 0.1)}.
+#' The skin defaults are set up to give a linear shape (since \code{b} is small)
+#' with the \code{a*b} product 
+#' being 17.8e6 Pa, which is the adult-seal value
+#' given in Table 3 of Grear et al. (2017).
+#' The blubber defaults are from a regression of the stress-strain
+#' relationship shown in Figure 2.13 of Raymond (2007).
+#' The sub-layer defaults are set to match those of blubber, lacking
+#' any other information.
+#' The bone default for \code{b} is small, to set up a linear function,
+#' and \code{a*b} is set to equal 8.54e8 Pa, 
+#' given in Table 2.3 of Raymond (2007).
+#'
+#' @param s Numerical vector of length 4, giving the ultimate strengths [Pa] of
+#' skin, blubber, sub-layer, and bone, respectively. If not provided, the
+#' value is set to
+#' \code{c(19.56e6, 4.37e5, 4.37e5, 22.9e6)},
+#' with reasoning as follows.
+#' The skin default of 1.96e7 Pa
+#' is a rounded value from Table 3 of Grear et al. (2018) for adult seal skin strength at
+#' an orientation of 0 degrees.  The blubber value of
+#' 4.37e5 Pa is inferred by
+#' multiplying Raymond's (2007) Figure 2.13 elastic modulus of 6.36e5 Pa
+#' by the ratio 0.97/1.41 determined for adult seal strength/modulus, as reported
+#' in Table 3 of Grear et al. (2018).
+#' The sub-layer value is taken to be identical to the blubber value, lacking
+#' more specific information.
+#' The bone default o 2.29e7 Pa is from Table 2.3 of Raymond (2007).
+#'
 #' @param alpha Whale skin thickness [m], with a of 0.0256 m.
 #' @param Ealpha Whale skin elastic modulus [Pa], with a default of 17.80e6 Pa,
 #' a value for adult seals, given in Table 3 of Grear et al. (2017).
@@ -171,6 +233,7 @@ NULL
 #' See \link{whalestrike} for a list of references.
 parameters <- function(ms, Ss, Ly=0.5, Lz=1.5,
                        lw, mw, Sw,
+                       l, a, b, s,
                        alpha=0.0256, Ealpha=17.80e6, UTSalpha=19.56e6,
                        theta=45,
                        beta=0.3, Ebeta=0.6e6, UTSbeta=(0.8/1.2)*0.6e6,
@@ -219,6 +282,16 @@ parameters <- function(ms, Ss, Ly=0.5, Lz=1.5,
             mw <- whaleMassFromLength(lw)
         if (missing(Sw))
             Sw <- whaleAreaFromLength(lw, type="wetted")
+        if (missing(l))
+            l <- c(0.025, 0.16, 1.15, 0.05)
+        if (missing(a))
+            a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
+        if (missing(b))
+            b <- c(0.1, 2.54, 2.54, 0.1)
+        if (missing(s))
+            s <- c(1.96e7, 4.37e5, 4.37e5, 2.29e7)
+
+
         if (alpha < 0)
             stop("whale skin thickness (alpha) must be positive, not ", alpha)
         if (Ealpha< 0)
