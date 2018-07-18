@@ -5,7 +5,8 @@ importFrom("graphics", "abline", "axis", "box", "grid", "legend", "lines",
 importFrom("grDevices", "rgb")
 importFrom("stats", "uniroot")
 importFrom("testthat", "expect_equal")
-importFrom("utils", "head", "read.csv", "tail")
+importFrom("utils", "head", "read.csv", "tail", "write.csv")
 importFrom("xtable", "xtable")
-
+importFrom("shiny", "observeEvent", "reactiveValuesToList", "renderPlot",
+        "shinyApp", "showNotification", "updateSliderInput")
 S3method(plot, strike)
