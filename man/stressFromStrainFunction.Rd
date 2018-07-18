@@ -12,6 +12,8 @@ stressFromStrainFunction(l, a, b, N = 1000)
 \item{a}{vector of multipliers}
 
 \item{b}{vector of e-fold parameters}
+
+\item{N}{integer specifying how many segments to use in the spline}
 }
 \value{
 A spline function, created with \code{\link{splinefun}},

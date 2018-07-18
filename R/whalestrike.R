@@ -140,6 +140,7 @@ NULL
 #' @param l vector of layer thicknesses
 #' @param a vector of multipliers
 #' @param b vector of e-fold parameters
+#' @param N integer specifying how many segments to use in the spline
 #'
 #' @return A spline function, created with \code{\link{splinefun}},
 #' that returns stress as a function of
