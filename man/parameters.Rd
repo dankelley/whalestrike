@@ -59,7 +59,7 @@ these values are used for the second layer (blubber). If not provided,
 and \code{b} defaults to
 \code{c(0.1, 2.54, 2.54, 0.1)}.
 The skin defaults are set up to give a linear shape (since \code{b} is small)
-with the \code{a*b} product 
+with the \code{a*b} product
 being 17.8e6 Pa, which is the adult-seal value
 given in Table 3 of Grear et al. (2017).
 The blubber defaults are from a regression of the stress-strain
@@ -67,7 +67,7 @@ relationship shown in Figure 2.13 of Raymond (2007).
 The sub-layer defaults are set to match those of blubber, lacking
 any other information.
 The bone default for \code{b} is small, to set up a linear function,
-and \code{a*b} is set to equal 8.54e8 Pa, 
+and \code{a*b} is set to equal 8.54e8 Pa,
 given in Table 2.3 of Raymond (2007).}
 
 \item{s}{Numerical vector of length 4, giving the ultimate strengths [Pa] of
@@ -106,7 +106,7 @@ of the blubber; if not \code{NA}, then this is used to indicate
 problems in plots made if \code{which} is \code{"compression stress"}.
 The default is the product of the default whale blubber modulus (see
 \code{Ebeta}, above) and the strength/modulus ratio for seal
-blubber, given by (Grear et al. 2018 #' page 144).}
+blubber, given by (Grear et al. 2018 page 144).}
 
 \item{gamma}{Thickness of interior region [m].
 The default, 0.5m, may be in an appropriate range for soft tissue;
@@ -153,7 +153,20 @@ according to the system described above.
 Assembles control parameters into a list suitable for passing to \code{\link{strike}}
 and the functions that it calls. If \code{file} is provided, then all the other
 arguments are read from that source.
-}
-\references{
-See \link{whalestrike} for a list of references.
+Below are some sources cited in the discussion of the function arguments.
+
+Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
+“Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
+Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
+Socieity, and Fisheries and Oceans Canada, 2018.
+\url{http://publications.gc.ca/site/eng/9.850838/publication.html}.
+
+Grear, Molly E., Michael R. Motley, Stephanie B. Crofts, Amanda E. Witt, Adam
+P. Summers, and Petra Ditsche. “Mechanical Properties of Harbor Seal Skin and
+Blubber − a Test of Anisotropy.” Zoology 126 (2018): 137–44.
+\url{https://doi.org/10.1016/j.zool.2017.11.002}.
+
+Raymond, J. J. “Development of a Numerical Model to Predict Impact Forces on a
+North Atlantic Right Whale during Collision with a Vessel.” University of New
+Hampshire, 2007. \url{https://scholars.unh.edu/thesis/309}.
 }

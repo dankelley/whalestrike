@@ -106,6 +106,10 @@ NULL
 #' Assembles control parameters into a list suitable for passing to \code{\link{strike}}
 #' and the functions that it calls. If \code{file} is provided, then all the other
 #' arguments are read from that source.
+#' Below are some sources cited in the discussion of the function arguments.
+#' @template ref_daoust
+#' @template ref_grear
+#' @template ref_raymond
 #'
 #' @param ms Ship mass [kg].
 #' @param Ss Ship wetted area [m^2]. This, together with \code{Cs}, is used by
@@ -123,7 +127,6 @@ NULL
 #' length, using \code{\link{whaleMassFromLength}} with \code{type="wetted"}.
 #' @param Sw Whale surface area [m^2]. If not provided, this is calculated
 #' from whale length using \code{\link{whaleAreaFromLength}}.
-#'
 #' @param l Numerical vector of length 4, giving thickness [m] of skin, blubber,
 #' sub-layer, and bone. If not provided, this is set to
 #' \code{c(0.025, 0.16, 1.15, 0.05)}.
@@ -138,7 +141,6 @@ NULL
 #' of Raymond (2007), after subtracting an assumed blubber thickness
 #' of 0.16m and bone thickness of 0.05m.
 #' The bone thickness, as noted, defaults to 0.05m.
-#'
 #' @param a,b Numerical vectors of length 4, giving values to use in the
 #' stress-strain law \code{stress=a*(exp(b*strain)-1)}. \code{a} is in Pa
 #' and \code{b} is unitless.  Note that \code{a*b} is the local modulus at
@@ -151,7 +153,7 @@ NULL
 #' and \code{b} defaults to
 #' \code{c(0.1, 2.54, 2.54, 0.1)}.
 #' The skin defaults are set up to give a linear shape (since \code{b} is small)
-#' with the \code{a*b} product 
+#' with the \code{a*b} product
 #' being 17.8e6 Pa, which is the adult-seal value
 #' given in Table 3 of Grear et al. (2017).
 #' The blubber defaults are from a regression of the stress-strain
@@ -159,9 +161,8 @@ NULL
 #' The sub-layer defaults are set to match those of blubber, lacking
 #' any other information.
 #' The bone default for \code{b} is small, to set up a linear function,
-#' and \code{a*b} is set to equal 8.54e8 Pa, 
+#' and \code{a*b} is set to equal 8.54e8 Pa,
 #' given in Table 2.3 of Raymond (2007).
-#'
 #' @param s Numerical vector of length 4, giving the ultimate strengths [Pa] of
 #' skin, blubber, sub-layer, and bone, respectively. If not provided, the
 #' value is set to
@@ -177,7 +178,6 @@ NULL
 #' The sub-layer value is taken to be identical to the blubber value, lacking
 #' more specific information.
 #' The bone default o 2.29e7 Pa is from Table 2.3 of Raymond (2007).
-#'
 #' @param alpha Whale skin thickness [m], with a of 0.0256 m.
 #' @param Ealpha Whale skin elastic modulus [Pa], with a default of 17.80e6 Pa,
 #' a value for adult seals, given in Table 3 of Grear et al. (2017).
@@ -192,7 +192,7 @@ NULL
 #' problems in plots made if \code{which} is \code{"compression stress"}.
 #' The default is the product of the default whale blubber modulus (see
 #' \code{Ebeta}, above) and the strength/modulus ratio for seal
-#' blubber, given by (Grear et al. 2018 #' page 144).
+#' blubber, given by (Grear et al. 2018 page 144).
 #' @param gamma Thickness of interior region [m].
 #' The default, 0.5m, may be in an appropriate range for soft tissue;
 #' perhaps 0.05m would be more reasonable for bone.
@@ -228,9 +228,6 @@ NULL
 #' @return
 #' A named list holding the parameters, with defaults and alternatives reconciled
 #' according to the system described above.
-#'
-#' @references
-#' See \link{whalestrike} for a list of references.
 parameters <- function(ms, Ss, Ly=0.5, Lz=1.5,
                        lw, mw, Sw,
                        l, a, b, s,
