@@ -260,28 +260,28 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' The sub-layer value is taken to be identical to the blubber value, lacking
 #' more specific information.
 #' The bone default o 2.29e7 Pa is from Table 2.3 of Raymond (2007).
-#' @param alpha Whale skin thickness [m], with a of 0.0256 m.
-#' @param Ealpha Whale skin elastic modulus [Pa], with a default of 17.80e6 Pa,
+#' @param alpha DEFUNCT FIXME Whale skin thickness [m], with a of 0.0256 m.
+#' @param Ealpha DEFUNCT FIXME Whale skin elastic modulus [Pa], with a default of 17.80e6 Pa,
 #' a value for adult seals, given in Table 3 of Grear et al. (2017).
-#' @param UTSalpha Ultimate tensile strength of skin [Pa], with a default of 19.56e6 Pa,
+#' @param UTSalpha DEFUNCT FIXME Ultimate tensile strength of skin [Pa], with a default of 19.56e6 Pa,
 #' a value reported by Grear et al. (2017) for adult seals.
 #' @param theta Whale skin deformation angle [deg]; defaults to 45deg if not supplied.
-#' @param beta Whale blubber thickness [m]; defaults to 0.3m if not supplied.
-#' @param Ebeta Elastic modulus of blubber [Pa]; defaults to 0.6 MPa (the value
+#' @param beta DEFUNCT FIXME Whale blubber thickness [m]; defaults to 0.3m if not supplied.
+#' @param Ebeta DEFUNCT FIXME Elastic modulus of blubber [Pa]; defaults to 0.6 MPa (the value
 #' suggested Raymond (2007 fig 37), rounded to 1 digit), if not supplied.
-#' @param UTSbeta Numerical value indicating the ultimate tensile strength
+#' @param UTSbeta DEFUNCT FIXME Numerical value indicating the ultimate tensile strength
 #' of the blubber; if not \code{NA}, then this is used to indicate
 #' problems in plots made if \code{which} is \code{"compression stress"}.
 #' The default is the product of the default whale blubber modulus (see
 #' \code{Ebeta}, above) and the strength/modulus ratio for seal
 #' blubber, given by (Grear et al. 2018 page 144).
-#' @param gamma Thickness of interior region [m].
+#' @param gamma DEFUNCT FIXME Thickness of interior region [m].
 #' The default, 0.5m, may be in an appropriate range for soft tissue;
 #' perhaps 0.05m would be more reasonable for bone.
-#' @param Egamma Elastic modulus of interior region [Pa].
+#' @param Egamma DEFUNCT FIXME Elastic modulus of interior region [Pa].
 #' The default, 0.4MPa, may be in an appropriate range for soft tissue;
 #' perhaps 854MPa would be more reasonable for bone.
-#' @param UTSgamma Numerical value indicating the ultimate tensile strength
+#' @param UTSgamma DEFUNCT FIXME Numerical value indicating the ultimate tensile strength
 #' of the sublayer.
 #' The default, (0.8/1.2)*0.4MPa, may be in an appropriate range for soft tissue;
 #' perhaps 22.9MPa would be more reasonable for bone.
@@ -310,13 +310,19 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' @return
 #' A named list holding the parameters, with defaults and alternatives reconciled
 #' according to the system described above.
+#'
+#' @examples
+#' parms <- parameters(ms=20e3, lw=13)
+#' epsilon <- seq(0, 0.3, length.out=100)
+#' strain <- parms$stressFromStrain(epsilon)
+#' plot(epsilon, strain, type="l")
 parameters <- function(ms, Ss, Ly=0.5, Lz=1.5,
                        lw, mw, Sw,
                        l, a, b, s,
-                       alpha=0.0256, Ealpha=17.80e6, UTSalpha=19.56e6,
                        theta=45,
-                       beta=0.3, Ebeta=0.6e6, UTSbeta=(0.8/1.2)*0.6e6,
-                       gamma=0.5, Egamma=0.4e6, UTSgamma=(0.8/1.2)*0.4e6,
+                       ##alpha=0.0256, Ealpha=17.80e6, UTSalpha=19.56e6,
+                       ##beta=0.3, Ebeta=0.6e6, UTSbeta=(0.8/1.2)*0.6e6,
+                       ##gamma=0.5, Egamma=0.4e6, UTSgamma=(0.8/1.2)*0.4e6,
                        Cs=0.01, Cw=0.0025, file)
 {
     if (!missing(file)) {
@@ -369,43 +375,47 @@ parameters <- function(ms, Ss, Ly=0.5, Lz=1.5,
             b <- c(0.1, 2.54, 2.54, 0.1)
         if (missing(s))
             s <- c(1.96e7, 4.37e5, 4.37e5, 2.29e7)
-
-
-        if (alpha < 0)
-            stop("whale skin thickness (alpha) must be positive, not ", alpha)
-        if (Ealpha< 0)
-            stop("whale skin elastic modulus (Ealpha) must be positive, not ", Ealpha)
-        if (UTSalpha< 0)
-            stop("whale skin elastic modulus (UTSalpha) must be positive, not ", UTSalpha)
+        ## Value checks
+        if (any(l <= 0) || length(l) != 4)
+            stop("'l' must be 4 positive numbers")
+        if (any(a <= 0) || length(a) != 4)
+            stop("'a' must be 4 positive numbers")
+        if (any(b <= 0) || length(b) != 4)
+            stop("'b' must be 4 positive numbers")
         if (theta < 0 || theta > 89)
             stop("whale skin deformation angle (theta) must be between 0 and 89 deg, not ", theta)
-        if (beta < 0)
-            stop("whale blubber thickness (beta) must be positive, not ", beta)
-        if (Ebeta < 0)
-            stop("whale blubber elastic modulus (Ebeta) must be positive, not ", Ebeta)
-        if (UTSbeta < 0)
-            stop("whale blubber ultimate strength (UTSbeta) must be positive, not ", UTSbeta)
-        if (gamma < 0)
-            stop("whale sublayer thickness (gamma) must be positive, not ", gamma)
-        if (Egamma < 0)
-            stop("whale sublayer elastic modulus (Egamma) must be positive, not ", Egamma)
-        if (UTSgamma < 0)
-            stop("whale sublayer ultimate strength (UTSgamma) must be positive, not ", UTSgamma)
-        if (Cs < 0)
+        if (Cs <= 0)
             stop("ship resistance parameter (Cs) must be positive, not ", Cs)
-        if (Cw < 0)
+        if (Cw <= 0)
             stop("ship resistance parameter (Cw) must be positive, not ", Cw)
+
+        ##DELETE if (Ealpha< 0)
+        ##DELETE     stop("whale skin elastic modulus (Ealpha) must be positive, not ", Ealpha)
+        ##DELETE if (UTSalpha< 0)
+        ##DELETE     stop("whale skin elastic modulus (UTSalpha) must be positive, not ", UTSalpha)
+        ##DELETE if (beta < 0)
+        ##DELETE     stop("whale blubber thickness (beta) must be positive, not ", beta)
+        ##DELETE if (Ebeta < 0)
+        ##DELETE     stop("whale blubber elastic modulus (Ebeta) must be positive, not ", Ebeta)
+        ##DELETE if (UTSbeta < 0)
+        ##DELETE     stop("whale blubber ultimate strength (UTSbeta) must be positive, not ", UTSbeta)
+        ##DELETE if (gamma < 0)
+        ##DELETE     stop("whale sublayer thickness (gamma) must be positive, not ", gamma)
+        ##DELETE if (Egamma < 0)
+        ##DELETE     stop("whale sublayer elastic modulus (Egamma) must be positive, not ", Egamma)
+        ##DELETE if (UTSgamma < 0)
+        ##DELETE     stop("whale sublayer ultimate strength (UTSgamma) must be positive, not ", UTSgamma)
 
         ## overall-stress from overall-strain function
         stressFromStrain <- stressFromStrainFunction(l, a, b)
         rval <- list(ms=ms, Ss=Ss,
                      Ly=Ly, Lz=Lz,
                      mw=mw, Sw=Sw, lw=lw,
-                     l=l, a=a, b=b, s=s,
-                     alpha=alpha, Ealpha=Ealpha, UTSalpha=UTSalpha,
+                     l=l, lsum=sum(l), a=a, b=b, s=s,
+                     ##alpha=alpha, Ealpha=Ealpha, UTSalpha=UTSalpha,
                      theta=theta,
-                     Ebeta=Ebeta, beta=beta, UTSbeta=UTSbeta,
-                     Egamma=Egamma, gamma=gamma, UTSgamma=UTSgamma,
+                     ##Ebeta=Ebeta, beta=beta, UTSbeta=UTSbeta,
+                     ##Egamma=Egamma, gamma=gamma, UTSgamma=UTSgamma,
                      Cs=Cs, Cw=Cw,
                      stressFromStrain=stressFromStrain)
     }
@@ -557,9 +567,9 @@ whaleAreaFromLength <- function(L, type="wetted")
 #' @return A list containing \code{force} [N], the
 #' compression-resisting force, \code{stress} [Pa], the ratio
 #' of that force to the impact area, \code{strain}, the total
-#' strain, \code{alphaCompressed} [m],
-#' the skin thickness, \code{betaCompressed} [m],
-#' the blubber thickness, and \code{gammaCompressed} [m],
+#' strain, \code{compressed[1]} [m],
+#' the skin thickness, \code{compressed[2]} [m],
+#' the blubber thickness, and \code{compressed[3]} [m],
 #' the sublayer thickness.
 #'
 #' @references
@@ -568,23 +578,29 @@ whaleCompressionForce <- function(xs, xw, parms)
 {
     zeroTrim <- function(x) # turn negatives into zeros
         ifelse(0 < x, x, 0)
-    touching <- xs < xw & xs > (xw - parms$alpha - parms$beta - parms$gamma)
-    dx <- ifelse(touching, xs - (xw - parms$alpha - parms$beta - parms$gamma), 0) # penetration distance
+    touching <- xs < xw & xs > (xw - parms$lsum)
+    dx <- ifelse(touching, xs - (xw - parms$lsum), 0) # penetration distance
     ## Note that the denominator of the strain expression vanishes in the stress calculation,
     ## so the next three lines could be simplified. However, retaining it might be clearer,
     ## if a nonlinear stress-strain relationship becomes desirable in the future.
-    strain <- dx / (parms$alpha + parms$beta + parms$gamma)
-    E <- (parms$alpha + parms$beta + parms$gamma) / (parms$alpha/parms$Ealpha + parms$beta/parms$Ebeta + parms$gamma/parms$Egamma)
-    stress <- E * strain
+    strain <- dx / parms$lsum
+    ##E <- (parms$alpha + parms$beta + parms$gamma) / (parms$alpha/parms$Ealpha + parms$beta/parms$Ebeta + parms$gamma/parms$Egamma)
+    stress <- parms$stressFromStrain(strain)
     force <- stress * parms$Ly * parms$Lz
     ## Prevent strains exceeding 1, i.e. do not permit negative thickness.
-    alphaCompressed <- zeroTrim(parms$alpha * (1 - stress / parms$Ealpha))
-    betaCompressed <- zeroTrim(parms$beta * (1 - stress / parms$Ebeta))
-    gammaCompressed <- zeroTrim(parms$gamma * (1 - stress / parms$Egamma))
-    list(force=force, stress=stress, strain=strain,
-         alphaCompressed=alphaCompressed,
-         betaCompressed=betaCompressed,
-         gammaCompressed=gammaCompressed)
+    ##DELETE compressed[1] <- zeroTrim(parms$alpha * (1 - stress / parms$Ealpha))
+    ##DELETE compressed[2] <- zeroTrim(parms$beta * (1 - stress / parms$Ebeta))
+    ##DELETE compressed[3] <- zeroTrim(parms$gamma * (1 - stress / parms$Egamma))
+    compressed <- log(1 + stress / parms$a) / parms$b
+    ##. message("compressed=", paste(compressed, " "), "before zero trim")
+    compressed <- zeroTrim(compressed)
+    ##. message("compressed=", paste(compressed, " "), "after zero trim")
+    ## FIXMEFIXMEFIXME formula for strain in individual layers.
+
+    list(force=force, stress=stress, strain=strain, compressed=compressed)
+##DELETE compressed[1]=compressed[1],
+##DELETE compressed[2]=compressed[2],
+##DELETE compressed[3]=compressed[3])
 }
 
 #' Skin force
@@ -608,8 +624,8 @@ whaleCompressionForce <- function(xs, xw, parms)
 #' See \link{whalestrike} for a list of references.
 whaleSkinForce <- function(xs, xw, parms)
 {
-    touching <- xs < xw & xs > (xw - parms$alpha - parms$beta - parms$gamma)
-    dx <- ifelse(touching, xs - (xw - parms$alpha - parms$beta - parms$gamma), 0) # penetration distance
+    touching <- xs < xw & xs > (xw - parms$lsum)
+    dx <- ifelse(touching, xs - (xw - parms$lsum), 0) # penetration distance
     C <- cos(parms$theta * pi / 180) # NB: theta is in deg
     S <- sin(parms$theta * pi / 180) # NB: theta is in deg
     l <- dx * S / C                    # dek20180622_skin_strain eq 1
@@ -618,12 +634,12 @@ whaleSkinForce <- function(xs, xw, parms)
     epsilony <- 2 * (s - l) / (parms$Ly + 2 * l) # dek20180622_skin_strain  eq 3
     epsilonz <- 2 * (s - l) / (parms$Lz + 2 * l) # analogous to dek20180622 eq 3
     ## Stresses in y and z
-    sigmay <- parms$Ealpha * epsilony   # dek20180622_skin_strain eq 6
-    sigmaz <- parms$Ealpha * epsilonz   # dek20180622_skin_strain eq 7
+    sigmay <- parms$a[1] * (exp(parms$b[1] * epsilony) - 1)
+    sigmaz <- parms$a[1] * (exp(parms$b[1] * epsilonz) - 1)
     ## Net normal force in x; note the cosine, to resolve the force to the normal
     ## direction, and the 2, to account for two sides of length
     ## Ly and two of length Lz
-    F <- 2*parms$alpha*(parms$Lz*sigmaz + parms$Ly*sigmay)*C # dek20180622_skin_strain eq 8
+    F <- 2*parms$l[1]*(parms$Lz*sigmaz + parms$Ly*sigmay)*C # dek20180622_skin_strain eq 8
     list(force=F, sigmay=sigmay, sigmaz=sigmaz)
 }
 
@@ -764,12 +780,7 @@ derivative <- function(var, t)
 #' library(whalestrike)
 #' t <- seq(0, 1, length.out=500)
 #' state <- c(xs=-2.5, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
-#' parms <- parameters(ms=20e3,
-#'               Ly=0.5, Lz=1,
-#'               lw=13,
-#'               alpha=0.025, Ealpha=2e7, theta=45,
-#'               beta=0.25, Ebeta=6e5,
-#'               gamma=0.5, Egamma=4e5)
+#' parms <- parameters(ms=20e3, lw=13, Ly=0.5, Lz=1)
 #' sol <- strike(t, state, parms)
 #' par(mfcol=c(1, 3), mar=c(3, 3, 0.5, 2), mgp=c(2, 0.7, 0), cex=0.7)
 #' plot(sol)
@@ -795,15 +806,6 @@ strike <- function(t, state, parms, debug=0)
     for (need in c("xs", "vs", "xw", "vw")) {
         if (!(need %in% names(state)))
             stop("state must contain item named '", need, "'; the names you supplied were: ", paste(names(state), collapse=" "))
-    }
-    for (need in c("ms", "Ss", # ship mass and wetted area
-                   "mw", "Sw", # whale mass and wetted area
-                   "Ly", "Lz", # linear extents of impact region
-                   "alpha", "Ealpha", "theta", # skin properties
-                   "beta", "Ebeta", # blubber properties
-                   "gamma", "Egamma")) { # inner-layer properties
-        if (!(need %in% names(parms)))
-            stop("parms must contain item named '", need, "'; the names you supplied were: ", paste(names(parms), collapse=" "))
     }
     parms["engineForce"] <- -shipWaterForce(state["vs"], parms) # assumed constant over time
     sol <- lsoda(state, t, dynamics, parms)
@@ -974,8 +976,8 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         firstDead <- which(death)[1]
         dead <- firstDead:length(t)
         xw[dead] <- xw[firstDead]
-        x$WCF$alphaCompressed[dead] <- 0
-        x$WCF$betaCompressed[dead] <- 0
+        x$WCF$compressed[1][dead] <- 0
+        x$WCF$compressed[2][dead] <- 0
     }
     showEvents <- function(xs, xw) {
         if (drawEvents) {
@@ -1000,9 +1002,9 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         ylim <- range(c(xs, xw), na.rm=TRUE)
         plot(t, xs, type="l", xlab="Time [s]", ylab="Location [m]", col=cols, ylim=ylim, lwd=lwd, lty="84", xaxs="i")
         lines(t, xw, lwd=lwd, col=colwcenter)
-        lines(t, xw - x$WCF$gammaCompressed, col=colwinterface, lwd=lwd)
-        lines(t, xw - x$WCF$gammaCompressed - x$WCF$betaCompressed, col=colwskin, lwd=lwd)
-        lines(t, xw - x$WCF$gammaCompressed - x$WCF$betaCompressed - x$WCF$alphaCompressed,
+        lines(t, xw - x$WCF$compressed[3], col=colwinterface, lwd=lwd)
+        lines(t, xw - x$WCF$compressed[3] - x$WCF$compressed[2], col=colwskin, lwd=lwd)
+        lines(t, xw - x$WCF$compressed[3] - x$WCF$compressed[2] - x$WCF$compressed[1],
               col=colwskin, lwd=lwd)
         waccel <- derivative(vw, t)
         saccel <- derivative(vs, t)
@@ -1015,9 +1017,9 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
     if (all || "section" %in% which) {
         REMOVE_CRITERIA <- TRUE
         WCF <- x$WCF
-        skin <- WCF$alphaCompressed
-        blubber <- WCF$betaCompressed
-        sublayer <- WCF$gammaCompressed
+        skin <- WCF$compressed[1]
+        blubber <- WCF$compressed[2]
+        sublayer <- WCF$compressed[3]
         maxy <- max(c(blubber+sublayer))
         ylim <- c(0, maxy*1.2) # put y=0 at bottom, so whale-centre is visible
         plot(t, sublayer+blubber+skin, xlab="Time [s]", ylab="Cross Section [m]",
@@ -1028,8 +1030,8 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         showEvents(xs, xw)
         xusr <- par("usr")[1:2]
         x0 <- xusr[1] - 0.01*(xusr[2] - xusr[1]) # snuggle up to axis
-        text(x0, 0.5*x$parms$gamma, "sublayer", pos=4)
-        text(x0, x$parms$gamma+0.5*x$parms$beta, "blubber", pos=4)
+        text(x0, 0.5*x$parms$l[3], "sublayer", pos=4)
+        text(x0, x$parms$l[3]+0.5*x$parms$l[2], "blubber", pos=4)
         hatchPolygon <- FALSE
         ## Blubber
         if (drawCriteria[1] && !REMOVE_CRITERIA) {
@@ -1043,7 +1045,7 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
             } else {
                 polygon(px, py, col=colInjury[1], border=NA)
             }
-            injury <- x$WCF$stress >= x$parms$UTSbeta
+            injury <- x$WCF$stress >= x$parms$s[2]
             px <- c(t, rev(t))
             py <- c(sublayer+blubber,
                     ifelse(rev(injury), rev(sublayer), rev(sublayer+blubber)))
@@ -1056,7 +1058,7 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         }
         ## Sublayer
         if (length(drawCriteria) > 1 && drawCriteria[2] && !REMOVE_CRITERIA) {
-            risk <- x$WCF$stress >= 0.5 * x$parms$UTSgamma
+            risk <- x$WCF$stress >= 0.5 * x$parms$s[3]
             px <- t
             py <- ifelse(risk, sublayer, 0)
             if (hatchPolygon) {
@@ -1082,10 +1084,10 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         lines(t, sublayer, lwd=lwd, col=colwinterface)
     }
     if (all || "injury" %in% which) {
-        skinzInjury <- x$WSF$sigmaz / x$parms$UTSalpha
-        skinyInjury <- x$WSF$sigmay / x$parms$UTSalpha
-        blubberInjury <- x$WCF$stress /  x$parms$UTSbeta# & x$WCF$betaCompressed > 0
-        sublayerInjury <- x$WCF$stress /  x$parms$UTSgamma# & x$WCF$gammaCompressed > 0
+        skinzInjury <- x$WSF$sigmaz / x$parms$s[1]
+        skinyInjury <- x$WSF$sigmay / x$parms$s[1]
+        blubberInjury <- x$WCF$stress /  x$parms$s[2]
+        sublayerInjury <- x$WCF$stress /  x$parms$s[3]
         plot(range(t), c(0.5, 4.5), type="n", xlab="Time [s]", ylab="", axes=FALSE, xaxs="i")
         mtext("Risk of Injury", side=2, line=1, cex=par("cex"))
         axis(1)
@@ -1210,25 +1212,25 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
 
     if (all || "blubber thickness" %in% which) {
         WCF <- x$WCF
-        y <- WCF$betaCompressed
+        y <- WCF$compressed[2]
         ylim <- c(min(0, min(y)), max(y)) # include 0 if not there by autoscale
         plot(t, y, xlab="Time [s]", ylab="Blubber thickness [m]", type="l", lwd=lwd, ylim=ylim, xaxs="i")
         showEvents(xs, xw)
         if (drawCriteria[1]) {
             tt <- t
-            tt[WCF$stress < x$parms$UTSbeta] <- NA
+            tt[WCF$stress < x$parms$S[2]] <- NA
             lines(tt, sublayer+blubber, lwd=D*lwd)
         }
     }
     if (all || "sublayer thickness" %in% which) {
         WCF <- x$WCF
-        y <- WCF$alphaCompressed
+        y <- WCF$compressed[3]
         ylim <- c(min(0, min(y)), max(y)) # include 0 if not there by autoscale
         plot(t, y, xlab="Time [s]", ylab="Sublayer thickness [m]", type="l", lwd=lwd, ylim=ylim, xaxs="i")
         showEvents(xs, xw)
         if (drawCriteria[1]) {
             tt <- t
-            tt[WCF$stress < x$parms$UTSgamma] <- NA
+            tt[WCF$stress < x$parms$s[3]] <- NA
             lines(tt, sublayer+blubber, lwd=D*lwd)
         }
     }
@@ -1331,6 +1333,7 @@ summarize <- function(object, style="text")
     o <- order(names)
     parm <- parm[o]
     names <- as.character(names[o])
+    ## FIXME: update to l, a, b, and s.
     meaning[names=="alpha"] <- "Whale skin thickness [m]."
     meaning[names=="beta"] <- "Blubber thickness [m]."
     meaning[names=="gamma"] <- "Sub-layer thickness [m]."
@@ -1352,12 +1355,12 @@ summarize <- function(object, style="text")
     meaning[names=="Cw"] <- "Whale drag coefficient [unitless]."
     meaning[names=="Cs"] <- "Ship drag coefficient [unitless]."
     if (style == "latex") {
-        names[which(names == "Ealpha")] <- "E_alpha"
-        names[which(names == "Ebeta")] <- "E_beta"
-        names[which(names == "Egamma")] <- "E_gamma"
-        names[which(names == "UTSalpha")] <- "UTS_alpha"
-        names[which(names == "UTSbeta")] <- "UTS_beta"
-        names[which(names == "UTSgamma")] <- "UTS_gamma"
+        ## names[which(names == "Ealpha")] <- "E_alpha"
+        ## names[which(names == "Ebeta")] <- "E_beta"
+        ## names[which(names == "Egamma")] <- "E_gamma"
+        ## names[which(names == "UTSalpha")] <- "UTS_alpha"
+        ## names[which(names == "UTSbeta")] <- "UTS_beta"
+        ## names[which(names == "UTSgamma")] <- "UTS_gamma"
         names[which(names == "lw")] <- "l_w"
         names[which(names == "Ly")] <- "L_y"
         names[which(names == "Lz")] <- "L_z"

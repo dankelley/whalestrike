@@ -18,9 +18,9 @@ whaleCompressionForce(xs, xw, parms)
 A list containing \code{force} [N], the
 compression-resisting force, \code{stress} [Pa], the ratio
 of that force to the impact area, \code{strain}, the total
-strain, \code{alphaCompressed} [m],
-the skin thickness, \code{betaCompressed} [m],
-the blubber thickness, and \code{gammaCompressed} [m],
+strain, \code{compressed[1]} [m],
+the skin thickness, \code{compressed[2]} [m],
+the blubber thickness, and \code{compressed[3]} [m],
 the sublayer thickness.
 }
 \description{
