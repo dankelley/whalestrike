@@ -53,11 +53,12 @@ and \code{b} is unitless.  Note that \code{a*b} is the local modulus at
 low strain, and that \code{b} is the efolding scale for nonlinear increase
 in stress with strain. This exponential relationship has been mapped out
 for whale blubber, using a curve fit to Figure 2.13 of Raymond (2007), and
-these values are used for the second layer (blubber). If not provided,
-\code{a} defaults to
-\code{c(17.80e6/0.1, 1.58e5, 1.58e5, 854.2e6/0.1)}
+these values are used for the second layer (blubber); see
+\link{raymond2007} for how the fit was done.
+If not provided, \code{a} defaults to
+\code{c(17.80e6/0.1, 1.64e5, 1.64e5, 854.2e6/0.1)}
 and \code{b} defaults to
-\code{c(0.1, 2.54, 2.54, 0.1)}.
+\code{c(0.1, 2.47, 2.47, 0.1)}.
 The skin defaults are set up to give a linear shape (since \code{b} is small)
 with the \code{a*b} product
 being 17.8e6 Pa, which is the adult-seal value
