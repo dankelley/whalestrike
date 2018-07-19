@@ -109,39 +109,6 @@ ignored, because values are sought from the file. The purpose of
 this is in shiny apps that want to save a simulation framework.
 The file should be saved \code{\link{write.csv}} with
 \code{row.names=FALSE}.}
-
-\item{alpha}{DEFUNCT FIXME Whale skin thickness [m], with a of 0.0256 m.}
-
-\item{Ealpha}{DEFUNCT FIXME Whale skin elastic modulus [Pa], with a default of 17.80e6 Pa,
-a value for adult seals, given in Table 3 of Grear et al. (2017).}
-
-\item{UTSalpha}{DEFUNCT FIXME Ultimate tensile strength of skin [Pa], with a default of 19.56e6 Pa,
-a value reported by Grear et al. (2017) for adult seals.}
-
-\item{beta}{DEFUNCT FIXME Whale blubber thickness [m]; defaults to 0.3m if not supplied.}
-
-\item{Ebeta}{DEFUNCT FIXME Elastic modulus of blubber [Pa]; defaults to 0.6 MPa (the value
-suggested Raymond (2007 fig 37), rounded to 1 digit), if not supplied.}
-
-\item{UTSbeta}{DEFUNCT FIXME Numerical value indicating the ultimate tensile strength
-of the blubber; if not \code{NA}, then this is used to indicate
-problems in plots made if \code{which} is \code{"compression stress"}.
-The default is the product of the default whale blubber modulus (see
-\code{Ebeta}, above) and the strength/modulus ratio for seal
-blubber, given by (Grear et al. 2018 page 144).}
-
-\item{gamma}{DEFUNCT FIXME Thickness of interior region [m].
-The default, 0.5m, may be in an appropriate range for soft tissue;
-perhaps 0.05m would be more reasonable for bone.}
-
-\item{Egamma}{DEFUNCT FIXME Elastic modulus of interior region [Pa].
-The default, 0.4MPa, may be in an appropriate range for soft tissue;
-perhaps 854MPa would be more reasonable for bone.}
-
-\item{UTSgamma}{DEFUNCT FIXME Numerical value indicating the ultimate tensile strength
-of the sublayer.
-The default, (0.8/1.2)*0.4MPa, may be in an appropriate range for soft tissue;
-perhaps 22.9MPa would be more reasonable for bone.}
 }
 \value{
 A named list holding the parameters, with defaults and alternatives reconciled

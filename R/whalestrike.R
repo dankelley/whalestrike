@@ -260,31 +260,7 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' The sub-layer value is taken to be identical to the blubber value, lacking
 #' more specific information.
 #' The bone default o 2.29e7 Pa is from Table 2.3 of Raymond (2007).
-#' @param alpha DEFUNCT FIXME Whale skin thickness [m], with a of 0.0256 m.
-#' @param Ealpha DEFUNCT FIXME Whale skin elastic modulus [Pa], with a default of 17.80e6 Pa,
-#' a value for adult seals, given in Table 3 of Grear et al. (2017).
-#' @param UTSalpha DEFUNCT FIXME Ultimate tensile strength of skin [Pa], with a default of 19.56e6 Pa,
-#' a value reported by Grear et al. (2017) for adult seals.
 #' @param theta Whale skin deformation angle [deg]; defaults to 45deg if not supplied.
-#' @param beta DEFUNCT FIXME Whale blubber thickness [m]; defaults to 0.3m if not supplied.
-#' @param Ebeta DEFUNCT FIXME Elastic modulus of blubber [Pa]; defaults to 0.6 MPa (the value
-#' suggested Raymond (2007 fig 37), rounded to 1 digit), if not supplied.
-#' @param UTSbeta DEFUNCT FIXME Numerical value indicating the ultimate tensile strength
-#' of the blubber; if not \code{NA}, then this is used to indicate
-#' problems in plots made if \code{which} is \code{"compression stress"}.
-#' The default is the product of the default whale blubber modulus (see
-#' \code{Ebeta}, above) and the strength/modulus ratio for seal
-#' blubber, given by (Grear et al. 2018 page 144).
-#' @param gamma DEFUNCT FIXME Thickness of interior region [m].
-#' The default, 0.5m, may be in an appropriate range for soft tissue;
-#' perhaps 0.05m would be more reasonable for bone.
-#' @param Egamma DEFUNCT FIXME Elastic modulus of interior region [Pa].
-#' The default, 0.4MPa, may be in an appropriate range for soft tissue;
-#' perhaps 854MPa would be more reasonable for bone.
-#' @param UTSgamma DEFUNCT FIXME Numerical value indicating the ultimate tensile strength
-#' of the sublayer.
-#' The default, (0.8/1.2)*0.4MPa, may be in an appropriate range for soft tissue;
-#' perhaps 22.9MPa would be more reasonable for bone.
 #' @param Cs Drag coefficient for ship [dimensionless],
 #' used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults
 #' to 1e-2, which is 4 times the frictional coefficient of 2.5e-3
@@ -320,9 +296,6 @@ parameters <- function(ms, Ss, Ly=0.5, Lz=1.5,
                        lw, mw, Sw,
                        l, a, b, s,
                        theta=45,
-                       ##alpha=0.0256, Ealpha=17.80e6, UTSalpha=19.56e6,
-                       ##beta=0.3, Ebeta=0.6e6, UTSbeta=(0.8/1.2)*0.6e6,
-                       ##gamma=0.5, Egamma=0.4e6, UTSgamma=(0.8/1.2)*0.4e6,
                        Cs=0.01, Cw=0.0025, file)
 {
     if (!missing(file)) {
@@ -564,13 +537,13 @@ whaleAreaFromLength <- function(L, type="wetted")
 #'
 #' @template parmsTemplate
 #'
-#' @return A list containing \code{force} [N], the
-#' compression-resisting force, \code{stress} [Pa], the ratio
-#' of that force to the impact area, \code{strain}, the total
-#' strain, \code{compressed[1]} [m],
-#' the skin thickness, \code{compressed[2]} [m],
-#' the blubber thickness, and \code{compressed[3]} [m],
-#' the sublayer thickness.
+#' @return A list containing: \code{force} [N], the
+#' compression-resisting force; \code{stress} [Pa], the ratio
+#' of that force to the impact area; \code{strain}, the total
+#' strain, and \code{compressed}, a four-column matrix [m]
+#' with first column for skin compression, second for blubber
+#' compression, third for sub-layer compression, and fourth
+#' for bone compression.
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
@@ -587,20 +560,14 @@ whaleCompressionForce <- function(xs, xw, parms)
     ##E <- (parms$alpha + parms$beta + parms$gamma) / (parms$alpha/parms$Ealpha + parms$beta/parms$Ebeta + parms$gamma/parms$Egamma)
     stress <- parms$stressFromStrain(strain)
     force <- stress * parms$Ly * parms$Lz
-    ## Prevent strains exceeding 1, i.e. do not permit negative thickness.
-    ##DELETE compressed[1] <- zeroTrim(parms$alpha * (1 - stress / parms$Ealpha))
-    ##DELETE compressed[2] <- zeroTrim(parms$beta * (1 - stress / parms$Ebeta))
-    ##DELETE compressed[3] <- zeroTrim(parms$gamma * (1 - stress / parms$Egamma))
-    compressed <- log(1 + stress / parms$a) / parms$b
+    compressed <- cbind(parms$l[1]*(1-log(1 + stress / parms$a[1]) / parms$b[1]),
+                        parms$l[2]*(1-log(1 + stress / parms$a[2]) / parms$b[2]),
+                        parms$l[3]*(1-log(1 + stress / parms$a[3]) / parms$b[3]),
+                        parms$l[4]*(1-log(1 + stress / parms$a[4]) / parms$b[4]))
     ##. message("compressed=", paste(compressed, " "), "before zero trim")
     compressed <- zeroTrim(compressed)
     ##. message("compressed=", paste(compressed, " "), "after zero trim")
-    ## FIXMEFIXMEFIXME formula for strain in individual layers.
-
     list(force=force, stress=stress, strain=strain, compressed=compressed)
-##DELETE compressed[1]=compressed[1],
-##DELETE compressed[2]=compressed[2],
-##DELETE compressed[3]=compressed[3])
 }
 
 #' Skin force
@@ -1002,10 +969,15 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         ylim <- range(c(xs, xw), na.rm=TRUE)
         plot(t, xs, type="l", xlab="Time [s]", ylab="Location [m]", col=cols, ylim=ylim, lwd=lwd, lty="84", xaxs="i")
         lines(t, xw, lwd=lwd, col=colwcenter)
-        lines(t, xw - x$WCF$compressed[3], col=colwinterface, lwd=lwd)
-        lines(t, xw - x$WCF$compressed[3] - x$WCF$compressed[2], col=colwskin, lwd=lwd)
-        lines(t, xw - x$WCF$compressed[3] - x$WCF$compressed[2] - x$WCF$compressed[1],
-              col=colwskin, lwd=lwd)
+        compressed <- x$WCF$compressed
+        y <- xw - compressed[, 4]
+        lines(t, y, col=colwinterface, lwd=lwd)
+        y <- y - compressed[, 3]
+        lines(t, y, col=colwinterface, lwd=lwd)
+        y <- y - compressed[, 2]
+        lines(t, y, col=colwskin, lwd=lwd)
+        y <- y - compressed[, 1]
+        lines(t, y, col=colwskin, lwd=lwd)
         waccel <- derivative(vw, t)
         saccel <- derivative(vs, t)
         mtext(sprintf("ship: %.1fg", max(abs(saccel))/g),
@@ -1016,11 +988,11 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
     }
     if (all || "section" %in% which) {
         REMOVE_CRITERIA <- TRUE
-        WCF <- x$WCF
-        skin <- WCF$compressed[1]
-        blubber <- WCF$compressed[2]
-        sublayer <- WCF$compressed[3]
-        maxy <- max(c(blubber+sublayer))
+        skin <- x$WCF$compressed[,1]
+        blubber <- x$WCF$compressed[,2]
+        sublayer <- x$WCF$compressed[,3]
+        bone <- x$WCF$compressed[,4]
+        maxy <- max(c(skin+blubber+sublayer+bone))
         ylim <- c(0, maxy*1.2) # put y=0 at bottom, so whale-centre is visible
         plot(t, sublayer+blubber+skin, xlab="Time [s]", ylab="Cross Section [m]",
              type="l", lwd=lwd, ylim=ylim, xaxs="i", yaxs="i", col=colwskin)# outside skin margin
