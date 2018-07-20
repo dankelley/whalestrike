@@ -111,10 +111,10 @@ server <- function(input, output, session)
 #' the value \code{"simple"} is permitted at present. This yields a
 #' 3-panel plot, constructed by \code{\link{plot.strike}},
 #' called with default arguments.
-app <- function(mode="simple")
+app <- function(mode="simple", options=list(height=800))
 {
     if (mode == "simple")
-        shinyApp(ui, server)
+        shinyApp(ui=ui, server=server, options=options)
     else
         stop("unknown mode; only \"simple\" is permitted")
 }

@@ -977,9 +977,11 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         which <- c("location", "section", "threat")
     }
 
-    allowed <- c("location", "section", "threat", "whale acceleration", "blubber thickness",
-                 "sublayer thickness", "whale water force", "reactive forces", "skin stress",
-                 "compression force", "compression stress", "values") 
+    ## Ensure that the plot type is known.
+    allowed <- c("all", "location", "section", "threat", "whale acceleration",
+                 "blubber thickness", "sublayer thickness", "whale water
+                 force", "reactive forces", "skin stress", "compression force",
+                 "compression stress", "values") 
     for (w in which) {
         if (!(w %in% allowed))
             stop("which value \"", w, "\" is not allowed; try one of: \"",
@@ -1009,24 +1011,26 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         showEvents(xs, xw)
     }
     if (all || "section" %in% which) {
-        REMOVE_CRITERIA <- TRUE
+        ##REMOVE_CRITERIA <- TRUE
         skin <- x$WCF$compressed[,1]
         blubber <- x$WCF$compressed[,2]
         sublayer <- x$WCF$compressed[,3]
         bone <- x$WCF$compressed[,4]
         maxy <- max(c(skin+blubber+sublayer+bone))
-        ylim <- c(0, maxy*1.2) # put y=0 at bottom, so whale-centre is visible
-        plot(t, skin+blubber+sublayer+bone, xlab="Time [s]", ylab="Cross Section [m]",
+        ylim <- c(-maxy*1.2, 0)
+        plot(t, -(skin+blubber+sublayer+bone), xlab="Time [s]", ylab="Cross Section [m]",
              type="l", lwd=lwd, ylim=ylim, xaxs="i", yaxs="i", col=colwskin)# outside skin margin
-        lines(t, blubber+sublayer+bone, lwd=lwd, col=colwskin)
-        lines(t, sublayer+bone, lwd=lwd, col=colwinterface)# , lty="42")
-        lines(t, bone, lwd=lwd, col=colwinterface)# , lty="42")
+        lines(t, -(blubber+sublayer+bone), lwd=lwd, col=colwskin)
+        lines(t, -(sublayer+bone), lwd=lwd, col=colwinterface)# , lty="42")
+        lines(t, -bone, lwd=lwd, col=colwinterface)# , lty="42")
         ##abline(h=0, col=colwcenter, lwd=D*lwd)
         showEvents(xs, xw)
         xusr <- par("usr")[1:2]
         x0 <- xusr[1] - 0.01*(xusr[2] - xusr[1]) # snuggle up to axis
-        text(x0, 0.5*x$parms$l[3], "sublayer", pos=4)
-        text(x0, x$parms$l[3]+0.5*x$parms$l[2], "blubber", pos=4)
+        text(x0, -0.5*x$parms$l[4], "bone", pos=4)
+        text(x0, -x$parms$l[4]-0.5*x$parms$l[3], "sub-layer", pos=4)
+        text(x0, -x$parms$l[4]-x$parms$l[3]-0.5*x$parms$l[2], "blubber", pos=4)
+        text(x0, 0.5*(ylim[1] - x$parms$lsum), "water/ship", pos=4)
         hatchPolygon <- FALSE
         ## Blubber
         ## if (drawCriteria[1] && !REMOVE_CRITERIA) {
