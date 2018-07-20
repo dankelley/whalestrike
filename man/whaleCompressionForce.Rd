@@ -15,13 +15,13 @@ whaleCompressionForce(xs, xw, parms)
 \code{\link{parameters}}.}
 }
 \value{
-A list containing \code{force} [N], the
-compression-resisting force, \code{stress} [Pa], the ratio
-of that force to the impact area, \code{strain}, the total
-strain, \code{alphaCompressed} [m],
-the skin thickness, \code{betaCompressed} [m],
-the blubber thickness, and \code{gammaCompressed} [m],
-the sublayer thickness.
+A list containing: \code{force} [N], the
+compression-resisting force; \code{stress} [Pa], the ratio
+of that force to the impact area; \code{strain}, the total
+strain, and \code{compressed}, a four-column matrix [m]
+with first column for skin compression, second for blubber
+compression, third for sub-layer compression, and fourth
+for bone compression.
 }
 \description{
 Calculate the reaction force of blubber and the sublayer to

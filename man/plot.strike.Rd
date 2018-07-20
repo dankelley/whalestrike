@@ -4,11 +4,9 @@
 \alias{plot.strike}
 \title{Plot a strike object}
 \usage{
-\method{plot}{strike}(x, which = "default", drawCriteria = rep(TRUE, 2),
-  drawEvents = TRUE, colwcenter = "Slate Gray", colwinterface = "black",
-  colwskin = "black", cols = "black", colInjury = c("gray", "black"),
-  colThreat = c("lightgray", "gray", "black"), lwd = 1.4, D = 3,
-  debug = 0, ...)
+\method{plot}{strike}(x, which = "default", drawEvents = TRUE,
+  colwcenter = "Slate Gray", colwinterface = "black", colwskin = "black",
+  cols = "black", colThreat, lwd = 1.4, D = 3, debug = 0, ...)
 }
 \arguments{
 \item{x}{An object inheriting from class \code{strike}}
@@ -26,36 +24,21 @@ placed near the horizontal axes.
 \item \code{"section"} to plot skin thickness, blubber thickness and sublayer thickness
 in one panel, creating a cross-section diagram.
 
-\item \code{"injury"} a stacked plot showing time-series traces of health
-indicators for skin extension, blubber compression, and sub-layer compression.
-These take the form of dotted horizontal lines, with labels above and at the
-left side of the panel.  During times when an injury criterion is halfway met,
-e.g. that blubber stress 1/2 the value of blubber strength, then the dotted
-line is overdrawn with a thick gray line. During times when the criterion
-is exceeded, the colour shifts to black.
 
 \item \code{"threat"} a stacked plot showing time-series traces of an
 ad-hoc measure of the possible threat to skin, blubber and sublayer.
 The threat level is computed as the ratio
 of stress to ultimate strength, e.g. for blubber, it is
-\code{x$WCF$stress/x$parms$UTSbeta}. Colour-coding indicates levels
+\code{x$WCF$stress/x$parms$s[2]}. Colour-coding indicates levels
 from 0 to 1/2, from 1/2 to 1, and above 1. An axis categorizes
 threat level 0 as "L", 0.5 as "M", and 1 as "H".
 
 \item \code{"whale acceleration"} for a time-series plot of whale acceleration.
-If \code{drawCriteria} is \code{TRUE}, the line is thickened during
-times when the acceleration exceeds 433 m/s^2, which is an estimate of
-the 10% probability of concussion for the National Football League
-concussion data presented in Figure 9 of Ng et al. 2017.
 
 \item \code{"blubber thickness"} for a time-series plot of blubber thickness.
-If \code{drawCriteria[1]} is \code{TRUE} then the line is thickened
-if the stress within the blubber exceeds \code{parms$UTSbeta}.
 
 \item \code{"sublayer thickness"} for a time-series plot of the thickness
 of the layer interior to the blubber.
-If \code{drawCriteria[1]} is \code{TRUE} then the line is thickened
-if the stress within the sublayer exceeds \code{parms$UTSgamma}.
 
 \item \code{"reactive forces"} for a time-series showing the reactive
 forces associated with skin stretching (solid) and the compression of the
@@ -63,14 +46,8 @@ blubber and sublayer components (dashed).
 
 \item \code{"compression stress"} for a time-series plot of the compression stress on the blubber
 and the layer to its interior. (These stresses are equal, under an equilibrium assumption.)
-If \code{drawCriteria[1]} is \code{TRUE} then these traces are thickened if the compression
-stress exceeds the minimum of \code{parms$UTSgamma} and \code{parms$UTSbeta}.
 
 \item \code{"skin stress"} for a time-series of skin stress in the along-skin y and z directions.
-If \code{drawCriteria[1]} is \code{TRUE} then these traces are thickened
-during any times when the stress exceeds 19.5MPa, which is taken as
-the maximum stress that the skin can accommodate without damage, inferred from an
-entry in Table 3 of Grear et al. (2018) for the strength of seal skin.
 
 \item \code{"values"} for a listing of \code{param} values.
 
@@ -79,12 +56,6 @@ entry in Table 3 of Grear et al. (2018) for the strength of seal skin.
 \item \code{"default"} for a three-element plot showing \code{"location"},
 \code{"section"}, and \code{"threat"}.
 }}
-
-\item{drawCriteria}{Logical value indicating whether to
-indicate dangerous conditions by thickening lines in time series
-plots. Those conditions are stated in the documentation for individual
-panels, and for multivariate plots, \code{drawCriteria} can be of
-length exceeding 1, to control individual curves in the plot.}
 
 \item{drawEvents}{Logical, indicating whether to draw lines for some events,
 such as the moment of closest approach.}
@@ -99,20 +70,17 @@ between whale blubber and sublayer.}
 \item{cols}{As \code{colw}, but the colour to be used for the ship bow location,
 which is drawn with a dashed line.}
 
-\item{colInjury}{Two-element colour specification used in \code{"injury"}
-panels. The first colour is used to indicate values that are halfway to the
-injury crition, and the second is used to indicte values that exceed the
-criterion.}
-
 \item{colThreat}{Three-element colour specification used in \code{"threat"}.
 The first colour is used for threat levels between 0 and 0.5, the second
-from 0.5 to 1, and the third above 1.}
+from 0.5 to 1, and the third above 1. If not provided, the colours
+will be light-gray, gray, and black, each with an alpha setting that
+lightens the colours and makes them semi-transparent.}
 
 \item{lwd}{Line width used in plots for time intervals in which damage
-criteria are not exceed (or if \code{drawCriteria} is \code{FALSE}).}
+criteria are not exceeded.}
 
 \item{D}{Factor by which to thicken lines during times during which damage
-criteria are exceeded. Ignored unless \code{drawCriteria} is \code{TRUE}.}
+criteria are exceeded.}
 
 \item{debug}{Integer indicating debugging level, 0 for quiet operation and higher values
 for more verbose monitoring of progress through the function.}
@@ -122,6 +90,18 @@ for more verbose monitoring of progress through the function.}
 \description{
 Creates displays of various results of a simulation performed
 with \code{\link{strike}}.
+}
+\examples{
+## 1. default 3-panel plot
+t <- seq(0, 0.7, length.out=200)
+state <- c(xs=-2, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
+parms <- parameters(ms=20e3, lw=13)
+sol <- strike(t, state, parms)
+par(mar=c(3,3,1,1), mgp=c(2,0.7,0), mfrow=c(1, 3))
+plot(sol)
+## 2. all 12 plot types
+par(mar=c(3,3,1,1) ,mgp=c(2,0.7,0), mfrow=c(4,3))
+plot(sol, "all")
 }
 \references{
 See \link{whalestrike} for a list of references.

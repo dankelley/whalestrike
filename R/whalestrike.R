@@ -1,6 +1,29 @@
 library(deSolve)
 library(xtable)
 
+#' Whale blubber stress-strain relationship
+#'
+#' This is a data frame with elements \code{strain} and \code{stess},
+#' found by digitizing (accurate to perhaps 1 percent) the curve shown in Figure 2.13
+#' of Raymond (2007). It is used to develop a stress-strain relationship used
+#' by \code{\link{parameters}}, as shown in \dQuote{Examples}.
+#'
+#' @template ref_raymond
+#'
+#' @examples
+#' data(raymond2007)
+#' attach(raymond2007)
+#' ## Next yields \code{a=1.64e5} Pa and \code{b=2.47}.
+#' m <- nls(stress~a*(exp(b*strain)-1), start=list(a=1e5, b=1))
+#' plot(strain, stress, xaxs="i", yaxs="i")
+#' x <- seq(0, max(strain), length.out=100)
+#' lines(x, predict(m, list(strain=x)))
+#'
+#' @name raymond2007
+#' @docType data
+NULL
+
+
 #' whalestrike: A Package to Simulate Ship-Whale Collisions
 #'
 #' This package solves Newton's second law for a simple model of
@@ -30,6 +53,13 @@ library(xtable)
 #'
 #' @section Further reading:
 #' \itemize{
+#'
+#' \item
+#' Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
+#' “Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
+#' Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
+#' Socieity, and Fisheries and Oceans Canada, 2018.
+#' http://publications.gc.ca/site/eng/9.850838/publication.html.
 #'
 #' \item
 #' Fortune, Sarah M. E., Andrew W. Trites, Wayne L. Perryman, Michael J. Moore,
@@ -94,11 +124,75 @@ library(xtable)
 #' @name whalestrike
 NULL
 
+#' Create a function for stress in laminated layers
+#'
+#' Assuming that unforced layer thicknesses are \eqn{l_i}, and that within each layer
+#' the stress is given by
+#' \deqn{a_i*[exp(b_i*\epsilon)-1]}
+#' with strain \eqn{\epsilon}
+#' being \eqn{\Delta l_i/l_i}, then the change in the
+#' total thickness \eqn{L=\sum l_i} obeys
+#' \deqn{0 = \Delta L - \sum (l_i /b_i) ln(1+\sigma / a_i)}
+#' where \eqn{ln} is the natural logarithm. This formula rests on the assumption
+#' that the stress, \eqn{\sigma}, is the same in each layer.
+#' This expression is not easily inverted to get
+#' \eqn{\sigma} in terms of \eqn{\Delta L}, but it may be solved
+#' easily for particular numerical vaues, using \code{\link{uniroot}}.
+#' This is done for a sequence of \code{N} values of strain \eqn{\epsilon}
+#' that range from 0 to 1. Then a cubic spline is created to represent these
+#' the relationship between \eqn{\sigma} and \eqn{\Delta L} values,
+#' and this spline function is returned.
+#' The purpose is to speed up processing of simulations carried out
+#' with \code{\link{strike}}. In the authors tests, the speedup was by
+#' an order of magnitude, and the loss of accuracy was
+#' negligible, amounting to fractional errors in the 8th decimal place.
+#'
+#' @param l vector of layer thicknesses
+#' @param a vector of multipliers
+#' @param b vector of e-fold parameters
+#' @param N integer specifying how many segments to use in the spline
+#'
+#' @return A spline function, created with \code{\link{splinefun}},
+#' that returns stress as a function of total strain of the
+#' system of compressing layers. For the purposes of the whale-strike
+#' analysis, the strain should be between 0 and 1, i.e. there is
+#' no notion of compressing blubber, etc. to negative thickess.
+#'
+#' @examples
+#' library(whalestrike)
+#' ## Set blubber parameters for each layer, to see if
+#' ## we recover the raymond2007 data.
+#' param <- parameters(a=rep(1.64e5,4), b=rep(2.47,4))
+#' x <- seq(0, 0.5, length.out=100)
+#' y <- param$stressFromStrain(x)
+#' plot(x, y, type='l', lwd=4, col="gray")
+#' data("raymond2007")
+#' points(raymond2007$strain, raymond2007$stress, col=2)
+stressFromStrainFunction <- function(l, a, b, N=1e3)
+{
+    fcn <- function(sigma)
+        DL - sum((l/b) * log(1 + sigma / a))
+    L <- sum(l)
+    sigma <- rep(NA, N)
+    epsilon <- seq(0, 1, length.out=N)
+    for (i in seq_along(epsilon)) {
+        DL <- epsilon[i] * L
+        sigma[i] <- uniroot(fcn, interval=c(0, 1e8))$root
+        ##cat("i=", i, ", epsilon=", epsilon[i], ", sigma=", sigma[i], "\n")
+    }
+    splinefun(epsilon, sigma)
+}
+
+
 #' Control parameters for whale strike simulation
 #'
 #' Assembles control parameters into a list suitable for passing to \code{\link{strike}}
 #' and the functions that it calls. If \code{file} is provided, then all the other
 #' arguments are read from that source.
+#' Below are some sources cited in the discussion of the function arguments.
+#' @template ref_daoust
+#' @template ref_grear
+#' @template ref_raymond
 #'
 #' @param ms Ship mass [kg].
 #' @param Ss Ship wetted area [m^2]. This, together with \code{Cs}, is used by
@@ -116,31 +210,56 @@ NULL
 #' length, using \code{\link{whaleMassFromLength}} with \code{type="wetted"}.
 #' @param Sw Whale surface area [m^2]. If not provided, this is calculated
 #' from whale length using \code{\link{whaleAreaFromLength}}.
-#' @param alpha Whale skin thickness [m], with a of 0.0256 m.
-#' @param Ealpha Whale skin elastic modulus [Pa], with a default of 17.80e6 Pa,
-#' a value for adult seals, given in Table 3 of Grear et al. (2017).
-#' @param UTSalpha Ultimate tensile strength of skin [Pa], with a default of 19.56e6 Pa,
-#' a value reported by Grear et al. (2017) for adult seals.
+#' @param l Numerical vector of length 4, giving thickness [m] of skin, blubber,
+#' sub-layer, and bone. If not provided, this is set to
+#' \code{c(0.025, 0.16, 0.5, 0.2)}.
+#' The skin thicknes default of 0.025 m represents the 0.9-1.0 inch value
+#' stated in Section 2.2.3 of Raymond (2007).
+#' The blubber default of 0.16 m is a rounded average of the values inferred
+#' by whale necropsy, reported in Appendix 2 of Daoust et al., 2018.
+## mean(c(17,14,18.13,18,21.25,16.75,13.33,7)) # cm
+## [1] 15.6825
+#' The sub-layer default of 0.5 m may be reasonable at some spots on the whale body.
+#' The bone default of 0.1 m may be reasonable at some spots on the whale body.
+#' @param a,b Numerical vectors of length 4, giving values to use in the
+#' stress-strain law \code{stress=a*(exp(b*strain)-1)}. \code{a} is in Pa
+#' and \code{b} is unitless.  Note that \code{a*b} is the local modulus at
+#' low strain, and that \code{b} is the efolding scale for nonlinear increase
+#' in stress with strain. This exponential relationship has been mapped out
+#' for whale blubber, using a curve fit to Figure 2.13 of Raymond (2007), and
+#' these values are used for the second layer (blubber); see
+#' \link{raymond2007} for how the fit was done.
+#' If not provided, \code{a} defaults to
+#' \code{c(17.80e6/0.1, 1.64e5, 1.64e5, 854.2e6/0.1)}
+#' and \code{b} defaults to
+#' \code{c(0.1, 2.47, 2.47, 0.1)}.
+#' The skin defaults are set up to give a linear shape (since \code{b} is small)
+#' with the \code{a*b} product
+#' being 17.8e6 Pa, which is the adult-seal value
+#' given in Table 3 of Grear et al. (2017).
+#' The blubber defaults are from a regression of the stress-strain
+#' relationship shown in Figure 2.13 of Raymond (2007).
+#' The sub-layer defaults are set to match those of blubber, lacking
+#' any other information.
+#' The bone default for \code{b} is small, to set up a linear function,
+#' and \code{a*b} is set to equal 8.54e8 Pa,
+#' given in Table 2.3 of Raymond (2007).
+#' @param s Numerical vector of length 4, giving the ultimate strengths [Pa] of
+#' skin, blubber, sub-layer, and bone, respectively. If not provided, the
+#' value is set to
+#' \code{c(19.56e6, 4.37e5, 4.37e5, 22.9e6)},
+#' with reasoning as follows.
+#' The skin default of 1.96e7 Pa
+#' is a rounded value from Table 3 of Grear et al. (2018) for adult seal skin strength at
+#' an orientation of 0 degrees.  The blubber value of
+#' 4.37e5 Pa is inferred by
+#' multiplying Raymond's (2007) Figure 2.13 elastic modulus of 6.36e5 Pa
+#' by the ratio 0.97/1.41 determined for adult seal strength/modulus, as reported
+#' in Table 3 of Grear et al. (2018).
+#' The sub-layer value is taken to be identical to the blubber value, lacking
+#' more specific information.
+#' The bone default o 2.29e7 Pa is from Table 2.3 of Raymond (2007).
 #' @param theta Whale skin deformation angle [deg]; defaults to 45deg if not supplied.
-#' @param beta Whale blubber thickness [m]; defaults to 0.3m if not supplied.
-#' @param Ebeta Elastic modulus of blubber [Pa]; defaults to 0.6 MPa (the value
-#' suggested Raymond (2007 fig 37), rounded to 1 digit), if not supplied.
-#' @param UTSbeta Numerical value indicating the ultimate tensile strength
-#' of the blubber; if not \code{NA}, then this is used to indicate
-#' problems in plots made if \code{which} is \code{"compression stress"}.
-#' The default is the product of the default whale blubber modulus (see
-#' \code{Ebeta}, above) and the strength/modulus ratio for seal
-#' blubber, given by (Grear et al. 2018 #' page 144).
-#' @param gamma Thickness of interior region [m].
-#' The default, 0.5m, may be in an appropriate range for soft tissue;
-#' perhaps 0.05m would be more reasonable for bone.
-#' @param Egamma Elastic modulus of interior region [Pa].
-#' The default, 0.4MPa, may be in an appropriate range for soft tissue;
-#' perhaps 854MPa would be more reasonable for bone.
-#' @param UTSgamma Numerical value indicating the ultimate tensile strength
-#' of the sublayer.
-#' The default, (0.8/1.2)*0.4MPa, may be in an appropriate range for soft tissue;
-#' perhaps 22.9MPa would be more reasonable for bone.
 #' @param Cs Drag coefficient for ship [dimensionless],
 #' used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults
 #' to 1e-2, which is 4 times the frictional coefficient of 2.5e-3
@@ -167,14 +286,15 @@ NULL
 #' A named list holding the parameters, with defaults and alternatives reconciled
 #' according to the system described above.
 #'
-#' @references
-#' See \link{whalestrike} for a list of references.
-parameters <- function(ms, Ss, Ly=0.5, Lz=1.5,
-                       lw, mw, Sw,
-                       alpha=0.0256, Ealpha=17.80e6, UTSalpha=19.56e6,
+#' @examples
+#' parms <- parameters(ms=20e3, lw=13)
+#' epsilon <- seq(0, 0.3, length.out=100)
+#' strain <- parms$stressFromStrain(epsilon)
+#' plot(epsilon, strain, type="l")
+parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
+                       lw=13, mw, Sw,
+                       l, a, b, s,
                        theta=45,
-                       beta=0.3, Ebeta=0.6e6, UTSbeta=(0.8/1.2)*0.6e6,
-                       gamma=0.5, Egamma=0.4e6, UTSgamma=(0.8/1.2)*0.4e6,
                        Cs=0.01, Cw=0.0025, file)
 {
     if (!missing(file)) {
@@ -203,8 +323,8 @@ parameters <- function(ms, Ss, Ly=0.5, Lz=1.5,
         o <- sort(names(rval))
         rval <- rval[o]
     } else {
-        if (missing(ms) || ms <= 0)
-            stop("ship mass (ms) must be given, and a positive number")
+        if (ms <= 0)
+            stop("ship mass (ms) must be a positive number")
         if (missing(Ss))
             Ss <- shipAreaFromMass(ms)
         if (Ss <= 0)
@@ -213,44 +333,63 @@ parameters <- function(ms, Ss, Ly=0.5, Lz=1.5,
             stop("impact width (Ly) must be a positive number, not ", Ly)
         if (Lz <= 0)
             stop("impact height (Lz) must be a positive number, not ", Lz)
-        if (missing(lw))
-            stop("Whale length (lm) must be given")
+        if (lw <= 0)
+            stop("Whale length (lw) must be a positive number")
         if (missing(mw))
             mw <- whaleMassFromLength(lw)
         if (missing(Sw))
             Sw <- whaleAreaFromLength(lw, type="wetted")
-        if (alpha < 0)
-            stop("whale skin thickness (alpha) must be positive, not ", alpha)
-        if (Ealpha< 0)
-            stop("whale skin elastic modulus (Ealpha) must be positive, not ", Ealpha)
-        if (UTSalpha< 0)
-            stop("whale skin elastic modulus (UTSalpha) must be positive, not ", UTSalpha)
+        if (missing(l))
+            l <- c(0.025, 0.16, 0.5, 0.1)
+        if (missing(a))
+            a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
+        if (missing(b))
+            b <- c(0.1, 2.54, 2.54, 0.1)
+        if (missing(s))
+            s <- c(1.96e7, 4.37e5, 4.37e5, 2.29e7)
+        ## Value checks
+        if (any(l <= 0) || length(l) != 4)
+            stop("'l' must be 4 positive numbers")
+        if (any(a <= 0) || length(a) != 4)
+            stop("'a' must be 4 positive numbers")
+        if (any(b <= 0) || length(b) != 4)
+            stop("'b' must be 4 positive numbers")
         if (theta < 0 || theta > 89)
             stop("whale skin deformation angle (theta) must be between 0 and 89 deg, not ", theta)
-        if (beta < 0)
-            stop("whale blubber thickness (beta) must be positive, not ", beta)
-        if (Ebeta < 0)
-            stop("whale blubber elastic modulus (Ebeta) must be positive, not ", Ebeta)
-        if (UTSbeta < 0)
-            stop("whale blubber ultimate strength (UTSbeta) must be positive, not ", UTSbeta)
-        if (gamma < 0)
-            stop("whale sublayer thickness (gamma) must be positive, not ", gamma)
-        if (Egamma < 0)
-            stop("whale sublayer elastic modulus (Egamma) must be positive, not ", Egamma)
-        if (UTSgamma < 0)
-            stop("whale sublayer ultimate strength (UTSgamma) must be positive, not ", UTSgamma)
-        if (Cs < 0)
+        if (Cs <= 0)
             stop("ship resistance parameter (Cs) must be positive, not ", Cs)
-        if (Cw < 0)
+        if (Cw <= 0)
             stop("ship resistance parameter (Cw) must be positive, not ", Cw)
+
+        ##DELETE if (Ealpha< 0)
+        ##DELETE     stop("whale skin elastic modulus (Ealpha) must be positive, not ", Ealpha)
+        ##DELETE if (UTSalpha< 0)
+        ##DELETE     stop("whale skin elastic modulus (UTSalpha) must be positive, not ", UTSalpha)
+        ##DELETE if (beta < 0)
+        ##DELETE     stop("whale blubber thickness (beta) must be positive, not ", beta)
+        ##DELETE if (Ebeta < 0)
+        ##DELETE     stop("whale blubber elastic modulus (Ebeta) must be positive, not ", Ebeta)
+        ##DELETE if (UTSbeta < 0)
+        ##DELETE     stop("whale blubber ultimate strength (UTSbeta) must be positive, not ", UTSbeta)
+        ##DELETE if (gamma < 0)
+        ##DELETE     stop("whale sublayer thickness (gamma) must be positive, not ", gamma)
+        ##DELETE if (Egamma < 0)
+        ##DELETE     stop("whale sublayer elastic modulus (Egamma) must be positive, not ", Egamma)
+        ##DELETE if (UTSgamma < 0)
+        ##DELETE     stop("whale sublayer ultimate strength (UTSgamma) must be positive, not ", UTSgamma)
+
+        ## overall-stress from overall-strain function
+        stressFromStrain <- stressFromStrainFunction(l, a, b)
         rval <- list(ms=ms, Ss=Ss,
                      Ly=Ly, Lz=Lz,
                      mw=mw, Sw=Sw, lw=lw,
-                     alpha=alpha, Ealpha=Ealpha, UTSalpha=UTSalpha,
+                     l=l, lsum=sum(l), a=a, b=b, s=s,
+                     ##alpha=alpha, Ealpha=Ealpha, UTSalpha=UTSalpha,
                      theta=theta,
-                     Ebeta=Ebeta, beta=beta, UTSbeta=UTSbeta,
-                     Egamma=Egamma, gamma=gamma, UTSgamma=UTSgamma,
-                     Cs=Cs, Cw=Cw)
+                     ##Ebeta=Ebeta, beta=beta, UTSbeta=UTSbeta,
+                     ##Egamma=Egamma, gamma=gamma, UTSgamma=UTSgamma,
+                     Cs=Cs, Cw=Cw,
+                     stressFromStrain=stressFromStrain)
     }
     class(rval) <- "parameters"
     rval
@@ -397,13 +536,13 @@ whaleAreaFromLength <- function(L, type="wetted")
 #'
 #' @template parmsTemplate
 #'
-#' @return A list containing \code{force} [N], the
-#' compression-resisting force, \code{stress} [Pa], the ratio
-#' of that force to the impact area, \code{strain}, the total
-#' strain, \code{alphaCompressed} [m],
-#' the skin thickness, \code{betaCompressed} [m],
-#' the blubber thickness, and \code{gammaCompressed} [m],
-#' the sublayer thickness.
+#' @return A list containing: \code{force} [N], the
+#' compression-resisting force; \code{stress} [Pa], the ratio
+#' of that force to the impact area; \code{strain}, the total
+#' strain, and \code{compressed}, a four-column matrix [m]
+#' with first column for skin compression, second for blubber
+#' compression, third for sub-layer compression, and fourth
+#' for bone compression.
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
@@ -411,23 +550,23 @@ whaleCompressionForce <- function(xs, xw, parms)
 {
     zeroTrim <- function(x) # turn negatives into zeros
         ifelse(0 < x, x, 0)
-    touching <- xs < xw & xs > (xw - parms$alpha - parms$beta - parms$gamma)
-    dx <- ifelse(touching, xs - (xw - parms$alpha - parms$beta - parms$gamma), 0) # penetration distance
+    touching <- xs < xw & xs > (xw - parms$lsum)
+    dx <- ifelse(touching, xs - (xw - parms$lsum), 0) # penetration distance
     ## Note that the denominator of the strain expression vanishes in the stress calculation,
     ## so the next three lines could be simplified. However, retaining it might be clearer,
     ## if a nonlinear stress-strain relationship becomes desirable in the future.
-    strain <- dx / (parms$alpha + parms$beta + parms$gamma)
-    E <- (parms$alpha + parms$beta + parms$gamma) / (parms$alpha/parms$Ealpha + parms$beta/parms$Ebeta + parms$gamma/parms$Egamma)
-    stress <- E * strain
+    strain <- dx / parms$lsum
+    ##E <- (parms$alpha + parms$beta + parms$gamma) / (parms$alpha/parms$Ealpha + parms$beta/parms$Ebeta + parms$gamma/parms$Egamma)
+    stress <- parms$stressFromStrain(strain)
     force <- stress * parms$Ly * parms$Lz
-    ## Prevent strains exceeding 1, i.e. do not permit negative thickness.
-    alphaCompressed <- zeroTrim(parms$alpha * (1 - stress / parms$Ealpha))
-    betaCompressed <- zeroTrim(parms$beta * (1 - stress / parms$Ebeta))
-    gammaCompressed <- zeroTrim(parms$gamma * (1 - stress / parms$Egamma))
-    list(force=force, stress=stress, strain=strain,
-         alphaCompressed=alphaCompressed,
-         betaCompressed=betaCompressed,
-         gammaCompressed=gammaCompressed)
+    compressed <- cbind(parms$l[1]*(1-log(1 + stress / parms$a[1]) / parms$b[1]),
+                        parms$l[2]*(1-log(1 + stress / parms$a[2]) / parms$b[2]),
+                        parms$l[3]*(1-log(1 + stress / parms$a[3]) / parms$b[3]),
+                        parms$l[4]*(1-log(1 + stress / parms$a[4]) / parms$b[4]))
+    ##. message("compressed=", paste(compressed, " "), "before zero trim")
+    compressed <- zeroTrim(compressed)
+    ##. message("compressed=", paste(compressed, " "), "after zero trim")
+    list(force=force, stress=stress, strain=strain, compressed=compressed)
 }
 
 #' Skin force
@@ -451,8 +590,8 @@ whaleCompressionForce <- function(xs, xw, parms)
 #' See \link{whalestrike} for a list of references.
 whaleSkinForce <- function(xs, xw, parms)
 {
-    touching <- xs < xw & xs > (xw - parms$alpha - parms$beta - parms$gamma)
-    dx <- ifelse(touching, xs - (xw - parms$alpha - parms$beta - parms$gamma), 0) # penetration distance
+    touching <- xs < xw & xs > (xw - parms$lsum)
+    dx <- ifelse(touching, xs - (xw - parms$lsum), 0) # penetration distance
     C <- cos(parms$theta * pi / 180) # NB: theta is in deg
     S <- sin(parms$theta * pi / 180) # NB: theta is in deg
     l <- dx * S / C                    # dek20180622_skin_strain eq 1
@@ -461,12 +600,12 @@ whaleSkinForce <- function(xs, xw, parms)
     epsilony <- 2 * (s - l) / (parms$Ly + 2 * l) # dek20180622_skin_strain  eq 3
     epsilonz <- 2 * (s - l) / (parms$Lz + 2 * l) # analogous to dek20180622 eq 3
     ## Stresses in y and z
-    sigmay <- parms$Ealpha * epsilony   # dek20180622_skin_strain eq 6
-    sigmaz <- parms$Ealpha * epsilonz   # dek20180622_skin_strain eq 7
+    sigmay <- parms$a[1] * (exp(parms$b[1] * epsilony) - 1)
+    sigmaz <- parms$a[1] * (exp(parms$b[1] * epsilonz) - 1)
     ## Net normal force in x; note the cosine, to resolve the force to the normal
     ## direction, and the 2, to account for two sides of length
     ## Ly and two of length Lz
-    F <- 2*parms$alpha*(parms$Lz*sigmaz + parms$Ly*sigmay)*C # dek20180622_skin_strain eq 8
+    F <- 2*parms$l[1]*(parms$Lz*sigmaz + parms$Ly*sigmay)*C # dek20180622_skin_strain eq 8
     list(force=F, sigmay=sigmay, sigmaz=sigmaz)
 }
 
@@ -601,18 +740,15 @@ derivative <- function(var, t)
 #' list containing vectors for time (\code{t} [s]), ship position (\code{xs} [m]),
 #' boat speed (\code{vs} [m/s]), whale position (\code{xw} [m]), whale speed (\code{vw} [m/s]),
 #' boat acceleration (\code{dvsdt} [m/s^2]), and whale acceleration (\code{dvwdt} [m/s^2]),
-#' along with a list containing the model parameters (\code{parms}).
+#' a list containing the model parameters (\code{parms}), a list with the results of
+#' the skin force calculation (\code{SWF}), a list with the results of the compression
+#' force calculations (\code{WCF}), and a vector of whale water force (\code{WWF}).
 #'
 #' @examples
 #' library(whalestrike)
-#' t <- seq(0, 1, length.out=500)
-#' state <- c(xs=-2.5, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
-#' parms <- parameters(ms=20e3,
-#'               Ly=0.5, Lz=1,
-#'               lw=13,
-#'               alpha=0.025, Ealpha=2e7, theta=45,
-#'               beta=0.25, Ebeta=6e5,
-#'               gamma=0.5, Egamma=4e5)
+#' t <- seq(0, 0.7, length.out=200)
+#' state <- c(xs=-2, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
+#' parms <- parameters(ms=20e3, lw=13)
 #' sol <- strike(t, state, parms)
 #' par(mfcol=c(1, 3), mar=c(3, 3, 0.5, 2), mgp=c(2, 0.7, 0), cex=0.7)
 #' plot(sol)
@@ -638,15 +774,6 @@ strike <- function(t, state, parms, debug=0)
     for (need in c("xs", "vs", "xw", "vw")) {
         if (!(need %in% names(state)))
             stop("state must contain item named '", need, "'; the names you supplied were: ", paste(names(state), collapse=" "))
-    }
-    for (need in c("ms", "Ss", # ship mass and wetted area
-                   "mw", "Sw", # whale mass and wetted area
-                   "Ly", "Lz", # linear extents of impact region
-                   "alpha", "Ealpha", "theta", # skin properties
-                   "beta", "Ebeta", # blubber properties
-                   "gamma", "Egamma")) { # inner-layer properties
-        if (!(need %in% names(parms)))
-            stop("parms must contain item named '", need, "'; the names you supplied were: ", paste(names(parms), collapse=" "))
     }
     parms["engineForce"] <- -shipWaterForce(state["vs"], parms) # assumed constant over time
     sol <- lsoda(state, t, dynamics, parms)
@@ -691,42 +818,37 @@ strike <- function(t, state, parms, debug=0)
 #'
 #' \item \code{"section"} to plot skin thickness, blubber thickness and sublayer thickness
 #' in one panel, creating a cross-section diagram.
-## If \code{drawCriteria[1]}
-## is \code{TRUE}, then the blubber and sub-layer regions are
-## cross-hatched during time intervals when the stress exceeds the
-## ultimate tensile strength of the material, i.e. when
-## injury is to be expected.
 #'
-#' \item \code{"injury"} a stacked plot showing time-series traces of health
-#' indicators for skin extension, blubber compression, and sub-layer compression.
-#' These take the form of dotted horizontal lines, with labels above and at the
-#' left side of the panel.  During times when an injury criterion is halfway met,
-#' e.g. that blubber stress 1/2 the value of blubber strength, then the dotted
-#' line is overdrawn with a thick gray line. During times when the criterion
-#' is exceeded, the colour shifts to black.
+## \item \code{"injury"} a stacked plot showing time-series traces of health
+## indicators for skin extension, blubber compression, and sub-layer compression.
+## These take the form of dotted horizontal lines, with labels above and at the
+## left side of the panel.  During times when an injury criterion is halfway met,
+## e.g. that blubber stress 1/2 the value of blubber strength, then the dotted
+## line is overdrawn with a thick gray line. During times when the criterion
+## is exceeded, the colour shifts to black.
 #'
 #' \item \code{"threat"} a stacked plot showing time-series traces of an
 #' ad-hoc measure of the possible threat to skin, blubber and sublayer.
 #' The threat level is computed as the ratio
 #' of stress to ultimate strength, e.g. for blubber, it is
-#' \code{x$WCF$stress/x$parms$UTSbeta}. Colour-coding indicates levels
+#' \code{x$WCF$stress/x$parms$s[2]}. Colour-coding indicates levels
 #' from 0 to 1/2, from 1/2 to 1, and above 1. An axis categorizes
 #' threat level 0 as "L", 0.5 as "M", and 1 as "H".
 #'
 #' \item \code{"whale acceleration"} for a time-series plot of whale acceleration.
-#' If \code{drawCriteria} is \code{TRUE}, the line is thickened during
-#' times when the acceleration exceeds 433 m/s^2, which is an estimate of
-#' the 10% probability of concussion for the National Football League
-#' concussion data presented in Figure 9 of Ng et al. 2017.
+## If \code{drawCriteria} is \code{TRUE}, the line is thickened during
+## times when the acceleration exceeds 433 m/s^2, which is an estimate of
+## the 10% probability of concussion for the National Football League
+## concussion data presented in Figure 9 of Ng et al. 2017.
 #'
 #' \item \code{"blubber thickness"} for a time-series plot of blubber thickness.
-#' If \code{drawCriteria[1]} is \code{TRUE} then the line is thickened
-#' if the stress within the blubber exceeds \code{parms$UTSbeta}.
+## If \code{drawCriteria[1]} is \code{TRUE} then the line is thickened
+## if the stress within the blubber exceeds \code{parms$UTSbeta}.
 #'
 #' \item \code{"sublayer thickness"} for a time-series plot of the thickness
 #' of the layer interior to the blubber.
-#' If \code{drawCriteria[1]} is \code{TRUE} then the line is thickened
-#' if the stress within the sublayer exceeds \code{parms$UTSgamma}.
+## If \code{drawCriteria[1]} is \code{TRUE} then the line is thickened
+## if the stress within the sublayer exceeds \code{parms$UTSgamma}.
 #'
 #' \item \code{"reactive forces"} for a time-series showing the reactive
 #' forces associated with skin stretching (solid) and the compression of the
@@ -734,14 +856,14 @@ strike <- function(t, state, parms, debug=0)
 #'
 #' \item \code{"compression stress"} for a time-series plot of the compression stress on the blubber
 #' and the layer to its interior. (These stresses are equal, under an equilibrium assumption.)
-#' If \code{drawCriteria[1]} is \code{TRUE} then these traces are thickened if the compression
-#' stress exceeds the minimum of \code{parms$UTSgamma} and \code{parms$UTSbeta}.
+## If \code{drawCriteria[1]} is \code{TRUE} then these traces are thickened if the compression
+## stress exceeds the minimum of \code{parms$UTSgamma} and \code{parms$UTSbeta}.
 #'
 #' \item \code{"skin stress"} for a time-series of skin stress in the along-skin y and z directions.
-#' If \code{drawCriteria[1]} is \code{TRUE} then these traces are thickened
-#' during any times when the stress exceeds 19.5MPa, which is taken as
-#' the maximum stress that the skin can accommodate without damage, inferred from an
-#' entry in Table 3 of Grear et al. (2018) for the strength of seal skin.
+## If \code{drawCriteria[1]} is \code{TRUE} then these traces are thickened
+## during any times when the stress exceeds 19.5MPa, which is taken as
+## the maximum stress that the skin can accommodate without damage, inferred from an
+## entry in Table 3 of Grear et al. (2018) for the strength of seal skin.
 #'
 #' \item \code{"values"} for a listing of \code{param} values.
 #'
@@ -751,11 +873,11 @@ strike <- function(t, state, parms, debug=0)
 #' \code{"section"}, and \code{"threat"}.
 #'}
 #'
-#' @param drawCriteria Logical value indicating whether to
-#' indicate dangerous conditions by thickening lines in time series
-#' plots. Those conditions are stated in the documentation for individual
-#' panels, and for multivariate plots, \code{drawCriteria} can be of
-#' length exceeding 1, to control individual curves in the plot.
+## @param drawCriteria Logical value indicating whether to
+## indicate dangerous conditions by thickening lines in time series
+## plots. Those conditions are stated in the documentation for individual
+## panels, and for multivariate plots, \code{drawCriteria} can be of
+## length exceeding 1, to control individual curves in the plot.
 #'
 #' @param drawEvents Logical, indicating whether to draw lines for some events,
 #' such as the moment of closest approach.
@@ -770,20 +892,24 @@ strike <- function(t, state, parms, debug=0)
 #' @param cols As \code{colw}, but the colour to be used for the ship bow location,
 #' which is drawn with a dashed line.
 #'
-#' @param colInjury Two-element colour specification used in \code{"injury"}
-#' panels. The first colour is used to indicate values that are halfway to the
-#' injury crition, and the second is used to indicte values that exceed the
-#' criterion.
+## @param colInjury Two-element colour specification used in \code{"injury"}
+## panels. The first colour is used to indicate values that are halfway to the
+## injury crition, and the second is used to indicte values that exceed the
+## criterion.
 #'
 #' @param colThreat Three-element colour specification used in \code{"threat"}.
 #' The first colour is used for threat levels between 0 and 0.5, the second
-#' from 0.5 to 1, and the third above 1.
+#' from 0.5 to 1, and the third above 1. If not provided, the colours
+#' will be light-gray, gray, and black, each with an alpha setting that
+#' lightens the colours and makes them semi-transparent.
 #'
 #' @param lwd Line width used in plots for time intervals in which damage
-#' criteria are not exceed (or if \code{drawCriteria} is \code{FALSE}).
+#' criteria are not exceeded.
+## (or if \code{drawCriteria} is \code{FALSE}).
 #'
 #' @param D Factor by which to thicken lines during times during which damage
-#' criteria are exceeded. Ignored unless \code{drawCriteria} is \code{TRUE}.
+#' criteria are exceeded.
+## Ignored unless \code{drawCriteria} is \code{TRUE}.
 #'
 #' @param debug Integer indicating debugging level, 0 for quiet operation and higher values
 #' for more verbose monitoring of progress through the function.
@@ -792,18 +918,31 @@ strike <- function(t, state, parms, debug=0)
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
-plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvents=TRUE,
+#'
+#' @examples
+#' ## 1. default 3-panel plot
+#' t <- seq(0, 0.7, length.out=200)
+#' state <- c(xs=-2, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
+#' parms <- parameters(ms=20e3, lw=13)
+#' sol <- strike(t, state, parms)
+#' par(mar=c(3,3,1,1), mgp=c(2,0.7,0), mfrow=c(1, 3))
+#' plot(sol)
+#' ## 2. all 12 plot types
+#' par(mar=c(3,3,1,1) ,mgp=c(2,0.7,0), mfrow=c(4,3))
+#' plot(sol, "all")
+plot.strike <- function(x, which="default", drawEvents=TRUE,
                         colwcenter="Slate Gray",
                         colwinterface="black", #colwinterface="Firebrick",
                         colwskin="black", #colwskin="Dodger Blue 4",
                         cols="black",
-                        colInjury=c("gray", "black"),
-                        colThreat=c("lightgray", "gray", "black"),
+                        colThreat,
                         lwd=1.4, D=3, debug=0, ...)
 {
     showLegend <- FALSE
-    if (!is.logical(drawCriteria))
-        stop("drawCriteria must be a logical, not ", paste(drawCriteria, collapse=" "), ", as given")
+    if (missing(colThreat))
+        colThreat <- c(rgb(0.827, 0.827, 0.827, alpha=0.7), # lightgray
+                       rgb(0.745, 0.745, 0.745, alpha=0.7), # gray
+                       rgb(0, 0, 0, alpha=0.7)) # black
     g <- 9.8 # gravity
     t <- x$t
     xs <- x$xs
@@ -817,8 +956,8 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         firstDead <- which(death)[1]
         dead <- firstDead:length(t)
         xw[dead] <- xw[firstDead]
-        x$WCF$alphaCompressed[dead] <- 0
-        x$WCF$betaCompressed[dead] <- 0
+        x$WCF$compressed[1][dead] <- 0
+        x$WCF$compressed[2][dead] <- 0
     }
     showEvents <- function(xs, xw) {
         if (drawEvents) {
@@ -838,15 +977,31 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         which <- c("location", "section", "threat")
     }
 
+    ## Ensure that the plot type is known.
+    allowed <- c("all", "location", "section", "threat", "whale acceleration",
+                 "blubber thickness", "sublayer thickness", "whale water
+                 force", "reactive forces", "skin stress", "compression force",
+                 "compression stress", "values") 
+    for (w in which) {
+        if (!(w %in% allowed))
+            stop("which value \"", w, "\" is not allowed; try one of: \"",
+                 paste(allowed, collapse="\" \""), "\"")
+    }
+
     ## x(t) and xw(t)
     if (all || "location" %in% which) {
         ylim <- range(c(xs, xw), na.rm=TRUE)
         plot(t, xs, type="l", xlab="Time [s]", ylab="Location [m]", col=cols, ylim=ylim, lwd=lwd, lty="84", xaxs="i")
         lines(t, xw, lwd=lwd, col=colwcenter)
-        lines(t, xw - x$WCF$gammaCompressed, col=colwinterface, lwd=lwd)
-        lines(t, xw - x$WCF$gammaCompressed - x$WCF$betaCompressed, col=colwskin, lwd=lwd)
-        lines(t, xw - x$WCF$gammaCompressed - x$WCF$betaCompressed - x$WCF$alphaCompressed,
-              col=colwskin, lwd=lwd)
+        compressed <- x$WCF$compressed
+        y <- xw - compressed[, 4]
+        lines(t, y, col=colwinterface, lwd=lwd)
+        y <- y - compressed[, 3]
+        lines(t, y, col=colwinterface, lwd=lwd)
+        y <- y - compressed[, 2]
+        lines(t, y, col=colwskin, lwd=lwd)
+        y <- y - compressed[, 1]
+        lines(t, y, col=colwskin, lwd=lwd)
         waccel <- derivative(vw, t)
         saccel <- derivative(vs, t)
         mtext(sprintf("ship: %.1fg", max(abs(saccel))/g),
@@ -856,137 +1011,141 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         showEvents(xs, xw)
     }
     if (all || "section" %in% which) {
-        REMOVE_CRITERIA <- TRUE
-        WCF <- x$WCF
-        skin <- WCF$alphaCompressed
-        blubber <- WCF$betaCompressed
-        sublayer <- WCF$gammaCompressed
-        maxy <- max(c(blubber+sublayer))
-        ylim <- c(0, maxy*1.2) # put y=0 at bottom, so whale-centre is visible
-        plot(t, sublayer+blubber+skin, xlab="Time [s]", ylab="Cross Section [m]",
+        ##REMOVE_CRITERIA <- TRUE
+        skin <- x$WCF$compressed[,1]
+        blubber <- x$WCF$compressed[,2]
+        sublayer <- x$WCF$compressed[,3]
+        bone <- x$WCF$compressed[,4]
+        maxy <- max(c(skin+blubber+sublayer+bone))
+        ylim <- c(-maxy*1.2, 0)
+        plot(t, -(skin+blubber+sublayer+bone), xlab="Time [s]", ylab="Cross Section [m]",
              type="l", lwd=lwd, ylim=ylim, xaxs="i", yaxs="i", col=colwskin)# outside skin margin
-        lines(t, sublayer+blubber, lwd=lwd, col=colwskin)
-        lines(t, sublayer, lwd=lwd, col=colwinterface)# , lty="42")
-        abline(h=0, col=colwcenter, lwd=D*lwd)
+        lines(t, -(blubber+sublayer+bone), lwd=lwd, col=colwskin)
+        lines(t, -(sublayer+bone), lwd=lwd, col=colwinterface)# , lty="42")
+        lines(t, -bone, lwd=lwd, col=colwinterface)# , lty="42")
+        ##abline(h=0, col=colwcenter, lwd=D*lwd)
         showEvents(xs, xw)
         xusr <- par("usr")[1:2]
         x0 <- xusr[1] - 0.01*(xusr[2] - xusr[1]) # snuggle up to axis
-        text(x0, 0.5*x$parms$gamma, "sublayer", pos=4)
-        text(x0, x$parms$gamma+0.5*x$parms$beta, "blubber", pos=4)
+        text(x0, -0.5*x$parms$l[4], "bone", pos=4)
+        text(x0, -x$parms$l[4]-0.5*x$parms$l[3], "sub-layer", pos=4)
+        text(x0, -x$parms$l[4]-x$parms$l[3]-0.5*x$parms$l[2], "blubber", pos=4)
+        text(x0, 0.5*(ylim[1] - x$parms$lsum), "water/ship", pos=4)
         hatchPolygon <- FALSE
         ## Blubber
-        if (drawCriteria[1] && !REMOVE_CRITERIA) {
-            risk <- x$WCF$stress >= 0.5 * x$parms$UTSbeta
-            px <- c(t, rev(t))
-            py <- c(sublayer+blubber,
-                    ifelse(rev(risk), rev(sublayer), rev(sublayer+blubber)))
-            if (hatchPolygon) {
-                polygon(px, py, border=NA, density=18, angle=45, col="lightgray")
-                polygon(px, py, border=NA, density=18, angle=-45, col="lightgray")
-            } else {
-                polygon(px, py, col=colInjury[1], border=NA)
-            }
-            injury <- x$WCF$stress >= x$parms$UTSbeta
-            px <- c(t, rev(t))
-            py <- c(sublayer+blubber,
-                    ifelse(rev(injury), rev(sublayer), rev(sublayer+blubber)))
-            if (hatchPolygon) {
-                polygon(px, py, border=NA, density=18, angle=45, col="lightgray")
-                polygon(px, py, border=NA, density=18, angle=-45, col="lightgray")
-            } else {
-                polygon(px, py, col=colInjury[2], border=NA)
-            }
-        }
+        ## if (drawCriteria[1] && !REMOVE_CRITERIA) {
+        ##     risk <- x$WCF$stress >= 0.5 * x$parms$UTSbeta
+        ##     px <- c(t, rev(t))
+        ##     py <- c(sublayer+blubber,
+        ##             ifelse(rev(risk), rev(sublayer), rev(sublayer+blubber)))
+        ##     if (hatchPolygon) {
+        ##         polygon(px, py, border=NA, density=18, angle=45, col="lightgray")
+        ##         polygon(px, py, border=NA, density=18, angle=-45, col="lightgray")
+        ##     } else {
+        ##         polygon(px, py, col=colInjury[1], border=NA)
+        ##     }
+        ##     injury <- x$WCF$stress >= x$parms$s[2]
+        ##     px <- c(t, rev(t))
+        ##     py <- c(sublayer+blubber,
+        ##             ifelse(rev(injury), rev(sublayer), rev(sublayer+blubber)))
+        ##     if (hatchPolygon) {
+        ##         polygon(px, py, border=NA, density=18, angle=45, col="lightgray")
+        ##         polygon(px, py, border=NA, density=18, angle=-45, col="lightgray")
+        ##     } else {
+        ##         polygon(px, py, col=colInjury[2], border=NA)
+        ##     }
+        ## }
         ## Sublayer
-        if (length(drawCriteria) > 1 && drawCriteria[2] && !REMOVE_CRITERIA) {
-            risk <- x$WCF$stress >= 0.5 * x$parms$UTSgamma
-            px <- t
-            py <- ifelse(risk, sublayer, 0)
-            if (hatchPolygon) {
-                polygon(px, py, border=NA, density=15, angle=45, col="darkgray")
-                polygon(px, py, border=NA, density=15, angle=-45, col="darkgray")
-            } else {
-                polygon(px, py, col=colInjury[1], border=NA)
-            }
-            injury <- x$WCF$stress >= x$parms$UTSgamma
-            px <- t
-            py <- ifelse(injury, sublayer, 0)
-            if (hatchPolygon) {
-                polygon(px, py, border=NA, density=15, angle=45, col="darkgray")
-                polygon(px, py, border=NA, density=15, angle=-45, col="darkgray")
-            } else {
-                polygon(px, py, col=colInjury[2], border=NA)
-            }
-        }
-        ## Redraw lines (to clean up polygons that might have been drawn)
-        lines(t, sublayer+blubber, lwd=lwd*1.25, col="white")
-        lines(t, sublayer, lwd=lwd*1.25, col="white")
-        lines(t, sublayer+blubber, lwd=lwd, col=colwskin)
-        lines(t, sublayer, lwd=lwd, col=colwinterface)
+        ## if (length(drawCriteria) > 1 && drawCriteria[2] && !REMOVE_CRITERIA) {
+        ##     risk <- x$WCF$stress >= 0.5 * x$parms$s[3]
+        ##     px <- t
+        ##     py <- ifelse(risk, sublayer, 0)
+        ##     if (hatchPolygon) {
+        ##         polygon(px, py, border=NA, density=15, angle=45, col="darkgray")
+        ##         polygon(px, py, border=NA, density=15, angle=-45, col="darkgray")
+        ##     } else {
+        ##         polygon(px, py, col=colInjury[1], border=NA)
+        ##     }
+        ##     injury <- x$WCF$stress >= x$parms$UTSgamma
+        ##     px <- t
+        ##     py <- ifelse(injury, sublayer, 0)
+        ##     if (hatchPolygon) {
+        ##         polygon(px, py, border=NA, density=15, angle=45, col="darkgray")
+        ##         polygon(px, py, border=NA, density=15, angle=-45, col="darkgray")
+        ##     } else {
+        ##         polygon(px, py, col=colInjury[2], border=NA)
+        ##     }
+        ## }
+        ##OLD Redraw lines (to clean up polygons that might have been drawn)
+        ##OLD lines(t, sublayer+blubber, lwd=lwd*1.25, col="white")
+        ##OLD lines(t, sublayer, lwd=lwd*1.25, col="white")
+        ##OLD lines(t, sublayer+blubber, lwd=lwd, col=colwskin)
+        ##OLD lines(t, sublayer, lwd=lwd, col=colwinterface)
     }
-    if (all || "injury" %in% which) {
-        skinzInjury <- x$WSF$sigmaz / x$parms$UTSalpha
-        skinyInjury <- x$WSF$sigmay / x$parms$UTSalpha
-        blubberInjury <- x$WCF$stress /  x$parms$UTSbeta# & x$WCF$betaCompressed > 0
-        sublayerInjury <- x$WCF$stress /  x$parms$UTSgamma# & x$WCF$gammaCompressed > 0
-        plot(range(t), c(0.5, 4.5), type="n", xlab="Time [s]", ylab="", axes=FALSE, xaxs="i")
-        mtext("Risk of Injury", side=2, line=1, cex=par("cex"))
-        axis(1)
-        box()
-        ## axis(2)
-        dy <- -1
-        y0 <- 4
-        xlim <- par('usr')[1:2]
-        for (i in 1:5) {
-            abline(h=y0+(i-1)*dy, lwd=lwd/2, lty="dotted")
-        }
-        x0 <- xlim[1] #+ 0.04 * (xlim[2] - xlim[1])
-        dylab <- 0.2
-        text(x0, y0     +dylab, "skin z", pos=4)
-        text(x0, y0+  dy+dylab, "skin y", pos=4)
-        text(x0, y0+2*dy+dylab, "blubber", pos=4)
-        text(x0, y0+3*dy+dylab, "sublayer", pos=4)
-        cex <- 1
-        pch <- 20
-        del <- 3
-        n <- length(t)
-        ## Halfway to criterion (i.e. caution)
-        y <- ifelse(skinzInjury >= 0.5, y0, NA)
-        lines(t, y, lwd=5*lwd, col=colInjury[1])
-        y <- ifelse(skinyInjury >= 0.5, y0+dy, NA)
-        lines(t, y, lwd=5*lwd, col=colInjury[1])
-        y <- ifelse(blubberInjury >= 0.5, y0+2*dy, NA)
-        lines(t, y, lwd=5*lwd, col=colInjury[1])
-        y <- ifelse(sublayerInjury >= 0.5, y0+3*dy, NA)
-        lines(t, y, lwd=5*lwd, col=colInjury[1])
-        ## Exceeding criterion (i.e. likely injury)
-        y <- ifelse(skinzInjury >= 1, y0, NA)
-        lines(t, y, lwd=5*lwd, col=colInjury[2])
-        y <- ifelse(skinyInjury >= 1, y0+dy, NA)
-        lines(t, y, lwd=5*lwd, col=colInjury[2])
-        y <- ifelse(blubberInjury >= 1, y0+2*dy, NA)
-        lines(t, y, lwd=5*lwd, col=colInjury[2])
-        y <- ifelse(sublayerInjury >= 1, y0+3*dy, NA)
-        lines(t, y, lwd=5*lwd, col=colInjury[2])
-        showEvents(xs, xw)
-    }
+    ## if (all || "injury" %in% which) {
+    ##     skinzInjury <- x$WSF$sigmaz / x$parms$s[1]
+    ##     skinyInjury <- x$WSF$sigmay / x$parms$s[1]
+    ##     blubberInjury <- x$WCF$stress /  x$parms$s[2]
+    ##     sublayerInjury <- x$WCF$stress /  x$parms$s[3]
+    ##     plot(range(t), c(0.5, 4.5), type="n", xlab="Time [s]", ylab="", axes=FALSE, xaxs="i")
+    ##     mtext("Risk of Injury", side=2, line=1, cex=par("cex"))
+    ##     axis(1)
+    ##     box()
+    ##     ## axis(2)
+    ##     dy <- -1
+    ##     y0 <- 4
+    ##     xlim <- par('usr')[1:2]
+    ##     for (i in 1:5) {
+    ##         abline(h=y0+(i-1)*dy, lwd=lwd/2, lty="dotted")
+    ##     }
+    ##     x0 <- xlim[1] #+ 0.04 * (xlim[2] - xlim[1])
+    ##     dylab <- 0.2
+    ##     text(x0, y0     +dylab, "skin z", pos=4)
+    ##     text(x0, y0+  dy+dylab, "skin y", pos=4)
+    ##     text(x0, y0+2*dy+dylab, "blubber", pos=4)
+    ##     text(x0, y0+3*dy+dylab, "sublayer", pos=4)
+    ##     cex <- 1
+    ##     pch <- 20
+    ##     del <- 3
+    ##     n <- length(t)
+    ##     ## Halfway to criterion (i.e. caution)
+    ##     y <- ifelse(skinzInjury >= 0.5, y0, NA)
+    ##     lines(t, y, lwd=5*lwd, col=colInjury[1])
+    ##     y <- ifelse(skinyInjury >= 0.5, y0+dy, NA)
+    ##     lines(t, y, lwd=5*lwd, col=colInjury[1])
+    ##     y <- ifelse(blubberInjury >= 0.5, y0+2*dy, NA)
+    ##     lines(t, y, lwd=5*lwd, col=colInjury[1])
+    ##     y <- ifelse(sublayerInjury >= 0.5, y0+3*dy, NA)
+    ##     lines(t, y, lwd=5*lwd, col=colInjury[1])
+    ##     ## Exceeding criterion (i.e. likely injury)
+    ##     y <- ifelse(skinzInjury >= 1, y0, NA)
+    ##     lines(t, y, lwd=5*lwd, col=colInjury[2])
+    ##     y <- ifelse(skinyInjury >= 1, y0+dy, NA)
+    ##     lines(t, y, lwd=5*lwd, col=colInjury[2])
+    ##     y <- ifelse(blubberInjury >= 1, y0+2*dy, NA)
+    ##     lines(t, y, lwd=5*lwd, col=colInjury[2])
+    ##     y <- ifelse(sublayerInjury >= 1, y0+3*dy, NA)
+    ##     lines(t, y, lwd=5*lwd, col=colInjury[2])
+    ##     showEvents(xs, xw)
+    ## }
 
     if (all || "threat" %in% which) {
-        skinzThreat <- x$WSF$sigmaz / x$parms$UTSalpha
-        skinyThreat <- x$WSF$sigmay / x$parms$UTSalpha
+        skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
+        skinyThreat <- x$WSF$sigmay / x$parms$s[1]
         skinThreat <- ifelse(skinyThreat > skinzThreat, skinyThreat, skinzThreat)
-        blubberThreat <- x$WCF$stress /  x$parms$UTSbeta
-        sublayerThreat <- x$WCF$stress /  x$parms$UTSgamma
+        blubberThreat <- x$WCF$stress /  x$parms$s[2]
+        sublayerThreat <- x$WCF$stress /  x$parms$s[3]
+        boneThreat <- x$WCF$stress /  x$parms$s[4]
         dy <- -2.25
-        y0 <- 5.5
-        plot(range(t), c(1, 7.5),
+        y0 <- 8.0
+        plot(range(t), c(1, 10),
              type="n", xlab="Time [s]", ylab="", axes=FALSE, xaxs="i")
         mtext("Threat of Injury", side=2, line=2, cex=par("cex"))
         axis(1)
         box()
         ## axis(2)
         xlim <- par('usr')[1:2]
-        for (i in 1:3) {
+        for (i in 1:4) {
             abline(h=y0+(i-1)*dy, lwd=lwd/2, lty="dotted")
         }
         x0 <- xlim[1] #+ 0.04 * (xlim[2] - xlim[1])
@@ -997,11 +1156,12 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         mtext("skin", side=2, at=y0-0.5*dy, line=0.25, cex=par("cex"))
         mtext("blubber", side=2, at=y0+dy-0.5*dy, line=0.25, cex=par("cex"))
         mtext("sub-layer", side=2, at=y0+2*dy-0.5*dy, line=0.25, cex=par("cex"))
+        mtext("bone", side=2, at=y0+3*dy-0.5*dy, line=0.25, cex=par("cex"))
         n <- length(t)
         lines(t, skinThreat + y0, type='l')
         lines(t, blubberThreat + y0 + dy, type='l')
 
-        for (l in 0:2) {
+        for (l in 0:3) {
             abline(h=y0+l*dy + 0.5, lty='dotted', lwd=0.5*lwd)
             abline(h=y0+l*dy + 1.0, lty='dotted', lwd=0.5*lwd)
             abline(h=y0+l*dy + 1.5, lty='dotted', lwd=0.5*lwd)
@@ -1019,24 +1179,32 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         polygonWindow(t, y0+0*dy+skinThreat, col=colThreat[3], floor=y0)
         polygonWindow(t, y0+0*dy+ifelse(skinThreat<1, skinThreat, 1), col=colThreat[2], floor=y0)
         polygonWindow(t, y0+0*dy+ifelse(skinThreat<0.5, skinThreat, 0.5), col=colThreat[1], floor=y0)
-        lines(t, skinThreat + y0 + 0 * dy, type='l', lwd=lwd)
-
+        lines(t, skinThreat + y0 + 0 * dy, lwd=3*lwd, col="white")
+        lines(t, skinThreat + y0 + 0 * dy, lwd=0.7*lwd)
         ## Blubber
         polygonWindow(t, y0+1*dy+blubberThreat, col=colThreat[3], floor=y0+dy)
         polygonWindow(t, y0+1*dy+ifelse(blubberThreat<1, blubberThreat, 1), col=colThreat[2], floor=y0+dy)
         polygonWindow(t, y0+1*dy+ifelse(blubberThreat<0.5, blubberThreat, 0.5), col=colThreat[1], floor=y0+dy)
-        lines(t, blubberThreat + y0 + 1 * dy, type='l', lwd=lwd)
-
+        lines(t, blubberThreat + y0 + 1 * dy, lwd=3*lwd, col="white")
+        lines(t, blubberThreat + y0 + 1 * dy, lwd=0.7*lwd)
         ## Sublayer
         polygonWindow(t, y0+2*dy+sublayerThreat, col=colThreat[3], floor=y0+2*dy)
         polygonWindow(t, y0+2*dy+ifelse(sublayerThreat<1, sublayerThreat, 1), col=colThreat[2], floor=y0+2*dy)
         polygonWindow(t, y0+2*dy+ifelse(sublayerThreat<0.5, sublayerThreat, 0.5), col=colThreat[1], floor=y0+2*dy)
-        lines(t, sublayerThreat + y0 + 2 * dy, type='l', lwd=lwd)
+        lines(t, sublayerThreat + y0 + 2 * dy, lwd=3*lwd, col="white")
+        lines(t, sublayerThreat + y0 + 2 * dy, lwd=0.7*lwd)
+        ## Bone
+        polygonWindow(t, y0+3*dy+boneThreat, col=colThreat[3], floor=y0+3*dy)
+        polygonWindow(t, y0+3*dy+ifelse(boneThreat<1, boneThreat, 1), col=colThreat[2], floor=y0+3*dy)
+        polygonWindow(t, y0+3*dy+ifelse(boneThreat<0.5, boneThreat, 0.5), col=colThreat[1], floor=y0+3*dy)
+        lines(t, boneThreat + y0 + 3 * dy, lwd=3*lwd, col="white")
+        lines(t, boneThreat + y0 + 3 * dy, lwd=0.7*lwd)
 
         ## Axes
-        axis(4,y0+0*dy+c(0,0.5,1,1.5),labels=c(" ", " ", " ", " "))
-        axis(4,y0+1*dy+c(0,0.5,1,1.5),labels=c(" ", " ", " ", " "))
+        axis(4,y0+0*dy+c(0,0.5,1,1.5),labels=c("L", "M", "H", "E"))
+        axis(4,y0+1*dy+c(0,0.5,1,1.5),labels=c("L", "M", "H", "E"))
         axis(4,y0+2*dy+c(0,0.5,1,1.5),labels=c("L", "M", "H", "E"))
+        axis(4,y0+3*dy+c(0,0.5,1,1.5),labels=c("L", "M", "H", "E"))
 
         showEvents(xs, xw)
     }
@@ -1044,36 +1212,26 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         a <- derivative(vw, t)
         plot(t, a, xlab="Time [s]", ylab="Whale accel. [m/s^2]", type="l", lwd=lwd, xaxs="i")
         showEvents(xs, xw)
-        if (drawCriteria[1]) {
-            tt <- t
-            tt[a < 433/20] <- NA
-            lines(tt, a, lwd=D*lwd)
-        }
+        ## if (drawCriteria[1]) {
+        ##     tt <- t
+        ##     tt[a < 433/20] <- NA
+        ##     lines(tt, a, lwd=D*lwd)
+        ## }
     }
 
     if (all || "blubber thickness" %in% which) {
         WCF <- x$WCF
-        y <- WCF$betaCompressed
+        y <- WCF$compressed[, 2]
         ylim <- c(min(0, min(y)), max(y)) # include 0 if not there by autoscale
         plot(t, y, xlab="Time [s]", ylab="Blubber thickness [m]", type="l", lwd=lwd, ylim=ylim, xaxs="i")
         showEvents(xs, xw)
-        if (drawCriteria[1]) {
-            tt <- t
-            tt[WCF$stress < x$parms$UTSbeta] <- NA
-            lines(tt, sublayer+blubber, lwd=D*lwd)
-        }
     }
     if (all || "sublayer thickness" %in% which) {
         WCF <- x$WCF
-        y <- WCF$alphaCompressed
+        y <- WCF$compressed[, 3]
         ylim <- c(min(0, min(y)), max(y)) # include 0 if not there by autoscale
         plot(t, y, xlab="Time [s]", ylab="Sublayer thickness [m]", type="l", lwd=lwd, ylim=ylim, xaxs="i")
         showEvents(xs, xw)
-        if (drawCriteria[1]) {
-            tt <- t
-            tt[WCF$stress < x$parms$UTSgamma] <- NA
-            lines(tt, sublayer+blubber, lwd=D*lwd)
-        }
     }
     if (all || "whale water force" %in% which) {
         plot(t, whaleWaterForce(vw, x$parms) / 1e6 , xlab="Time [s]", ylab="Water force [MN]", type="l", lwd=lwd, xaxs="i")
@@ -1109,14 +1267,14 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         mtext(" (solid)", side=3, line=-2.2, adj=0, cex=par("cex"))
         mtext("vert. ", side=3, line=-1.2, adj=1, cex=par("cex"))
         mtext("(dotted) ", side=3, line=-2.2, adj=1, cex=par("cex"))
-        if (drawCriteria[1]) {
-            tt <- t
-            tt[Fs$sigmay < x$parms$UTSalpha] <- NA
-            lines(tt, Fs$sigmay/1e6, lwd=D*lwd)
-            tt <- t
-            tt[Fs$sigmaz < x$parms$UTSalpha] <- NA
-            lines(tt, Fs$sigmaz/1e6, lty="dashed", lwd=D*lwd)
-        }
+        ##if (drawCriteria[1]) {
+        ##    tt <- t
+        ##    tt[Fs$sigmay < x$parms$UTSalpha] <- NA
+        ##    lines(tt, Fs$sigmay/1e6, lwd=D*lwd)
+        ##    tt <- t
+        ##    tt[Fs$sigmaz < x$parms$UTSalpha] <- NA
+        ##    lines(tt, Fs$sigmaz/1e6, lty="dashed", lwd=D*lwd)
+        ##}
         showEvents(xs, xw)
     }
     if (all || "compression force" %in% which) {
@@ -1127,28 +1285,33 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         force <- x$WCF$force
         stress <- force / (x$parms$Lz*x$parms$Ly)
         plot(t, stress/1e6, type="l", xlab="Time [s]", ylab="Compress. Stress [MPa]", lwd=lwd, xaxs="i")
-        if (drawCriteria[1] && !is.na(x$parms$UTSbeta) && !is.na(x$parms$UTSgamma)) {
-            tt <- t
-            tt[stress < min(x$parms$UTSbeta, x$parms$UTSgamma)] <- NA
-            lines(tt, stress/1e6, lwd=D*lwd)
-        }
         showEvents(xs, xw)
     }
     if (all || "values" %in% which) {
         omar <- par("mar")
         par(mar=rep(0, 4))
-        p <- lapply(x$parms, function(x) signif(x, 4))
-        names(p) <- names(x$parms)
-        p["engineForce"] <- NULL # inserted during calculation, not user-supplied
-        values <- paste(deparse(p), collapse=" ")
-        values <- strsplit(gsub(".*\\((.*)\\)$", "\\1", values), ",")[[1]]
-        values <- gsub("^ *", "", values)
-        values <- gsub("([0-9])L$", "\\1", values) # it's ugly to see e.g. 1 as 1L
+        ## Only take the vectors, thus ignoring stressFromStrain, a function
+        parms <- x$parms[unlist(lapply(x$parms, function(p) is.vector(p)))]
+        parms <- lapply(parms, function(x) signif(x, 4))
+        parms["engineForce"] <- NULL # inserted during calculation, not user-supplied
+        parms["lsum"] <- NULL # inserted during calculation, not user-supplied
+
+        parms <- lapply(parms, function(p) deparse(p))
+        names <- names(parms)
+        values <- unname(unlist(parms))
+
+        ## values <- paste(deparse(parms), collapse=" ")
+        ## values <- gsub("^list\\(", "", values)
+        ## values <- gsub(")$", "", values)
+        ## values <- strsplit(gsub(".*\\((.*)\\)$", "\\1", values), ",")[[1]]
+        ## values <- gsub("^ *", "", values)
+        ## values <- gsub("([0-9])L$", "\\1", values) # it's ugly to see e.g. 1 as 1L
+
         n <- 1 + length(values)
         plot(1:n, 1:n, type="n", xlab="", ylab="", axes=FALSE)
-        o <- order(names(p), decreasing=TRUE)
+        o <- order(names(parms), decreasing=TRUE)
         for (i in seq_along(values))
-            text(1, i+0.5, values[o[i]], pos=4, cex=1)
+            text(1, i+0.5, paste(names[o[i]], "=", values[o[i]]), pos=4, cex=1)
         par(mar=omar)
     }
 }
@@ -1174,6 +1337,7 @@ summarize <- function(object, style="text")
     o <- order(names)
     parm <- parm[o]
     names <- as.character(names[o])
+    ## FIXME: update to l, a, b, and s.
     meaning[names=="alpha"] <- "Whale skin thickness [m]."
     meaning[names=="beta"] <- "Blubber thickness [m]."
     meaning[names=="gamma"] <- "Sub-layer thickness [m]."
@@ -1195,12 +1359,12 @@ summarize <- function(object, style="text")
     meaning[names=="Cw"] <- "Whale drag coefficient [unitless]."
     meaning[names=="Cs"] <- "Ship drag coefficient [unitless]."
     if (style == "latex") {
-        names[which(names == "Ealpha")] <- "E_alpha"
-        names[which(names == "Ebeta")] <- "E_beta"
-        names[which(names == "Egamma")] <- "E_gamma"
-        names[which(names == "UTSalpha")] <- "UTS_alpha"
-        names[which(names == "UTSbeta")] <- "UTS_beta"
-        names[which(names == "UTSgamma")] <- "UTS_gamma"
+        ## names[which(names == "Ealpha")] <- "E_alpha"
+        ## names[which(names == "Ebeta")] <- "E_beta"
+        ## names[which(names == "Egamma")] <- "E_gamma"
+        ## names[which(names == "UTSalpha")] <- "UTS_alpha"
+        ## names[which(names == "UTSbeta")] <- "UTS_beta"
+        ## names[which(names == "UTSgamma")] <- "UTS_gamma"
         names[which(names == "lw")] <- "l_w"
         names[which(names == "Ly")] <- "L_y"
         names[which(names == "Lz")] <- "L_z"

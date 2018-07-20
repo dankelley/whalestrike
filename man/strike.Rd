@@ -26,7 +26,9 @@ An object of class \code{"whalestrike"}, consisting of a
 list containing vectors for time (\code{t} [s]), ship position (\code{xs} [m]),
 boat speed (\code{vs} [m/s]), whale position (\code{xw} [m]), whale speed (\code{vw} [m/s]),
 boat acceleration (\code{dvsdt} [m/s^2]), and whale acceleration (\code{dvwdt} [m/s^2]),
-along with a list containing the model parameters (\code{parms}).
+a list containing the model parameters (\code{parms}), a list with the results of
+the skin force calculation (\code{SWF}), a list with the results of the compression
+force calculations (\code{WCF}), and a vector of whale water force (\code{WWF}).
 }
 \description{
 Newtonian mechanics are used, taking the ship as undeformable,
@@ -39,14 +41,9 @@ The forces are calculated by
 }
 \examples{
 library(whalestrike)
-t <- seq(0, 1, length.out=500)
-state <- c(xs=-2.5, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
-parms <- parameters(ms=20e3,
-              Ly=0.5, Lz=1,
-              lw=13,
-              alpha=0.025, Ealpha=2e7, theta=45,
-              beta=0.25, Ebeta=6e5,
-              gamma=0.5, Egamma=4e5)
+t <- seq(0, 0.7, length.out=200)
+state <- c(xs=-2, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
+parms <- parameters(ms=20e3, lw=13)
 sol <- strike(t, state, parms)
 par(mfcol=c(1, 3), mar=c(3, 3, 0.5, 2), mgp=c(2, 0.7, 0), cex=0.7)
 plot(sol)

@@ -4,11 +4,8 @@
 \alias{parameters}
 \title{Control parameters for whale strike simulation}
 \usage{
-parameters(ms, Ss, Ly = 0.5, Lz = 1.5, lw, mw, Sw, alpha = 0.0256,
-  Ealpha = 17800000, UTSalpha = 19560000, theta = 45, beta = 0.3,
-  Ebeta = 6e+05, UTSbeta = (0.8/1.2) * 6e+05, gamma = 0.5,
-  Egamma = 4e+05, UTSgamma = (0.8/1.2) * 4e+05, Cs = 0.01, Cw = 0.0025,
-  file)
+parameters(ms = 20000, Ss, Ly = 0.5, Lz = 1, lw = 13, mw, Sw, l, a, b,
+  s, theta = 45, Cs = 0.01, Cw = 0.0025, file)
 }
 \arguments{
 \item{ms}{Ship mass [kg].}
@@ -34,40 +31,57 @@ length, using \code{\link{whaleMassFromLength}} with \code{type="wetted"}.}
 \item{Sw}{Whale surface area [m^2]. If not provided, this is calculated
 from whale length using \code{\link{whaleAreaFromLength}}.}
 
-\item{alpha}{Whale skin thickness [m], with a of 0.0256 m.}
+\item{l}{Numerical vector of length 4, giving thickness [m] of skin, blubber,
+sub-layer, and bone. If not provided, this is set to
+\code{c(0.025, 0.16, 0.5, 0.2)}.
+The skin thicknes default of 0.025 m represents the 0.9-1.0 inch value
+stated in Section 2.2.3 of Raymond (2007).
+The blubber default of 0.16 m is a rounded average of the values inferred
+by whale necropsy, reported in Appendix 2 of Daoust et al., 2018.
+The sub-layer default of 0.5 m may be reasonable at some spots on the whale body.
+The bone default of 0.1 m may be reasonable at some spots on the whale body.}
 
-\item{Ealpha}{Whale skin elastic modulus [Pa], with a default of 17.80e6 Pa,
-a value for adult seals, given in Table 3 of Grear et al. (2017).}
+\item{a, b}{Numerical vectors of length 4, giving values to use in the
+stress-strain law \code{stress=a*(exp(b*strain)-1)}. \code{a} is in Pa
+and \code{b} is unitless.  Note that \code{a*b} is the local modulus at
+low strain, and that \code{b} is the efolding scale for nonlinear increase
+in stress with strain. This exponential relationship has been mapped out
+for whale blubber, using a curve fit to Figure 2.13 of Raymond (2007), and
+these values are used for the second layer (blubber); see
+\link{raymond2007} for how the fit was done.
+If not provided, \code{a} defaults to
+\code{c(17.80e6/0.1, 1.64e5, 1.64e5, 854.2e6/0.1)}
+and \code{b} defaults to
+\code{c(0.1, 2.47, 2.47, 0.1)}.
+The skin defaults are set up to give a linear shape (since \code{b} is small)
+with the \code{a*b} product
+being 17.8e6 Pa, which is the adult-seal value
+given in Table 3 of Grear et al. (2017).
+The blubber defaults are from a regression of the stress-strain
+relationship shown in Figure 2.13 of Raymond (2007).
+The sub-layer defaults are set to match those of blubber, lacking
+any other information.
+The bone default for \code{b} is small, to set up a linear function,
+and \code{a*b} is set to equal 8.54e8 Pa,
+given in Table 2.3 of Raymond (2007).}
 
-\item{UTSalpha}{Ultimate tensile strength of skin [Pa], with a default of 19.56e6 Pa,
-a value reported by Grear et al. (2017) for adult seals.}
+\item{s}{Numerical vector of length 4, giving the ultimate strengths [Pa] of
+skin, blubber, sub-layer, and bone, respectively. If not provided, the
+value is set to
+\code{c(19.56e6, 4.37e5, 4.37e5, 22.9e6)},
+with reasoning as follows.
+The skin default of 1.96e7 Pa
+is a rounded value from Table 3 of Grear et al. (2018) for adult seal skin strength at
+an orientation of 0 degrees.  The blubber value of
+4.37e5 Pa is inferred by
+multiplying Raymond's (2007) Figure 2.13 elastic modulus of 6.36e5 Pa
+by the ratio 0.97/1.41 determined for adult seal strength/modulus, as reported
+in Table 3 of Grear et al. (2018).
+The sub-layer value is taken to be identical to the blubber value, lacking
+more specific information.
+The bone default o 2.29e7 Pa is from Table 2.3 of Raymond (2007).}
 
 \item{theta}{Whale skin deformation angle [deg]; defaults to 45deg if not supplied.}
-
-\item{beta}{Whale blubber thickness [m]; defaults to 0.3m if not supplied.}
-
-\item{Ebeta}{Elastic modulus of blubber [Pa]; defaults to 0.6 MPa (the value
-suggested Raymond (2007 fig 37), rounded to 1 digit), if not supplied.}
-
-\item{UTSbeta}{Numerical value indicating the ultimate tensile strength
-of the blubber; if not \code{NA}, then this is used to indicate
-problems in plots made if \code{which} is \code{"compression stress"}.
-The default is the product of the default whale blubber modulus (see
-\code{Ebeta}, above) and the strength/modulus ratio for seal
-blubber, given by (Grear et al. 2018 #' page 144).}
-
-\item{gamma}{Thickness of interior region [m].
-The default, 0.5m, may be in an appropriate range for soft tissue;
-perhaps 0.05m would be more reasonable for bone.}
-
-\item{Egamma}{Elastic modulus of interior region [Pa].
-The default, 0.4MPa, may be in an appropriate range for soft tissue;
-perhaps 854MPa would be more reasonable for bone.}
-
-\item{UTSgamma}{Numerical value indicating the ultimate tensile strength
-of the sublayer.
-The default, (0.8/1.2)*0.4MPa, may be in an appropriate range for soft tissue;
-perhaps 22.9MPa would be more reasonable for bone.}
 
 \item{Cs}{Drag coefficient for ship [dimensionless],
 used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults
@@ -101,7 +115,26 @@ according to the system described above.
 Assembles control parameters into a list suitable for passing to \code{\link{strike}}
 and the functions that it calls. If \code{file} is provided, then all the other
 arguments are read from that source.
+Below are some sources cited in the discussion of the function arguments.
+
+Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
+“Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
+Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
+Society, and Fisheries and Oceans Canada, 2018.
+\url{http://publications.gc.ca/site/eng/9.850838/publication.html}.
+
+Grear, Molly E., Michael R. Motley, Stephanie B. Crofts, Amanda E. Witt, Adam
+P. Summers, and Petra Ditsche. “Mechanical Properties of Harbor Seal Skin and
+Blubber − a Test of Anisotropy.” Zoology 126 (2018): 137–44.
+\url{https://doi.org/10.1016/j.zool.2017.11.002}.
+
+Raymond, J. J. “Development of a Numerical Model to Predict Impact Forces on a
+North Atlantic Right Whale during Collision with a Vessel.” University of New
+Hampshire, 2007. \url{https://scholars.unh.edu/thesis/309}.
 }
-\references{
-See \link{whalestrike} for a list of references.
+\examples{
+parms <- parameters(ms=20e3, lw=13)
+epsilon <- seq(0, 0.3, length.out=100)
+strain <- parms$stressFromStrain(epsilon)
+plot(epsilon, strain, type="l")
 }
