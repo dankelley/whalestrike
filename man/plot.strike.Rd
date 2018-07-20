@@ -4,9 +4,9 @@
 \alias{plot.strike}
 \title{Plot a strike object}
 \usage{
-\method{plot}{strike}(x, which = "default", drawCriteria = rep(TRUE, 2),
-  drawEvents = TRUE, colwcenter = "Slate Gray", colwinterface = "black",
-  colwskin = "black", cols = "black", colInjury = c("gray", "black"),
+\method{plot}{strike}(x, which = "default", drawEvents = TRUE,
+  colwcenter = "Slate Gray", colwinterface = "black", colwskin = "black",
+  cols = "black", colInjury = c("gray", "black"),
   colThreat = c("lightgray", "gray", "black"), lwd = 1.4, D = 3,
   debug = 0, ...)
 }
@@ -43,19 +43,11 @@ from 0 to 1/2, from 1/2 to 1, and above 1. An axis categorizes
 threat level 0 as "L", 0.5 as "M", and 1 as "H".
 
 \item \code{"whale acceleration"} for a time-series plot of whale acceleration.
-If \code{drawCriteria} is \code{TRUE}, the line is thickened during
-times when the acceleration exceeds 433 m/s^2, which is an estimate of
-the 10% probability of concussion for the National Football League
-concussion data presented in Figure 9 of Ng et al. 2017.
 
 \item \code{"blubber thickness"} for a time-series plot of blubber thickness.
-If \code{drawCriteria[1]} is \code{TRUE} then the line is thickened
-if the stress within the blubber exceeds \code{parms$UTSbeta}.
 
 \item \code{"sublayer thickness"} for a time-series plot of the thickness
 of the layer interior to the blubber.
-If \code{drawCriteria[1]} is \code{TRUE} then the line is thickened
-if the stress within the sublayer exceeds \code{parms$UTSgamma}.
 
 \item \code{"reactive forces"} for a time-series showing the reactive
 forces associated with skin stretching (solid) and the compression of the
@@ -63,14 +55,8 @@ blubber and sublayer components (dashed).
 
 \item \code{"compression stress"} for a time-series plot of the compression stress on the blubber
 and the layer to its interior. (These stresses are equal, under an equilibrium assumption.)
-If \code{drawCriteria[1]} is \code{TRUE} then these traces are thickened if the compression
-stress exceeds the minimum of \code{parms$UTSgamma} and \code{parms$UTSbeta}.
 
 \item \code{"skin stress"} for a time-series of skin stress in the along-skin y and z directions.
-If \code{drawCriteria[1]} is \code{TRUE} then these traces are thickened
-during any times when the stress exceeds 19.5MPa, which is taken as
-the maximum stress that the skin can accommodate without damage, inferred from an
-entry in Table 3 of Grear et al. (2018) for the strength of seal skin.
 
 \item \code{"values"} for a listing of \code{param} values.
 
@@ -79,12 +65,6 @@ entry in Table 3 of Grear et al. (2018) for the strength of seal skin.
 \item \code{"default"} for a three-element plot showing \code{"location"},
 \code{"section"}, and \code{"threat"}.
 }}
-
-\item{drawCriteria}{Logical value indicating whether to
-indicate dangerous conditions by thickening lines in time series
-plots. Those conditions are stated in the documentation for individual
-panels, and for multivariate plots, \code{drawCriteria} can be of
-length exceeding 1, to control individual curves in the plot.}
 
 \item{drawEvents}{Logical, indicating whether to draw lines for some events,
 such as the moment of closest approach.}
@@ -109,10 +89,10 @@ The first colour is used for threat levels between 0 and 0.5, the second
 from 0.5 to 1, and the third above 1.}
 
 \item{lwd}{Line width used in plots for time intervals in which damage
-criteria are not exceed (or if \code{drawCriteria} is \code{FALSE}).}
+criteria are not exceeded.}
 
 \item{D}{Factor by which to thicken lines during times during which damage
-criteria are exceeded. Ignored unless \code{drawCriteria} is \code{TRUE}.}
+criteria are exceeded.}
 
 \item{debug}{Integer indicating debugging level, 0 for quiet operation and higher values
 for more verbose monitoring of progress through the function.}

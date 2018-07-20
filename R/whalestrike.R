@@ -817,11 +817,6 @@ strike <- function(t, state, parms, debug=0)
 #'
 #' \item \code{"section"} to plot skin thickness, blubber thickness and sublayer thickness
 #' in one panel, creating a cross-section diagram.
-## If \code{drawCriteria[1]}
-## is \code{TRUE}, then the blubber and sub-layer regions are
-## cross-hatched during time intervals when the stress exceeds the
-## ultimate tensile strength of the material, i.e. when
-## injury is to be expected.
 #'
 #' \item \code{"injury"} a stacked plot showing time-series traces of health
 #' indicators for skin extension, blubber compression, and sub-layer compression.
@@ -840,19 +835,19 @@ strike <- function(t, state, parms, debug=0)
 #' threat level 0 as "L", 0.5 as "M", and 1 as "H".
 #'
 #' \item \code{"whale acceleration"} for a time-series plot of whale acceleration.
-#' If \code{drawCriteria} is \code{TRUE}, the line is thickened during
-#' times when the acceleration exceeds 433 m/s^2, which is an estimate of
-#' the 10% probability of concussion for the National Football League
-#' concussion data presented in Figure 9 of Ng et al. 2017.
+## If \code{drawCriteria} is \code{TRUE}, the line is thickened during
+## times when the acceleration exceeds 433 m/s^2, which is an estimate of
+## the 10% probability of concussion for the National Football League
+## concussion data presented in Figure 9 of Ng et al. 2017.
 #'
 #' \item \code{"blubber thickness"} for a time-series plot of blubber thickness.
-#' If \code{drawCriteria[1]} is \code{TRUE} then the line is thickened
-#' if the stress within the blubber exceeds \code{parms$UTSbeta}.
+## If \code{drawCriteria[1]} is \code{TRUE} then the line is thickened
+## if the stress within the blubber exceeds \code{parms$UTSbeta}.
 #'
 #' \item \code{"sublayer thickness"} for a time-series plot of the thickness
 #' of the layer interior to the blubber.
-#' If \code{drawCriteria[1]} is \code{TRUE} then the line is thickened
-#' if the stress within the sublayer exceeds \code{parms$UTSgamma}.
+## If \code{drawCriteria[1]} is \code{TRUE} then the line is thickened
+## if the stress within the sublayer exceeds \code{parms$UTSgamma}.
 #'
 #' \item \code{"reactive forces"} for a time-series showing the reactive
 #' forces associated with skin stretching (solid) and the compression of the
@@ -860,14 +855,14 @@ strike <- function(t, state, parms, debug=0)
 #'
 #' \item \code{"compression stress"} for a time-series plot of the compression stress on the blubber
 #' and the layer to its interior. (These stresses are equal, under an equilibrium assumption.)
-#' If \code{drawCriteria[1]} is \code{TRUE} then these traces are thickened if the compression
-#' stress exceeds the minimum of \code{parms$UTSgamma} and \code{parms$UTSbeta}.
+## If \code{drawCriteria[1]} is \code{TRUE} then these traces are thickened if the compression
+## stress exceeds the minimum of \code{parms$UTSgamma} and \code{parms$UTSbeta}.
 #'
 #' \item \code{"skin stress"} for a time-series of skin stress in the along-skin y and z directions.
-#' If \code{drawCriteria[1]} is \code{TRUE} then these traces are thickened
-#' during any times when the stress exceeds 19.5MPa, which is taken as
-#' the maximum stress that the skin can accommodate without damage, inferred from an
-#' entry in Table 3 of Grear et al. (2018) for the strength of seal skin.
+## If \code{drawCriteria[1]} is \code{TRUE} then these traces are thickened
+## during any times when the stress exceeds 19.5MPa, which is taken as
+## the maximum stress that the skin can accommodate without damage, inferred from an
+## entry in Table 3 of Grear et al. (2018) for the strength of seal skin.
 #'
 #' \item \code{"values"} for a listing of \code{param} values.
 #'
@@ -877,11 +872,11 @@ strike <- function(t, state, parms, debug=0)
 #' \code{"section"}, and \code{"threat"}.
 #'}
 #'
-#' @param drawCriteria Logical value indicating whether to
-#' indicate dangerous conditions by thickening lines in time series
-#' plots. Those conditions are stated in the documentation for individual
-#' panels, and for multivariate plots, \code{drawCriteria} can be of
-#' length exceeding 1, to control individual curves in the plot.
+## @param drawCriteria Logical value indicating whether to
+## indicate dangerous conditions by thickening lines in time series
+## plots. Those conditions are stated in the documentation for individual
+## panels, and for multivariate plots, \code{drawCriteria} can be of
+## length exceeding 1, to control individual curves in the plot.
 #'
 #' @param drawEvents Logical, indicating whether to draw lines for some events,
 #' such as the moment of closest approach.
@@ -906,10 +901,12 @@ strike <- function(t, state, parms, debug=0)
 #' from 0.5 to 1, and the third above 1.
 #'
 #' @param lwd Line width used in plots for time intervals in which damage
-#' criteria are not exceed (or if \code{drawCriteria} is \code{FALSE}).
+#' criteria are not exceeded.
+## (or if \code{drawCriteria} is \code{FALSE}).
 #'
 #' @param D Factor by which to thicken lines during times during which damage
-#' criteria are exceeded. Ignored unless \code{drawCriteria} is \code{TRUE}.
+#' criteria are exceeded.
+## Ignored unless \code{drawCriteria} is \code{TRUE}.
 #'
 #' @param debug Integer indicating debugging level, 0 for quiet operation and higher values
 #' for more verbose monitoring of progress through the function.
@@ -918,7 +915,7 @@ strike <- function(t, state, parms, debug=0)
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
-plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvents=TRUE,
+plot.strike <- function(x, which="default", drawEvents=TRUE,
                         colwcenter="Slate Gray",
                         colwinterface="black", #colwinterface="Firebrick",
                         colwskin="black", #colwskin="Dodger Blue 4",
@@ -928,8 +925,6 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
                         lwd=1.4, D=3, debug=0, ...)
 {
     showLegend <- FALSE
-    if (!is.logical(drawCriteria))
-        stop("drawCriteria must be a logical, not ", paste(drawCriteria, collapse=" "), ", as given")
     g <- 9.8 # gravity
     t <- x$t
     xs <- x$xs
@@ -994,11 +989,12 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         bone <- x$WCF$compressed[,4]
         maxy <- max(c(skin+blubber+sublayer+bone))
         ylim <- c(0, maxy*1.2) # put y=0 at bottom, so whale-centre is visible
-        plot(t, sublayer+blubber+skin, xlab="Time [s]", ylab="Cross Section [m]",
+        plot(t, skin+blubber+sublayer+bone, xlab="Time [s]", ylab="Cross Section [m]",
              type="l", lwd=lwd, ylim=ylim, xaxs="i", yaxs="i", col=colwskin)# outside skin margin
-        lines(t, sublayer+blubber, lwd=lwd, col=colwskin)
-        lines(t, sublayer, lwd=lwd, col=colwinterface)# , lty="42")
-        abline(h=0, col=colwcenter, lwd=D*lwd)
+        lines(t, blubber+sublayer+bone, lwd=lwd, col=colwskin)
+        lines(t, sublayer+bone, lwd=lwd, col=colwinterface)# , lty="42")
+        lines(t, bone, lwd=lwd, col=colwinterface)# , lty="42")
+        ##abline(h=0, col=colwcenter, lwd=D*lwd)
         showEvents(xs, xw)
         xusr <- par("usr")[1:2]
         x0 <- xusr[1] - 0.01*(xusr[2] - xusr[1]) # snuggle up to axis
@@ -1006,54 +1002,54 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         text(x0, x$parms$l[3]+0.5*x$parms$l[2], "blubber", pos=4)
         hatchPolygon <- FALSE
         ## Blubber
-        if (drawCriteria[1] && !REMOVE_CRITERIA) {
-            risk <- x$WCF$stress >= 0.5 * x$parms$UTSbeta
-            px <- c(t, rev(t))
-            py <- c(sublayer+blubber,
-                    ifelse(rev(risk), rev(sublayer), rev(sublayer+blubber)))
-            if (hatchPolygon) {
-                polygon(px, py, border=NA, density=18, angle=45, col="lightgray")
-                polygon(px, py, border=NA, density=18, angle=-45, col="lightgray")
-            } else {
-                polygon(px, py, col=colInjury[1], border=NA)
-            }
-            injury <- x$WCF$stress >= x$parms$s[2]
-            px <- c(t, rev(t))
-            py <- c(sublayer+blubber,
-                    ifelse(rev(injury), rev(sublayer), rev(sublayer+blubber)))
-            if (hatchPolygon) {
-                polygon(px, py, border=NA, density=18, angle=45, col="lightgray")
-                polygon(px, py, border=NA, density=18, angle=-45, col="lightgray")
-            } else {
-                polygon(px, py, col=colInjury[2], border=NA)
-            }
-        }
+        ## if (drawCriteria[1] && !REMOVE_CRITERIA) {
+        ##     risk <- x$WCF$stress >= 0.5 * x$parms$UTSbeta
+        ##     px <- c(t, rev(t))
+        ##     py <- c(sublayer+blubber,
+        ##             ifelse(rev(risk), rev(sublayer), rev(sublayer+blubber)))
+        ##     if (hatchPolygon) {
+        ##         polygon(px, py, border=NA, density=18, angle=45, col="lightgray")
+        ##         polygon(px, py, border=NA, density=18, angle=-45, col="lightgray")
+        ##     } else {
+        ##         polygon(px, py, col=colInjury[1], border=NA)
+        ##     }
+        ##     injury <- x$WCF$stress >= x$parms$s[2]
+        ##     px <- c(t, rev(t))
+        ##     py <- c(sublayer+blubber,
+        ##             ifelse(rev(injury), rev(sublayer), rev(sublayer+blubber)))
+        ##     if (hatchPolygon) {
+        ##         polygon(px, py, border=NA, density=18, angle=45, col="lightgray")
+        ##         polygon(px, py, border=NA, density=18, angle=-45, col="lightgray")
+        ##     } else {
+        ##         polygon(px, py, col=colInjury[2], border=NA)
+        ##     }
+        ## }
         ## Sublayer
-        if (length(drawCriteria) > 1 && drawCriteria[2] && !REMOVE_CRITERIA) {
-            risk <- x$WCF$stress >= 0.5 * x$parms$s[3]
-            px <- t
-            py <- ifelse(risk, sublayer, 0)
-            if (hatchPolygon) {
-                polygon(px, py, border=NA, density=15, angle=45, col="darkgray")
-                polygon(px, py, border=NA, density=15, angle=-45, col="darkgray")
-            } else {
-                polygon(px, py, col=colInjury[1], border=NA)
-            }
-            injury <- x$WCF$stress >= x$parms$UTSgamma
-            px <- t
-            py <- ifelse(injury, sublayer, 0)
-            if (hatchPolygon) {
-                polygon(px, py, border=NA, density=15, angle=45, col="darkgray")
-                polygon(px, py, border=NA, density=15, angle=-45, col="darkgray")
-            } else {
-                polygon(px, py, col=colInjury[2], border=NA)
-            }
-        }
-        ## Redraw lines (to clean up polygons that might have been drawn)
-        lines(t, sublayer+blubber, lwd=lwd*1.25, col="white")
-        lines(t, sublayer, lwd=lwd*1.25, col="white")
-        lines(t, sublayer+blubber, lwd=lwd, col=colwskin)
-        lines(t, sublayer, lwd=lwd, col=colwinterface)
+        ## if (length(drawCriteria) > 1 && drawCriteria[2] && !REMOVE_CRITERIA) {
+        ##     risk <- x$WCF$stress >= 0.5 * x$parms$s[3]
+        ##     px <- t
+        ##     py <- ifelse(risk, sublayer, 0)
+        ##     if (hatchPolygon) {
+        ##         polygon(px, py, border=NA, density=15, angle=45, col="darkgray")
+        ##         polygon(px, py, border=NA, density=15, angle=-45, col="darkgray")
+        ##     } else {
+        ##         polygon(px, py, col=colInjury[1], border=NA)
+        ##     }
+        ##     injury <- x$WCF$stress >= x$parms$UTSgamma
+        ##     px <- t
+        ##     py <- ifelse(injury, sublayer, 0)
+        ##     if (hatchPolygon) {
+        ##         polygon(px, py, border=NA, density=15, angle=45, col="darkgray")
+        ##         polygon(px, py, border=NA, density=15, angle=-45, col="darkgray")
+        ##     } else {
+        ##         polygon(px, py, col=colInjury[2], border=NA)
+        ##     }
+        ## }
+        ##OLD Redraw lines (to clean up polygons that might have been drawn)
+        ##OLD lines(t, sublayer+blubber, lwd=lwd*1.25, col="white")
+        ##OLD lines(t, sublayer, lwd=lwd*1.25, col="white")
+        ##OLD lines(t, sublayer+blubber, lwd=lwd, col=colwskin)
+        ##OLD lines(t, sublayer, lwd=lwd, col=colwinterface)
     }
     if (all || "injury" %in% which) {
         skinzInjury <- x$WSF$sigmaz / x$parms$s[1]
@@ -1175,11 +1171,11 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         a <- derivative(vw, t)
         plot(t, a, xlab="Time [s]", ylab="Whale accel. [m/s^2]", type="l", lwd=lwd, xaxs="i")
         showEvents(xs, xw)
-        if (drawCriteria[1]) {
-            tt <- t
-            tt[a < 433/20] <- NA
-            lines(tt, a, lwd=D*lwd)
-        }
+        ## if (drawCriteria[1]) {
+        ##     tt <- t
+        ##     tt[a < 433/20] <- NA
+        ##     lines(tt, a, lwd=D*lwd)
+        ## }
     }
 
     if (all || "blubber thickness" %in% which) {
@@ -1188,11 +1184,11 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         ylim <- c(min(0, min(y)), max(y)) # include 0 if not there by autoscale
         plot(t, y, xlab="Time [s]", ylab="Blubber thickness [m]", type="l", lwd=lwd, ylim=ylim, xaxs="i")
         showEvents(xs, xw)
-        if (drawCriteria[1]) {
-            tt <- t
-            tt[WCF$stress < x$parms$S[2]] <- NA
-            lines(tt, sublayer+blubber, lwd=D*lwd)
-        }
+        ##if (drawCriteria[1]) {
+        ##    tt <- t
+        ##    tt[WCF$stress < x$parms$S[2]] <- NA
+        ##    lines(tt, sublayer+blubber, lwd=D*lwd)
+        ##}
     }
     if (all || "sublayer thickness" %in% which) {
         WCF <- x$WCF
@@ -1200,11 +1196,11 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         ylim <- c(min(0, min(y)), max(y)) # include 0 if not there by autoscale
         plot(t, y, xlab="Time [s]", ylab="Sublayer thickness [m]", type="l", lwd=lwd, ylim=ylim, xaxs="i")
         showEvents(xs, xw)
-        if (drawCriteria[1]) {
-            tt <- t
-            tt[WCF$stress < x$parms$s[3]] <- NA
-            lines(tt, sublayer+blubber, lwd=D*lwd)
-        }
+        ##if (drawCriteria[1]) {
+        ##    tt <- t
+        ##    tt[WCF$stress < x$parms$s[3]] <- NA
+        ##    lines(tt, sublayer+blubber, lwd=D*lwd)
+        ##}
     }
     if (all || "whale water force" %in% which) {
         plot(t, whaleWaterForce(vw, x$parms) / 1e6 , xlab="Time [s]", ylab="Water force [MN]", type="l", lwd=lwd, xaxs="i")
@@ -1240,14 +1236,14 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         mtext(" (solid)", side=3, line=-2.2, adj=0, cex=par("cex"))
         mtext("vert. ", side=3, line=-1.2, adj=1, cex=par("cex"))
         mtext("(dotted) ", side=3, line=-2.2, adj=1, cex=par("cex"))
-        if (drawCriteria[1]) {
-            tt <- t
-            tt[Fs$sigmay < x$parms$UTSalpha] <- NA
-            lines(tt, Fs$sigmay/1e6, lwd=D*lwd)
-            tt <- t
-            tt[Fs$sigmaz < x$parms$UTSalpha] <- NA
-            lines(tt, Fs$sigmaz/1e6, lty="dashed", lwd=D*lwd)
-        }
+        ##if (drawCriteria[1]) {
+        ##    tt <- t
+        ##    tt[Fs$sigmay < x$parms$UTSalpha] <- NA
+        ##    lines(tt, Fs$sigmay/1e6, lwd=D*lwd)
+        ##    tt <- t
+        ##    tt[Fs$sigmaz < x$parms$UTSalpha] <- NA
+        ##    lines(tt, Fs$sigmaz/1e6, lty="dashed", lwd=D*lwd)
+        ##}
         showEvents(xs, xw)
     }
     if (all || "compression force" %in% which) {
@@ -1258,11 +1254,11 @@ plot.strike <- function(x, which="default", drawCriteria=rep(TRUE, 2), drawEvent
         force <- x$WCF$force
         stress <- force / (x$parms$Lz*x$parms$Ly)
         plot(t, stress/1e6, type="l", xlab="Time [s]", ylab="Compress. Stress [MPa]", lwd=lwd, xaxs="i")
-        if (drawCriteria[1] && !is.na(x$parms$UTSbeta) && !is.na(x$parms$UTSgamma)) {
-            tt <- t
-            tt[stress < min(x$parms$UTSbeta, x$parms$UTSgamma)] <- NA
-            lines(tt, stress/1e6, lwd=D*lwd)
-        }
+        ##if (drawCriteria[1] && !is.na(x$parms$UTSbeta) && !is.na(x$parms$UTSgamma)) {
+        ##    tt <- t
+        ##    tt[stress < min(x$parms$UTSbeta, x$parms$UTSgamma)] <- NA
+        ##    lines(tt, stress/1e6, lwd=D*lwd)
+        ##}
         showEvents(xs, xw)
     }
     if (all || "values" %in% which) {
