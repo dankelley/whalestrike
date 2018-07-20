@@ -220,7 +220,7 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 ## mean(c(17,14,18.13,18,21.25,16.75,13.33,7)) # cm
 ## [1] 15.6825
 #' The sub-layer default of 0.5 m may be reasonable at some spots on the whale body.
-#' The bone default of 0.2 m may be reasonable at some spots on the whale body.
+#' The bone default of 0.1 m may be reasonable at some spots on the whale body.
 #' @param a,b Numerical vectors of length 4, giving values to use in the
 #' stress-strain law \code{stress=a*(exp(b*strain)-1)}. \code{a} is in Pa
 #' and \code{b} is unitless.  Note that \code{a*b} is the local modulus at
@@ -340,7 +340,7 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
         if (missing(Sw))
             Sw <- whaleAreaFromLength(lw, type="wetted")
         if (missing(l))
-            l <- c(0.025, 0.16, 0.5, 0.2)
+            l <- c(0.025, 0.16, 0.5, 0.1)
         if (missing(a))
             a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
         if (missing(b))
@@ -740,7 +740,9 @@ derivative <- function(var, t)
 #' list containing vectors for time (\code{t} [s]), ship position (\code{xs} [m]),
 #' boat speed (\code{vs} [m/s]), whale position (\code{xw} [m]), whale speed (\code{vw} [m/s]),
 #' boat acceleration (\code{dvsdt} [m/s^2]), and whale acceleration (\code{dvwdt} [m/s^2]),
-#' along with a list containing the model parameters (\code{parms}).
+#' a list containing the model parameters (\code{parms}), a list with the results of
+#' the skin force calculation (\code{SWF}), a list with the results of the compression
+#' force calculations (\code{WCF}), and a vector of whale water force (\code{WWF}).
 #'
 #' @examples
 #' library(whalestrike)
@@ -817,13 +819,13 @@ strike <- function(t, state, parms, debug=0)
 #' \item \code{"section"} to plot skin thickness, blubber thickness and sublayer thickness
 #' in one panel, creating a cross-section diagram.
 #'
-#' \item \code{"injury"} a stacked plot showing time-series traces of health
-#' indicators for skin extension, blubber compression, and sub-layer compression.
-#' These take the form of dotted horizontal lines, with labels above and at the
-#' left side of the panel.  During times when an injury criterion is halfway met,
-#' e.g. that blubber stress 1/2 the value of blubber strength, then the dotted
-#' line is overdrawn with a thick gray line. During times when the criterion
-#' is exceeded, the colour shifts to black.
+## \item \code{"injury"} a stacked plot showing time-series traces of health
+## indicators for skin extension, blubber compression, and sub-layer compression.
+## These take the form of dotted horizontal lines, with labels above and at the
+## left side of the panel.  During times when an injury criterion is halfway met,
+## e.g. that blubber stress 1/2 the value of blubber strength, then the dotted
+## line is overdrawn with a thick gray line. During times when the criterion
+## is exceeded, the colour shifts to black.
 #'
 #' \item \code{"threat"} a stacked plot showing time-series traces of an
 #' ad-hoc measure of the possible threat to skin, blubber and sublayer.
@@ -890,14 +892,16 @@ strike <- function(t, state, parms, debug=0)
 #' @param cols As \code{colw}, but the colour to be used for the ship bow location,
 #' which is drawn with a dashed line.
 #'
-#' @param colInjury Two-element colour specification used in \code{"injury"}
-#' panels. The first colour is used to indicate values that are halfway to the
-#' injury crition, and the second is used to indicte values that exceed the
-#' criterion.
+## @param colInjury Two-element colour specification used in \code{"injury"}
+## panels. The first colour is used to indicate values that are halfway to the
+## injury crition, and the second is used to indicte values that exceed the
+## criterion.
 #'
 #' @param colThreat Three-element colour specification used in \code{"threat"}.
 #' The first colour is used for threat levels between 0 and 0.5, the second
-#' from 0.5 to 1, and the third above 1.
+#' from 0.5 to 1, and the third above 1. If not provided, the colours
+#' will be light-gray, gray, and black, each with an alpha setting that
+#' lightens the colours and makes them semi-transparent.
 #'
 #' @param lwd Line width used in plots for time intervals in which damage
 #' criteria are not exceeded.
@@ -914,16 +918,31 @@ strike <- function(t, state, parms, debug=0)
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
+#'
+#' @examples
+#' ## 1. default 3-panel plot
+#' t <- seq(0, 0.7, length.out=200)
+#' state <- c(xs=-2, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
+#' parms <- parameters(ms=20e3, lw=13)
+#' sol <- strike(t, state, parms)
+#' par(mar=c(3,3,1,1), mgp=c(2,0.7,0), mfrow=c(1, 3))
+#' plot(sol)
+#' ## 2. all 12 plot types
+#' par(mar=c(3,3,1,1) ,mgp=c(2,0.7,0), mfrow=c(4,3))
+#' plot(sol, "all")
 plot.strike <- function(x, which="default", drawEvents=TRUE,
                         colwcenter="Slate Gray",
                         colwinterface="black", #colwinterface="Firebrick",
                         colwskin="black", #colwskin="Dodger Blue 4",
                         cols="black",
-                        colInjury=c("gray", "black"),
-                        colThreat=c("lightgray", "gray", "black"),
+                        colThreat,
                         lwd=1.4, D=3, debug=0, ...)
 {
     showLegend <- FALSE
+    if (missing(colThreat))
+        colThreat <- c(rgb(0.827, 0.827, 0.827, alpha=0.7), # lightgray
+                       rgb(0.745, 0.745, 0.745, alpha=0.7), # gray
+                       rgb(0, 0, 0, alpha=0.7)) # black
     g <- 9.8 # gravity
     t <- x$t
     xs <- x$xs
@@ -1050,52 +1069,52 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         ##OLD lines(t, sublayer+blubber, lwd=lwd, col=colwskin)
         ##OLD lines(t, sublayer, lwd=lwd, col=colwinterface)
     }
-    if (all || "injury" %in% which) {
-        skinzInjury <- x$WSF$sigmaz / x$parms$s[1]
-        skinyInjury <- x$WSF$sigmay / x$parms$s[1]
-        blubberInjury <- x$WCF$stress /  x$parms$s[2]
-        sublayerInjury <- x$WCF$stress /  x$parms$s[3]
-        plot(range(t), c(0.5, 4.5), type="n", xlab="Time [s]", ylab="", axes=FALSE, xaxs="i")
-        mtext("Risk of Injury", side=2, line=1, cex=par("cex"))
-        axis(1)
-        box()
-        ## axis(2)
-        dy <- -1
-        y0 <- 4
-        xlim <- par('usr')[1:2]
-        for (i in 1:5) {
-            abline(h=y0+(i-1)*dy, lwd=lwd/2, lty="dotted")
-        }
-        x0 <- xlim[1] #+ 0.04 * (xlim[2] - xlim[1])
-        dylab <- 0.2
-        text(x0, y0     +dylab, "skin z", pos=4)
-        text(x0, y0+  dy+dylab, "skin y", pos=4)
-        text(x0, y0+2*dy+dylab, "blubber", pos=4)
-        text(x0, y0+3*dy+dylab, "sublayer", pos=4)
-        cex <- 1
-        pch <- 20
-        del <- 3
-        n <- length(t)
-        ## Halfway to criterion (i.e. caution)
-        y <- ifelse(skinzInjury >= 0.5, y0, NA)
-        lines(t, y, lwd=5*lwd, col=colInjury[1])
-        y <- ifelse(skinyInjury >= 0.5, y0+dy, NA)
-        lines(t, y, lwd=5*lwd, col=colInjury[1])
-        y <- ifelse(blubberInjury >= 0.5, y0+2*dy, NA)
-        lines(t, y, lwd=5*lwd, col=colInjury[1])
-        y <- ifelse(sublayerInjury >= 0.5, y0+3*dy, NA)
-        lines(t, y, lwd=5*lwd, col=colInjury[1])
-        ## Exceeding criterion (i.e. likely injury)
-        y <- ifelse(skinzInjury >= 1, y0, NA)
-        lines(t, y, lwd=5*lwd, col=colInjury[2])
-        y <- ifelse(skinyInjury >= 1, y0+dy, NA)
-        lines(t, y, lwd=5*lwd, col=colInjury[2])
-        y <- ifelse(blubberInjury >= 1, y0+2*dy, NA)
-        lines(t, y, lwd=5*lwd, col=colInjury[2])
-        y <- ifelse(sublayerInjury >= 1, y0+3*dy, NA)
-        lines(t, y, lwd=5*lwd, col=colInjury[2])
-        showEvents(xs, xw)
-    }
+    ## if (all || "injury" %in% which) {
+    ##     skinzInjury <- x$WSF$sigmaz / x$parms$s[1]
+    ##     skinyInjury <- x$WSF$sigmay / x$parms$s[1]
+    ##     blubberInjury <- x$WCF$stress /  x$parms$s[2]
+    ##     sublayerInjury <- x$WCF$stress /  x$parms$s[3]
+    ##     plot(range(t), c(0.5, 4.5), type="n", xlab="Time [s]", ylab="", axes=FALSE, xaxs="i")
+    ##     mtext("Risk of Injury", side=2, line=1, cex=par("cex"))
+    ##     axis(1)
+    ##     box()
+    ##     ## axis(2)
+    ##     dy <- -1
+    ##     y0 <- 4
+    ##     xlim <- par('usr')[1:2]
+    ##     for (i in 1:5) {
+    ##         abline(h=y0+(i-1)*dy, lwd=lwd/2, lty="dotted")
+    ##     }
+    ##     x0 <- xlim[1] #+ 0.04 * (xlim[2] - xlim[1])
+    ##     dylab <- 0.2
+    ##     text(x0, y0     +dylab, "skin z", pos=4)
+    ##     text(x0, y0+  dy+dylab, "skin y", pos=4)
+    ##     text(x0, y0+2*dy+dylab, "blubber", pos=4)
+    ##     text(x0, y0+3*dy+dylab, "sublayer", pos=4)
+    ##     cex <- 1
+    ##     pch <- 20
+    ##     del <- 3
+    ##     n <- length(t)
+    ##     ## Halfway to criterion (i.e. caution)
+    ##     y <- ifelse(skinzInjury >= 0.5, y0, NA)
+    ##     lines(t, y, lwd=5*lwd, col=colInjury[1])
+    ##     y <- ifelse(skinyInjury >= 0.5, y0+dy, NA)
+    ##     lines(t, y, lwd=5*lwd, col=colInjury[1])
+    ##     y <- ifelse(blubberInjury >= 0.5, y0+2*dy, NA)
+    ##     lines(t, y, lwd=5*lwd, col=colInjury[1])
+    ##     y <- ifelse(sublayerInjury >= 0.5, y0+3*dy, NA)
+    ##     lines(t, y, lwd=5*lwd, col=colInjury[1])
+    ##     ## Exceeding criterion (i.e. likely injury)
+    ##     y <- ifelse(skinzInjury >= 1, y0, NA)
+    ##     lines(t, y, lwd=5*lwd, col=colInjury[2])
+    ##     y <- ifelse(skinyInjury >= 1, y0+dy, NA)
+    ##     lines(t, y, lwd=5*lwd, col=colInjury[2])
+    ##     y <- ifelse(blubberInjury >= 1, y0+2*dy, NA)
+    ##     lines(t, y, lwd=5*lwd, col=colInjury[2])
+    ##     y <- ifelse(sublayerInjury >= 1, y0+3*dy, NA)
+    ##     lines(t, y, lwd=5*lwd, col=colInjury[2])
+    ##     showEvents(xs, xw)
+    ## }
 
     if (all || "threat" %in% which) {
         skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
@@ -1147,22 +1166,26 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         polygonWindow(t, y0+0*dy+skinThreat, col=colThreat[3], floor=y0)
         polygonWindow(t, y0+0*dy+ifelse(skinThreat<1, skinThreat, 1), col=colThreat[2], floor=y0)
         polygonWindow(t, y0+0*dy+ifelse(skinThreat<0.5, skinThreat, 0.5), col=colThreat[1], floor=y0)
-        lines(t, skinThreat + y0 + 0 * dy, type='l', lwd=lwd)
+        lines(t, skinThreat + y0 + 0 * dy, lwd=3*lwd, col="white")
+        lines(t, skinThreat + y0 + 0 * dy, lwd=0.7*lwd)
         ## Blubber
         polygonWindow(t, y0+1*dy+blubberThreat, col=colThreat[3], floor=y0+dy)
         polygonWindow(t, y0+1*dy+ifelse(blubberThreat<1, blubberThreat, 1), col=colThreat[2], floor=y0+dy)
         polygonWindow(t, y0+1*dy+ifelse(blubberThreat<0.5, blubberThreat, 0.5), col=colThreat[1], floor=y0+dy)
-        lines(t, blubberThreat + y0 + 1 * dy, type='l', lwd=lwd)
+        lines(t, blubberThreat + y0 + 1 * dy, lwd=3*lwd, col="white")
+        lines(t, blubberThreat + y0 + 1 * dy, lwd=0.7*lwd)
         ## Sublayer
         polygonWindow(t, y0+2*dy+sublayerThreat, col=colThreat[3], floor=y0+2*dy)
         polygonWindow(t, y0+2*dy+ifelse(sublayerThreat<1, sublayerThreat, 1), col=colThreat[2], floor=y0+2*dy)
         polygonWindow(t, y0+2*dy+ifelse(sublayerThreat<0.5, sublayerThreat, 0.5), col=colThreat[1], floor=y0+2*dy)
-        lines(t, sublayerThreat + y0 + 2 * dy, type='l', lwd=lwd)
+        lines(t, sublayerThreat + y0 + 2 * dy, lwd=3*lwd, col="white")
+        lines(t, sublayerThreat + y0 + 2 * dy, lwd=0.7*lwd)
         ## Bone
         polygonWindow(t, y0+3*dy+boneThreat, col=colThreat[3], floor=y0+3*dy)
         polygonWindow(t, y0+3*dy+ifelse(boneThreat<1, boneThreat, 1), col=colThreat[2], floor=y0+3*dy)
         polygonWindow(t, y0+3*dy+ifelse(boneThreat<0.5, boneThreat, 0.5), col=colThreat[1], floor=y0+3*dy)
-        lines(t, boneThreat + y0 + 3 * dy, type='l', lwd=lwd)
+        lines(t, boneThreat + y0 + 3 * dy, lwd=3*lwd, col="white")
+        lines(t, boneThreat + y0 + 3 * dy, lwd=0.7*lwd)
 
         ## Axes
         axis(4,y0+0*dy+c(0,0.5,1,1.5),labels=c("L", "M", "H", "E"))
@@ -1185,27 +1208,17 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
 
     if (all || "blubber thickness" %in% which) {
         WCF <- x$WCF
-        y <- WCF$compressed[2]
+        y <- WCF$compressed[, 2]
         ylim <- c(min(0, min(y)), max(y)) # include 0 if not there by autoscale
         plot(t, y, xlab="Time [s]", ylab="Blubber thickness [m]", type="l", lwd=lwd, ylim=ylim, xaxs="i")
         showEvents(xs, xw)
-        ##if (drawCriteria[1]) {
-        ##    tt <- t
-        ##    tt[WCF$stress < x$parms$S[2]] <- NA
-        ##    lines(tt, sublayer+blubber, lwd=D*lwd)
-        ##}
     }
     if (all || "sublayer thickness" %in% which) {
         WCF <- x$WCF
-        y <- WCF$compressed[3]
+        y <- WCF$compressed[, 3]
         ylim <- c(min(0, min(y)), max(y)) # include 0 if not there by autoscale
         plot(t, y, xlab="Time [s]", ylab="Sublayer thickness [m]", type="l", lwd=lwd, ylim=ylim, xaxs="i")
         showEvents(xs, xw)
-        ##if (drawCriteria[1]) {
-        ##    tt <- t
-        ##    tt[WCF$stress < x$parms$s[3]] <- NA
-        ##    lines(tt, sublayer+blubber, lwd=D*lwd)
-        ##}
     }
     if (all || "whale water force" %in% which) {
         plot(t, whaleWaterForce(vw, x$parms) / 1e6 , xlab="Time [s]", ylab="Water force [MN]", type="l", lwd=lwd, xaxs="i")
@@ -1259,28 +1272,33 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         force <- x$WCF$force
         stress <- force / (x$parms$Lz*x$parms$Ly)
         plot(t, stress/1e6, type="l", xlab="Time [s]", ylab="Compress. Stress [MPa]", lwd=lwd, xaxs="i")
-        ##if (drawCriteria[1] && !is.na(x$parms$UTSbeta) && !is.na(x$parms$UTSgamma)) {
-        ##    tt <- t
-        ##    tt[stress < min(x$parms$UTSbeta, x$parms$UTSgamma)] <- NA
-        ##    lines(tt, stress/1e6, lwd=D*lwd)
-        ##}
         showEvents(xs, xw)
     }
     if (all || "values" %in% which) {
         omar <- par("mar")
         par(mar=rep(0, 4))
-        p <- lapply(x$parms, function(x) signif(x, 4))
-        names(p) <- names(x$parms)
-        p["engineForce"] <- NULL # inserted during calculation, not user-supplied
-        values <- paste(deparse(p), collapse=" ")
-        values <- strsplit(gsub(".*\\((.*)\\)$", "\\1", values), ",")[[1]]
-        values <- gsub("^ *", "", values)
-        values <- gsub("([0-9])L$", "\\1", values) # it's ugly to see e.g. 1 as 1L
+        ## Only take the vectors, thus ignoring stressFromStrain, a function
+        parms <- x$parms[unlist(lapply(x$parms, function(p) is.vector(p)))]
+        parms <- lapply(parms, function(x) signif(x, 4))
+        parms["engineForce"] <- NULL # inserted during calculation, not user-supplied
+        parms["lsum"] <- NULL # inserted during calculation, not user-supplied
+
+        parms <- lapply(parms, function(p) deparse(p))
+        names <- names(parms)
+        values <- unname(unlist(parms))
+
+        ## values <- paste(deparse(parms), collapse=" ")
+        ## values <- gsub("^list\\(", "", values)
+        ## values <- gsub(")$", "", values)
+        ## values <- strsplit(gsub(".*\\((.*)\\)$", "\\1", values), ",")[[1]]
+        ## values <- gsub("^ *", "", values)
+        ## values <- gsub("([0-9])L$", "\\1", values) # it's ugly to see e.g. 1 as 1L
+
         n <- 1 + length(values)
         plot(1:n, 1:n, type="n", xlab="", ylab="", axes=FALSE)
-        o <- order(names(p), decreasing=TRUE)
+        o <- order(names(parms), decreasing=TRUE)
         for (i in seq_along(values))
-            text(1, i+0.5, values[o[i]], pos=4, cex=1)
+            text(1, i+0.5, paste(names[o[i]], "=", values[o[i]]), pos=4, cex=1)
         par(mar=omar)
     }
 }

@@ -26,7 +26,9 @@ An object of class \code{"whalestrike"}, consisting of a
 list containing vectors for time (\code{t} [s]), ship position (\code{xs} [m]),
 boat speed (\code{vs} [m/s]), whale position (\code{xw} [m]), whale speed (\code{vw} [m/s]),
 boat acceleration (\code{dvsdt} [m/s^2]), and whale acceleration (\code{dvwdt} [m/s^2]),
-along with a list containing the model parameters (\code{parms}).
+a list containing the model parameters (\code{parms}), a list with the results of
+the skin force calculation (\code{SWF}), a list with the results of the compression
+force calculations (\code{WCF}), and a vector of whale water force (\code{WWF}).
 }
 \description{
 Newtonian mechanics are used, taking the ship as undeformable,

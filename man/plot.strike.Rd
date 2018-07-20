@@ -6,9 +6,7 @@
 \usage{
 \method{plot}{strike}(x, which = "default", drawEvents = TRUE,
   colwcenter = "Slate Gray", colwinterface = "black", colwskin = "black",
-  cols = "black", colInjury = c("gray", "black"),
-  colThreat = c("lightgray", "gray", "black"), lwd = 1.4, D = 3,
-  debug = 0, ...)
+  cols = "black", colThreat, lwd = 1.4, D = 3, debug = 0, ...)
 }
 \arguments{
 \item{x}{An object inheriting from class \code{strike}}
@@ -26,13 +24,6 @@ placed near the horizontal axes.
 \item \code{"section"} to plot skin thickness, blubber thickness and sublayer thickness
 in one panel, creating a cross-section diagram.
 
-\item \code{"injury"} a stacked plot showing time-series traces of health
-indicators for skin extension, blubber compression, and sub-layer compression.
-These take the form of dotted horizontal lines, with labels above and at the
-left side of the panel.  During times when an injury criterion is halfway met,
-e.g. that blubber stress 1/2 the value of blubber strength, then the dotted
-line is overdrawn with a thick gray line. During times when the criterion
-is exceeded, the colour shifts to black.
 
 \item \code{"threat"} a stacked plot showing time-series traces of an
 ad-hoc measure of the possible threat to skin, blubber and sublayer.
@@ -79,14 +70,11 @@ between whale blubber and sublayer.}
 \item{cols}{As \code{colw}, but the colour to be used for the ship bow location,
 which is drawn with a dashed line.}
 
-\item{colInjury}{Two-element colour specification used in \code{"injury"}
-panels. The first colour is used to indicate values that are halfway to the
-injury crition, and the second is used to indicte values that exceed the
-criterion.}
-
 \item{colThreat}{Three-element colour specification used in \code{"threat"}.
 The first colour is used for threat levels between 0 and 0.5, the second
-from 0.5 to 1, and the third above 1.}
+from 0.5 to 1, and the third above 1. If not provided, the colours
+will be light-gray, gray, and black, each with an alpha setting that
+lightens the colours and makes them semi-transparent.}
 
 \item{lwd}{Line width used in plots for time intervals in which damage
 criteria are not exceeded.}
@@ -102,6 +90,18 @@ for more verbose monitoring of progress through the function.}
 \description{
 Creates displays of various results of a simulation performed
 with \code{\link{strike}}.
+}
+\examples{
+## 1. default 3-panel plot
+t <- seq(0, 0.7, length.out=200)
+state <- c(xs=-2, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
+parms <- parameters(ms=20e3, lw=13)
+sol <- strike(t, state, parms)
+par(mar=c(3,3,1,1), mgp=c(2,0.7,0), mfrow=c(1, 3))
+plot(sol)
+## 2. all 12 plot types
+par(mar=c(3,3,1,1) ,mgp=c(2,0.7,0), mfrow=c(4,3))
+plot(sol, "all")
 }
 \references{
 See \link{whalestrike} for a list of references.
