@@ -160,7 +160,9 @@ NULL
 #'
 #' @examples
 #' library(whalestrike)
-#' param <- parameters(ms=20e3, lw=13, l=1, a=1.64e5, b=2.47)
+#' ## Set blubber parameters for each layer, to see if
+#' ## we recover the raymond2007 data.
+#' param <- parameters(a=rep(1.64e5,4), b=rep(2.47,4))
 #' x <- seq(0, 0.5, length.out=100)
 #' y <- param$stressFromStrain(x)
 #' plot(x, y, type='l', lwd=4, col="gray")
@@ -210,18 +212,15 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' from whale length using \code{\link{whaleAreaFromLength}}.
 #' @param l Numerical vector of length 4, giving thickness [m] of skin, blubber,
 #' sub-layer, and bone. If not provided, this is set to
-#' \code{c(0.025, 0.16, 1.15, 0.05)}.
+#' \code{c(0.025, 0.16, 0.5, 0.2)}.
 #' The skin thicknes default of 0.025 m represents the 0.9-1.0 inch value
 #' stated in Section 2.2.3 of Raymond (2007).
 #' The blubber default of 0.16 m is a rounded average of the values inferred
 #' by whale necropsy, reported in Appendix 2 of Daoust et al., 2018.
 ## mean(c(17,14,18.13,18,21.25,16.75,13.33,7)) # cm
 ## [1] 15.6825
-#' The sub-layer default of 1.15 m is found by computing mid-body radius
-#' 1.34 m based on the half-circumferance of 4.2 m reported in Table 2.2
-#' of Raymond (2007), after subtracting an assumed blubber thickness
-#' of 0.16m and bone thickness of 0.05m.
-#' The bone thickness, as noted, defaults to 0.05m.
+#' The sub-layer default of 0.5 m may be reasonable at some spots on the whale body.
+#' The bone default of 0.2 m may be reasonable at some spots on the whale body.
 #' @param a,b Numerical vectors of length 4, giving values to use in the
 #' stress-strain law \code{stress=a*(exp(b*strain)-1)}. \code{a} is in Pa
 #' and \code{b} is unitless.  Note that \code{a*b} is the local modulus at
@@ -292,8 +291,8 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' epsilon <- seq(0, 0.3, length.out=100)
 #' strain <- parms$stressFromStrain(epsilon)
 #' plot(epsilon, strain, type="l")
-parameters <- function(ms, Ss, Ly=0.5, Lz=1.5,
-                       lw, mw, Sw,
+parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
+                       lw=13, mw, Sw,
                        l, a, b, s,
                        theta=45,
                        Cs=0.01, Cw=0.0025, file)
@@ -324,8 +323,8 @@ parameters <- function(ms, Ss, Ly=0.5, Lz=1.5,
         o <- sort(names(rval))
         rval <- rval[o]
     } else {
-        if (missing(ms) || ms <= 0)
-            stop("ship mass (ms) must be given, and a positive number")
+        if (ms <= 0)
+            stop("ship mass (ms) must be a positive number")
         if (missing(Ss))
             Ss <- shipAreaFromMass(ms)
         if (Ss <= 0)
@@ -334,14 +333,14 @@ parameters <- function(ms, Ss, Ly=0.5, Lz=1.5,
             stop("impact width (Ly) must be a positive number, not ", Ly)
         if (Lz <= 0)
             stop("impact height (Lz) must be a positive number, not ", Lz)
-        if (missing(lw))
-            stop("Whale length (lm) must be given")
+        if (lw <= 0)
+            stop("Whale length (lw) must be a positive number")
         if (missing(mw))
             mw <- whaleMassFromLength(lw)
         if (missing(Sw))
             Sw <- whaleAreaFromLength(lw, type="wetted")
         if (missing(l))
-            l <- c(0.025, 0.16, 1.15, 0.05)
+            l <- c(0.025, 0.16, 0.5, 0.2)
         if (missing(a))
             a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
         if (missing(b))
@@ -745,9 +744,9 @@ derivative <- function(var, t)
 #'
 #' @examples
 #' library(whalestrike)
-#' t <- seq(0, 1, length.out=500)
-#' state <- c(xs=-2.5, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
-#' parms <- parameters(ms=20e3, lw=13, Ly=0.5, Lz=1)
+#' t <- seq(0, 0.7, length.out=200)
+#' state <- c(xs=-2, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
+#' parms <- parameters(ms=20e3, lw=13)
 #' sol <- strike(t, state, parms)
 #' par(mfcol=c(1, 3), mar=c(3, 3, 0.5, 2), mgp=c(2, 0.7, 0), cex=0.7)
 #' plot(sol)
@@ -830,7 +829,7 @@ strike <- function(t, state, parms, debug=0)
 #' ad-hoc measure of the possible threat to skin, blubber and sublayer.
 #' The threat level is computed as the ratio
 #' of stress to ultimate strength, e.g. for blubber, it is
-#' \code{x$WCF$stress/x$parms$UTSbeta}. Colour-coding indicates levels
+#' \code{x$WCF$stress/x$parms$s[2]}. Colour-coding indicates levels
 #' from 0 to 1/2, from 1/2 to 1, and above 1. An axis categorizes
 #' threat level 0 as "L", 0.5 as "M", and 1 as "H".
 #'
@@ -1099,21 +1098,22 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
     }
 
     if (all || "threat" %in% which) {
-        skinzThreat <- x$WSF$sigmaz / x$parms$UTSalpha
-        skinyThreat <- x$WSF$sigmay / x$parms$UTSalpha
+        skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
+        skinyThreat <- x$WSF$sigmay / x$parms$s[1]
         skinThreat <- ifelse(skinyThreat > skinzThreat, skinyThreat, skinzThreat)
-        blubberThreat <- x$WCF$stress /  x$parms$UTSbeta
-        sublayerThreat <- x$WCF$stress /  x$parms$UTSgamma
+        blubberThreat <- x$WCF$stress /  x$parms$s[2]
+        sublayerThreat <- x$WCF$stress /  x$parms$s[3]
+        boneThreat <- x$WCF$stress /  x$parms$s[4]
         dy <- -2.25
-        y0 <- 5.5
-        plot(range(t), c(1, 7.5),
+        y0 <- 8.0
+        plot(range(t), c(1, 10),
              type="n", xlab="Time [s]", ylab="", axes=FALSE, xaxs="i")
         mtext("Threat of Injury", side=2, line=2, cex=par("cex"))
         axis(1)
         box()
         ## axis(2)
         xlim <- par('usr')[1:2]
-        for (i in 1:3) {
+        for (i in 1:4) {
             abline(h=y0+(i-1)*dy, lwd=lwd/2, lty="dotted")
         }
         x0 <- xlim[1] #+ 0.04 * (xlim[2] - xlim[1])
@@ -1124,11 +1124,12 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         mtext("skin", side=2, at=y0-0.5*dy, line=0.25, cex=par("cex"))
         mtext("blubber", side=2, at=y0+dy-0.5*dy, line=0.25, cex=par("cex"))
         mtext("sub-layer", side=2, at=y0+2*dy-0.5*dy, line=0.25, cex=par("cex"))
+        mtext("bone", side=2, at=y0+3*dy-0.5*dy, line=0.25, cex=par("cex"))
         n <- length(t)
         lines(t, skinThreat + y0, type='l')
         lines(t, blubberThreat + y0 + dy, type='l')
 
-        for (l in 0:2) {
+        for (l in 0:3) {
             abline(h=y0+l*dy + 0.5, lty='dotted', lwd=0.5*lwd)
             abline(h=y0+l*dy + 1.0, lty='dotted', lwd=0.5*lwd)
             abline(h=y0+l*dy + 1.5, lty='dotted', lwd=0.5*lwd)
@@ -1147,23 +1148,27 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         polygonWindow(t, y0+0*dy+ifelse(skinThreat<1, skinThreat, 1), col=colThreat[2], floor=y0)
         polygonWindow(t, y0+0*dy+ifelse(skinThreat<0.5, skinThreat, 0.5), col=colThreat[1], floor=y0)
         lines(t, skinThreat + y0 + 0 * dy, type='l', lwd=lwd)
-
         ## Blubber
         polygonWindow(t, y0+1*dy+blubberThreat, col=colThreat[3], floor=y0+dy)
         polygonWindow(t, y0+1*dy+ifelse(blubberThreat<1, blubberThreat, 1), col=colThreat[2], floor=y0+dy)
         polygonWindow(t, y0+1*dy+ifelse(blubberThreat<0.5, blubberThreat, 0.5), col=colThreat[1], floor=y0+dy)
         lines(t, blubberThreat + y0 + 1 * dy, type='l', lwd=lwd)
-
         ## Sublayer
         polygonWindow(t, y0+2*dy+sublayerThreat, col=colThreat[3], floor=y0+2*dy)
         polygonWindow(t, y0+2*dy+ifelse(sublayerThreat<1, sublayerThreat, 1), col=colThreat[2], floor=y0+2*dy)
         polygonWindow(t, y0+2*dy+ifelse(sublayerThreat<0.5, sublayerThreat, 0.5), col=colThreat[1], floor=y0+2*dy)
         lines(t, sublayerThreat + y0 + 2 * dy, type='l', lwd=lwd)
+        ## Bone
+        polygonWindow(t, y0+3*dy+boneThreat, col=colThreat[3], floor=y0+3*dy)
+        polygonWindow(t, y0+3*dy+ifelse(boneThreat<1, boneThreat, 1), col=colThreat[2], floor=y0+3*dy)
+        polygonWindow(t, y0+3*dy+ifelse(boneThreat<0.5, boneThreat, 0.5), col=colThreat[1], floor=y0+3*dy)
+        lines(t, boneThreat + y0 + 3 * dy, type='l', lwd=lwd)
 
         ## Axes
-        axis(4,y0+0*dy+c(0,0.5,1,1.5),labels=c(" ", " ", " ", " "))
-        axis(4,y0+1*dy+c(0,0.5,1,1.5),labels=c(" ", " ", " ", " "))
+        axis(4,y0+0*dy+c(0,0.5,1,1.5),labels=c("L", "M", "H", "E"))
+        axis(4,y0+1*dy+c(0,0.5,1,1.5),labels=c("L", "M", "H", "E"))
         axis(4,y0+2*dy+c(0,0.5,1,1.5),labels=c("L", "M", "H", "E"))
+        axis(4,y0+3*dy+c(0,0.5,1,1.5),labels=c("L", "M", "H", "E"))
 
         showEvents(xs, xw)
     }

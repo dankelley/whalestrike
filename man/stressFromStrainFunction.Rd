@@ -46,7 +46,9 @@ negligible, amounting to fractional errors in the 8th decimal place.
 }
 \examples{
 library(whalestrike)
-param <- parameters(ms=20e3, lw=13, l=1, a=1.64e5, b=2.47)
+## Set blubber parameters for each layer, to see if
+## we recover the raymond2007 data.
+param <- parameters(a=rep(1.64e5,4), b=rep(2.47,4))
 x <- seq(0, 0.5, length.out=100)
 y <- param$stressFromStrain(x)
 plot(x, y, type='l', lwd=4, col="gray")
