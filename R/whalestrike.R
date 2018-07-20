@@ -977,6 +977,15 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         which <- c("location", "section", "threat")
     }
 
+    allowed <- c("location", "section", "threat", "whale acceleration", "blubber thickness",
+                 "sublayer thickness", "whale water force", "reactive forces", "skin stress",
+                 "compression force", "compression stress", "values") 
+    for (w in which) {
+        if (!(w %in% allowed))
+            stop("which value \"", w, "\" is not allowed; try one of: \"",
+                 paste(allowed, collapse="\" \""), "\"")
+    }
+
     ## x(t) and xw(t)
     if (all || "location" %in% which) {
         ylim <- range(c(xs, xw), na.rm=TRUE)
