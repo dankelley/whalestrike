@@ -38,8 +38,11 @@ The skin thicknes default of 0.025 m represents the 0.9-1.0 inch value
 stated in Section 2.2.3 of Raymond (2007).
 The blubber default of 0.16 m is a rounded average of the values inferred
 by whale necropsy, reported in Appendix 2 of Daoust et al., 2018.
-The sublayer default of 0.5 m may be reasonable at some spots on the whale body.
-The bone default of 0.1 m may be reasonable at some spots on the whale body.}
+The sublayer default of 1.2 m may be reasonable at some spots on the whale body.
+The bone default of 0.2 m may be reasonable at some spots on the whale body.
+The sum of these default values, 1.38 m, yields a whale radius that
+is consistent with the half-circumferance of about 4.4 m, reported in Table 2.2
+of Raymond (2007).}
 
 \item{a, b}{Numerical vectors of length 4, giving values to use in the
 stress-strain law \code{stress=a*(exp(b*strain)-1)}. \code{a} is in Pa

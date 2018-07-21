@@ -219,8 +219,11 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' by whale necropsy, reported in Appendix 2 of Daoust et al., 2018.
 ## mean(c(17,14,18.13,18,21.25,16.75,13.33,7)) # cm
 ## [1] 15.6825
-#' The sublayer default of 0.5 m may be reasonable at some spots on the whale body.
-#' The bone default of 0.1 m may be reasonable at some spots on the whale body.
+#' The sublayer default of 1.2 m may be reasonable at some spots on the whale body.
+#' The bone default of 0.2 m may be reasonable at some spots on the whale body.
+#' The sum of these default values, 1.38 m, yields a whale radius that
+#' is consistent with the half-circumferance of about 4.4 m, reported in Table 2.2
+#' of Raymond (2007).
 #' @param a,b Numerical vectors of length 4, giving values to use in the
 #' stress-strain law \code{stress=a*(exp(b*strain)-1)}. \code{a} is in Pa
 #' and \code{b} is unitless.  Note that \code{a*b} is the local modulus at
@@ -340,7 +343,7 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
         if (missing(Sw))
             Sw <- whaleAreaFromLength(lw, type="wetted")
         if (missing(l))
-            l <- c(0.025, 0.16, 0.5, 0.1)
+            l <- c(0.025, 0.16, 1.1, 0.1)
         if (missing(a))
             a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
         if (missing(b))
