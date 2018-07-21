@@ -36,24 +36,25 @@ t <- seq(0, 1, length.out=200)
 ## Hint: the following creates x and y of different lengths,
 ## so that mismatches between row/col and i/j values will
 ## yield errors.
-blubberThickness <- seq(0.1, 0.25, length.out=9)
+l2 <- seq(0.1, 0.25, length.out=9) # blubber thickness
 speedK <- seq(4, 12, length.out=10) # in knots
 speed <- 0.5144 * speedK
 ## stress = peak stress during each simulation, in MPa
-stress <- matrix(NA, nrow=length(speed), ncol=length(blubberThickness))
-for (i in seq_along(blubberThickness)) {
+stress <- matrix(NA, nrow=length(speed), ncol=length(l2))
+l <- parameters()$l
+for (i in seq_along(l2)) {
     for (j in seq_along(speed)) {
         state <- c(xs=-1.5, vs=speed[j], xw=0, vw=0)
-        parms <- parameters(l=c(0.025, blubberThickness[i], 0.5, 0.200))
+        parms <- parameters(l=c(l[1], l2[i], l[3], l[4]))
         sol <- strike(t, state, parms)
         stress[j, i] <- max(sol$WCF$stress) / 1e6
     }
 }
 danger <- parms$s[2] / 1e6
-contour(speedK, beta, stress, levels=seq(0, danger, 0.1),
+contour(speedK, l2, stress, levels=seq(0, danger, 0.1),
         xlab="Speed [knots]", ylab="Blubber thickness [m]")
-contour(speedK, beta, stress, level=danger, lty=2, add=TRUE)
-contour(speedK, beta, stress, level=seq(3, danger, -0.1), lwd=2, add=TRUE)
-mtext(sprintf("Compression stress [MPa]\n(injurious if > %.2f MPa)", danger),
+contour(speedK, l2, stress, level=danger, lty=2, add=TRUE, drawlabels=FALSE)
+contour(speedK, l2, stress, level=seq(3, danger, -0.1), lwd=2, add=TRUE)
+mtext(sprintf("Compression stress [MPa]\n(injurious if > %.2f MPa, dashed contour)", danger),
       side=3, line=1)
 
