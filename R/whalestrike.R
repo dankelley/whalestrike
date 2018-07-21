@@ -836,19 +836,11 @@ strike <- function(t, state, parms, debug=0)
 #' threat level 0 as "L", 0.5 as "M", and 1 as "H".
 #'
 #' \item \code{"whale acceleration"} for a time-series plot of whale acceleration.
-## If \code{drawCriteria} is \code{TRUE}, the line is thickened during
-## times when the acceleration exceeds 433 m/s^2, which is an estimate of
-## the 10% probability of concussion for the National Football League
-## concussion data presented in Figure 9 of Ng et al. 2017.
 #'
 #' \item \code{"blubber thickness"} for a time-series plot of blubber thickness.
-## If \code{drawCriteria[1]} is \code{TRUE} then the line is thickened
-## if the stress within the blubber exceeds \code{parms$UTSbeta}.
 #'
 #' \item \code{"sublayer thickness"} for a time-series plot of the thickness
 #' of the layer interior to the blubber.
-## If \code{drawCriteria[1]} is \code{TRUE} then the line is thickened
-## if the stress within the sublayer exceeds \code{parms$UTSgamma}.
 #'
 #' \item \code{"reactive forces"} for a time-series showing the reactive
 #' forces associated with skin stretching (solid) and the compression of the
@@ -856,14 +848,8 @@ strike <- function(t, state, parms, debug=0)
 #'
 #' \item \code{"compression stress"} for a time-series plot of the compression stress on the blubber
 #' and the layer to its interior. (These stresses are equal, under an equilibrium assumption.)
-## If \code{drawCriteria[1]} is \code{TRUE} then these traces are thickened if the compression
-## stress exceeds the minimum of \code{parms$UTSgamma} and \code{parms$UTSbeta}.
 #'
 #' \item \code{"skin stress"} for a time-series of skin stress in the along-skin y and z directions.
-## If \code{drawCriteria[1]} is \code{TRUE} then these traces are thickened
-## during any times when the stress exceeds 19.5MPa, which is taken as
-## the maximum stress that the skin can accommodate without damage, inferred from an
-## entry in Table 3 of Grear et al. (2018) for the strength of seal skin.
 #'
 #' \item \code{"values"} for a listing of \code{param} values.
 #'
@@ -872,12 +858,6 @@ strike <- function(t, state, parms, debug=0)
 #' \item \code{"default"} for a three-element plot showing \code{"location"},
 #' \code{"section"}, and \code{"threat"}.
 #'}
-#'
-## @param drawCriteria Logical value indicating whether to
-## indicate dangerous conditions by thickening lines in time series
-## plots. Those conditions are stated in the documentation for individual
-## panels, and for multivariate plots, \code{drawCriteria} can be of
-## length exceeding 1, to control individual curves in the plot.
 #'
 #' @param drawEvents Logical, indicating whether to draw lines for some events,
 #' such as the moment of closest approach.
@@ -905,11 +885,9 @@ strike <- function(t, state, parms, debug=0)
 #'
 #' @param lwd Line width used in plots for time intervals in which damage
 #' criteria are not exceeded.
-## (or if \code{drawCriteria} is \code{FALSE}).
 #'
 #' @param D Factor by which to thicken lines during times during which damage
 #' criteria are exceeded.
-## Ignored unless \code{drawCriteria} is \code{TRUE}.
 #'
 #' @param debug Integer indicating debugging level, 0 for quiet operation and higher values
 #' for more verbose monitoring of progress through the function.
@@ -1033,7 +1011,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         text(x0, 0.5*(ylim[1] - x$parms$lsum), "water/ship", pos=4)
         hatchPolygon <- FALSE
         ## Blubber
-        ## if (drawCriteria[1] && !REMOVE_CRITERIA) {
+        ## if (FALSE) {
         ##     risk <- x$WCF$stress >= 0.5 * x$parms$UTSbeta
         ##     px <- c(t, rev(t))
         ##     py <- c(sublayer+blubber,
@@ -1056,7 +1034,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         ##     }
         ## }
         ## Sublayer
-        ## if (length(drawCriteria) > 1 && drawCriteria[2] && !REMOVE_CRITERIA) {
+        ## if (FALSE) {
         ##     risk <- x$WCF$stress >= 0.5 * x$parms$s[3]
         ##     px <- t
         ##     py <- ifelse(risk, sublayer, 0)
@@ -1212,11 +1190,6 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         a <- derivative(vw, t)
         plot(t, a, xlab="Time [s]", ylab="Whale accel. [m/s^2]", type="l", lwd=lwd, xaxs="i")
         showEvents(xs, xw)
-        ## if (drawCriteria[1]) {
-        ##     tt <- t
-        ##     tt[a < 433/20] <- NA
-        ##     lines(tt, a, lwd=D*lwd)
-        ## }
     }
 
     if (all || "blubber thickness" %in% which) {
@@ -1267,14 +1240,6 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         mtext(" (solid)", side=3, line=-2.2, adj=0, cex=par("cex"))
         mtext("vert. ", side=3, line=-1.2, adj=1, cex=par("cex"))
         mtext("(dotted) ", side=3, line=-2.2, adj=1, cex=par("cex"))
-        ##if (drawCriteria[1]) {
-        ##    tt <- t
-        ##    tt[Fs$sigmay < x$parms$UTSalpha] <- NA
-        ##    lines(tt, Fs$sigmay/1e6, lwd=D*lwd)
-        ##    tt <- t
-        ##    tt[Fs$sigmaz < x$parms$UTSalpha] <- NA
-        ##    lines(tt, Fs$sigmaz/1e6, lty="dashed", lwd=D*lwd)
-        ##}
         showEvents(xs, xw)
     }
     if (all || "compression force" %in% which) {
