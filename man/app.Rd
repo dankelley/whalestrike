@@ -11,6 +11,9 @@ app(mode = "simple", options = list(height = 800))
 the value \code{"simple"} is permitted at present. This yields a
 3-panel plot, constructed by \code{\link{plot.strike}},
 called with default arguments.}
+
+\item{options}{List containing options that are provided
+to \code{\link[shiny]{shinyApp}}, which creates the GUI app.}
 }
 \description{
 Run a GUI app for interactive simulations

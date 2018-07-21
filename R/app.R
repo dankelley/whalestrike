@@ -94,6 +94,8 @@ server <- function(input, output, session)
 #' the value \code{"simple"} is permitted at present. This yields a
 #' 3-panel plot, constructed by \code{\link{plot.strike}},
 #' called with default arguments.
+#' @param options List containing options that are provided
+#' to \code{\link[shiny]{shinyApp}}, which creates the GUI app.
 app <- function(mode="simple", options=list(height=800))
 {
     if (mode == "simple")
