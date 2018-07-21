@@ -1,7 +1,7 @@
 #' User interface for app
 ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px;}")),
                 fluidRow(column(2,
-                                sliderInput("tmax",  h6("log10(interval [s])"), tick=FALSE,
+                                sliderInput("ltmax",  h6("log10(interval [s])"), tick=FALSE,
                                             min=-1,  max=1, value=log10(1), step=0.01),
                                 sliderInput("ms",  h6("Ship mass [tonne]"), tick=FALSE,
                                             min=10, max=40,  value=20, step=0.5),
@@ -51,15 +51,6 @@ server <- function(input, output, session)
                  config$vs <- 0.514444 * config$vs
                  ## Convert ship mass to kg, from tonne in the GUI
                  config$ms <- 1e3 * config$ms
-                 ## Convert some things from Pa in the file, to MPa in the GUI
-                 config$Ealpha <- 1e6 * config$Ealpha
-                 config$Ebeta <- 1e6 * config$Ebeta
-                 config$Egamma1 <- 1e6 * config$Egamma1
-                 config$Egamma2 <- 1e6 * config$Egamma2
-                 config$UTSalpha <- 1e6 * config$UTSalpha
-                 config$UTSbeta <- 1e6 * config$UTSbeta
-                 config$UTSgamma1 <- 1e6 * config$UTSgamma1
-                 config$UTSgamma2 <- 1e6 * config$UTSgamma2
                  ## save in alphabetical order
                  o <- order(names(config))
                  write.csv(config[o], row.names=FALSE, file=fullfile)
@@ -71,22 +62,14 @@ server <- function(input, output, session)
                  config$vs <- (1/0.514444) * config$vs
                  ## Convert ship mass from kg in file, to tonne in the GUI
                  config$ms <- 1e-3 * config$ms
-                 ## Convert some things from Pa in the file, to MPa in the GUI
-                 config$Ealpha <- 1e-6 * config$Ealpha
-                 config$Ebeta <- 1e-6 * config$Ebeta
-                 config$Egamma1 <- 1e-6 * config$Egamma1
-                 config$Egamma2 <- 1e-6 * config$Egamma2
-                 config$UTSalpha <- 1e-6 * config$UTSalpha
-                 config$UTSbeta <- 1e-6 * config$UTSbeta
-                 config$UTSgamma1 <- 1e-6 * config$UTSgamma1
-                 config$UTSgamma2 <- 1e-6 * config$UTSgamma2
-                 for (s in c("tmax", "ms", "lw", "vs", "Ly", "Lz",
-                             "alpha", "Ealpha", "UTSalpha",
-                             "theta",
-                             "beta", "Ebeta", "UTSbeta",
-                             "gammaType",
-                             "gamma1", "Egamma1", "UTSgamma1",
-                             "gamma2", "Egamma2", "UTSgamma2"))
+                 ## Insert individual thickness entries (one slider each)
+                 config$l1 <- config$l[1]
+                 config$l2 <- config$l[2]
+                 config$l3 <- config$l[3]
+                 config$l4 <- config$l[4]
+                 ## FIXME: l1, l2 etc
+                 for (s in c("ltmax", "ms", "lw", "vs", "Ly", "Lz", "theta",
+                             "l1", "l2", "l3", "l4"))
                      updateSliderInput(session, s, value=config[[s]])
                 })
     output$plot <- renderPlot({
@@ -99,7 +82,7 @@ server <- function(input, output, session)
                             l=c(input$l1, input$l2, input$l3, input$l4),
                             theta=input$theta) # angle retained in degree by whalestrike
         state <- c(xs=-(1 + parms$lsum), vs=input$vs * 0.514444, xw=0, vw=0)
-        t <- seq(0, 10^input$tmax, length.out=500)
+        t <- seq(0, 10^input$ltmax, length.out=500)
         sol <- strike(t, state, parms)
         par(mfcol=c(1, 3), mar=c(3, 3, 1, 2), mgp=c(2, 0.7, 0), cex=1)
         plot(sol) # c("location", "section", "threat"))
