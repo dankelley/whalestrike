@@ -32,13 +32,13 @@ length, using \code{\link{whaleMassFromLength}} with \code{type="wetted"}.}
 from whale length using \code{\link{whaleAreaFromLength}}.}
 
 \item{l}{Numerical vector of length 4, giving thickness [m] of skin, blubber,
-sub-layer, and bone. If not provided, this is set to
+sublayer, and bone. If not provided, this is set to
 \code{c(0.025, 0.16, 0.5, 0.2)}.
 The skin thicknes default of 0.025 m represents the 0.9-1.0 inch value
 stated in Section 2.2.3 of Raymond (2007).
 The blubber default of 0.16 m is a rounded average of the values inferred
 by whale necropsy, reported in Appendix 2 of Daoust et al., 2018.
-The sub-layer default of 0.5 m may be reasonable at some spots on the whale body.
+The sublayer default of 0.5 m may be reasonable at some spots on the whale body.
 The bone default of 0.1 m may be reasonable at some spots on the whale body.}
 
 \item{a, b}{Numerical vectors of length 4, giving values to use in the
@@ -59,14 +59,14 @@ being 17.8e6 Pa, which is the adult-seal value
 given in Table 3 of Grear et al. (2017).
 The blubber defaults are from a regression of the stress-strain
 relationship shown in Figure 2.13 of Raymond (2007).
-The sub-layer defaults are set to match those of blubber, lacking
+The sublayer defaults are set to match those of blubber, lacking
 any other information.
 The bone default for \code{b} is small, to set up a linear function,
 and \code{a*b} is set to equal 8.54e8 Pa,
 given in Table 2.3 of Raymond (2007).}
 
 \item{s}{Numerical vector of length 4, giving the ultimate strengths [Pa] of
-skin, blubber, sub-layer, and bone, respectively. If not provided, the
+skin, blubber, sublayer, and bone, respectively. If not provided, the
 value is set to
 \code{c(19.56e6, 4.37e5, 4.37e5, 22.9e6)},
 with reasoning as follows.
@@ -77,7 +77,7 @@ an orientation of 0 degrees.  The blubber value of
 multiplying Raymond's (2007) Figure 2.13 elastic modulus of 6.36e5 Pa
 by the ratio 0.97/1.41 determined for adult seal strength/modulus, as reported
 in Table 3 of Grear et al. (2018).
-The sub-layer value is taken to be identical to the blubber value, lacking
+The sublayer value is taken to be identical to the blubber value, lacking
 more specific information.
 The bone default o 2.29e7 Pa is from Table 2.3 of Raymond (2007).}
 

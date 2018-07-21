@@ -211,7 +211,7 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' @param Sw Whale surface area [m^2]. If not provided, this is calculated
 #' from whale length using \code{\link{whaleAreaFromLength}}.
 #' @param l Numerical vector of length 4, giving thickness [m] of skin, blubber,
-#' sub-layer, and bone. If not provided, this is set to
+#' sublayer, and bone. If not provided, this is set to
 #' \code{c(0.025, 0.16, 0.5, 0.2)}.
 #' The skin thicknes default of 0.025 m represents the 0.9-1.0 inch value
 #' stated in Section 2.2.3 of Raymond (2007).
@@ -219,7 +219,7 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' by whale necropsy, reported in Appendix 2 of Daoust et al., 2018.
 ## mean(c(17,14,18.13,18,21.25,16.75,13.33,7)) # cm
 ## [1] 15.6825
-#' The sub-layer default of 0.5 m may be reasonable at some spots on the whale body.
+#' The sublayer default of 0.5 m may be reasonable at some spots on the whale body.
 #' The bone default of 0.1 m may be reasonable at some spots on the whale body.
 #' @param a,b Numerical vectors of length 4, giving values to use in the
 #' stress-strain law \code{stress=a*(exp(b*strain)-1)}. \code{a} is in Pa
@@ -239,13 +239,13 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' given in Table 3 of Grear et al. (2017).
 #' The blubber defaults are from a regression of the stress-strain
 #' relationship shown in Figure 2.13 of Raymond (2007).
-#' The sub-layer defaults are set to match those of blubber, lacking
+#' The sublayer defaults are set to match those of blubber, lacking
 #' any other information.
 #' The bone default for \code{b} is small, to set up a linear function,
 #' and \code{a*b} is set to equal 8.54e8 Pa,
 #' given in Table 2.3 of Raymond (2007).
 #' @param s Numerical vector of length 4, giving the ultimate strengths [Pa] of
-#' skin, blubber, sub-layer, and bone, respectively. If not provided, the
+#' skin, blubber, sublayer, and bone, respectively. If not provided, the
 #' value is set to
 #' \code{c(19.56e6, 4.37e5, 4.37e5, 22.9e6)},
 #' with reasoning as follows.
@@ -256,7 +256,7 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' multiplying Raymond's (2007) Figure 2.13 elastic modulus of 6.36e5 Pa
 #' by the ratio 0.97/1.41 determined for adult seal strength/modulus, as reported
 #' in Table 3 of Grear et al. (2018).
-#' The sub-layer value is taken to be identical to the blubber value, lacking
+#' The sublayer value is taken to be identical to the blubber value, lacking
 #' more specific information.
 #' The bone default o 2.29e7 Pa is from Table 2.3 of Raymond (2007).
 #' @param theta Whale skin deformation angle [deg]; defaults to 45deg if not supplied.
@@ -541,7 +541,7 @@ whaleAreaFromLength <- function(L, type="wetted")
 #' of that force to the impact area; \code{strain}, the total
 #' strain, and \code{compressed}, a four-column matrix [m]
 #' with first column for skin compression, second for blubber
-#' compression, third for sub-layer compression, and fourth
+#' compression, third for sublayer compression, and fourth
 #' for bone compression.
 #'
 #' @references
@@ -820,7 +820,7 @@ strike <- function(t, state, parms, debug=0)
 #' in one panel, creating a cross-section diagram.
 #'
 ## \item \code{"injury"} a stacked plot showing time-series traces of health
-## indicators for skin extension, blubber compression, and sub-layer compression.
+## indicators for skin extension, blubber compression, and sublayer compression.
 ## These take the form of dotted horizontal lines, with labels above and at the
 ## left side of the panel.  During times when an injury criterion is halfway met,
 ## e.g. that blubber stress 1/2 the value of blubber strength, then the dotted
@@ -959,7 +959,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
     allowed <- c("all", "location", "section", "threat", "whale acceleration",
                  "blubber thickness", "sublayer thickness", "whale water
                  force", "reactive forces", "skin stress", "compression force",
-                 "compression stress", "values") 
+                 "compression stress", "values")
     for (w in which) {
         if (!(w %in% allowed))
             stop("which value \"", w, "\" is not allowed; try one of: \"",
@@ -1006,7 +1006,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         xusr <- par("usr")[1:2]
         x0 <- xusr[1] - 0.01*(xusr[2] - xusr[1]) # snuggle up to axis
         text(x0, -0.5*x$parms$l[4], "bone", pos=4)
-        text(x0, -x$parms$l[4]-0.5*x$parms$l[3], "sub-layer", pos=4)
+        text(x0, -x$parms$l[4]-0.5*x$parms$l[3], "sublayer", pos=4)
         text(x0, -x$parms$l[4]-x$parms$l[3]-0.5*x$parms$l[2], "blubber", pos=4)
         text(x0, 0.5*(ylim[1] - x$parms$lsum), "water/ship", pos=4)
         hatchPolygon <- FALSE
@@ -1128,16 +1128,11 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         }
         x0 <- xlim[1] #+ 0.04 * (xlim[2] - xlim[1])
         dylab <- 0.2
-        ## text(x0, y0     +dylab, "skin", pos=4)
-        ## text(x0, y0+1*dy+dylab, "blubber", pos=4)
-        ## text(x0, y0+2*dy+dylab, "sublayer", pos=4)
-        mtext("skin", side=2, at=y0-0.5*dy, line=0.25, cex=par("cex"))
-        mtext("blubber", side=2, at=y0+dy-0.5*dy, line=0.25, cex=par("cex"))
-        mtext("sub-layer", side=2, at=y0+2*dy-0.5*dy, line=0.25, cex=par("cex"))
-        mtext("bone", side=2, at=y0+3*dy-0.5*dy, line=0.25, cex=par("cex"))
+        mtext("bone", side=2, at=y0-0.5*dy, line=0.25, cex=par("cex"))
+        mtext("sublayer", side=2, at=y0+dy-0.5*dy, line=0.25, cex=par("cex"))
+        mtext("blubber", side=2, at=y0+2*dy-0.5*dy, line=0.25, cex=par("cex"))
+        mtext("skin", side=2, at=y0+3*dy-0.5*dy, line=0.25, cex=par("cex"))
         n <- length(t)
-        lines(t, skinThreat + y0, type='l')
-        lines(t, blubberThreat + y0 + dy, type='l')
 
         for (l in 0:3) {
             abline(h=y0+l*dy + 0.5, lty='dotted', lwd=0.5*lwd)
@@ -1153,30 +1148,32 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
             yy <- c(floor, y, floor)
             polygon(xx, yy, col=col)
         }
-        ## Skin
-        polygonWindow(t, y0+0*dy+skinThreat, col=colThreat[3], floor=y0)
-        polygonWindow(t, y0+0*dy+ifelse(skinThreat<1, skinThreat, 1), col=colThreat[2], floor=y0)
-        polygonWindow(t, y0+0*dy+ifelse(skinThreat<0.5, skinThreat, 0.5), col=colThreat[1], floor=y0)
-        lines(t, skinThreat + y0 + 0 * dy, lwd=3*lwd, col="white")
-        lines(t, skinThreat + y0 + 0 * dy, lwd=0.7*lwd)
-        ## Blubber
-        polygonWindow(t, y0+1*dy+blubberThreat, col=colThreat[3], floor=y0+dy)
-        polygonWindow(t, y0+1*dy+ifelse(blubberThreat<1, blubberThreat, 1), col=colThreat[2], floor=y0+dy)
-        polygonWindow(t, y0+1*dy+ifelse(blubberThreat<0.5, blubberThreat, 0.5), col=colThreat[1], floor=y0+dy)
-        lines(t, blubberThreat + y0 + 1 * dy, lwd=3*lwd, col="white")
-        lines(t, blubberThreat + y0 + 1 * dy, lwd=0.7*lwd)
-        ## Sublayer
-        polygonWindow(t, y0+2*dy+sublayerThreat, col=colThreat[3], floor=y0+2*dy)
-        polygonWindow(t, y0+2*dy+ifelse(sublayerThreat<1, sublayerThreat, 1), col=colThreat[2], floor=y0+2*dy)
-        polygonWindow(t, y0+2*dy+ifelse(sublayerThreat<0.5, sublayerThreat, 0.5), col=colThreat[1], floor=y0+2*dy)
-        lines(t, sublayerThreat + y0 + 2 * dy, lwd=3*lwd, col="white")
-        lines(t, sublayerThreat + y0 + 2 * dy, lwd=0.7*lwd)
-        ## Bone
-        polygonWindow(t, y0+3*dy+boneThreat, col=colThreat[3], floor=y0+3*dy)
-        polygonWindow(t, y0+3*dy+ifelse(boneThreat<1, boneThreat, 1), col=colThreat[2], floor=y0+3*dy)
-        polygonWindow(t, y0+3*dy+ifelse(boneThreat<0.5, boneThreat, 0.5), col=colThreat[1], floor=y0+3*dy)
-        lines(t, boneThreat + y0 + 3 * dy, lwd=3*lwd, col="white")
-        lines(t, boneThreat + y0 + 3 * dy, lwd=0.7*lwd)
+        thicker <- 2.0
+        thinner <- 0.8
+        ## Bone at top
+        polygonWindow(t, y0+0*dy+boneThreat, col=colThreat[3], floor=y0)
+        polygonWindow(t, y0+0*dy+ifelse(boneThreat<1, boneThreat, 1), col=colThreat[2], floor=y0)
+        polygonWindow(t, y0+0*dy+ifelse(boneThreat<0.5, boneThreat, 0.5), col=colThreat[1], floor=y0)
+        lines(t, boneThreat + y0 + 0 * dy, lwd=thicker*lwd, col="white")
+        lines(t, boneThreat + y0 + 0 * dy, lwd=thinner*lwd)
+        ## Sublayer below bone
+        polygonWindow(t, y0+1*dy+sublayerThreat, col=colThreat[3], floor=y0+dy)
+        polygonWindow(t, y0+1*dy+ifelse(sublayerThreat<1, sublayerThreat, 1), col=colThreat[2], floor=y0+dy)
+        polygonWindow(t, y0+1*dy+ifelse(sublayerThreat<0.5, sublayerThreat, 0.5), col=colThreat[1], floor=y0+dy)
+        lines(t, sublayerThreat + y0 + 1 * dy, lwd=thicker*lwd, col="white")
+        lines(t, sublayerThreat + y0 + 1 * dy, lwd=thinner*lwd)
+        ## Blubber second from bottom
+        polygonWindow(t, y0+2*dy+blubberThreat, col=colThreat[3], floor=y0+2*dy)
+        polygonWindow(t, y0+2*dy+ifelse(blubberThreat<1, blubberThreat, 1), col=colThreat[2], floor=y0+2*dy)
+        polygonWindow(t, y0+2*dy+ifelse(blubberThreat<0.5, blubberThreat, 0.5), col=colThreat[1], floor=y0+2*dy)
+        lines(t, blubberThreat + y0 + 2 * dy, lwd=thicker*lwd, col="white")
+        lines(t, blubberThreat + y0 + 2 * dy, lwd=thinner*lwd)
+        ## Skin at bottom
+        polygonWindow(t, y0+3*dy+skinThreat, col=colThreat[3], floor=y0+3*dy)
+        polygonWindow(t, y0+3*dy+ifelse(skinThreat<1, skinThreat, 1), col=colThreat[2], floor=y0+3*dy)
+        polygonWindow(t, y0+3*dy+ifelse(skinThreat<0.5, skinThreat, 0.5), col=colThreat[1], floor=y0+3*dy)
+        lines(t, skinThreat + y0 + 3 * dy, lwd=thicker*lwd, col="white")
+        lines(t, skinThreat + y0 + 3 * dy, lwd=thinner*lwd)
 
         ## Axes
         axis(4,y0+0*dy+c(0,0.5,1,1.5),labels=c("L", "M", "H", "E"))
