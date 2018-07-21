@@ -7,7 +7,7 @@ t <- seq(0, 1, length.out=200)
 state <- c(xs=-2.5, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
 parms <- parameters(ms=20e3, Ly=0.5, Lz=1, lw=13)
 sol <- strike(t, state, parms)
-par(mfcol=c(1, 3), mar=c(2, 3, 0.5, 2), mgp=c(2, 0.7, 0), cex=0.7)
+par(mfcol=c(1, 3), mar=c(3.3, 3, 1, 2), mgp=c(2, 0.7, 0), cex=0.7)
 plot(sol)
 
 ## ----results="hide"------------------------------------------------------

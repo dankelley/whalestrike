@@ -5,8 +5,8 @@
 \title{Plot a strike object}
 \usage{
 \method{plot}{strike}(x, which = "default", drawEvents = TRUE,
-  colwcenter = "Slate Gray", colwinterface = "black", colwskin = "black",
-  cols = "black", colThreat, lwd = 1.4, D = 3, debug = 0, ...)
+  colwcenter = "black", colwinterface = "black", colwskin = "black",
+  cols = "black", colThreat, lwd = 1, D = 3, debug = 0, ...)
 }
 \arguments{
 \item{x}{An object inheriting from class \code{strike}}

@@ -909,12 +909,12 @@ strike <- function(t, state, parms, debug=0)
 #' par(mar=c(3,3,1,1) ,mgp=c(2,0.7,0), mfrow=c(4,3))
 #' plot(sol, "all")
 plot.strike <- function(x, which="default", drawEvents=TRUE,
-                        colwcenter="Slate Gray",
+                        colwcenter="black", #Slate Gray",
                         colwinterface="black", #colwinterface="Firebrick",
                         colwskin="black", #colwskin="Dodger Blue 4",
                         cols="black",
                         colThreat,
-                        lwd=1.4, D=3, debug=0, ...)
+                        lwd=1, D=3, debug=0, ...)
 {
     showLegend <- FALSE
     if (missing(colThreat))
