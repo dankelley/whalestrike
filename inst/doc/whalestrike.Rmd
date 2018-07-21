@@ -77,7 +77,7 @@ ratio is 0, 1/2, 1, and 3/2, respectively.  Increasingly dark colour is also
 used to indicate these boundaries. Given the parameters used for this
 simulation, the sub-layer is in high threat of damage.
 
-```{r results="hide", fig.width=6, fig.height=3}
+```{r results="hide", fig.width=7, fig.height=4}
 library(whalestrike)
 t <- seq(0, 1, length.out=200)
 state <- c(xs=-2.5, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
@@ -99,11 +99,11 @@ by altering the thickness, modulus, and strength of the sublayer.
 This example shows how to extract information from a sequence of simulations,
 to create a graphical display that is not part of the default list. For
 clarity, this is done with a loop rather than using e.g `lapply`.
-```{r results="hide"}
+```{r results="hide", fig.width=7, fig.height=4}
 library(whalestrike)
 t <- seq(0, 1, length.out=200)
 state <- c(xs=-1.5, vs=10*0.5144, xw=0, vw=0) # 10 knots
-area <- seq(0.25, 2.5, length.out=50)
+area <- seq(0.25, 2.0, length.out=50)
 stress <- rep(NA, length.out=length(area)) # compressive stress [MPa]
 for (i in seq_along(area)) {
     L <- sqrt(area[i])
@@ -132,14 +132,14 @@ maximum compressive strain as a function of ship speed and blubber thickness.
 Note that the contour lines are thickened when the strain exceeds an estimate
 of the ratio of blubber ultimate tensile strength to blubber modulus.
 
-```{r results="hide"}
+```{r results="hide", fig.width=7, fig.height=4}
 library(whalestrike)
 t <- seq(0, 1, length.out=200)
 ## Hint: the following creates x and y of different lengths,
 ## so that mismatches between row/col and i/j values will
 ## yield errors.
 l2 <- seq(0.1, 0.25, length.out=9) # blubber thickness
-speedK <- seq(4, 12, length.out=10) # in knots
+speedK <- seq(4, 15, length.out=10) # in knots
 speed <- 0.5144 * speedK
 ## stress = peak stress during each simulation, in MPa
 stress <- matrix(NA, nrow=length(speed), ncol=length(l2))
