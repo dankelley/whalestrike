@@ -23,12 +23,19 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px;}")
                                             min=0.05, max=.4, value=0.2, step=0.01)),
                          column(2,
                                 sliderInput("l3", h6("Sub-layer thickness [m]"), tick=FALSE,
-                                            min=0.05, max=1.4, value=0.5, step=0.01),
+                                            min=0.05, max=2, value=1.1, step=0.01),
                                 sliderInput("l4", h6("Bone thickness [m]"), tick=FALSE,
                                             min=0.05, max=.4, value=0.2, step=0.01)),
                          column(2,
                                 fileInput("loadFile", "Configuration", multiple=FALSE, accept=c("text/csv", ".csv")),
-                                actionButton("saveFile", "Save"))),
+                                actionButton("saveFile", "Save")),
+                         column(2,
+                                checkboxGroupInput("plot_panels", "",
+                                                   choices=c("location", "section", "threat", "whale acceleration",
+                                                             "blubber thickness", "sublayer thickness",
+                                                             "whale water force", "reactive forces", "skin stress",
+                                                             "compression stress", "values"),
+                                                   selected=c("location", "section", "threat")))),
                 fluidRow(plotOutput("plot", height=500)))
 
 
@@ -45,7 +52,7 @@ server <- function(input, output, session)
                  fullfile <- paste0(home, .Platform$file.sep, file)
                  config <- reactiveValuesToList(input)
                  configNames <- names(config)
-                 w <- which("loadFile" == configNames | "saveFile" == configNames)
+                 w <- which("loadFile" == configNames | "saveFile" == configNames | "plot_panels" == configNames)
                  config <- config[-w]
                  ## Convert ship speed from to m/s, from knots in the GUI
                  config$vs <- 0.514444 * config$vs
@@ -84,8 +91,14 @@ server <- function(input, output, session)
         state <- c(xs=-(1 + parms$lsum), vs=input$vs * 0.514444, xw=0, vw=0)
         t <- seq(0, 10^input$ltmax, length.out=500)
         sol <- strike(t, state, parms)
-        par(mfcol=c(1, 3), mar=c(3, 3, 1, 2), mgp=c(2, 0.7, 0), cex=1)
-        plot(sol) # c("location", "section", "threat"))
+        par(mfrow=c(1, 3), mar=c(3, 3, 1, 2), mgp=c(2, 0.7, 0), cex=1)
+        npanels <- length(input$plot_panels)
+        nrows <- floor(sqrt(npanels))
+        ncols <- ceiling(npanels / nrows)
+        par(mfrow=c(nrows, ncols))
+        for (which in input$plot_panels)
+            plot(sol, which=which)
+        # plot(sol) # c("location", "section", "threat"))
     }, pointsize=12, height=500)
 }
 

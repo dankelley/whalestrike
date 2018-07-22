@@ -960,8 +960,8 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
 
     ## Ensure that the plot type is known.
     allowed <- c("all", "location", "section", "threat", "whale acceleration",
-                 "blubber thickness", "sublayer thickness", "whale water
-                 force", "reactive forces", "skin stress", "compression force",
+                 "blubber thickness", "sublayer thickness",
+                 "whale water force", "reactive forces", "skin stress",
                  "compression stress", "values")
     for (w in which) {
         if (!(w %in% allowed))
@@ -1242,10 +1242,10 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         mtext("(dotted) ", side=3, line=-2.2, adj=1, cex=par("cex"))
         showEvents(xs, xw)
     }
-    if (all || "compression force" %in% which) {
-        plot(t, x$WCF$force/1e6, type="l", xlab="Time [s]", ylab="Compress. Force [MN]", lwd=lwd, xaxs="i")
-        showEvents(xs, xw)
-    }
+    ##OLDif (all || "compression force" %in% which) {
+    ##OLD    plot(t, x$WCF$force/1e6, type="l", xlab="Time [s]", ylab="Compress. Force [MN]", lwd=lwd, xaxs="i")
+    ##OLD    showEvents(xs, xw)
+    ##OLD}
     if (all || "compression stress" %in% which) {
         force <- x$WCF$force
         stress <- force / (x$parms$Lz*x$parms$Ly)
