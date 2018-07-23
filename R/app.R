@@ -87,18 +87,16 @@ server <- function(input, output, session)
                             mw=whaleMassFromLength(input$lw),
                             Sw=whaleAreaFromLength(input$lw, "wetted"),
                             l=c(input$l1, input$l2, input$l3, input$l4),
-                            theta=input$theta) # angle retained in degree by whalestrike
+                            theta=input$theta) # in degrees; 0 means no bevel
         state <- c(xs=-(1 + parms$lsum), vs=input$vs * 0.514444, xw=0, vw=0)
         t <- seq(0, 10^input$ltmax, length.out=500)
         sol <- strike(t, state, parms)
-        par(mfrow=c(1, 3), mar=c(3, 3, 1, 2), mgp=c(2, 0.7, 0), cex=1)
         npanels <- length(input$plot_panels)
         nrows <- floor(sqrt(npanels))
         ncols <- ceiling(npanels / nrows)
-        par(mfrow=c(nrows, ncols))
+        par(mfrow=c(nrows,ncols), mar=c(3,3,1,2), mgp=c(2,0.7,0), cex=1)
         for (which in input$plot_panels)
             plot(sol, which=which)
-        # plot(sol) # c("location", "section", "threat"))
     }, pointsize=12, height=500)
 }
 
