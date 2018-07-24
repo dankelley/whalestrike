@@ -1293,9 +1293,30 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
 summarize <- function(object, style="text")
 {
     parm <- object$parm
+    parm$a1 <- parm$a[1]
+    parm$a2 <- parm$a[2]
+    parm$a3 <- parm$a[3]
+    parm$a4 <- parm$a[4]
+    parm$a <- NULL
+    parm$b1 <- parm$b[1]
+    parm$b2 <- parm$b[2]
+    parm$b3 <- parm$b[3]
+    parm$b4 <- parm$b[4]
+    parm$b <- NULL
+    parm$l1 <- parm$l[1]
+    parm$l2 <- parm$l[2]
+    parm$l3 <- parm$l[3]
+    parm$l4 <- parm$l[4]
+    parm$l <- NULL
+    parm$s1 <- parm$s[1]
+    parm$s2 <- parm$s[2]
+    parm$s3 <- parm$s[3]
+    parm$s4 <- parm$s[4]
+    parm$s <- NULL
+
     names <- names(parm)
     ## remove engineForce
-    parm <- parm[!(names %in% c("engineForce"))]
+    parm <- parm[!(names %in% c("engineForce", "stressFromStrain"))]
     names <- names(parm)
     parm <- unname(parm)
     meaning <- rep("", length(parm))
@@ -1323,6 +1344,22 @@ summarize <- function(object, style="text")
     meaning[names=="theta"] <- "Angle of skin-compression bevel [deg]."
     meaning[names=="Cw"] <- "Whale drag coefficient [unitless]."
     meaning[names=="Cs"] <- "Ship drag coefficient [unitless]."
+    meaning[names=="a1"] <- "Skin stress factor [Pa]."
+    meaning[names=="a2"] <- "Blubber stress factor [Pa]."
+    meaning[names=="a3"] <- "Sublayer stress factor [Pa]."
+    meaning[names=="a4"] <- "Bone stress factor [Pa]."
+    meaning[names=="b1"] <- "Skin stress nonlinearity [unitless]."
+    meaning[names=="b2"] <- "Blubber stress nonlinearity [unitless]."
+    meaning[names=="b3"] <- "Sublayer stress nonlinearity [unitless]."
+    meaning[names=="b4"] <- "Bone stress nonlinearity [unitless]."
+    meaning[names=="l1"] <- "Skin thickness [m]."
+    meaning[names=="l2"] <- "Blubber thickness [m]."
+    meaning[names=="l3"] <- "Sublayer thickness [m]."
+    meaning[names=="l4"] <- "Bone thickness [m]."
+    meaning[names=="s1"] <- "Skin strength [Pa]."
+    meaning[names=="s2"] <- "Blubber strength [Pa]."
+    meaning[names=="s3"] <- "Sublayer strength [Pa]."
+    meaning[names=="s4"] <- "Bone strength [Pa]."
     if (style == "latex") {
         ## names[which(names == "Ealpha")] <- "E_alpha"
         ## names[which(names == "Ebeta")] <- "E_beta"
@@ -1337,6 +1374,22 @@ summarize <- function(object, style="text")
         names[which(names == "Sw")] <- "S_w"
         names[which(names == "ms")] <- "M_s"
         names[which(names == "mw")] <- "M_w"
+        names[which(names == "a1")] <- "a_1"
+        names[which(names == "a2")] <- "a_2"
+        names[which(names == "a3")] <- "a_3"
+        names[which(names == "a4")] <- "a_4"
+        names[which(names == "b1")] <- "b_1"
+        names[which(names == "b2")] <- "b_2"
+        names[which(names == "b3")] <- "b_3"
+        names[which(names == "b4")] <- "b_4"
+        names[which(names == "l1")] <- "l_1"
+        names[which(names == "l2")] <- "l_2"
+        names[which(names == "l3")] <- "l_3"
+        names[which(names == "l4")] <- "l_4"
+        names[which(names == "s1")] <- "s_1"
+        names[which(names == "s2")] <- "s_2"
+        names[which(names == "s3")] <- "s_3"
+        names[which(names == "s4")] <- "s_4"
         parm <- data.frame(Symbol=names,
                            Meaning=meaning,
                            Value=as.matrix(unname(unclass(parm))),
