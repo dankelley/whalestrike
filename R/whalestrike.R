@@ -1315,8 +1315,8 @@ summarize <- function(object, style="text")
     parm$s <- NULL
 
     names <- names(parm)
-    ## remove engineForce
-    parm <- parm[!(names %in% c("engineForce", "stressFromStrain"))]
+    ## Remove some calculated things.
+    parm <- parm[!(names %in% c("engineForce", "stressFromStrain", "lsum"))]
     names <- names(parm)
     parm <- unname(parm)
     meaning <- rep("", length(parm))
@@ -1367,29 +1367,31 @@ summarize <- function(object, style="text")
         ## names[which(names == "UTSalpha")] <- "UTS_alpha"
         ## names[which(names == "UTSbeta")] <- "UTS_beta"
         ## names[which(names == "UTSgamma")] <- "UTS_gamma"
-        names[which(names == "lw")] <- "l_w"
-        names[which(names == "Ly")] <- "L_y"
-        names[which(names == "Lz")] <- "L_z"
-        names[which(names == "Ss")] <- "S_s"
-        names[which(names == "Sw")] <- "S_w"
-        names[which(names == "ms")] <- "M_s"
-        names[which(names == "mw")] <- "M_w"
-        names[which(names == "a1")] <- "a_1"
-        names[which(names == "a2")] <- "a_2"
-        names[which(names == "a3")] <- "a_3"
-        names[which(names == "a4")] <- "a_4"
-        names[which(names == "b1")] <- "b_1"
-        names[which(names == "b2")] <- "b_2"
-        names[which(names == "b3")] <- "b_3"
-        names[which(names == "b4")] <- "b_4"
-        names[which(names == "l1")] <- "l_1"
-        names[which(names == "l2")] <- "l_2"
-        names[which(names == "l3")] <- "l_3"
-        names[which(names == "l4")] <- "l_4"
-        names[which(names == "s1")] <- "s_1"
-        names[which(names == "s2")] <- "s_2"
-        names[which(names == "s3")] <- "s_3"
-        names[which(names == "s4")] <- "s_4"
+        names[which(names == "Cs")] <- "$C_s$"
+        names[which(names == "Cw")] <- "$C_w$"
+        names[which(names == "lw")] <- "$l_w$"
+        names[which(names == "Ly")] <- "$L_y$"
+        names[which(names == "Lz")] <- "$L_z$"
+        names[which(names == "Ss")] <- "$S_s$"
+        names[which(names == "Sw")] <- "$S_w$"
+        names[which(names == "ms")] <- "$M_s$"
+        names[which(names == "mw")] <- "$M_w$"
+        names[which(names == "a1")] <- "$a_1$"
+        names[which(names == "a2")] <- "$a_2$"
+        names[which(names == "a3")] <- "$a_3$"
+        names[which(names == "a4")] <- "$a_4$"
+        names[which(names == "b1")] <- "$b_1$"
+        names[which(names == "b2")] <- "$b_2$"
+        names[which(names == "b3")] <- "$b_3$"
+        names[which(names == "b4")] <- "$b_4$"
+        names[which(names == "l1")] <- "$l_1$"
+        names[which(names == "l2")] <- "$l_2$"
+        names[which(names == "l3")] <- "$l_3$"
+        names[which(names == "l4")] <- "$l_4$"
+        names[which(names == "s1")] <- "$s_1$"
+        names[which(names == "s2")] <- "$s_2$"
+        names[which(names == "s3")] <- "$s_3$"
+        names[which(names == "s4")] <- "$s_4$"
         parm <- data.frame(Symbol=names,
                            Meaning=meaning,
                            Value=as.matrix(unname(unclass(parm))),
@@ -1397,8 +1399,10 @@ summarize <- function(object, style="text")
         colnames(parm) <- c("Item", "Meaning", "Value", "Source")
         print(xtable(parm, label="table:model_parameters",
                      caption="Model parameters.",
-                     digits=4,
-                     display=c("d", "s", "s", "G", "s")), include.rownames=FALSE)
+                     display=c("d", "s", "s", "G", "s")),
+              math.style.exponents=TRUE,
+              sanitize.text.function=function(x) x,
+              include.rownames=FALSE)
     } else if (style == "text") {
         parm <- data.frame(Name=names, Meaning=meaning, Value=as.matrix(unname(unclass(parm))))
         colnames(parm) <- c("Item", "Meaning", "Value")
