@@ -597,11 +597,11 @@ whaleSkinForce <- function(xs, xw, parms)
     dx <- ifelse(touching, xs - (xw - parms$lsum), 0) # penetration distance
     C <- cos(parms$theta * pi / 180) # NB: theta is in deg
     S <- sin(parms$theta * pi / 180) # NB: theta is in deg
-    l <- dx * S / C                    # dek20180622_skin_strain eq 1
-    s <- dx / C                        # dek20180622_skin_strain eq 2
+    lambda <- dx * S / C               # dek20180622_skin_strain eq 1; called l until 20180725
+    Lambda <- dx / C                   # dek20180622_skin_strain eq 2; called s until 20180725
     ## Strains in y and z
-    epsilony <- 2 * (s - l) / (parms$Ly + 2 * l) # dek20180622_skin_strain  eq 3
-    epsilonz <- 2 * (s - l) / (parms$Lz + 2 * l) # analogous to dek20180622 eq 3
+    epsilony <- 2 * (Lambda - lambda) / (parms$Ly + 2 * lambda) # dek20180622_skin_strain  eq 3
+    epsilonz <- 2 * (Lambda - lambda) / (parms$Lz + 2 * lambda) # analogous to dek20180622 eq 3
     ## Stresses in y and z
     sigmay <- parms$a[1] * (exp(parms$b[1] * epsilony) - 1)
     sigmaz <- parms$a[1] * (exp(parms$b[1] * epsilonz) - 1)
