@@ -345,7 +345,7 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
         if (missing(l))
             l <- c(0.025, 0.16, 1.12, 0.1)
         if (missing(a))
-            a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
+            a <- c(17.8e6/0.1, 1.58e5, 1.1*1.58e5, 8.54e8/0.1)
         if (missing(b))
             b <- c(0.1, 2.54, 2.54, 0.1)
         if (missing(s))
