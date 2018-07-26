@@ -349,7 +349,7 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
         if (missing(b))
             b <- c(0.1, 2.54, 2.54, 0.1)
         if (missing(s))
-            s <- c(1.96e7, 4.37e5, 4.37e5, 2.29e7)
+            s <- c(1.96e7, 0.437e6, 1.1*0.437e6, 2.29e7)
         ## Value checks
         if (any(l <= 0) || length(l) != 4)
             stop("'l' must be 4 positive numbers")
