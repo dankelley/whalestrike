@@ -16,7 +16,7 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px;}")
                                             min=5,  max=15, value=13.7, step=0.1)),
                          column(2,
                                 sliderInput("theta", h6("Skin theta [deg]"), tick=FALSE,
-                                            min=40, max=70, value=55, step=1),
+                                            min=30, max=70, value=50, step=1),
                                 sliderInput("l1", h6("Skin thickness [m]"), tick=FALSE,
                                             min=0.01, max=0.03, value=0.025, step=0.001),
                                 sliderInput("l2", h6("Blubber thickness [m]"), tick=FALSE,

@@ -84,13 +84,12 @@ The sublayer value is taken to be identical to the blubber value, lacking
 more specific information.
 The bone default o 2.29e7 Pa is from Table 2.3 of Raymond (2007).}
 
-\item{theta}{Whale skin deformation angle [deg]; defaults to 55deg if not supplied,
-because that angle produces the best match to Raymond's (2007)
+\item{theta}{Whale skin deformation angle [deg]; defaults to 50 degrees,
+if not supplied, because that angle produces the best match to Raymond's (2007)
 Figure 6.1 for the total force as a function of vessel speed, for large
-vessels. (At this \code{theta} value, the mismatch for a simulation using
-\code{ms}=311e6 kg, \code{Ly}=1.29m and \code{Lz}=1.29m, was 0.08 MPa
-for compression force at 55 deg, and 0.16 MPa for total force at 50 deg; these
-values should be compared with forces in the range 0.4 to 1.6 MPa.)}
+vessels. (Note that the match works almost as well in the range 40 deg
+to 60 deg, and that matching just for \code{WCF$force} yields an optimal
+angle of 55 degrees.)}
 
 \item{Cs}{Drag coefficient for ship [dimensionless],
 used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults
