@@ -20,7 +20,7 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px;}")
                                 sliderInput("l1", h6("Skin thickness [m]"), tick=FALSE,
                                             min=0.01, max=0.03, value=0.025, step=0.001),
                                 sliderInput("l2", h6("Blubber thickness [m]"), tick=FALSE,
-                                            min=0.05, max=.4, value=0.2, step=0.01)),
+                                            min=0.05, max=.4, value=0.16, step=0.01)),
                          column(2,
                                 sliderInput("l3", h6("Sub-layer thickness [m]"), tick=FALSE,
                                             min=0.05, max=2, value=1.12, step=0.01),
