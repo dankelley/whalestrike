@@ -3,3 +3,4 @@ man-roxygen
 development
 ^.*\.Rproj$
 ^\.Rproj\.user$
+.build.timestamp

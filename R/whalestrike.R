@@ -262,7 +262,13 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' The sublayer value is taken to be identical to the blubber value, lacking
 #' more specific information.
 #' The bone default o 2.29e7 Pa is from Table 2.3 of Raymond (2007).
-#' @param theta Whale skin deformation angle [deg]; defaults to 45deg if not supplied.
+#' @param theta Whale skin deformation angle [deg]; defaults to 55deg if not supplied,
+#' because that angle produces the best match to Raymond's (2007)
+#' Figure 6.1 for the total force as a function of vessel speed, for large
+#' vessels. (At this \code{theta} value, the mismatch for a simulation using
+#' \code{ms}=311e6 kg, \code{Ly}=1.29m and \code{Lz}=1.29m, was 0.08 MPa
+#' for compression force at 55 deg, and 0.16 MPa for total force at 50 deg; these
+#' values should be compared with forces in the range 0.4 to 1.6 MPa.)
 #' @param Cs Drag coefficient for ship [dimensionless],
 #' used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults
 #' to 1e-2, which is 4 times the frictional coefficient of 2.5e-3
@@ -297,7 +303,7 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
                        lw=13, mw, Sw,
                        l, a, b, s,
-                       theta=45,
+                       theta=55,
                        Cs=0.01, Cw=0.0025, file)
 {
     if (!missing(file)) {

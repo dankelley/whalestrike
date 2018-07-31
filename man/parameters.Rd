@@ -5,7 +5,7 @@
 \title{Control parameters for whale strike simulation}
 \usage{
 parameters(ms = 20000, Ss, Ly = 0.5, Lz = 1, lw = 13, mw, Sw, l, a, b,
-  s, theta = 45, Cs = 0.01, Cw = 0.0025, file)
+  s, theta = 55, Cs = 0.01, Cw = 0.0025, file)
 }
 \arguments{
 \item{ms}{Ship mass [kg].}
@@ -84,7 +84,13 @@ The sublayer value is taken to be identical to the blubber value, lacking
 more specific information.
 The bone default o 2.29e7 Pa is from Table 2.3 of Raymond (2007).}
 
-\item{theta}{Whale skin deformation angle [deg]; defaults to 45deg if not supplied.}
+\item{theta}{Whale skin deformation angle [deg]; defaults to 55deg if not supplied,
+because that angle produces the best match to Raymond's (2007)
+Figure 6.1 for the total force as a function of vessel speed, for large
+vessels. (At this \code{theta} value, the mismatch for a simulation using
+\code{ms}=311e6 kg, \code{Ly}=1.29m and \code{Lz}=1.29m, was 0.08 MPa
+for compression force at 55 deg, and 0.16 MPa for total force at 50 deg; these
+values should be compared with forces in the range 0.4 to 1.6 MPa.)}
 
 \item{Cs}{Drag coefficient for ship [dimensionless],
 used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults
