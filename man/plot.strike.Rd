@@ -29,7 +29,10 @@ in one panel, creating a cross-section diagram.
 ad-hoc measure of the possible threat to skin, blubber and sublayer.
 The threat level is computed as the ratio
 of stress to ultimate strength, e.g. for blubber, it is
-\code{x$WCF$stress/x$parms$s[2]}.
+\code{x$WCF$stress/x$parms$s[2]}. The curves are filled in with a light
+gray colour for stress/strength values up to 1, and with black for
+higher values; thus, a glance reveals whether the simulation indicates
+strong threats to whale health.
 
 \item \code{"whale acceleration"} for a time-series plot of whale acceleration.
 
