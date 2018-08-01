@@ -45,13 +45,15 @@ is consistent with a half-circumferance of 4.4 m, reported in Table 2.2
 of Raymond (2007).}
 
 \item{a, b}{Numerical vectors of length 4, giving values to use in the
-stress-strain law \code{stress=a*(exp(b*strain)-1)}. \code{a} is in Pa
-and \code{b} is unitless.  Note that \code{a*b} is the local modulus at
-low strain, and that \code{b} is the efolding scale for nonlinear increase
-in stress with strain. This exponential relationship has been mapped out
+stress-strain law \code{stress=a*(exp(b*strain)-1)}, where \code{a} is in Pa
+and \code{b} is unitless. By construction, \code{a*b} is the local modulus at
+low strain (i.e. at low \code{b*strain} values), and that \code{b} is the
+efolding scale for nonlinear increase in stress with strain.
+This exponential relationship has been mapped out
 for whale blubber, using a curve fit to Figure 2.13 of Raymond (2007), and
 these values are used for the second layer (blubber); see
-\link{raymond2007} for how the fit was done.
+the documentation for the \link{raymond2007} dataset, to see
+for how that fit was done.
 If not provided, \code{a} defaults to
 \code{c(17.80e6/0.1, 1.64e5, 1.64e5, 854.2e6/0.1)}
 and \code{b} defaults to
@@ -66,7 +68,8 @@ The sublayer defaults are set to match those of blubber, lacking
 any other information.
 The bone default for \code{b} is small, to set up a linear function,
 and \code{a*b} is set to equal 8.54e8 Pa,
-given in Table 2.3 of Raymond (2007).}
+given in Table 2.3 of Raymond (2007) and Table 4.5 of
+Campbell-Malone (2007)..}
 
 \item{s}{Numerical vector of length 4, giving the ultimate strengths [Pa] of
 skin, blubber, sublayer, and bone, respectively. If not provided, the
@@ -82,7 +85,8 @@ by the ratio 0.97/1.41 determined for adult seal strength/modulus, as reported
 in Table 3 of Grear et al. (2018).
 The sublayer value is taken to be identical to the blubber value, lacking
 more specific information.
-The bone default o 2.29e7 Pa is from Table 2.3 of Raymond (2007).}
+The bone default o 2.29e7 Pa is from Table 2.3 of Raymond (2007) and
+Table 4.5 of Campbell-Malone (2007).}
 
 \item{theta}{Whale skin deformation angle [deg]; defaults to 50 degrees,
 if not supplied, because that angle produces the best match to Raymond's (2007)
@@ -124,6 +128,11 @@ Assembles control parameters into a list suitable for passing to \code{\link{str
 and the functions that it calls. If \code{file} is provided, then all the other
 arguments are read from that source.
 Below are some sources cited in the discussion of the function arguments.
+
+Campbell-Malone, Regina. “Biomechanics of North Atlantic Right Whale Bone :
+Mandibular Fracture as a Fatal Endpoint for Blunt Vessel-Whale Collision
+Modeling.” PhD Thesis, Massachusetts Institute of Technology and Woods Hole
+Oceanographic Institution, 2007. \url{https://doi.org/10.1575/1912/1817}.
 
 Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
 “Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.

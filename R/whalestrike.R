@@ -190,6 +190,7 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' and the functions that it calls. If \code{file} is provided, then all the other
 #' arguments are read from that source.
 #' Below are some sources cited in the discussion of the function arguments.
+#' @template ref_campbell_malone
 #' @template ref_daoust
 #' @template ref_grear
 #' @template ref_raymond
@@ -225,13 +226,15 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' is consistent with a half-circumferance of 4.4 m, reported in Table 2.2
 #' of Raymond (2007).
 #' @param a,b Numerical vectors of length 4, giving values to use in the
-#' stress-strain law \code{stress=a*(exp(b*strain)-1)}. \code{a} is in Pa
-#' and \code{b} is unitless.  Note that \code{a*b} is the local modulus at
-#' low strain, and that \code{b} is the efolding scale for nonlinear increase
-#' in stress with strain. This exponential relationship has been mapped out
+#' stress-strain law \code{stress=a*(exp(b*strain)-1)}, where \code{a} is in Pa
+#' and \code{b} is unitless. By construction, \code{a*b} is the local modulus at
+#' low strain (i.e. at low \code{b*strain} values), and that \code{b} is the
+#' efolding scale for nonlinear increase in stress with strain.
+#' This exponential relationship has been mapped out
 #' for whale blubber, using a curve fit to Figure 2.13 of Raymond (2007), and
 #' these values are used for the second layer (blubber); see
-#' \link{raymond2007} for how the fit was done.
+#' the documentation for the \link{raymond2007} dataset, to see
+#' for how that fit was done.
 #' If not provided, \code{a} defaults to
 #' \code{c(17.80e6/0.1, 1.64e5, 1.64e5, 854.2e6/0.1)}
 #' and \code{b} defaults to
@@ -246,7 +249,8 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' any other information.
 #' The bone default for \code{b} is small, to set up a linear function,
 #' and \code{a*b} is set to equal 8.54e8 Pa,
-#' given in Table 2.3 of Raymond (2007).
+#' given in Table 2.3 of Raymond (2007) and Table 4.5 of
+#' Campbell-Malone (2007)..
 #' @param s Numerical vector of length 4, giving the ultimate strengths [Pa] of
 #' skin, blubber, sublayer, and bone, respectively. If not provided, the
 #' value is set to
@@ -261,7 +265,8 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' in Table 3 of Grear et al. (2018).
 #' The sublayer value is taken to be identical to the blubber value, lacking
 #' more specific information.
-#' The bone default o 2.29e7 Pa is from Table 2.3 of Raymond (2007).
+#' The bone default o 2.29e7 Pa is from Table 2.3 of Raymond (2007) and
+#' Table 4.5 of Campbell-Malone (2007).
 #' @param theta Whale skin deformation angle [deg]; defaults to 50 degrees,
 #' if not supplied, because that angle produces the best match to Raymond's (2007)
 #' Figure 6.1 for the total force as a function of vessel speed, for large
