@@ -1218,7 +1218,39 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
                legend=rev(c("Skin", "Blubber", "Sublayer", "Bone")))
         showEvents(xs, xw)
     }
+    if (all || "threatNEW4" %in% which) {
+        ##tcol <- hcl(h=c(30, 120, 210, 300), c=20, l=90, fixup=FALSE)
+        tcol <- hcl(h=c(30, 120, 210, 300))
+        tcol <- rep(1, 4)
+        skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
+        skinyThreat <- x$WSF$sigmay / x$parms$s[1]
+        skinThreat <- ifelse(skinyThreat > skinzThreat, skinyThreat, skinzThreat)
+        blubberThreat <- x$WCF$stress /  x$parms$s[2]
+        sublayerThreat <- x$WCF$stress /  x$parms$s[3]
+        boneThreat <- x$WCF$stress /  x$parms$s[4]
+        totalThreat <- skinThreat + blubberThreat + sublayerThreat + boneThreat
+        worst <- max(c(skinThreat, blubberThreat, sublayerThreat, boneThreat))
+        dy <- round(0.5 + worst)
+        ylim <- c(0, 3*dy+worst)
+        plot(range(t), ylim, type="n", xlab="Time [s]", ylab="Threat", axes=FALSE)
+        axis(1)
+        box()
+        axis(2, at=pretty(c(0, worst)))
+        lines(t, skinThreat, col=tcol[1])
+        mtext("Skin", side=4, at=0)
+        lines(t, dy + blubberThreat, col=tcol[2])
+        abline(h=dy, col=tcol[2], lty=3)
+        mtext("Blubber", side=4, at=dy)
+        lines(t, 2*dy + sublayerThreat, col=tcol[3])
+        abline(h=2*dy, col=tcol[3], lty=3)
+        mtext("Sublayer", side=4, at=2*dy)
+        lines(t, 3*dy + boneThreat, col=tcol[3])
+        abline(h=3*dy, col=tcol[4], lty=3)
+        mtext("Bone", side=4, at=3*dy)
+        showEvents(xs, xw)
+    }
    
+    
     if (all || "threat" %in% which) {
         skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
         skinyThreat <- x$WSF$sigmay / x$parms$s[1]
