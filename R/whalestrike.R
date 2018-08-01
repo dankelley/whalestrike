@@ -1184,27 +1184,38 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         box()
         yTicks <- pretty(c(0, worst))
         axis(2, at=yTicks)
-        mtext("Threat (stress/strength)", side=2, line=2)
+        mtext("Threat (stress / strength)", side=2, line=2)
+        ## Skin
+        mtext("Skin", side=4, at=0)
         lines(t, skinThreat, col=tcol[1])
         abline(h=0, col=tcol[1], lty=3)
-        mtext("Skin", side=4, at=0)
+        fillplot(t, 0, skinThreat, col="black")
+        ok <- skinThreat < 1
+        fillplot(t[ok], 0, skinThreat[ok], col="lightgray")
+        ## Blubber
+        mtext("Blubber", side=4, at=dy)
         lines(t, dy + blubberThreat, col=tcol[2])
         abline(h=dy, col=tcol[2], lty=3)
-        ##mtext("Skin", side=2, at=0.5*dy, line=-1.5)
-        mtext("Blubber", side=4, at=dy)
-        ##mtext("Blubber", side=2, at=1.5*dy, line=-1.5)
+        fillplot(t, dy, dy+blubberThreat, col="black")
+        ok <- blubberThreat < 1
+        fillplot(t[ok], dy[ok], (dy+blubberThreat)[ok], col="lightgray")
         axis(2, at=dy+yTicks, label=rep("", length(yTicks)), tcl=0.5)
+        ## Sublayer 
+        mtext("Sublayer", side=4, at=2*dy)
         lines(t, 2*dy + sublayerThreat, col=tcol[3])
         abline(h=2*dy, col=tcol[3], lty=3)
-        mtext("Sublayer", side=4, at=2*dy)
-        ##mtext("Sublayer", side=2, at=2.5*dy, line=-1.5)
+        fillplot(t, 2*dy, 2*dy+sublayerThreat, col="black")
+        ok <- sublayerThreat < 1
+        fillplot(t[ok], 2*dy[ok], (2*dy+sublayerThreat)[ok], col="lightgray")
         axis(2, at=2*dy+yTicks, label=yTicks)
+        ## Bone
+        mtext("Bone", side=4, at=3*dy)
         lines(t, 3*dy + boneThreat, col=tcol[3])
         abline(h=3*dy, col=tcol[4], lty=3)
-        ##mtext("Bone", side=2, at=3.5*dy, line=-1.5)
-        mtext("Bone", side=4, at=3*dy)
+        fillplot(t, 3*dy, 3*dy+boneThreat, col="black")
+        ok <- boneThreat < 1
+        fillplot(t[ok], 3*dy[ok], (3*dy+boneThreat)[ok], col="lightgray")
         axis(2, at=3*dy+yTicks, label=rep("", length(yTicks)), tcl=0.5)
-        #text(par("usr")[1], 3*dy, "Bone", pos=4, adj=c(0, 1))
         showEvents(xs, xw)
     }
  
