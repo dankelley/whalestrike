@@ -29,9 +29,7 @@ in one panel, creating a cross-section diagram.
 ad-hoc measure of the possible threat to skin, blubber and sublayer.
 The threat level is computed as the ratio
 of stress to ultimate strength, e.g. for blubber, it is
-\code{x$WCF$stress/x$parms$s[2]}. Colour-coding indicates levels
-from 0 to 1/2, from 1/2 to 1, and above 1. An axis categorizes
-threat level 0 as "L", 0.5 as "M", and 1 as "H".
+\code{x$WCF$stress/x$parms$s[2]}.
 
 \item \code{"whale acceleration"} for a time-series plot of whale acceleration.
 
