@@ -947,8 +947,8 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         firstDead <- which(death)[1]
         dead <- firstDead:length(t)
         xw[dead] <- xw[firstDead]
-        x$WCF$compressed[1][dead] <- 0
-        x$WCF$compressed[2][dead] <- 0
+        x$WCF$compressed[dead,1] <- 0
+        x$WCF$compressed[dead,2] <- 0
     }
     showEvents <- function(xs, xw) {
         if (drawEvents) {
@@ -974,7 +974,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
                  "whale water force", "reactive forces", "skin stress",
                  "compression stress", "values")
     for (w in which) {
-        if (!(w %in% allowed))
+        if (!(w %in% allowed) && !length(grep("NEW", w)))
             stop("which value \"", w, "\" is not allowed; try one of: \"",
                  paste(allowed, collapse="\" \""), "\"")
     }
@@ -1120,7 +1120,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
     ##     showEvents(xs, xw)
     ## }
 
-    if (all || "threatNEW" %in% which) {
+    if (all || "threatNEW1" %in% which) {
         skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
         skinyThreat <- x$WSF$sigmay / x$parms$s[1]
         skinThreat <- ifelse(skinyThreat > skinzThreat, skinyThreat, skinzThreat)
@@ -1135,7 +1135,24 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         legend("topright", lwd=par("lwd"), col=1:4, legend=c("Skin", "Blubber", "Sublayer", "Bone"))
         showEvents(xs, xw)
     }
- 
+    if (all || "threatNEW2" %in% which) {
+        skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
+        skinyThreat <- x$WSF$sigmay / x$parms$s[1]
+        skinThreat <- ifelse(skinyThreat > skinzThreat, skinyThreat, skinzThreat)
+        blubberThreat <- x$WCF$stress /  x$parms$s[2]
+        sublayerThreat <- x$WCF$stress /  x$parms$s[3]
+        boneThreat <- x$WCF$stress /  x$parms$s[4]
+        totalThreat <- skinThreat + blubberThreat + sublayerThreat + boneThreat
+        ylim <- c(0, max(totalThreat, na.rm=TRUE))
+        plot(t, skinThreat, ylim=ylim, col=1, type="l")
+        lines(t, skinThreat+blubberThreat, col=2)
+        lines(t, skinThreat+blubberThreat+sublayerThreat, col=3)
+        lines(t, skinThreat+blubberThreat+sublayerThreat+boneThreat, col=4)
+        legend("topright", title="Cumulative threat",
+               lwd=par("lwd"), col=1:4, legend=c("Skin", "Blubber", "Sublayer", "Bone"))
+        showEvents(xs, xw)
+    }
+  
     if (all || "threat" %in% which) {
         skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
         skinyThreat <- x$WSF$sigmay / x$parms$s[1]
