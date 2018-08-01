@@ -1120,6 +1120,22 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
     ##     showEvents(xs, xw)
     ## }
 
+    if (all || "threatNEW" %in% which) {
+        skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
+        skinyThreat <- x$WSF$sigmay / x$parms$s[1]
+        skinThreat <- ifelse(skinyThreat > skinzThreat, skinyThreat, skinzThreat)
+        blubberThreat <- x$WCF$stress /  x$parms$s[2]
+        sublayerThreat <- x$WCF$stress /  x$parms$s[3]
+        boneThreat <- x$WCF$stress /  x$parms$s[4]
+        ylim <- c(0, max(c(skinThreat, blubberThreat, sublayerThreat, boneThreat),na.rm=TRUE))
+        plot(t, skinThreat, ylim=ylim, col=1, type="l")
+        lines(t, blubberThreat, col=2)
+        lines(t, sublayerThreat, col=3)
+        lines(t, boneThreat, col=4)
+        legend("topright", lwd=par("lwd"), col=1:4, legend=c("Skin", "Blubber", "Sublayer", "Bone"))
+        showEvents(xs, xw)
+    }
+ 
     if (all || "threat" %in% which) {
         skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
         skinyThreat <- x$WSF$sigmay / x$parms$s[1]
