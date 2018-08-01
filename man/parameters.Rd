@@ -38,7 +38,7 @@ The skin thicknes default of 0.025 m represents the 0.9-1.0 inch value
 stated in Section 2.2.3 of Raymond (2007).
 The blubber default of 0.16 m is a rounded average of the values inferred
 by whale necropsy, reported in Appendix 2 of Daoust et al., 2018.
-The sublayer default of 1.1 m may be reasonable at some spots on the whale body.
+The sublayer default of 1.12 m may be reasonable at some spots on the whale body.
 The bone default of 0.1 m may be reasonable at some spots on the whale body.
 The sum of these default values, 1.40 m, is a whale radius that
 is consistent with a half-circumferance of 4.4 m, reported in Table 2.2
@@ -55,9 +55,9 @@ these values are used for the second layer (blubber); see
 the documentation for the \link{raymond2007} dataset, to see
 for how that fit was done.
 If not provided, \code{a} defaults to
-\code{c(17.80e6/0.1, 1.64e5, 1.64e5, 854.2e6/0.1)}
+\code{c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)}
 and \code{b} defaults to
-\code{c(0.1, 2.47, 2.47, 0.1)}.
+\code{c(0.1, 2.54, 2.54, 0.1)}.
 The skin defaults are set up to give a linear shape (since \code{b} is small)
 with the \code{a*b} product
 being 17.8e6 Pa, which is the adult-seal value
@@ -74,18 +74,18 @@ Campbell-Malone (2007)..}
 \item{s}{Numerical vector of length 4, giving the ultimate strengths [Pa] of
 skin, blubber, sublayer, and bone, respectively. If not provided, the
 value is set to
-\code{c(19.56e6, 4.37e5, 4.37e5, 22.9e6)},
+\code{c(19.6e6, 0.437e6, 0.437e6, 22.9e6)},
 with reasoning as follows.
-The skin default of 1.96e7 Pa
+The skin default of 19.6 MPa
 is a rounded value from Table 3 of Grear et al. (2018) for adult seal skin strength at
 an orientation of 0 degrees.  The blubber value of
-4.37e5 Pa is inferred by
-multiplying Raymond's (2007) Figure 2.13 elastic modulus of 6.36e5 Pa
+0.437 MPa is inferred by
+multiplying Raymond's (2007) Figure 2.13 elastic modulus of 0.636 MPa
 by the ratio 0.97/1.41 determined for adult seal strength/modulus, as reported
 in Table 3 of Grear et al. (2018).
 The sublayer value is taken to be identical to the blubber value, lacking
 more specific information.
-The bone default o 2.29e7 Pa is from Table 2.3 of Raymond (2007) and
+The bone default o 22.9 MPa is from Table 2.3 of Raymond (2007) and
 Table 4.5 of Campbell-Malone (2007).}
 
 \item{theta}{Whale skin deformation angle [deg]; defaults to 50 degrees,

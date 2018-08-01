@@ -265,7 +265,7 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' by whale necropsy, reported in Appendix 2 of Daoust et al., 2018.
 ## > round(mean(c(17,14,18.13,18,21.25,16.75,13.33,7)/100),2)
 ## [1] 0.16
-#' The sublayer default of 1.1 m may be reasonable at some spots on the whale body.
+#' The sublayer default of 1.12 m may be reasonable at some spots on the whale body.
 #' The bone default of 0.1 m may be reasonable at some spots on the whale body.
 #' The sum of these default values, 1.40 m, is a whale radius that
 #' is consistent with a half-circumferance of 4.4 m, reported in Table 2.2
@@ -281,9 +281,9 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' the documentation for the \link{raymond2007} dataset, to see
 #' for how that fit was done.
 #' If not provided, \code{a} defaults to
-#' \code{c(17.80e6/0.1, 1.64e5, 1.64e5, 854.2e6/0.1)}
+#' \code{c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)}
 #' and \code{b} defaults to
-#' \code{c(0.1, 2.47, 2.47, 0.1)}.
+#' \code{c(0.1, 2.54, 2.54, 0.1)}.
 #' The skin defaults are set up to give a linear shape (since \code{b} is small)
 #' with the \code{a*b} product
 #' being 17.8e6 Pa, which is the adult-seal value
@@ -299,18 +299,18 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' @param s Numerical vector of length 4, giving the ultimate strengths [Pa] of
 #' skin, blubber, sublayer, and bone, respectively. If not provided, the
 #' value is set to
-#' \code{c(19.56e6, 4.37e5, 4.37e5, 22.9e6)},
+#' \code{c(19.6e6, 0.437e6, 0.437e6, 22.9e6)},
 #' with reasoning as follows.
-#' The skin default of 1.96e7 Pa
+#' The skin default of 19.6 MPa
 #' is a rounded value from Table 3 of Grear et al. (2018) for adult seal skin strength at
 #' an orientation of 0 degrees.  The blubber value of
-#' 4.37e5 Pa is inferred by
-#' multiplying Raymond's (2007) Figure 2.13 elastic modulus of 6.36e5 Pa
+#' 0.437 MPa is inferred by
+#' multiplying Raymond's (2007) Figure 2.13 elastic modulus of 0.636 MPa
 #' by the ratio 0.97/1.41 determined for adult seal strength/modulus, as reported
 #' in Table 3 of Grear et al. (2018).
 #' The sublayer value is taken to be identical to the blubber value, lacking
 #' more specific information.
-#' The bone default o 2.29e7 Pa is from Table 2.3 of Raymond (2007) and
+#' The bone default o 22.9 MPa is from Table 2.3 of Raymond (2007) and
 #' Table 4.5 of Campbell-Malone (2007).
 #' @param theta Whale skin deformation angle [deg]; defaults to 50 degrees,
 #' if not supplied, because that angle produces the best match to Raymond's (2007)
@@ -400,11 +400,11 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
         if (missing(l))
             l <- c(0.025, 0.16, 1.12, 0.1)
         if (missing(a))
-            a <- c(17.8e6/0.1, 1.58e5, 1.1*1.58e5, 8.54e8/0.1)
+            a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
         if (missing(b))
             b <- c(0.1, 2.54, 2.54, 0.1)
         if (missing(s))
-            s <- c(1.96e7, 0.437e6, 1.1*0.437e6, 2.29e7)
+            s <- c(19.6e6, 0.437e6, 0.437e6, 22.9e6)
         ## Value checks
         if (any(l <= 0) || length(l) != 4)
             stop("'l' must be 4 positive numbers")
