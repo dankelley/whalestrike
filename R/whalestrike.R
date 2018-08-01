@@ -1215,10 +1215,10 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         fillplot(t, 3*dy, 3*dy+boneThreat, col="black")
         ok <- boneThreat < 1
         fillplot(t[ok], 3*dy[ok], (3*dy+boneThreat)[ok], col="lightgray")
-        axis(2, at=3*dy+yTicks, label=rep("", length(yTicks)), tcl=0.5)
+        axis(2, at=3*dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
         showEvents(xs, xw)
     }
- 
+
     if (all || "threat-style-1" %in% which) {
         skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
         skinyThreat <- x$WSF$sigmay / x$parms$s[1]
