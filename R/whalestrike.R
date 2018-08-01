@@ -1,6 +1,51 @@
 library(deSolve)
 library(xtable)
 
+#' Draw polygon between two xy curves
+#'
+#' This adds to an existing plot by filling the area between the
+#' lower=lower(x) and upper=upper(x) curves.  In most cases, as
+#' shown in \dQuote{Examples}, it is helpful
+#' to use \code{xaxs="i"} in the preceding plot call, so that the
+#' polygon reaches to the edge of the plot area.
+#'
+#' @param x Coordinate along horizontal axis
+#' @param lower Coordinates of the lower curve, of same length as \code{x},
+#' or a single value that gets repeated to the length of \code{x}.
+#' @param upper Coordinates of the upper curve, or a single value that gets
+#' repeated to the length of \code{x}.
+#' @param ... passed to \code{\link{polygon}}. In most cases, this
+#' will contain \code{col}, the fill colour, and possibly \code{border},
+#' the border colour, although cross-hatching with \code{density}
+#' and \code{angle} is also a good choice.
+#' @examples
+#' ## 1. CO2 record
+#' plot(co2, xaxs="i", yaxs="i")
+#' fillplot(time(co2), min(co2), co2, col="pink")
+#'
+#' ## 2. stack (summed y) plot
+#' x <- seq(0, 1, 0.01)
+#' lower <- x
+#' upper <- 0.5 * (1 + sin(2 * pi * x / 0.2))
+#' plot(range(x), range(lower, lower+upper), type='n',
+#'      xlab="x", ylab="y1, y1+y2",
+#'      xaxs="i", yaxs="i")
+#' fillplot(x, min(lower), lower, col="darkgray")
+#' fillplot(x, lower, lower+upper, col="lightgray")
+fillplot <- function(x, lower, upper, ...)
+{
+    if (length(lower) == 1)
+        lower <- rep(lower, length(x))
+    if (length(upper) == 1)
+        upper <- rep(upper, length(x))
+    if (length(x) != length(lower)) stop("lengths of x and lower must match")
+    if (length(upper) != length(lower)) stop("lengths of lower and upper must match")
+    xx <- c(x, rev(x))
+    yy <- c(lower, rev(upper))
+    polygon(xx, yy, ...)
+}
+
+
 #' Whale blubber stress-strain relationship
 #'
 #' This is a data frame with elements \code{strain} and \code{stess},
@@ -1149,10 +1194,31 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         lines(t, skinThreat+blubberThreat+sublayerThreat, col=3)
         lines(t, skinThreat+blubberThreat+sublayerThreat+boneThreat, col=4)
         legend("topright", title="Cumulative threat",
-               lwd=par("lwd"), col=1:4, legend=c("Skin", "Blubber", "Sublayer", "Bone"))
+               lwd=4*par("lwd"), col=rev(1:4),
+               legend=rev(c("Skin", "Blubber", "Sublayer", "Bone")))
         showEvents(xs, xw)
     }
-  
+    if (all || "threatNEW3" %in% which) {
+        ##tcol <- hcl(h=c(30, 120, 210, 300), c=20, l=90, fixup=FALSE)
+        tcol <- hcl(h=c(30, 120, 210, 300))
+        skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
+        skinyThreat <- x$WSF$sigmay / x$parms$s[1]
+        skinThreat <- ifelse(skinyThreat > skinzThreat, skinyThreat, skinzThreat)
+        blubberThreat <- x$WCF$stress /  x$parms$s[2]
+        sublayerThreat <- x$WCF$stress /  x$parms$s[3]
+        boneThreat <- x$WCF$stress /  x$parms$s[4]
+        totalThreat <- skinThreat + blubberThreat + sublayerThreat + boneThreat
+        ylim <- c(0, max(totalThreat, na.rm=TRUE))
+        plot(range(t), ylim, type="n", xlab="Time [s]", ylab="Cumulative Threat")
+        fillplot(t, 0, skinThreat, col=tcol[1])
+        fillplot(t, skinThreat, skinThreat+blubberThreat, col=tcol[2])
+        fillplot(t, skinThreat+blubberThreat, skinThreat+blubberThreat+sublayerThreat, col=tcol[3])
+        fillplot(t, skinThreat+blubberThreat+sublayerThreat, skinThreat+blubberThreat+sublayerThreat+boneThreat, col=tcol[4])
+        legend("topright", lwd=8*par("lwd"), col=rev(tcol),
+               legend=rev(c("Skin", "Blubber", "Sublayer", "Bone")))
+        showEvents(xs, xw)
+    }
+   
     if (all || "threat" %in% which) {
         skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
         skinyThreat <- x$WSF$sigmay / x$parms$s[1]
