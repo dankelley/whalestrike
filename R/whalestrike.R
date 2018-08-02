@@ -565,17 +565,26 @@ whaleLengthFromMass <- function(M, model="fortune2012atlantic")
 }
 
 #' Whale projected area, as function of length
+#'
+#' This depends on calculations based on the digitized shape of
+#' a whale necropsy, which is provided as \code{data(\link{whaleshape})}.
+#' The results are
+#' \preformatted{0.143 * L^2} for the projected area [1]
+#' and
+#' \preformatted{0.448 * (0.877 * L)^2} for the wetted area,
+#' where the latter uses a correction related to whale mass [2].
+#'
+#' Note that multiple digitizations were done,
+#' and that the coefficients used in the formulae
+#' agreed to under 0.7 percent percent between these digitizations.
+#'
 #' @param L length in m
 #' @param type character string indicating the type of area, with
-#' \code{"projected"} for side-projected area using 0.143L^2,
-#' and \code{"wetted"}
-#' for submerged surface wetted, calculated by spinning
-#' the necropsy side-view presented in Daoust et al. (2018)
-#' along the animal axis, yielding
-#' 0.451 * (0.8715 * L)^2, where the direct factor on L
-#' was developed by comparing similarly-predicted masses to
-#' the results of \code{\link{whaleMassFromLength}}, as described
-#' in [2].
+#' \code{"projected"} for a side-projected area, and 
+#' \code{"wetted"} for the total wetted area. The wetted
+#' area was computed by mathematically spinning a spline fit to the
+#' side-view. In both cases, the original data source is the
+#' necropsy side-view presented in Daoust et al. (2018).
 #'
 #' @references
 #' 1. Dan Kelley's internal document \code{dek/20180623_whale_area.Rmd}, available
@@ -585,18 +594,22 @@ whaleLengthFromMass <- function(M, model="fortune2012atlantic")
 #' upon request.
 whaleAreaFromLength <- function(L, type="wetted")
 {
-    ## below from dek/20180623_whale_area.Rmd
-    ## Projected area, with fins: 0.1466L2 where L is body length in metres.
-    ## Projected area, without fins: 0.1398L2 where L is body length in metres.
-    ## > mean(c(.1466,.1398)) [1] 0.1432
+    ## below from dek/20180623_whale_area.Rmd, updated 20180802 and inserted with
+    ## cut/paste (changing bullet to asterisk, and using ^ for exponentiation).
     ##
-    ## Wetted area, with fins: 0.4631L2 where L is body length in metres.
-    ## Wetted area, without fins: 0.4389L2 where L is body length in metres.
-    ## > mean(c(.4631,.4389)) # [1] 0.451
+    ## * Projected area, with fins: 0.1466 ∗ L^2 where L is body length in metres.
+    ## * Projected area, without fins: 0.1391 ∗ L^2 where L is body length in metres.
+    ## * Wetted area, with fins: 0.4631 ∗ L^2 where L is body length in metres.
+    ## * Wetted area, without fins: 0.4336 ∗ L^2 where L is body length in metres.
+    ##
+    ## The relevant case (with or without fins) being dependent on the application,
+    ## there may be merit in averaging the two estimates, yielding:
+    ## * Projected area: 0.1429 ∗ L^2 where L is body length in metres.
+    ## * Wetted area: 0.4484 ∗ L^2 where L is body length in metres.
     if (type == "projected")
         0.143 * L^2
     else if (type == "wetted")
-        0.451 * (0.8715 * L)^2
+        0.448 * (0.877 * L)^2
     else stop("'type' must be 'projected' or 'wetted', not '", type, "' as given")
 }
 
