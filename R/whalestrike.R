@@ -69,6 +69,32 @@ fillplot <- function(x, lower, upper, ...)
 #' @docType data
 NULL
 
+#' Whale side-view shape
+#'
+#' This is a data frame containing 45 points specifying the shape
+#' of a right whale, viewed from the side. It was created
+#' by digitizing the whale shape (ignoring fins) that is
+#' provided in the necropsy reports of daoust et al. (2018). The
+#' data frame contains \code{x} and \code{y}, which are distances
+#' nondimensionalized by the range in \code{x}; that is, \code{x}
+#' ranges from 0 to 1. The point at the front of the whale is
+#' designated as x=y=0.
+#'
+#' @template ref_daoust
+#'
+#' @examples
+#' library(whalestrike)
+#' data(whaleshape)
+#' plot(whaleshape$x, whaleshape$y, asp=1, type="l")
+#' polygon(whaleshape$x, whaleshape$y, col="lightgray")
+#' lw <- 13.7
+#' Rmax <- 0.5 * lw * diff(range(whaleshape$y))
+#' mtext(sprintf("Max. radius %.2fm for %.1fm-long whale", Rmax, lw), side=3)
+#'
+#' @name whaleshape
+#' @docType data
+NULL
+
 
 #' whalestrike: A Package to Simulate Ship-Whale Collisions
 #'
@@ -544,7 +570,7 @@ whaleLengthFromMass <- function(M, model="fortune2012atlantic")
 #' \code{"projected"} for side-projected area using 0.143L^2,
 #' and \code{"wetted"}
 #' for submerged surface wetted, calculated by spinning
-#' the necropsiy side-view presented in Daoust et al. (2018)
+#' the necropsy side-view presented in Daoust et al. (2018)
 #' along the animal axis, yielding
 #' 0.451 * (0.8715 * L)^2, where the direct factor on L
 #' was developed by comparing similarly-predicted masses to

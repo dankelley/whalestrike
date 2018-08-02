@@ -13,7 +13,7 @@ whaleAreaFromLength(L, type = "wetted")
 \code{"projected"} for side-projected area using 0.143L^2,
 and \code{"wetted"}
 for submerged surface wetted, calculated by spinning
-the necropsiy side-view presented in Daoust et al. (2018)
+the necropsy side-view presented in Daoust et al. (2018)
 along the animal axis, yielding
 0.451 * (0.8715 * L)^2, where the direct factor on L
 was developed by comparing similarly-predicted masses to
