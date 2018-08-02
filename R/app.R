@@ -2,7 +2,7 @@
 ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px;}")),
                 fluidRow(column(2,
                                 sliderInput("tmax",  h6("Max time [s]"), tick=FALSE,
-                                            min=0.1,  max=5, value=0.6, step=0.05),
+                                            min=0.1,  max=4, value=1, step=0.05),
                                 sliderInput("ms",  h6("Ship mass [tonne]"), tick=FALSE,
                                             min=10, max=311,  value=20, step=0.5),
                                 sliderInput("vs", h6("Ship speed [knot]"), tick=FALSE,
