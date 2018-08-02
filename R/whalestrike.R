@@ -936,11 +936,9 @@ strike <- function(t, state, parms, debug=0)
 ## injury crition, and the second is used to indicte values that exceed the
 ## criterion.
 #'
-#' @param colThreat Three-element colour specification used in \code{"threat"}.
-#' The first colour is used for threat levels between 0 and 0.5, the second
-#' from 0.5 to 1, and the third above 1. If not provided, the colours
-#' will be light-gray, gray, and black, each with an alpha setting that
-#' lightens the colours and makes them semi-transparent.
+#' @param colThreat Two-element colour specification used in \code{"threat"}.
+#' The first colour is used for threat levels between 0 and 1, the second
+#' for levels exceeding 1. The defaults are to use light gray and black.
 #'
 #' @param lwd Line width used in plots for time intervals in which damage
 #' criteria are not exceeded.
@@ -972,14 +970,10 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
                         colwinterface="black", #colwinterface="Firebrick",
                         colwskin="black", #colwskin="Dodger Blue 4",
                         cols="black",
-                        colThreat,
+                        colThreat=c("lightgray", "black"),
                         lwd=1, D=3, debug=0, ...)
 {
     showLegend <- FALSE
-    if (missing(colThreat))
-        colThreat <- c(rgb(0.827, 0.827, 0.827, alpha=0.7), # lightgray
-                       rgb(0.745, 0.745, 0.745, alpha=0.7), # gray
-                       rgb(0, 0, 0, alpha=0.7)) # black
     g <- 9.8 # gravity
     t <- x$t
     xs <- x$xs
@@ -1186,38 +1180,38 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         axis(1)
         box()
         yTicks <- pretty(c(0, worst))
-        axis(2, at=yTicks)
+        axis(2, at=yTicks, labels=yTicks)
         mtext("Threat (stress / strength)", side=2, line=2, cex=par("cex"))
         ## Skin
         mtext("Skin", side=4, at=0, cex=par("cex"))
         lines(t, skinThreat, col=tcol[1])
         abline(h=0, col=tcol[1], lty=3)
-        fillplot(t, 0, skinThreat, col="black")
+        fillplot(t, 0, skinThreat, col=colThreat[2])
         ok <- skinThreat < 1
-        fillplot(t[ok], 0, skinThreat[ok], col="lightgray")
+        fillplot(t[ok], 0, skinThreat[ok], col=colThreat[1])
         ## Blubber
         mtext("Blubber", side=4, at=dy, cex=par("cex"))
         lines(t, dy + blubberThreat, col=tcol[2])
         abline(h=dy, col=tcol[2], lty=3)
-        fillplot(t, dy, dy+blubberThreat, col="black")
+        fillplot(t, dy, dy+blubberThreat, col=colThreat[2])
         ok <- blubberThreat < 1
-        fillplot(t[ok], dy[ok], (dy+blubberThreat)[ok], col="lightgray")
+        fillplot(t[ok], dy[ok], (dy+blubberThreat)[ok], col=colThreat[1])
         axis(2, at=dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
         ## Sublayer
         mtext("Sublayer", side=4, at=2*dy, cex=par("cex"))
         lines(t, 2*dy + sublayerThreat, col=tcol[3])
         abline(h=2*dy, col=tcol[3], lty=3)
-        fillplot(t, 2*dy, 2*dy+sublayerThreat, col="black")
+        fillplot(t, 2*dy, 2*dy+sublayerThreat, col=colThreat[2])
         ok <- sublayerThreat < 1
-        fillplot(t[ok], 2*dy[ok], (2*dy+sublayerThreat)[ok], col="lightgray")
+        fillplot(t[ok], 2*dy[ok], (2*dy+sublayerThreat)[ok], col=colThreat[1])
         axis(2, at=2*dy+yTicks, labels=yTicks)
         ## Bone
         mtext("Bone", side=4, at=3*dy, cex=par("cex"))
         lines(t, 3*dy + boneThreat, col=tcol[3])
         abline(h=3*dy, col=tcol[4], lty=3)
-        fillplot(t, 3*dy, 3*dy+boneThreat, col="black")
+        fillplot(t, 3*dy, 3*dy+boneThreat, col=colThreat[2])
         ok <- boneThreat < 1
-        fillplot(t[ok], 3*dy[ok], (3*dy+boneThreat)[ok], col="lightgray")
+        fillplot(t[ok], 3*dy[ok], (3*dy+boneThreat)[ok], col=colThreat[1])
         axis(2, at=3*dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
         showEvents(xs, xw)
     }

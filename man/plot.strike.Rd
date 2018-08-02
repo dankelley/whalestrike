@@ -6,7 +6,8 @@
 \usage{
 \method{plot}{strike}(x, which = "default", drawEvents = TRUE,
   colwcenter = "black", colwinterface = "black", colwskin = "black",
-  cols = "black", colThreat, lwd = 1, D = 3, debug = 0, ...)
+  cols = "black", colThreat = c("lightgray", "black"), lwd = 1, D = 3,
+  debug = 0, ...)
 }
 \arguments{
 \item{x}{An object inheriting from class \code{strike}}
@@ -71,11 +72,9 @@ between whale blubber and sublayer.}
 \item{cols}{As \code{colw}, but the colour to be used for the ship bow location,
 which is drawn with a dashed line.}
 
-\item{colThreat}{Three-element colour specification used in \code{"threat"}.
-The first colour is used for threat levels between 0 and 0.5, the second
-from 0.5 to 1, and the third above 1. If not provided, the colours
-will be light-gray, gray, and black, each with an alpha setting that
-lightens the colours and makes them semi-transparent.}
+\item{colThreat}{Two-element colour specification used in \code{"threat"}.
+The first colour is used for threat levels between 0 and 1, the second
+for levels exceeding 1. The defaults are to use light gray and black.}
 
 \item{lwd}{Line width used in plots for time intervals in which damage
 criteria are not exceeded.}

@@ -1,7 +1,7 @@
 ## ---- echo=FALSE---------------------------------------------------------
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 
-## ----results="hide", fig.width=7, fig.height=4---------------------------
+## ----results="hide", fig.width=7, fig.height=3---------------------------
 library(whalestrike)
 t <- seq(0, 1, length.out=200)
 state <- c(xs=-2.5, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
