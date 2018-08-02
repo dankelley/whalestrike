@@ -1,8 +1,8 @@
 #' User interface for app
 ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px;}")),
                 fluidRow(column(2,
-                                sliderInput("ltmax",  h6("log10(interval [s])"), tick=FALSE,
-                                            min=-1,  max=1, value=log10(1), step=0.01),
+                                sliderInput("tmax",  h6("Max time [s]"), tick=FALSE,
+                                            min=0.1,  max=5, value=1, step=0.05),
                                 sliderInput("ms",  h6("Ship mass [tonne]"), tick=FALSE,
                                             min=10, max=311,  value=20, step=0.5),
                                 sliderInput("vs", h6("Ship speed [knot]"), tick=FALSE,
@@ -75,7 +75,7 @@ server <- function(input, output, session)
                  config$l3 <- config$l[3]
                  config$l4 <- config$l[4]
                  ## FIXME: l1, l2 etc
-                 for (s in c("ltmax", "ms", "lw", "vs", "Ly", "Lz", "theta",
+                 for (s in c("tmax", "ms", "lw", "vs", "Ly", "Lz", "theta",
                              "l1", "l2", "l3", "l4"))
                      updateSliderInput(session, s, value=config[[s]])
                 })
@@ -89,7 +89,7 @@ server <- function(input, output, session)
                             l=c(input$l1, input$l2, input$l3, input$l4),
                             theta=input$theta) # in degrees; 0 means no bevel
         state <- c(xs=-(1 + parms$lsum), vs=input$vs * 0.514444, xw=0, vw=0)
-        t <- seq(0, 10^input$ltmax, length.out=500)
+        t <- seq(0, input$tmax, length.out=500)
         sol <- strike(t, state, parms)
         npanels <- length(input$plot_panels)
         nrows <- floor(sqrt(npanels))
