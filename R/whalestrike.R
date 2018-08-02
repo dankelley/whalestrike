@@ -34,14 +34,15 @@ library(xtable)
 #' fillplot(x, lower, lower+upper, col="lightgray")
 fillplot <- function(x, lower, upper, ...)
 {
+    n <- length(x)
     if (length(lower) == 1)
-        lower <- rep(lower, length(x))
+        lower <- rep(lower, n)
     if (length(upper) == 1)
-        upper <- rep(upper, length(x))
-    if (length(x) != length(lower)) stop("lengths of x and lower must match")
-    if (length(upper) != length(lower)) stop("lengths of lower and upper must match")
-    xx <- c(x, rev(x))
-    yy <- c(lower, rev(upper))
+        upper <- rep(upper, n)
+    if (n != length(lower)) stop("lengths of x and lower must match")
+    if (n != length(upper)) stop("lengths of x and upper must match")
+    xx <- c(x, rev(x), x[1])
+    yy <- c(upper, rev(lower), upper[1])
     polygon(xx, yy, ...)
 }
 
@@ -1176,42 +1177,33 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         worst <- max(c(skinThreat, blubberThreat, sublayerThreat, boneThreat))
         dy <- round(0.5 + worst)
         ylim <- c(0, 3*dy+worst)
-        plot(range(t), ylim, type="n", xlab="Time [s]", ylab="", axes=FALSE)
+        plot(range(t), ylim, type="n", xlab="Time [s]", ylab="", axes=FALSE, xaxs="i")
         axis(1)
         box()
         yTicks <- pretty(c(0, worst))
-        axis(2, at=yTicks, labels=yTicks)
         mtext("Threat (stress / strength)", side=2, line=2, cex=par("cex"))
         ## Skin
         mtext("Skin", side=4, at=0, cex=par("cex"))
-        lines(t, skinThreat, col=tcol[1])
-        abline(h=0, col=tcol[1], lty=3)
-        fillplot(t, 0, skinThreat, col=colThreat[2])
-        ok <- skinThreat < 1
-        fillplot(t[ok], 0, skinThreat[ok], col=colThreat[1])
+        fillplot(t, 0, skinThreat, col=colThreat[2]) # high threat
+        fillplot(t, 0, ifelse(skinThreat<=1, skinThreat, 1), col=colThreat[1]) # low threat
+        abline(h=0, lty=3)
+        axis(2, at=yTicks, labels=yTicks)
         ## Blubber
         mtext("Blubber", side=4, at=dy, cex=par("cex"))
-        lines(t, dy + blubberThreat, col=tcol[2])
-        abline(h=dy, col=tcol[2], lty=3)
-        fillplot(t, dy, dy+blubberThreat, col=colThreat[2])
-        ok <- blubberThreat < 1
-        fillplot(t[ok], dy[ok], (dy+blubberThreat)[ok], col=colThreat[1])
+        fillplot(t, dy, dy+blubberThreat,  col=colThreat[2])
+        fillplot(t, dy, dy+ifelse(blubberThreat<=1, blubberThreat, 1), col=colThreat[1])
+        abline(h=dy, lty=3)
         axis(2, at=dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
         ## Sublayer
         mtext("Sublayer", side=4, at=2*dy, cex=par("cex"))
-        lines(t, 2*dy + sublayerThreat, col=tcol[3])
-        abline(h=2*dy, col=tcol[3], lty=3)
-        fillplot(t, 2*dy, 2*dy+sublayerThreat, col=colThreat[2])
-        ok <- sublayerThreat < 1
-        fillplot(t[ok], 2*dy[ok], (2*dy+sublayerThreat)[ok], col=colThreat[1])
+        fillplot(t, 2*dy, 2*dy+sublayerThreat,  col=colThreat[2])
+        fillplot(t, 2*dy, 2*dy+ifelse(sublayerThreat<=1, sublayerThreat, 1), col=colThreat[1])
+        abline(h=2*dy, lty=3)
         axis(2, at=2*dy+yTicks, labels=yTicks)
         ## Bone
         mtext("Bone", side=4, at=3*dy, cex=par("cex"))
-        lines(t, 3*dy + boneThreat, col=tcol[3])
-        abline(h=3*dy, col=tcol[4], lty=3)
-        fillplot(t, 3*dy, 3*dy+boneThreat, col=colThreat[2])
-        ok <- boneThreat < 1
-        fillplot(t[ok], 3*dy[ok], (3*dy+boneThreat)[ok], col=colThreat[1])
+        fillplot(t, 3*dy, 3*dy+boneThreat,  col=colThreat[2])
+        fillplot(t, 3*dy, 3*dy+ifelse(boneThreat<=1, boneThreat, 1), col=colThreat[1])
         axis(2, at=3*dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
         showEvents(xs, xw)
     }
