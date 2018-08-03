@@ -74,7 +74,7 @@ NULL
 #' This is a data frame containing 45 points specifying the shape
 #' of a right whale, viewed from the side. It was created
 #' by digitizing the whale shape (ignoring fins) that is
-#' provided in the necropsy reports of daoust et al. (2018). The
+#' provided in the necropsy reports of Daoust et al. (2018). The
 #' data frame contains \code{x} and \code{y}, which are distances
 #' nondimensionalized by the range in \code{x}; that is, \code{x}
 #' ranges from 0 to 1. The point at the front of the whale is
@@ -118,32 +118,36 @@ NULL
 #' criteria for whale damage.
 #'
 #' The documentation for \code{\link{strike}} provides
-#' an example of using the main functions of this package,
-#' and so it is a good place to start. A companion manuscript
-#' is intended to provide more detail about the analysis
-#' and the context.
+#' a practical example of using the main functions of this package,
+#' while the package vignette provides a general overview.
+#' A companion manuscript is intended to
+#' provide more detail about the mathematical
+#' framework of the package, along with a discussion of its
+#' purpose and application to real-world problems of ship
+#' strikes on whales.
 #'
 #' @section Further reading:
 #' \itemize{
 #'
 #' \item
+#'
 #' Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
 #' “Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
 #' Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
 #' Socieity, and Fisheries and Oceans Canada, 2018.
-#' http://publications.gc.ca/site/eng/9.850838/publication.html.
+#' \url{http://publications.gc.ca/site/eng/9.850838/publication.html}.
 #'
 #' \item
 #' Fortune, Sarah M. E., Andrew W. Trites, Wayne L. Perryman, Michael J. Moore,
 #' Heather M. Pettis, and Morgan S. Lynn. “Growth and Rapid Early Development of
 #' North Atlantic Right Whales (Eubalaena Glacialis).” Journal of Mammalogy 93,
-#' no. 5 (2012): 1342–54. https://doi.org/10.1644/11-MAMM-A-297.1.
+#' no. 5 (2012): 1342–54. \url{https://doi.org/10.1644/11-MAMM-A-297.1}.
 #'
 #' \item
 #' Grear, Molly E., Michael R. Motley, Stephanie B. Crofts, Amanda E. Witt, Adam
 #' P. Summers, and Petra Ditsche. “Mechanical Properties of Harbor Seal Skin and
 #' Blubber − a Test of Anisotropy.” Zoology 126 (2018): 137–44.
-#' https://doi.org/10.1016/j.zool.2017.11.002.
+#' \url{https://doi.org/10.1016/j.zool.2017.11.002}.
 #'
 #' \item
 #' Kelley, Dan E. “Composite Spring,” May 28, 2018. 20180528_composite_string. Dan Kelley’s working notes.
@@ -158,7 +162,8 @@ NULL
 #' Kelley, Dan. “Whale Mass,” July 7, 2018. 20180707_whale_mass. Dan Kelley’s working notes.
 #'
 #' \item
-#' MAN Diesel & Turbo. “Basic Principles of Propulsion.” MAN Diesel & Turbo, 2011. https://marine.mandieselturbo.com/docs/librariesprovider6/propeller-aftship/basic-principles-of-propulsion.pdf?sfvrsn=0.
+#' MAN Diesel & Turbo. “Basic Principles of Propulsion.” MAN Diesel & Turbo, 2011.
+#' \url{https://marine.mandieselturbo.com/docs/librariesprovider6/propeller-aftship/basic-principles-of-propulsion.pdf?sfvrsn=0}.
 #'
 #' \item
 #' Manen, J. D. van, and P. van Oossanen. “Resistance.” In Principles of Naval
@@ -188,7 +193,8 @@ NULL
 #' \item
 #' Raymond, J. J. “Development of a Numerical Model to Predict Impact Forces on a
 #' North Atlantic Right Whale during Collision with a Vessel.” University of New
-#' Hampshire, 2007. https://scholars.unh.edu/thesis/309.
+#' Hampshire, 2007.
+#' \url{https://scholars.unh.edu/thesis/309}.
 #'
 #'}
 #'
@@ -200,19 +206,20 @@ NULL
 #'
 #' Assuming that unforced layer thicknesses are \eqn{l_i}, and that within each layer
 #' the stress is given by
-#' \deqn{a_i*[exp(b_i*\epsilon)-1]}
-#' with strain \eqn{\epsilon}
-#' being \eqn{\Delta l_i/l_i}, then the change in the
-#' total thickness \eqn{L=\sum l_i} obeys
-#' \deqn{0 = \Delta L - \sum (l_i /b_i) ln(1+\sigma / a_i)}
+#' \deqn{\sigma = a_i*(exp(b_i*\epsilon_i)-1)}
+#' (note that stress is equal in each layer) with the strain in that layer being
+#' \eqn{\epsilon_i = \Deltal_i/l_i}
+#' then the change \eqn{\DeltaL} in the total thickness \eqn{L=\suml_i} obeys
+#' \deqn{0 = \DeltaL - \sum((l_i /b_i) ln(1+\sigma / a_i))}
 #' where \eqn{ln} is the natural logarithm. This formula rests on the assumption
 #' that the stress, \eqn{\sigma}, is the same in each layer.
 #' This expression is not easily inverted to get
-#' \eqn{\sigma} in terms of \eqn{\Delta L}, but it may be solved
+#' \eqn{\sigma} in terms of \eqn{\Delta L}
+#' but it may be solved
 #' easily for particular numerical vaues, using \code{\link{uniroot}}.
 #' This is done for a sequence of \code{N} values of strain \eqn{\epsilon}
 #' that range from 0 to 1. Then a cubic spline is created to represent these
-#' the relationship between \eqn{\sigma} and \eqn{\Delta L} values,
+#' the relationship between \eqn{\sigma} and \eqn{\DeltaL} values,
 #' and this spline function is returned.
 #' The purpose is to speed up processing of simulations carried out
 #' with \code{\link{strike}}. In the authors tests, the speedup was by

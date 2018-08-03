@@ -8,7 +8,7 @@
 This is a data frame containing 45 points specifying the shape
 of a right whale, viewed from the side. It was created
 by digitizing the whale shape (ignoring fins) that is
-provided in the necropsy reports of daoust et al. (2018). The
+provided in the necropsy reports of Daoust et al. (2018). The
 data frame contains \code{x} and \code{y}, which are distances
 nondimensionalized by the range in \code{x}; that is, \code{x}
 ranges from 0 to 1. The point at the front of the whale is

@@ -25,19 +25,20 @@ no notion of compressing blubber, etc. to negative thickess.
 \description{
 Assuming that unforced layer thicknesses are \eqn{l_i}, and that within each layer
 the stress is given by
-\deqn{a_i*[exp(b_i*\epsilon)-1]}
-with strain \eqn{\epsilon}
-being \eqn{\Delta l_i/l_i}, then the change in the
-total thickness \eqn{L=\sum l_i} obeys
-\deqn{0 = \Delta L - \sum (l_i /b_i) ln(1+\sigma / a_i)}
+\deqn{\sigma = a_i*(exp(b_i*\epsilon_i)-1)}
+(note that stress is equal in each layer) with the strain in that layer being
+\eqn{\epsilon_i = \Deltal_i/l_i}
+then the change \eqn{\DeltaL} in the total thickness \eqn{L=\suml_i} obeys
+\deqn{0 = \DeltaL - \sum((l_i /b_i) ln(1+\sigma / a_i))}
 where \eqn{ln} is the natural logarithm. This formula rests on the assumption
 that the stress, \eqn{\sigma}, is the same in each layer.
 This expression is not easily inverted to get
-\eqn{\sigma} in terms of \eqn{\Delta L}, but it may be solved
+\eqn{\sigma} in terms of \eqn{\Delta L}
+but it may be solved
 easily for particular numerical vaues, using \code{\link{uniroot}}.
 This is done for a sequence of \code{N} values of strain \eqn{\epsilon}
 that range from 0 to 1. Then a cubic spline is created to represent these
-the relationship between \eqn{\sigma} and \eqn{\Delta L} values,
+the relationship between \eqn{\sigma} and \eqn{\DeltaL} values,
 and this spline function is returned.
 The purpose is to speed up processing of simulations carried out
 with \code{\link{strike}}. In the authors tests, the speedup was by
