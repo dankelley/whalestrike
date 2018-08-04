@@ -20,27 +20,30 @@ A spline function, created with \code{\link{splinefun}},
 that returns stress as a function of total strain of the
 system of compressing layers. For the purposes of the whale-strike
 analysis, the strain should be between 0 and 1, i.e. there is
-no notion of compressing blubber, etc. to negative thickess.
+no notion of compressing blubber, etc. to negative thickness.
 }
 \description{
-Assuming that unforced layer thicknesses are \eqn{l_i}, and that within each layer
-the stress is given by
+Denoting unforced layer thickness in the \eqn{i} layer as
+\eqn{l_i} and strain there as \eqn{\epsilon_i=\Deltal_i/l_i},
+we may write the stress-strain relationship as
 \deqn{\sigma = a_i*(exp(b_i*\epsilon_i)-1)}
-(note that stress is equal in each layer) with the strain in that layer being
-\eqn{\epsilon_i = \Deltal_i/l_i}
-then the change \eqn{\DeltaL} in the total thickness \eqn{L=\suml_i} obeys
-\deqn{0 = \DeltaL - \sum((l_i /b_i) ln(1+\sigma / a_i))}
-where \eqn{ln} is the natural logarithm. This formula rests on the assumption
-that the stress, \eqn{\sigma}, is the same in each layer.
+for each layer, where it is assumed that stress
+\eqn{\sigma} is equal across layers.
+Inverting this yields
+\deqn{\epsilon_i= ln(1 + \sigma/a_i)/b_i}
+where \eqn{ln} is the natural logarithm.  Therefore,
+the change \eqn{\DeltaL} in the total thickness \eqn{L=\suml_i}
+may be written
+\deqn{0 = \DeltaL - \sum((l_i/b_i) ln(1+\sigma/a_i))}.
 This expression is not easily inverted to get
-\eqn{\sigma} in terms of \eqn{\Delta L}
+\eqn{\sigma} in terms of \eqn{\DeltaL}
 but it may be solved
-easily for particular numerical vaues, using \code{\link{uniroot}}.
+easily for particular numerical values, using \code{\link{uniroot}}.
 This is done for a sequence of \code{N} values of strain \eqn{\epsilon}
-that range from 0 to 1. Then a cubic spline is created to represent these
-the relationship between \eqn{\sigma} and \eqn{\DeltaL} values,
-and this spline function is returned.
-The purpose is to speed up processing of simulations carried out
+that range from 0 to 1. Then \code{\link{splinefun}} is used to create
+a cubic spline representing the relationship between \eqn{\sigma} and \eqn{\DeltaL},
+which becomes the return value of the present function.
+The purpose of using a spline is to speed up processing of simulations carried out
 with \code{\link{strike}}. In the authors tests, the speedup was by
 an order of magnitude, and the loss of accuracy was
 negligible, amounting to fractional errors in the 8th decimal place.
