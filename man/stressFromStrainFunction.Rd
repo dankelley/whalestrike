@@ -35,10 +35,15 @@ where \eqn{ln} is the natural logarithm.  Therefore,
 the change \eqn{\DeltaL} in the total thickness \eqn{L=\suml_i}
 may be written
 \deqn{0 = \DeltaL - \sum((l_i/b_i) ln(1+\sigma/a_i))}.
+Note that zero-thickness layers are removed from the calculation,
+to avoid spurious forces.
+}
+\details{
 This expression is not easily inverted to get
 \eqn{\sigma} in terms of \eqn{\DeltaL}
 but it may be solved
 easily for particular numerical values, using \code{\link{uniroot}}.
+
 This is done for a sequence of \code{N} values of strain \eqn{\epsilon}
 that range from 0 to 1. Then \code{\link{approxfun}} is used to create
 a piecewise-linear represention of the relationship between \eqn{\sigma} and \eqn{\DeltaL},

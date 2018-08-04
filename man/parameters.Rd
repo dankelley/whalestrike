@@ -69,7 +69,7 @@ any other information.
 The bone default for \code{b} is small, to set up a linear function,
 and \code{a*b} is set to equal 8.54e8 Pa,
 given in Table 2.3 of Raymond (2007) and Table 4.5 of
-Campbell-Malone (2007)..}
+Campbell-Malone (2007).}
 
 \item{s}{Numerical vector of length 4, giving the ultimate strengths [Pa] of
 skin, blubber, sublayer, and bone, respectively. If not provided, the
@@ -121,7 +121,8 @@ The file should be saved \code{\link{write.csv}} with
 }
 \value{
 A named list holding the parameters, with defaults and alternatives reconciled
-according to the system described above.
+according to the system described above, along with a function that computes
+compression force, which created by \code{\link{stressFromStrainFunction}}.
 }
 \description{
 Assembles control parameters into a list suitable for passing to \code{\link{strike}}

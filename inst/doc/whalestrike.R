@@ -30,7 +30,7 @@ abline(h=danger, lty="dashed")
 mtext(sprintf("Compression stress [MPa]\n(injurious if > %.2f MPa)", danger),
       side=3, line=1)
 
-## ----results="hide", fig.width=7, fig.height=4----
+## ----results="hide", fig.width=7, fig.height=4---------------------------
 library(whalestrike)
 t <- seq(0, 1, length.out=200)
 ## Hint: the following creates x and y of different lengths,

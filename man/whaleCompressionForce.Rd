@@ -24,18 +24,15 @@ compression, third for sublayer compression, and fourth
 for bone compression.
 }
 \description{
-Calculate the reaction force of blubber and the sublayer to
-its interior, as the product of stress and area.
-Linear compression dynamics is assumed for each layer, i.e. that
-stress is strain times elastic modulus. Static dynamics is assumed,
-so that the stresses match in the the two layers. The calculation
-is done in a two-step process. First, the stress for an equivalent
-layer is computed, based on a combined elastic modulus. If this
-stress exceeds the blubber modulus, the blubber thickness is set to zero
-and the calculation is redone with just the sublayer. If not,
-the layer thickness are computed assuming equal stress in each layer.
-Force is calculated as the product of stress and the area
-given by the product of \code{parms$Ly} and \code{parms$Lz}.
+Calculate the total compression stress and force, along
+with the thicknesses of skin, blubber, sublayer, and bone.
+The stess is computed with the \code{stressFromStrain} function that
+is created by \code{\link{parameters}} and stored in \code{para}.
+the force is computed by multiplying stess by area
+computed as the product of \code{parms$Ly} and \code{parms$Lz}.
+Any negative layer thicknesses are set to zero, as a way to
+avoid problems with aphysical engineering compression strains that
+exceed 1.
 }
 \references{
 See \link{whalestrike} for a list of references.
