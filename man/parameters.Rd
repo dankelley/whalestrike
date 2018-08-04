@@ -88,12 +88,11 @@ more specific information.
 The bone default o 22.9 MPa is from Table 2.3 of Raymond (2007) and
 Table 4.5 of Campbell-Malone (2007).}
 
-\item{theta}{Whale skin deformation angle [deg]; defaults to 50 degrees,
-if not supplied, because that angle produces the best match to Raymond's (2007)
+\item{theta}{Whale skin deformation angle [deg]; defaults to 55 degrees,
+if not supplied, because that angle produces a good match to Raymond's (2007)
 Figure 6.1 for the total force as a function of vessel speed, for large
-vessels. (Note that the match works almost as well in the range 40 deg
-to 60 deg, and that matching just for \code{WCF$force} yields an optimal
-angle of 55 degrees.)}
+vessels. (Note that the match works almost as well in the range 50 deg
+to 70 deg.)}
 
 \item{Cs}{Drag coefficient for ship [dimensionless],
 used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults
