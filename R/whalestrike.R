@@ -1,6 +1,52 @@
 library(deSolve)
 library(xtable)
 
+#' Draw polygon between two xy curves
+#'
+#' This adds to an existing plot by filling the area between the
+#' lower=lower(x) and upper=upper(x) curves.  In most cases, as
+#' shown in \dQuote{Examples}, it is helpful
+#' to use \code{xaxs="i"} in the preceding plot call, so that the
+#' polygon reaches to the edge of the plot area.
+#'
+#' @param x Coordinate along horizontal axis
+#' @param lower Coordinates of the lower curve, of same length as \code{x},
+#' or a single value that gets repeated to the length of \code{x}.
+#' @param upper Coordinates of the upper curve, or a single value that gets
+#' repeated to the length of \code{x}.
+#' @param ... passed to \code{\link{polygon}}. In most cases, this
+#' will contain \code{col}, the fill colour, and possibly \code{border},
+#' the border colour, although cross-hatching with \code{density}
+#' and \code{angle} is also a good choice.
+#' @examples
+#' ## 1. CO2 record
+#' plot(co2, xaxs="i", yaxs="i")
+#' fillplot(time(co2), min(co2), co2, col="pink")
+#'
+#' ## 2. stack (summed y) plot
+#' x <- seq(0, 1, 0.01)
+#' lower <- x
+#' upper <- 0.5 * (1 + sin(2 * pi * x / 0.2))
+#' plot(range(x), range(lower, lower+upper), type='n',
+#'      xlab="x", ylab="y1, y1+y2",
+#'      xaxs="i", yaxs="i")
+#' fillplot(x, min(lower), lower, col="darkgray")
+#' fillplot(x, lower, lower+upper, col="lightgray")
+fillplot <- function(x, lower, upper, ...)
+{
+    n <- length(x)
+    if (length(lower) == 1)
+        lower <- rep(lower, n)
+    if (length(upper) == 1)
+        upper <- rep(upper, n)
+    if (n != length(lower)) stop("lengths of x and lower must match")
+    if (n != length(upper)) stop("lengths of x and upper must match")
+    xx <- c(x, rev(x), x[1])
+    yy <- c(upper, rev(lower), upper[1])
+    polygon(xx, yy, ...)
+}
+
+
 #' Whale blubber stress-strain relationship
 #'
 #' This is a data frame with elements \code{strain} and \code{stess},
@@ -20,6 +66,32 @@ library(xtable)
 #' lines(x, predict(m, list(strain=x)))
 #'
 #' @name raymond2007
+#' @docType data
+NULL
+
+#' Whale side-view shape
+#'
+#' This is a data frame containing 45 points specifying the shape
+#' of a right whale, viewed from the side. It was created
+#' by digitizing the whale shape (ignoring fins) that is
+#' provided in the necropsy reports of Daoust et al. (2018). The
+#' data frame contains \code{x} and \code{y}, which are distances
+#' nondimensionalized by the range in \code{x}; that is, \code{x}
+#' ranges from 0 to 1. The point at the front of the whale is
+#' designated as x=y=0.
+#'
+#' @template ref_daoust
+#'
+#' @examples
+#' library(whalestrike)
+#' data(whaleshape)
+#' plot(whaleshape$x, whaleshape$y, asp=1, type="l")
+#' polygon(whaleshape$x, whaleshape$y, col="lightgray")
+#' lw <- 13.7
+#' Rmax <- 0.5 * lw * diff(range(whaleshape$y))
+#' mtext(sprintf("Max. radius %.2fm for %.1fm-long whale", Rmax, lw), side=3)
+#'
+#' @name whaleshape
 #' @docType data
 NULL
 
@@ -46,32 +118,36 @@ NULL
 #' criteria for whale damage.
 #'
 #' The documentation for \code{\link{strike}} provides
-#' an example of using the main functions of this package,
-#' and so it is a good place to start. A companion manuscript
-#' is intended to provide more detail about the analysis
-#' and the context.
+#' a practical example of using the main functions of this package,
+#' while the package vignette provides a general overview.
+#' A companion manuscript is intended to
+#' provide more detail about the mathematical
+#' framework of the package, along with a discussion of its
+#' purpose and application to real-world problems of ship
+#' strikes on whales.
 #'
 #' @section Further reading:
 #' \itemize{
 #'
 #' \item
+#'
 #' Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
 #' “Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
 #' Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
 #' Socieity, and Fisheries and Oceans Canada, 2018.
-#' http://publications.gc.ca/site/eng/9.850838/publication.html.
+#' \url{http://publications.gc.ca/site/eng/9.850838/publication.html}.
 #'
 #' \item
 #' Fortune, Sarah M. E., Andrew W. Trites, Wayne L. Perryman, Michael J. Moore,
 #' Heather M. Pettis, and Morgan S. Lynn. “Growth and Rapid Early Development of
 #' North Atlantic Right Whales (Eubalaena Glacialis).” Journal of Mammalogy 93,
-#' no. 5 (2012): 1342–54. https://doi.org/10.1644/11-MAMM-A-297.1.
+#' no. 5 (2012): 1342–54. \url{https://doi.org/10.1644/11-MAMM-A-297.1}.
 #'
 #' \item
 #' Grear, Molly E., Michael R. Motley, Stephanie B. Crofts, Amanda E. Witt, Adam
 #' P. Summers, and Petra Ditsche. “Mechanical Properties of Harbor Seal Skin and
 #' Blubber − a Test of Anisotropy.” Zoology 126 (2018): 137–44.
-#' https://doi.org/10.1016/j.zool.2017.11.002.
+#' \url{https://doi.org/10.1016/j.zool.2017.11.002}.
 #'
 #' \item
 #' Kelley, Dan E. “Composite Spring,” May 28, 2018. 20180528_composite_string. Dan Kelley’s working notes.
@@ -86,7 +162,8 @@ NULL
 #' Kelley, Dan. “Whale Mass,” July 7, 2018. 20180707_whale_mass. Dan Kelley’s working notes.
 #'
 #' \item
-#' MAN Diesel & Turbo. “Basic Principles of Propulsion.” MAN Diesel & Turbo, 2011. https://marine.mandieselturbo.com/docs/librariesprovider6/propeller-aftship/basic-principles-of-propulsion.pdf?sfvrsn=0.
+#' MAN Diesel & Turbo. “Basic Principles of Propulsion.” MAN Diesel & Turbo, 2011.
+#' \url{https://marine.mandieselturbo.com/docs/librariesprovider6/propeller-aftship/basic-principles-of-propulsion.pdf?sfvrsn=0}.
 #'
 #' \item
 #' Manen, J. D. van, and P. van Oossanen. “Resistance.” In Principles of Naval
@@ -116,7 +193,8 @@ NULL
 #' \item
 #' Raymond, J. J. “Development of a Numerical Model to Predict Impact Forces on a
 #' North Atlantic Right Whale during Collision with a Vessel.” University of New
-#' Hampshire, 2007. https://scholars.unh.edu/thesis/309.
+#' Hampshire, 2007.
+#' \url{https://scholars.unh.edu/thesis/309}.
 #'
 #'}
 #'
@@ -126,23 +204,27 @@ NULL
 
 #' Create a function for stress in laminated layers
 #'
-#' Assuming that unforced layer thicknesses are \eqn{l_i}, and that within each layer
-#' the stress is given by
-#' \deqn{a_i*[exp(b_i*\epsilon)-1]}
-#' with strain \eqn{\epsilon}
-#' being \eqn{\Delta l_i/l_i}, then the change in the
-#' total thickness \eqn{L=\sum l_i} obeys
-#' \deqn{0 = \Delta L - \sum (l_i /b_i) ln(1+\sigma / a_i)}
-#' where \eqn{ln} is the natural logarithm. This formula rests on the assumption
-#' that the stress, \eqn{\sigma}, is the same in each layer.
+#' Denoting unforced layer thickness in the \eqn{i} layer as
+#' \eqn{l_i} and strain there as \eqn{\epsilon_i=\Deltal_i/l_i},
+#' we may write the stress-strain relationship as
+#' \deqn{\sigma = a_i*(exp(b_i*\epsilon_i)-1)}
+#' for each layer, where it is assumed that stress
+#' \eqn{\sigma} is equal across layers.
+#' Inverting this yields
+#' \deqn{\epsilon_i= ln(1 + \sigma/a_i)/b_i}
+#' where \eqn{ln} is the natural logarithm.  Therefore,
+#' the change \eqn{\DeltaL} in the total thickness \eqn{L=\suml_i}
+#' may be written
+#' \deqn{0 = \DeltaL - \sum((l_i/b_i) ln(1+\sigma/a_i))}.
 #' This expression is not easily inverted to get
-#' \eqn{\sigma} in terms of \eqn{\Delta L}, but it may be solved
-#' easily for particular numerical vaues, using \code{\link{uniroot}}.
+#' \eqn{\sigma} in terms of \eqn{\DeltaL}
+#' but it may be solved
+#' easily for particular numerical values, using \code{\link{uniroot}}.
 #' This is done for a sequence of \code{N} values of strain \eqn{\epsilon}
-#' that range from 0 to 1. Then a cubic spline is created to represent these
-#' the relationship between \eqn{\sigma} and \eqn{\Delta L} values,
-#' and this spline function is returned.
-#' The purpose is to speed up processing of simulations carried out
+#' that range from 0 to 1. Then \code{\link{splinefun}} is used to create
+#' a cubic spline representing the relationship between \eqn{\sigma} and \eqn{\DeltaL},
+#' which becomes the return value of the present function.
+#' The purpose of using a spline is to speed up processing of simulations carried out
 #' with \code{\link{strike}}. In the authors tests, the speedup was by
 #' an order of magnitude, and the loss of accuracy was
 #' negligible, amounting to fractional errors in the 8th decimal place.
@@ -156,7 +238,7 @@ NULL
 #' that returns stress as a function of total strain of the
 #' system of compressing layers. For the purposes of the whale-strike
 #' analysis, the strain should be between 0 and 1, i.e. there is
-#' no notion of compressing blubber, etc. to negative thickess.
+#' no notion of compressing blubber, etc. to negative thickness.
 #'
 #' @examples
 #' library(whalestrike)
@@ -190,6 +272,7 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' and the functions that it calls. If \code{file} is provided, then all the other
 #' arguments are read from that source.
 #' Below are some sources cited in the discussion of the function arguments.
+#' @template ref_campbell_malone
 #' @template ref_daoust
 #' @template ref_grear
 #' @template ref_raymond
@@ -219,23 +302,25 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' by whale necropsy, reported in Appendix 2 of Daoust et al., 2018.
 ## > round(mean(c(17,14,18.13,18,21.25,16.75,13.33,7)/100),2)
 ## [1] 0.16
-#' The sublayer default of 1.1 m may be reasonable at some spots on the whale body.
+#' The sublayer default of 1.12 m may be reasonable at some spots on the whale body.
 #' The bone default of 0.1 m may be reasonable at some spots on the whale body.
 #' The sum of these default values, 1.40 m, is a whale radius that
 #' is consistent with a half-circumferance of 4.4 m, reported in Table 2.2
 #' of Raymond (2007).
 #' @param a,b Numerical vectors of length 4, giving values to use in the
-#' stress-strain law \code{stress=a*(exp(b*strain)-1)}. \code{a} is in Pa
-#' and \code{b} is unitless.  Note that \code{a*b} is the local modulus at
-#' low strain, and that \code{b} is the efolding scale for nonlinear increase
-#' in stress with strain. This exponential relationship has been mapped out
+#' stress-strain law \code{stress=a*(exp(b*strain)-1)}, where \code{a} is in Pa
+#' and \code{b} is unitless. By construction, \code{a*b} is the local modulus at
+#' low strain (i.e. at low \code{b*strain} values), and that \code{b} is the
+#' efolding scale for nonlinear increase in stress with strain.
+#' This exponential relationship has been mapped out
 #' for whale blubber, using a curve fit to Figure 2.13 of Raymond (2007), and
 #' these values are used for the second layer (blubber); see
-#' \link{raymond2007} for how the fit was done.
+#' the documentation for the \link{raymond2007} dataset, to see
+#' for how that fit was done.
 #' If not provided, \code{a} defaults to
-#' \code{c(17.80e6/0.1, 1.64e5, 1.64e5, 854.2e6/0.1)}
+#' \code{c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)}
 #' and \code{b} defaults to
-#' \code{c(0.1, 2.47, 2.47, 0.1)}.
+#' \code{c(0.1, 2.54, 2.54, 0.1)}.
 #' The skin defaults are set up to give a linear shape (since \code{b} is small)
 #' with the \code{a*b} product
 #' being 17.8e6 Pa, which is the adult-seal value
@@ -246,29 +331,30 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' any other information.
 #' The bone default for \code{b} is small, to set up a linear function,
 #' and \code{a*b} is set to equal 8.54e8 Pa,
-#' given in Table 2.3 of Raymond (2007).
+#' given in Table 2.3 of Raymond (2007) and Table 4.5 of
+#' Campbell-Malone (2007)..
 #' @param s Numerical vector of length 4, giving the ultimate strengths [Pa] of
 #' skin, blubber, sublayer, and bone, respectively. If not provided, the
 #' value is set to
-#' \code{c(19.56e6, 4.37e5, 4.37e5, 22.9e6)},
+#' \code{c(19.6e6, 0.437e6, 0.437e6, 22.9e6)},
 #' with reasoning as follows.
-#' The skin default of 1.96e7 Pa
+#' The skin default of 19.6 MPa
 #' is a rounded value from Table 3 of Grear et al. (2018) for adult seal skin strength at
 #' an orientation of 0 degrees.  The blubber value of
-#' 4.37e5 Pa is inferred by
-#' multiplying Raymond's (2007) Figure 2.13 elastic modulus of 6.36e5 Pa
+#' 0.437 MPa is inferred by
+#' multiplying Raymond's (2007) Figure 2.13 elastic modulus of 0.636 MPa
 #' by the ratio 0.97/1.41 determined for adult seal strength/modulus, as reported
 #' in Table 3 of Grear et al. (2018).
 #' The sublayer value is taken to be identical to the blubber value, lacking
 #' more specific information.
-#' The bone default o 2.29e7 Pa is from Table 2.3 of Raymond (2007).
-#' @param theta Whale skin deformation angle [deg]; defaults to 55deg if not supplied,
-#' because that angle produces the best match to Raymond's (2007)
+#' The bone default o 22.9 MPa is from Table 2.3 of Raymond (2007) and
+#' Table 4.5 of Campbell-Malone (2007).
+#' @param theta Whale skin deformation angle [deg]; defaults to 50 degrees,
+#' if not supplied, because that angle produces the best match to Raymond's (2007)
 #' Figure 6.1 for the total force as a function of vessel speed, for large
-#' vessels. (At this \code{theta} value, the mismatch for a simulation using
-#' \code{ms}=311e6 kg, \code{Ly}=1.29m and \code{Lz}=1.29m, was 0.08 MPa
-#' for compression force at 55 deg, and 0.16 MPa for total force at 50 deg; these
-#' values should be compared with forces in the range 0.4 to 1.6 MPa.)
+#' vessels. (Note that the match works almost as well in the range 40 deg
+#' to 60 deg, and that matching just for \code{WCF$force} yields an optimal
+#' angle of 55 degrees.)
 #' @param Cs Drag coefficient for ship [dimensionless],
 #' used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults
 #' to 1e-2, which is 4 times the frictional coefficient of 2.5e-3
@@ -351,11 +437,11 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
         if (missing(l))
             l <- c(0.025, 0.16, 1.12, 0.1)
         if (missing(a))
-            a <- c(17.8e6/0.1, 1.58e5, 1.1*1.58e5, 8.54e8/0.1)
+            a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
         if (missing(b))
             b <- c(0.1, 2.54, 2.54, 0.1)
         if (missing(s))
-            s <- c(1.96e7, 0.437e6, 1.1*0.437e6, 2.29e7)
+            s <- c(19.6e6, 0.437e6, 0.437e6, 22.9e6)
         ## Value checks
         if (any(l <= 0) || length(l) != 4)
             stop("'l' must be 4 positive numbers")
@@ -489,17 +575,26 @@ whaleLengthFromMass <- function(M, model="fortune2012atlantic")
 }
 
 #' Whale projected area, as function of length
+#'
+#' This depends on calculations based on the digitized shape of
+#' a whale necropsy, which is provided as \code{data(\link{whaleshape})}.
+#' The results are
+#' \preformatted{0.143 * L^2} for the projected area [1]
+#' and
+#' \preformatted{0.448 * (0.877 * L)^2} for the wetted area,
+#' where the latter uses a correction related to whale mass [2].
+#'
+#' Note that multiple digitizations were done,
+#' and that the coefficients used in the formulae
+#' agreed to under 0.7 percent percent between these digitizations.
+#'
 #' @param L length in m
 #' @param type character string indicating the type of area, with
-#' \code{"projected"} for side-projected area using 0.143L^2,
-#' and \code{"wetted"}
-#' for submerged surface wetted, calculated by spinning
-#' the necropsiy side-view presented in Daoust et al. (2018)
-#' along the animal axis, yielding
-#' 0.451 * (0.8715 * L)^2, where the direct factor on L
-#' was developed by comparing similarly-predicted masses to
-#' the results of \code{\link{whaleMassFromLength}}, as described
-#' in [2].
+#' \code{"projected"} for a side-projected area, and 
+#' \code{"wetted"} for the total wetted area. The wetted
+#' area was computed by mathematically spinning a spline fit to the
+#' side-view. In both cases, the original data source is the
+#' necropsy side-view presented in Daoust et al. (2018).
 #'
 #' @references
 #' 1. Dan Kelley's internal document \code{dek/20180623_whale_area.Rmd}, available
@@ -509,18 +604,22 @@ whaleLengthFromMass <- function(M, model="fortune2012atlantic")
 #' upon request.
 whaleAreaFromLength <- function(L, type="wetted")
 {
-    ## below from dek/20180623_whale_area.Rmd
-    ## Projected area, with fins: 0.1466L2 where L is body length in metres.
-    ## Projected area, without fins: 0.1398L2 where L is body length in metres.
-    ## > mean(c(.1466,.1398)) [1] 0.1432
+    ## below from dek/20180623_whale_area.Rmd, updated 20180802 and inserted with
+    ## cut/paste (changing bullet to asterisk, and using ^ for exponentiation).
     ##
-    ## Wetted area, with fins: 0.4631L2 where L is body length in metres.
-    ## Wetted area, without fins: 0.4389L2 where L is body length in metres.
-    ## > mean(c(.4631,.4389)) # [1] 0.451
+    ## * Projected area, with fins: 0.1466 ∗ L^2 where L is body length in metres.
+    ## * Projected area, without fins: 0.1391 ∗ L^2 where L is body length in metres.
+    ## * Wetted area, with fins: 0.4631 ∗ L^2 where L is body length in metres.
+    ## * Wetted area, without fins: 0.4336 ∗ L^2 where L is body length in metres.
+    ##
+    ## The relevant case (with or without fins) being dependent on the application,
+    ## there may be merit in averaging the two estimates, yielding:
+    ## * Projected area: 0.1429 ∗ L^2 where L is body length in metres.
+    ## * Wetted area: 0.4484 ∗ L^2 where L is body length in metres.
     if (type == "projected")
         0.143 * L^2
     else if (type == "wetted")
-        0.451 * (0.8715 * L)^2
+        0.448 * (0.877 * L)^2
     else stop("'type' must be 'projected' or 'wetted', not '", type, "' as given")
 }
 
@@ -840,9 +939,10 @@ strike <- function(t, state, parms, debug=0)
 #' ad-hoc measure of the possible threat to skin, blubber and sublayer.
 #' The threat level is computed as the ratio
 #' of stress to ultimate strength, e.g. for blubber, it is
-#' \code{x$WCF$stress/x$parms$s[2]}. Colour-coding indicates levels
-#' from 0 to 1/2, from 1/2 to 1, and above 1. An axis categorizes
-#' threat level 0 as "L", 0.5 as "M", and 1 as "H".
+#' \code{x$WCF$stress/x$parms$s[2]}. The curves are filled in with a light
+#' gray colour for stress/strength values up to 1, and with black for
+#' higher values; thus, a glance reveals whether the simulation indicates
+#' strong threats to whale health.
 #'
 #' \item \code{"whale acceleration"} for a time-series plot of whale acceleration.
 #'
@@ -886,11 +986,9 @@ strike <- function(t, state, parms, debug=0)
 ## injury crition, and the second is used to indicte values that exceed the
 ## criterion.
 #'
-#' @param colThreat Three-element colour specification used in \code{"threat"}.
-#' The first colour is used for threat levels between 0 and 0.5, the second
-#' from 0.5 to 1, and the third above 1. If not provided, the colours
-#' will be light-gray, gray, and black, each with an alpha setting that
-#' lightens the colours and makes them semi-transparent.
+#' @param colThreat Two-element colour specification used in \code{"threat"}.
+#' The first colour is used for threat levels between 0 and 1, the second
+#' for levels exceeding 1. The defaults are to use light gray and black.
 #'
 #' @param lwd Line width used in plots for time intervals in which damage
 #' criteria are not exceeded.
@@ -922,14 +1020,10 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
                         colwinterface="black", #colwinterface="Firebrick",
                         colwskin="black", #colwskin="Dodger Blue 4",
                         cols="black",
-                        colThreat,
+                        colThreat=c("lightgray", "black"),
                         lwd=1, D=3, debug=0, ...)
 {
     showLegend <- FALSE
-    if (missing(colThreat))
-        colThreat <- c(rgb(0.827, 0.827, 0.827, alpha=0.7), # lightgray
-                       rgb(0.745, 0.745, 0.745, alpha=0.7), # gray
-                       rgb(0, 0, 0, alpha=0.7)) # black
     g <- 9.8 # gravity
     t <- x$t
     xs <- x$xs
@@ -943,8 +1037,8 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         firstDead <- which(death)[1]
         dead <- firstDead:length(t)
         xw[dead] <- xw[firstDead]
-        x$WCF$compressed[1][dead] <- 0
-        x$WCF$compressed[2][dead] <- 0
+        x$WCF$compressed[dead,1] <- 0
+        x$WCF$compressed[dead,2] <- 0
     }
     showEvents <- function(xs, xw) {
         if (drawEvents) {
@@ -970,7 +1064,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
                  "whale water force", "reactive forces", "skin stress",
                  "compression stress", "values")
     for (w in which) {
-        if (!(w %in% allowed))
+        if (!(w %in% allowed) && !length(grep("NEW", w)))
             stop("which value \"", w, "\" is not allowed; try one of: \"",
                  paste(allowed, collapse="\" \""), "\"")
     }
@@ -991,9 +1085,9 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         lines(t, y, col=colwskin, lwd=lwd)
         waccel <- derivative(vw, t)
         saccel <- derivative(vs, t)
-        mtext(sprintf("ship: %.1fg", max(abs(saccel))/g),
+        mtext(sprintf("ship: %.1f g", max(abs(saccel))/g),
                       side=1, line=-1.25, cex=par("cex"), adj=0.5)
-        mtext(sprintf("whale: %.1fg", max(abs(waccel))/g),
+        mtext(sprintf("whale: %.1f g", max(abs(waccel))/g),
                       side=3, line=-1, cex=par("cex"), adj=0.5)
         showEvents(xs, xw)
     }
@@ -1116,7 +1210,107 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
     ##     showEvents(xs, xw)
     ## }
 
+    ## This version became the default 20180801T1200; older
+    ## and trial ones are kept, but not documented.
     if (all || "threat" %in% which) {
+        ## tcol <- hcl(h=c(30, 120, 210, 300), c=20, l=90, fixup=FALSE)
+        ## tcol <- hcl(h=c(30, 120, 210, 300))
+        tcol <- rep(1, 4)
+        skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
+        skinyThreat <- x$WSF$sigmay / x$parms$s[1]
+        skinThreat <- ifelse(skinyThreat > skinzThreat, skinyThreat, skinzThreat)
+        blubberThreat <- x$WCF$stress /  x$parms$s[2]
+        sublayerThreat <- x$WCF$stress /  x$parms$s[3]
+        boneThreat <- x$WCF$stress /  x$parms$s[4]
+        totalThreat <- skinThreat + blubberThreat + sublayerThreat + boneThreat
+        worst <- max(c(skinThreat, blubberThreat, sublayerThreat, boneThreat))
+        dy <- round(0.5 + worst)
+        ylim <- c(0, 3*dy+worst)
+        plot(range(t), ylim, type="n", xlab="Time [s]", ylab="", axes=FALSE, xaxs="i")
+        axis(1)
+        box()
+        yTicks <- pretty(c(0, worst))
+        mtext("Threat (stress / strength)", side=2, line=2, cex=par("cex"))
+        ## Skin
+        mtext("Skin", side=4, at=0, cex=par("cex"))
+        fillplot(t, 0, skinThreat, col=colThreat[2]) # high threat
+        fillplot(t, 0, ifelse(skinThreat<=1, skinThreat, 1), col=colThreat[1]) # low threat
+        abline(h=0, lty=3)
+        axis(2, at=yTicks, labels=yTicks)
+        ## Blubber
+        mtext("Blubber", side=4, at=dy, cex=par("cex"))
+        fillplot(t, dy, dy+blubberThreat,  col=colThreat[2])
+        fillplot(t, dy, dy+ifelse(blubberThreat<=1, blubberThreat, 1), col=colThreat[1])
+        abline(h=dy, lty=3)
+        axis(2, at=dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
+        ## Sublayer
+        mtext("Sublayer", side=4, at=2*dy, cex=par("cex"))
+        fillplot(t, 2*dy, 2*dy+sublayerThreat,  col=colThreat[2])
+        fillplot(t, 2*dy, 2*dy+ifelse(sublayerThreat<=1, sublayerThreat, 1), col=colThreat[1])
+        abline(h=2*dy, lty=3)
+        axis(2, at=2*dy+yTicks, labels=yTicks)
+        ## Bone
+        mtext("Bone", side=4, at=3*dy, cex=par("cex"))
+        fillplot(t, 3*dy, 3*dy+boneThreat,  col=colThreat[2])
+        fillplot(t, 3*dy, 3*dy+ifelse(boneThreat<=1, boneThreat, 1), col=colThreat[1])
+        axis(2, at=3*dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
+        showEvents(xs, xw)
+    }
+
+    if (all || "threat-style-1" %in% which) {
+        skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
+        skinyThreat <- x$WSF$sigmay / x$parms$s[1]
+        skinThreat <- ifelse(skinyThreat > skinzThreat, skinyThreat, skinzThreat)
+        blubberThreat <- x$WCF$stress /  x$parms$s[2]
+        sublayerThreat <- x$WCF$stress /  x$parms$s[3]
+        boneThreat <- x$WCF$stress /  x$parms$s[4]
+        ylim <- c(0, max(c(skinThreat, blubberThreat, sublayerThreat, boneThreat),na.rm=TRUE))
+        plot(t, skinThreat, ylim=ylim, col=1, type="l")
+        lines(t, blubberThreat, col=2)
+        lines(t, sublayerThreat, col=3)
+        lines(t, boneThreat, col=4)
+        legend("topright", lwd=par("lwd"), col=1:4, legend=c("Skin", "Blubber", "Sublayer", "Bone"))
+        showEvents(xs, xw)
+    }
+    if (all || "threat-style-2" %in% which) {
+        skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
+        skinyThreat <- x$WSF$sigmay / x$parms$s[1]
+        skinThreat <- ifelse(skinyThreat > skinzThreat, skinyThreat, skinzThreat)
+        blubberThreat <- x$WCF$stress /  x$parms$s[2]
+        sublayerThreat <- x$WCF$stress /  x$parms$s[3]
+        boneThreat <- x$WCF$stress /  x$parms$s[4]
+        totalThreat <- skinThreat + blubberThreat + sublayerThreat + boneThreat
+        ylim <- c(0, max(totalThreat, na.rm=TRUE))
+        plot(t, skinThreat, ylim=ylim, col=1, type="l")
+        lines(t, skinThreat+blubberThreat, col=2)
+        lines(t, skinThreat+blubberThreat+sublayerThreat, col=3)
+        lines(t, skinThreat+blubberThreat+sublayerThreat+boneThreat, col=4)
+        legend("topright", title="Cumulative threat",
+               lwd=4*par("lwd"), col=rev(1:4),
+               legend=rev(c("Skin", "Blubber", "Sublayer", "Bone")))
+        showEvents(xs, xw)
+    }
+    if (all || "threat-style-3" %in% which) {
+        ##tcol <- hcl(h=c(30, 120, 210, 300), c=20, l=90, fixup=FALSE)
+        tcol <- hcl(h=c(30, 120, 210, 300))
+        skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
+        skinyThreat <- x$WSF$sigmay / x$parms$s[1]
+        skinThreat <- ifelse(skinyThreat > skinzThreat, skinyThreat, skinzThreat)
+        blubberThreat <- x$WCF$stress /  x$parms$s[2]
+        sublayerThreat <- x$WCF$stress /  x$parms$s[3]
+        boneThreat <- x$WCF$stress /  x$parms$s[4]
+        totalThreat <- skinThreat + blubberThreat + sublayerThreat + boneThreat
+        ylim <- c(0, max(totalThreat, na.rm=TRUE))
+        plot(range(t), ylim, type="n", xlab="Time [s]", ylab="Cumulative Threat")
+        fillplot(t, 0, skinThreat, col=tcol[1])
+        fillplot(t, skinThreat, skinThreat+blubberThreat, col=tcol[2])
+        fillplot(t, skinThreat+blubberThreat, skinThreat+blubberThreat+sublayerThreat, col=tcol[3])
+        fillplot(t, skinThreat+blubberThreat+sublayerThreat, skinThreat+blubberThreat+sublayerThreat+boneThreat, col=tcol[4])
+        legend("topright", lwd=8*par("lwd"), col=rev(tcol),
+               legend=rev(c("Skin", "Blubber", "Sublayer", "Bone")))
+        showEvents(xs, xw)
+    }
+    if (all || "threat-style-4" %in% which) {
         skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
         skinyThreat <- x$WSF$sigmay / x$parms$s[1]
         skinThreat <- ifelse(skinyThreat > skinzThreat, skinyThreat, skinzThreat)

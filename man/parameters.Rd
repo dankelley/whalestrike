@@ -38,24 +38,26 @@ The skin thicknes default of 0.025 m represents the 0.9-1.0 inch value
 stated in Section 2.2.3 of Raymond (2007).
 The blubber default of 0.16 m is a rounded average of the values inferred
 by whale necropsy, reported in Appendix 2 of Daoust et al., 2018.
-The sublayer default of 1.1 m may be reasonable at some spots on the whale body.
+The sublayer default of 1.12 m may be reasonable at some spots on the whale body.
 The bone default of 0.1 m may be reasonable at some spots on the whale body.
 The sum of these default values, 1.40 m, is a whale radius that
 is consistent with a half-circumferance of 4.4 m, reported in Table 2.2
 of Raymond (2007).}
 
 \item{a, b}{Numerical vectors of length 4, giving values to use in the
-stress-strain law \code{stress=a*(exp(b*strain)-1)}. \code{a} is in Pa
-and \code{b} is unitless.  Note that \code{a*b} is the local modulus at
-low strain, and that \code{b} is the efolding scale for nonlinear increase
-in stress with strain. This exponential relationship has been mapped out
+stress-strain law \code{stress=a*(exp(b*strain)-1)}, where \code{a} is in Pa
+and \code{b} is unitless. By construction, \code{a*b} is the local modulus at
+low strain (i.e. at low \code{b*strain} values), and that \code{b} is the
+efolding scale for nonlinear increase in stress with strain.
+This exponential relationship has been mapped out
 for whale blubber, using a curve fit to Figure 2.13 of Raymond (2007), and
 these values are used for the second layer (blubber); see
-\link{raymond2007} for how the fit was done.
+the documentation for the \link{raymond2007} dataset, to see
+for how that fit was done.
 If not provided, \code{a} defaults to
-\code{c(17.80e6/0.1, 1.64e5, 1.64e5, 854.2e6/0.1)}
+\code{c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)}
 and \code{b} defaults to
-\code{c(0.1, 2.47, 2.47, 0.1)}.
+\code{c(0.1, 2.54, 2.54, 0.1)}.
 The skin defaults are set up to give a linear shape (since \code{b} is small)
 with the \code{a*b} product
 being 17.8e6 Pa, which is the adult-seal value
@@ -66,31 +68,32 @@ The sublayer defaults are set to match those of blubber, lacking
 any other information.
 The bone default for \code{b} is small, to set up a linear function,
 and \code{a*b} is set to equal 8.54e8 Pa,
-given in Table 2.3 of Raymond (2007).}
+given in Table 2.3 of Raymond (2007) and Table 4.5 of
+Campbell-Malone (2007)..}
 
 \item{s}{Numerical vector of length 4, giving the ultimate strengths [Pa] of
 skin, blubber, sublayer, and bone, respectively. If not provided, the
 value is set to
-\code{c(19.56e6, 4.37e5, 4.37e5, 22.9e6)},
+\code{c(19.6e6, 0.437e6, 0.437e6, 22.9e6)},
 with reasoning as follows.
-The skin default of 1.96e7 Pa
+The skin default of 19.6 MPa
 is a rounded value from Table 3 of Grear et al. (2018) for adult seal skin strength at
 an orientation of 0 degrees.  The blubber value of
-4.37e5 Pa is inferred by
-multiplying Raymond's (2007) Figure 2.13 elastic modulus of 6.36e5 Pa
+0.437 MPa is inferred by
+multiplying Raymond's (2007) Figure 2.13 elastic modulus of 0.636 MPa
 by the ratio 0.97/1.41 determined for adult seal strength/modulus, as reported
 in Table 3 of Grear et al. (2018).
 The sublayer value is taken to be identical to the blubber value, lacking
 more specific information.
-The bone default o 2.29e7 Pa is from Table 2.3 of Raymond (2007).}
+The bone default o 22.9 MPa is from Table 2.3 of Raymond (2007) and
+Table 4.5 of Campbell-Malone (2007).}
 
-\item{theta}{Whale skin deformation angle [deg]; defaults to 55deg if not supplied,
-because that angle produces the best match to Raymond's (2007)
+\item{theta}{Whale skin deformation angle [deg]; defaults to 50 degrees,
+if not supplied, because that angle produces the best match to Raymond's (2007)
 Figure 6.1 for the total force as a function of vessel speed, for large
-vessels. (At this \code{theta} value, the mismatch for a simulation using
-\code{ms}=311e6 kg, \code{Ly}=1.29m and \code{Lz}=1.29m, was 0.08 MPa
-for compression force at 55 deg, and 0.16 MPa for total force at 50 deg; these
-values should be compared with forces in the range 0.4 to 1.6 MPa.)}
+vessels. (Note that the match works almost as well in the range 40 deg
+to 60 deg, and that matching just for \code{WCF$force} yields an optimal
+angle of 55 degrees.)}
 
 \item{Cs}{Drag coefficient for ship [dimensionless],
 used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults
@@ -125,6 +128,11 @@ Assembles control parameters into a list suitable for passing to \code{\link{str
 and the functions that it calls. If \code{file} is provided, then all the other
 arguments are read from that source.
 Below are some sources cited in the discussion of the function arguments.
+
+Campbell-Malone, Regina. “Biomechanics of North Atlantic Right Whale Bone :
+Mandibular Fracture as a Fatal Endpoint for Blunt Vessel-Whale Collision
+Modeling.” PhD Thesis, Massachusetts Institute of Technology and Woods Hole
+Oceanographic Institution, 2007. \url{https://doi.org/10.1575/1912/1817}.
 
 Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
 “Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.

@@ -10,18 +10,25 @@ whaleAreaFromLength(L, type = "wetted")
 \item{L}{length in m}
 
 \item{type}{character string indicating the type of area, with
-\code{"projected"} for side-projected area using 0.143L^2,
-and \code{"wetted"}
-for submerged surface wetted, calculated by spinning
-the necropsiy side-view presented in Daoust et al. (2018)
-along the animal axis, yielding
-0.451 * (0.8715 * L)^2, where the direct factor on L
-was developed by comparing similarly-predicted masses to
-the results of \code{\link{whaleMassFromLength}}, as described
-in [2].}
+\code{"projected"} for a side-projected area, and 
+\code{"wetted"} for the total wetted area. The wetted
+area was computed by mathematically spinning a spline fit to the
+side-view. In both cases, the original data source is the
+necropsy side-view presented in Daoust et al. (2018).}
 }
 \description{
-Whale projected area, as function of length
+This depends on calculations based on the digitized shape of
+a whale necropsy, which is provided as \code{data(\link{whaleshape})}.
+The results are
+\preformatted{0.143 * L^2} for the projected area [1]
+and
+\preformatted{0.448 * (0.877 * L)^2} for the wetted area,
+where the latter uses a correction related to whale mass [2].
+}
+\details{
+Note that multiple digitizations were done,
+and that the coefficients used in the formulae
+agreed to under 0.7 percent percent between these digitizations.
 }
 \references{
 1. Dan Kelley's internal document \code{dek/20180623_whale_area.Rmd}, available
