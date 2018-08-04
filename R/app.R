@@ -36,7 +36,7 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px;}")
                                                              "whale water force", "reactive forces", "skin stress",
                                                              "compression stress", "values"),
                                                    selected=c("location", "section", "threat")))),
-                fluidRow(plotOutput("plot", height=500)))
+                fluidRow(plotOutput("plot")))# , height='200px'))) # NOTE: height has no effect
 
 
 #' Server for app, with standard arguments.
@@ -97,7 +97,7 @@ server <- function(input, output, session)
         par(mfrow=c(nrows,ncols), mar=c(3,3,1,2), mgp=c(2,0.7,0), cex=1)
         for (which in input$plot_panels)
             plot(sol, which=which)
-    }, pointsize=12, height=500)
+    }, pointsize=12)#, height=500)
 }
 
 #' Run a GUI app for interactive simulations
@@ -107,7 +107,7 @@ server <- function(input, output, session)
 #' called with default arguments.
 #' @param options List containing options that are provided
 #' to \code{\link[shiny]{shinyApp}}, which creates the GUI app.
-app <- function(mode="simple", options=list(height=800))
+app <- function(mode="simple", options=list(height=500)) # NOTE: height has no effect
 {
     if (mode == "simple")
         shinyApp(ui=ui, server=server, options=options)

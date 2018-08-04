@@ -4,7 +4,7 @@
 \alias{app}
 \title{Run a GUI app for interactive simulations}
 \usage{
-app(mode = "simple", options = list(height = 800))
+app(mode = "simple", options = list(height = 500))
 }
 \arguments{
 \item{mode}{Character string specifying the style to use.  Only
