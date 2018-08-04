@@ -150,8 +150,8 @@ North Atlantic Right Whale during Collision with a Vessel.” University of New
 Hampshire, 2007. \url{https://scholars.unh.edu/thesis/309}.
 }
 \examples{
-parms <- parameters(ms=20e3, lw=13)
-epsilon <- seq(0, 0.3, length.out=100)
-strain <- parms$stressFromStrain(epsilon)
-plot(epsilon, strain, type="l")
+parms <- parameters()
+epsilon <- seq(0, 1, length.out=100) # strain
+sigma <- parms$stressFromStrain(epsilon) # stress
+plot(epsilon, log10(sigma), xlab="Strain", ylab="log10(Stress [MPa])", type="l")
 }

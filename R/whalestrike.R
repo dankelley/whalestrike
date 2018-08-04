@@ -221,20 +221,18 @@ NULL
 #' but it may be solved
 #' easily for particular numerical values, using \code{\link{uniroot}}.
 #' This is done for a sequence of \code{N} values of strain \eqn{\epsilon}
-#' that range from 0 to 1. Then \code{\link{splinefun}} is used to create
-#' a cubic spline representing the relationship between \eqn{\sigma} and \eqn{\DeltaL},
+#' that range from 0 to 1. Then \code{\link{approxfun}} is used to create
+#' a piecewise-linear represention of the relationship between \eqn{\sigma} and \eqn{\DeltaL},
 #' which becomes the return value of the present function.
-#' The purpose of using a spline is to speed up processing of simulations carried out
-#' with \code{\link{strike}}. In the authors tests, the speedup was by
-#' an order of magnitude, and the loss of accuracy was
-#' negligible, amounting to fractional errors in the 8th decimal place.
+#' (The purpose of using a the piecewise-linear representation os to shorten
+#' computation times.)
 #'
 #' @param l vector of layer thicknesses
 #' @param a vector of multipliers
 #' @param b vector of e-fold parameters
 #' @param N integer specifying how many segments to use in the spline
 #'
-#' @return A spline function, created with \code{\link{splinefun}},
+#' @return A piecewise-linear function, created with \code{\link{approxfun}},
 #' that returns stress as a function of total strain of the
 #' system of compressing layers. For the purposes of the whale-strike
 #' analysis, the strain should be between 0 and 1, i.e. there is
@@ -252,17 +250,31 @@ NULL
 #' points(raymond2007$strain, raymond2007$stress, col=2)
 stressFromStrainFunction <- function(l, a, b, N=1e3)
 {
-    fcn <- function(sigma)
-        DL - sum((l/b) * log(1 + sigma / a))
+    fcn <- function(sigma) {
+        DL - sum((l/bb) * log(1 + sigma / aa))
+    }
     L <- sum(l)
     sigma <- rep(NA, N)
     epsilon <- seq(0, 1, length.out=N)
+    ## We will limit the epsilon in any given layer to 1, i.e. we don't
+    ## permit layers to be compressed to negative thickness. This is expressed
+    ## by setting layer-by-layer conditions on maximum stress.
+    sigmaMax <- a * (exp(b) - 1)
+    ##debug cat("sigmaMax=", paste(sprintf("%.3g", sigmaMax), collapse=" "), "\n")
+    use <- rep(TRUE, length(a))
     for (i in seq_along(epsilon)) {
+        aa <- a[use]
+        bb <- b[use]
+        ll <- l[use]
+        ##debug cat(sprintf("i=%3d, epsilon=%10.5f, ", i, epsilon[i]), ", use=", paste(use, collapse=" "), "\n")
         DL <- epsilon[i] * L
-        sigma[i] <- uniroot(fcn, interval=c(0, 1e8))$root
-        ##cat("i=", i, ", epsilon=", epsilon[i], ", sigma=", sigma[i], "\n")
+        sigma[i] <- uniroot(fcn, interval=c(0, 1e9))$root
+        ##debug cat("  sigma[i]=", sprintf("%.3g", sigma[i]), "\n")
+        use <- sigma[i] < sigmaMax
+        if (!any(use))
+            sigma[i] <- sigma[i-1] # probably good enough; this occurs only at sigma=1, I think
     }
-    splinefun(epsilon, sigma)
+    approxfun(epsilon, sigma)
 }
 
 
@@ -382,10 +394,10 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' according to the system described above.
 #'
 #' @examples
-#' parms <- parameters(ms=20e3, lw=13)
-#' epsilon <- seq(0, 0.3, length.out=100)
-#' strain <- parms$stressFromStrain(epsilon)
-#' plot(epsilon, strain, type="l")
+#' parms <- parameters()
+#' epsilon <- seq(0, 1, length.out=100) # strain
+#' sigma <- parms$stressFromStrain(epsilon) # stress
+#' plot(epsilon, log10(sigma), xlab="Strain", ylab="log10(Stress [MPa])", type="l")
 parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
                        lw=13, mw, Sw,
                        l, a, b, s,
@@ -667,6 +679,7 @@ whaleCompressionForce <- function(xs, xw, parms)
     ##E <- (parms$alpha + parms$beta + parms$gamma) / (parms$alpha/parms$Ealpha + parms$beta/parms$Ebeta + parms$gamma/parms$Egamma)
     stress <- parms$stressFromStrain(strain)
     force <- stress * parms$Ly * parms$Lz
+    stress <- ifelse(stress < 0, 0, stress) # just in case; we don't want log(negative number)
     compressed <- cbind(parms$l[1]*(1-log(1 + stress / parms$a[1]) / parms$b[1]),
                         parms$l[2]*(1-log(1 + stress / parms$a[2]) / parms$b[2]),
                         parms$l[3]*(1-log(1 + stress / parms$a[3]) / parms$b[3]),

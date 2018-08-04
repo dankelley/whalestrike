@@ -14,7 +14,7 @@ plot(sol)
 library(whalestrike)
 t <- seq(0, 1, length.out=200)
 state <- c(xs=-1.5, vs=10*0.5144, xw=0, vw=0) # 10 knots
-area <- seq(0.1, 1.5, length.out=100)
+area <- seq(0.2, 1.5, length.out=100)
 stress <- rep(NA, length.out=length(area)) # compressive stress [MPa]
 for (i in seq_along(area)) {
     L <- sqrt(area[i])
@@ -30,7 +30,7 @@ abline(h=danger, lty="dashed")
 mtext(sprintf("Compression stress [MPa]\n(injurious if > %.2f MPa)", danger),
       side=3, line=1)
 
-## ----results="hide", fig.width=7, fig.height=4---------------------------
+## ----results="hide", fig.width=7, fig.height=4----
 library(whalestrike)
 t <- seq(0, 1, length.out=200)
 ## Hint: the following creates x and y of different lengths,

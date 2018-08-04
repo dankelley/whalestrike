@@ -16,7 +16,7 @@ stressFromStrainFunction(l, a, b, N = 1000)
 \item{N}{integer specifying how many segments to use in the spline}
 }
 \value{
-A spline function, created with \code{\link{splinefun}},
+A piecewise-linear function, created with \code{\link{approxfun}},
 that returns stress as a function of total strain of the
 system of compressing layers. For the purposes of the whale-strike
 analysis, the strain should be between 0 and 1, i.e. there is
@@ -40,13 +40,11 @@ This expression is not easily inverted to get
 but it may be solved
 easily for particular numerical values, using \code{\link{uniroot}}.
 This is done for a sequence of \code{N} values of strain \eqn{\epsilon}
-that range from 0 to 1. Then \code{\link{splinefun}} is used to create
-a cubic spline representing the relationship between \eqn{\sigma} and \eqn{\DeltaL},
+that range from 0 to 1. Then \code{\link{approxfun}} is used to create
+a piecewise-linear represention of the relationship between \eqn{\sigma} and \eqn{\DeltaL},
 which becomes the return value of the present function.
-The purpose of using a spline is to speed up processing of simulations carried out
-with \code{\link{strike}}. In the authors tests, the speedup was by
-an order of magnitude, and the loss of accuracy was
-negligible, amounting to fractional errors in the 8th decimal place.
+(The purpose of using a the piecewise-linear representation os to shorten
+computation times.)
 }
 \examples{
 library(whalestrike)
