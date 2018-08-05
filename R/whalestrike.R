@@ -1,14 +1,24 @@
 library(deSolve)
 library(xtable)
 
-#' Trim values to a stated upper limit
+#' Pin numerical values between stated limits
 #' @param x Vector or matrix of numerical values
-#' @param lim Numerical value of maximum allowed
+#' @param lower Numerical values of minimum value allowed; set to \code{NULL}
+#' to avoid trimming the lower limit.
+#' @param upper As for \code{lower}, but for the upper limit.
 #' @return Copy of \code{x}, with any value that exceeds \code{lim} having
 #' been replaced by \code{lim}.
-trimBelow <- function(x, lim)
+pin <- function(x, lower=NULL, upper=NULL)
 {
-    ifelse(x < lim, x, lim)
+    ## Protect the ifelse() operation from getting riled by NAs
+    na <- is.na(x)
+    x[na] <- 0 # value is arbitrary because changed back to NA later
+    if (!is.null(lower))
+        x <- ifelse(x > lower, x, lower)
+    if (!is.null(upper))
+        x <- ifelse(x < upper, x, upper)
+    x[na] <- NA
+    x
 }
 
 #' Draw polygon between two xy curves
@@ -682,7 +692,7 @@ whaleCompressionForce <- function(xs, xw, parms)
                         parms$l[3]*(1-log(1 + stress / parms$a[3]) / parms$b[3]),
                         parms$l[4]*(1-log(1 + stress / parms$a[4]) / parms$b[4]))
     ##. message("compressed=", paste(compressed, " "), "before zero trim")
-    compressed <- pinToPositive(compressed)
+    compressed <- pin(compressed, lower=0)
     ##. message("compressed=", paste(compressed, " "), "after zero trim")
     list(force=force, stress=stress, strain=strain, compressed=compressed)
 }
@@ -1241,11 +1251,11 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         trimThreat <- 10
         trimmed <- worst > trimThreat
         if (trimmed) {
-            skinThreat <- trimBelow(skinThreat, trimThreat)
-            blubberThreat <- trimBelow(blubberThreat, trimThreat)
-            sublayerThreat <- trimBelow(sublayerThreat, trimThreat)
-            boneThreat <- trimBelow(boneThreat, trimThreat)
-            worst <- trimBelow(worst, trimThreat)
+            skinThreat <- pin(skinThreat, upper=trimThreat)
+            blubberThreat <- pin(blubberThreat, upper=trimThreat)
+            sublayerThreat <- pin(sublayerThreat, upper=trimThreat)
+            boneThreat <- pin(boneThreat, upper=trimThreat)
+            worst <- pin(worst, upper=trimThreat)
         }
         dy <- round(0.5 + worst)
         ylim <- c(0, 3*dy+worst)
