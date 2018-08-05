@@ -1,6 +1,16 @@
 library(deSolve)
 library(xtable)
 
+#' Trim values to a stated upper limit
+#' @param x Vector or matrix of numerical values
+#' @param lim Numerical value of maximum allowed
+#' @return Copy of \code{x}, with any value that exceeds \code{lim} having
+#' been replaced by \code{lim}.
+trimBelow <- function(x, lim)
+{
+    ifelse(x < lim, x, lim)
+}
+
 #' Draw polygon between two xy curves
 #'
 #' This adds to an existing plot by filling the area between the
@@ -939,7 +949,11 @@ strike <- function(t, state, parms, debug=0)
 #' ad-hoc measure of the possible threat to skin, blubber and sublayer.
 #' The threat level is computed as the ratio
 #' of stress to ultimate strength, e.g. for blubber, it is
-#' \code{x$WCF$stress/x$parms$s[2]}. The curves are filled in with a light
+#' \code{x$WCF$stress/x$parms$s[2]}. If the highest value of this quantity
+#' exceeds 10, then a log scale is used; this typically happens if
+#' blubber and sublayer get to zero thickness,
+#' whereupon the ship hits bone.)
+#' The curves are filled in with a light
 #' gray colour for stress/strength values up to 1, and with black for
 #' higher values; thus, a glance reveals whether the simulation indicates
 #' strong threats to whale health.
@@ -1224,36 +1238,48 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         boneThreat <- x$WCF$stress /  x$parms$s[4]
         totalThreat <- skinThreat + blubberThreat + sublayerThreat + boneThreat
         worst <- max(c(skinThreat, blubberThreat, sublayerThreat, boneThreat))
+        trimThreat <- 10
+        trimmed <- worst > trimThreat
+        if (trimmed) {
+            skinThreat <- trimBelow(skinThreat, trimThreat)
+            blubberThreat <- trimBelow(blubberThreat, trimThreat)
+            sublayerThreat <- trimBelow(sublayerThreat, trimThreat)
+            boneThreat <- trimBelow(boneThreat, trimThreat)
+            worst <- trimBelow(worst, trimThreat)
+        }
         dy <- round(0.5 + worst)
         ylim <- c(0, 3*dy+worst)
         plot(range(t), ylim, type="n", xlab="Time [s]", ylab="", axes=FALSE, xaxs="i")
         axis(1)
         box()
         yTicks <- pretty(c(0, worst))
-        mtext("Threat (stress / strength)", side=2, line=2, cex=par("cex"))
+        mtext(paste("Threat (stress / strength)",
+                    if (trimmed) paste(" trimmed to", trimThreat) else ""),
+              side=2, line=2, cex=par("cex"))
         ## Skin
         mtext("Skin", side=4, at=0, cex=par("cex"))
-        fillplot(t, 0, skinThreat, col=colThreat[2]) # high threat
-        fillplot(t, 0, ifelse(skinThreat<=1, skinThreat, 1), col=colThreat[1]) # low threat
+        y0 <- 0 # if (log) -1 else 0
+        fillplot(t, y0, skinThreat, col=colThreat[2]) # high threat
+        fillplot(t, y0, ifelse(skinThreat<=1, skinThreat, 1), col=colThreat[1]) # low threat
         abline(h=0, lty=3)
-        axis(2, at=yTicks, labels=yTicks)
+        axis(2, at=y0+yTicks, labels=yTicks)
         ## Blubber
         mtext("Blubber", side=4, at=dy, cex=par("cex"))
-        fillplot(t, dy, dy+blubberThreat,  col=colThreat[2])
-        fillplot(t, dy, dy+ifelse(blubberThreat<=1, blubberThreat, 1), col=colThreat[1])
+        fillplot(t, y0+dy, dy+blubberThreat,  col=colThreat[2])
+        fillplot(t, y0+dy, dy+ifelse(blubberThreat<=1, blubberThreat, 1), col=colThreat[1])
         abline(h=dy, lty=3)
-        axis(2, at=dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
+        axis(2, at=y0+dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
         ## Sublayer
         mtext("Sublayer", side=4, at=2*dy, cex=par("cex"))
-        fillplot(t, 2*dy, 2*dy+sublayerThreat,  col=colThreat[2])
-        fillplot(t, 2*dy, 2*dy+ifelse(sublayerThreat<=1, sublayerThreat, 1), col=colThreat[1])
+        fillplot(t, y0+2*dy, 2*dy+sublayerThreat,  col=colThreat[2])
+        fillplot(t, y0+2*dy, 2*dy+ifelse(sublayerThreat<=1, sublayerThreat, 1), col=colThreat[1])
         abline(h=2*dy, lty=3)
-        axis(2, at=2*dy+yTicks, labels=yTicks)
+        axis(2, at=y0+2*dy+yTicks, labels=yTicks)
         ## Bone
         mtext("Bone", side=4, at=3*dy, cex=par("cex"))
-        fillplot(t, 3*dy, 3*dy+boneThreat,  col=colThreat[2])
-        fillplot(t, 3*dy, 3*dy+ifelse(boneThreat<=1, boneThreat, 1), col=colThreat[1])
-        axis(2, at=3*dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
+        fillplot(t, y0+3*dy, 3*dy+boneThreat,  col=colThreat[2])
+        fillplot(t, y0+3*dy, 3*dy+ifelse(boneThreat<=1, boneThreat, 1), col=colThreat[1])
+        axis(2, at=y0+3*dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
         showEvents(xs, xw)
     }
 
