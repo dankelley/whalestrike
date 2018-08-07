@@ -1,6 +1,26 @@
 library(deSolve)
 library(xtable)
 
+#' Pin numerical values between stated limits
+#' @param x Vector or matrix of numerical values
+#' @param lower Numerical values of minimum value allowed; set to \code{NULL}
+#' to avoid trimming the lower limit.
+#' @param upper As for \code{lower}, but for the upper limit.
+#' @return Copy of \code{x}, with any value that exceeds \code{lim} having
+#' been replaced by \code{lim}.
+pin <- function(x, lower=NULL, upper=NULL)
+{
+    ## Protect the ifelse() operation from getting riled by NAs
+    na <- is.na(x)
+    x[na] <- 0 # value is arbitrary because changed back to NA later
+    if (!is.null(lower))
+        x <- ifelse(x > lower, x, lower)
+    if (!is.null(upper))
+        x <- ifelse(x < upper, x, upper)
+    x[na] <- NA
+    x
+}
+
 #' Draw polygon between two xy curves
 #'
 #' This adds to an existing plot by filling the area between the
@@ -216,10 +236,14 @@ NULL
 #' the change \eqn{\DeltaL} in the total thickness \eqn{L=\suml_i}
 #' may be written
 #' \deqn{0 = \DeltaL - \sum((l_i/b_i) ln(1+\sigma/a_i))}.
+#' Note that zero-thickness layers are removed from the calculation,
+#' to avoid spurious forces.
+#'
 #' This expression is not easily inverted to get
 #' \eqn{\sigma} in terms of \eqn{\DeltaL}
 #' but it may be solved
 #' easily for particular numerical values, using \code{\link{uniroot}}.
+#'
 #' This is done for a sequence of \code{N} values of strain \eqn{\epsilon}
 #' that range from 0 to 1. Then \code{\link{approxfun}} is used to create
 #' a piecewise-linear represention of the relationship between \eqn{\sigma} and \eqn{\DeltaL},
@@ -248,7 +272,7 @@ NULL
 #' plot(x, y, type='l', lwd=4, col="gray")
 #' data("raymond2007")
 #' points(raymond2007$strain, raymond2007$stress, col=2)
-stressFromStrainFunction <- function(l, a, b, N=1e3)
+stressFromStrainFunction <- function(l, a, b, N=1000)
 {
     fcn <- function(sigma) {
         DL - sum((l/bb) * log(1 + sigma / aa))
@@ -344,7 +368,7 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' The bone default for \code{b} is small, to set up a linear function,
 #' and \code{a*b} is set to equal 8.54e8 Pa,
 #' given in Table 2.3 of Raymond (2007) and Table 4.5 of
-#' Campbell-Malone (2007)..
+#' Campbell-Malone (2007).
 #' @param s Numerical vector of length 4, giving the ultimate strengths [Pa] of
 #' skin, blubber, sublayer, and bone, respectively. If not provided, the
 #' value is set to
@@ -361,12 +385,11 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #' more specific information.
 #' The bone default o 22.9 MPa is from Table 2.3 of Raymond (2007) and
 #' Table 4.5 of Campbell-Malone (2007).
-#' @param theta Whale skin deformation angle [deg]; defaults to 50 degrees,
-#' if not supplied, because that angle produces the best match to Raymond's (2007)
+#' @param theta Whale skin deformation angle [deg]; defaults to 55 degrees,
+#' if not supplied, because that angle produces a good match to Raymond's (2007)
 #' Figure 6.1 for the total force as a function of vessel speed, for large
-#' vessels. (Note that the match works almost as well in the range 40 deg
-#' to 60 deg, and that matching just for \code{WCF$force} yields an optimal
-#' angle of 55 degrees.)
+#' vessels. (Note that the match works almost as well in the range 50 deg
+#' to 70 deg.)
 #' @param Cs Drag coefficient for ship [dimensionless],
 #' used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults
 #' to 1e-2, which is 4 times the frictional coefficient of 2.5e-3
@@ -391,7 +414,8 @@ stressFromStrainFunction <- function(l, a, b, N=1e3)
 #'
 #' @return
 #' A named list holding the parameters, with defaults and alternatives reconciled
-#' according to the system described above.
+#' according to the system described above, along with a function that computes
+#' compression force, which created by \code{\link{stressFromStrainFunction}}.
 #'
 #' @examples
 #' parms <- parameters()
@@ -409,20 +433,6 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
         rval$Ss <- shipAreaFromMass(rval$ms)
         rval$mw <- whaleMassFromLength(rval$lw)
         rval$Sw <- whaleAreaFromLength(rval$lw, type="wetted")
-        if ("gammaType" %in% names(rval)) {
-            if (rval$gammaType == 1) {
-                rval$gamma <- rval$gamma1
-                rval$Egamma <- rval$Egamma1
-                rval$UTSgamma <- rval$UTSgamma1
-            } else {
-                rval$gamma <- rval$gamma2
-                rval$Egamma <- rval$Egamma2
-                rval$UTSgamma <- rval$UTSgamma2
-            }
-            rval$gamma1 <- rval$Egamma1 <- rval$UTSgamma1 <- NULL
-            rval$gamma2 <- rval$Egamma2 <- rval$UTSgamma2 <- NULL
-            rval$gammaType <- NULL
-        }
         rval$tmax <- NULL
         rval$vs <- NULL
         rval$Cs <- Cs
@@ -637,18 +647,15 @@ whaleAreaFromLength <- function(L, type="wetted")
 
 #' Whale compression force
 #'
-#' Calculate the reaction force of blubber and the sublayer to
-#' its interior, as the product of stress and area.
-#' Linear compression dynamics is assumed for each layer, i.e. that
-#' stress is strain times elastic modulus. Static dynamics is assumed,
-#' so that the stresses match in the the two layers. The calculation
-#' is done in a two-step process. First, the stress for an equivalent
-#' layer is computed, based on a combined elastic modulus. If this
-#' stress exceeds the blubber modulus, the blubber thickness is set to zero
-#' and the calculation is redone with just the sublayer. If not,
-#' the layer thickness are computed assuming equal stress in each layer.
-#' Force is calculated as the product of stress and the area
-#' given by the product of \code{parms$Ly} and \code{parms$Lz}.
+#' Calculate the total compression stress and force, along
+#' with the thicknesses of skin, blubber, sublayer, and bone.
+#' The stess is computed with the \code{stressFromStrain} function that
+#' is created by \code{\link{parameters}} and stored in \code{para}.
+#' the force is computed by multiplying stess by area
+#' computed as the product of \code{parms$Ly} and \code{parms$Lz}.
+#' Any negative layer thicknesses are set to zero, as a way to
+#' avoid problems with aphysical engineering compression strains that
+#' exceed 1.
 #'
 #' @param xs Ship position [m]
 #'
@@ -668,7 +675,7 @@ whaleAreaFromLength <- function(L, type="wetted")
 #' See \link{whalestrike} for a list of references.
 whaleCompressionForce <- function(xs, xw, parms)
 {
-    zeroTrim <- function(x) # turn negatives into zeros
+    pinToPositive <- function(x) # turn negatives into zeros
         ifelse(0 < x, x, 0)
     touching <- xs < xw & xs > (xw - parms$lsum)
     dx <- ifelse(touching, xs - (xw - parms$lsum), 0) # penetration distance
@@ -685,7 +692,7 @@ whaleCompressionForce <- function(xs, xw, parms)
                         parms$l[3]*(1-log(1 + stress / parms$a[3]) / parms$b[3]),
                         parms$l[4]*(1-log(1 + stress / parms$a[4]) / parms$b[4]))
     ##. message("compressed=", paste(compressed, " "), "before zero trim")
-    compressed <- zeroTrim(compressed)
+    compressed <- pin(compressed, lower=0)
     ##. message("compressed=", paste(compressed, " "), "after zero trim")
     list(force=force, stress=stress, strain=strain, compressed=compressed)
 }
@@ -952,10 +959,16 @@ strike <- function(t, state, parms, debug=0)
 #' ad-hoc measure of the possible threat to skin, blubber and sublayer.
 #' The threat level is computed as the ratio
 #' of stress to ultimate strength, e.g. for blubber, it is
-#' \code{x$WCF$stress/x$parms$s[2]}. The curves are filled in with a light
+#' \code{x$WCF$stress/x$parms$s[2]}. The vertical same scale is used in
+#' each of the subpanels that make up the stack. Any values exceeding
+#' 10 are clipped to 10, and in such a case the overall label on the vertical
+#' axis will note this clipping, although it should be easy to see, because
+#' the way it most often occurs is if the soft layers "bottom out" onto
+#' the bone, which yields a short period of high stress, owing to the
+#' high elastic modulus of bone. Each of the curves is filled in with a light
 #' gray colour for stress/strength values up to 1, and with black for
-#' higher values; thus, a glance reveals whether the simulation indicates
-#' strong threats to whale health.
+#' higher values, making it easy to tell at a glance whether the
+#' threat level is high.
 #'
 #' \item \code{"whale acceleration"} for a time-series plot of whale acceleration.
 #'
@@ -1237,36 +1250,48 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         boneThreat <- x$WCF$stress /  x$parms$s[4]
         totalThreat <- skinThreat + blubberThreat + sublayerThreat + boneThreat
         worst <- max(c(skinThreat, blubberThreat, sublayerThreat, boneThreat))
+        trimThreat <- 10
+        trimmed <- worst > trimThreat
+        if (trimmed) {
+            skinThreat <- pin(skinThreat, upper=trimThreat)
+            blubberThreat <- pin(blubberThreat, upper=trimThreat)
+            sublayerThreat <- pin(sublayerThreat, upper=trimThreat)
+            boneThreat <- pin(boneThreat, upper=trimThreat)
+            worst <- pin(worst, upper=trimThreat)
+        }
         dy <- round(0.5 + worst)
         ylim <- c(0, 3*dy+worst)
         plot(range(t), ylim, type="n", xlab="Time [s]", ylab="", axes=FALSE, xaxs="i")
         axis(1)
         box()
         yTicks <- pretty(c(0, worst))
-        mtext("Threat (stress / strength)", side=2, line=2, cex=par("cex"))
+        mtext(paste("Threat (stress / strength)",
+                    if (trimmed) paste(" trimmed to", trimThreat) else ""),
+              side=2, line=2, cex=par("cex"))
         ## Skin
         mtext("Skin", side=4, at=0, cex=par("cex"))
-        fillplot(t, 0, skinThreat, col=colThreat[2]) # high threat
-        fillplot(t, 0, ifelse(skinThreat<=1, skinThreat, 1), col=colThreat[1]) # low threat
+        y0 <- 0 # if (log) -1 else 0
+        fillplot(t, y0, skinThreat, col=colThreat[2]) # high threat
+        fillplot(t, y0, ifelse(skinThreat<=1, skinThreat, 1), col=colThreat[1]) # low threat
         abline(h=0, lty=3)
-        axis(2, at=yTicks, labels=yTicks)
+        axis(2, at=y0+yTicks, labels=yTicks)
         ## Blubber
         mtext("Blubber", side=4, at=dy, cex=par("cex"))
-        fillplot(t, dy, dy+blubberThreat,  col=colThreat[2])
-        fillplot(t, dy, dy+ifelse(blubberThreat<=1, blubberThreat, 1), col=colThreat[1])
+        fillplot(t, y0+dy, dy+blubberThreat,  col=colThreat[2])
+        fillplot(t, y0+dy, dy+ifelse(blubberThreat<=1, blubberThreat, 1), col=colThreat[1])
         abline(h=dy, lty=3)
-        axis(2, at=dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
+        axis(2, at=y0+dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
         ## Sublayer
         mtext("Sublayer", side=4, at=2*dy, cex=par("cex"))
-        fillplot(t, 2*dy, 2*dy+sublayerThreat,  col=colThreat[2])
-        fillplot(t, 2*dy, 2*dy+ifelse(sublayerThreat<=1, sublayerThreat, 1), col=colThreat[1])
+        fillplot(t, y0+2*dy, 2*dy+sublayerThreat,  col=colThreat[2])
+        fillplot(t, y0+2*dy, 2*dy+ifelse(sublayerThreat<=1, sublayerThreat, 1), col=colThreat[1])
         abline(h=2*dy, lty=3)
-        axis(2, at=2*dy+yTicks, labels=yTicks)
+        axis(2, at=y0+2*dy+yTicks, labels=yTicks)
         ## Bone
         mtext("Bone", side=4, at=3*dy, cex=par("cex"))
-        fillplot(t, 3*dy, 3*dy+boneThreat,  col=colThreat[2])
-        fillplot(t, 3*dy, 3*dy+ifelse(boneThreat<=1, boneThreat, 1), col=colThreat[1])
-        axis(2, at=3*dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
+        fillplot(t, y0+3*dy, 3*dy+boneThreat,  col=colThreat[2])
+        fillplot(t, y0+3*dy, 3*dy+ifelse(boneThreat<=1, boneThreat, 1), col=colThreat[1])
+        axis(2, at=y0+3*dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
         showEvents(xs, xw)
     }
 
