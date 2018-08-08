@@ -1125,7 +1125,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         bone <- x$WCF$compressed[,4]
         maxy <- max(c(skin+blubber+sublayer+bone))
         ylim <- c(-maxy*1.2, 0)
-        plot(t, -(skin+blubber+sublayer+bone), xlab="Time [s]", ylab="Cross Section [m]",
+        plot(t, -(skin+blubber+sublayer+bone), xlab="Time [s]", ylab="Whale-centred location [m]",
              type="l", lwd=lwd, ylim=ylim, xaxs="i", yaxs="i", col=colwskin)# outside skin margin
         lines(t, -(blubber+sublayer+bone), lwd=lwd, col=colwskin)
         lines(t, -(sublayer+bone), lwd=lwd, col=colwinterface)# , lty="42")
@@ -1137,7 +1137,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         text(x0, -0.5*x$parms$l[4], "bone", pos=4)
         text(x0, -x$parms$l[4]-0.5*x$parms$l[3], "sublayer", pos=4)
         text(x0, -x$parms$l[4]-x$parms$l[3]-0.5*x$parms$l[2], "blubber", pos=4)
-        text(x0, 0.5*(ylim[1] - x$parms$lsum), "water/ship", pos=4)
+        text(x0, 0.5*(ylim[1] - x$parms$lsum), "", pos=4)
         hatchPolygon <- FALSE
         ## Blubber
         ## if (FALSE) {
