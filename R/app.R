@@ -80,7 +80,6 @@ server <- function(input, output, session)
                      updateSliderInput(session, s, value=config[[s]])
                 })
     output$plot <- renderPlot({
-        lm <- 10
         parms <- parameters(ms=1000*input$ms, Ss=shipAreaFromMass(1000*input$ms),
                             Ly=input$Ly, Lz=input$Lz,
                             lw=input$lw,
