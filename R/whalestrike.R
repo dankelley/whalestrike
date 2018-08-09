@@ -320,13 +320,12 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' the provided value of \code{ms}.
 #' @param Ly Ship impact horizontal extent [m]; defaults to 0.5m if not specified.
 #' @param Lz Ship impact vertical extent [m]; defaults to 1.5m if not specified.
-#' @param lw Whale length [m]. If not supplied, \code{\link{whaleLengthFromMass}} is used
-#' to calculate this, given \code{lm}, but if neither \code{mw} nor \code{ml} is provided,
-#' an error is reported. The length is used by \code{\link{whaleAreaFromLength}} to
+#' @param lw Whale length [m]. This is used by \code{\link{whaleAreaFromLength}} to
 #' calculate area, which is needed for the water drag calculation done by
 #' \code{\link{whaleWaterForce}}.
-#' @param mw Whale mass [kg]. If not provided, this is calculated from whale
-#' length, using \code{\link{whaleMassFromLength}} with \code{type="wetted"}.
+#' @param mw Whale mass [kg]. If this value is not provided, then
+#' it is calculated from whale length, using \code{\link{whaleMassFromLength}}
+#' with \code{type="wetted"}.
 #' @param Sw Whale surface area [m^2]. If not provided, this is calculated
 #' from whale length using \code{\link{whaleAreaFromLength}}.
 #' @param l Numerical vector of length 4, giving thickness [m] of skin, blubber,
@@ -423,7 +422,7 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' sigma <- parms$stressFromStrain(epsilon) # stress
 #' plot(epsilon, log10(sigma), xlab="Strain", ylab="log10(Stress [MPa])", type="l")
 parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
-                       lw=13, mw, Sw,
+                       lw=13.7, mw, Sw,
                        l, a, b, s,
                        theta=55,
                        Cs=0.01, Cw=0.0025, file)

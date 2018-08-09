@@ -4,7 +4,7 @@
 \alias{parameters}
 \title{Control parameters for whale strike simulation}
 \usage{
-parameters(ms = 20000, Ss, Ly = 0.5, Lz = 1, lw = 13, mw, Sw, l, a, b,
+parameters(ms = 20000, Ss, Ly = 0.5, Lz = 1, lw = 13.7, mw, Sw, l, a, b,
   s, theta = 55, Cs = 0.01, Cw = 0.0025, file)
 }
 \arguments{
@@ -19,14 +19,13 @@ the provided value of \code{ms}.}
 
 \item{Lz}{Ship impact vertical extent [m]; defaults to 1.5m if not specified.}
 
-\item{lw}{Whale length [m]. If not supplied, \code{\link{whaleLengthFromMass}} is used
-to calculate this, given \code{lm}, but if neither \code{mw} nor \code{ml} is provided,
-an error is reported. The length is used by \code{\link{whaleAreaFromLength}} to
+\item{lw}{Whale length [m]. This is used by \code{\link{whaleAreaFromLength}} to
 calculate area, which is needed for the water drag calculation done by
 \code{\link{whaleWaterForce}}.}
 
-\item{mw}{Whale mass [kg]. If not provided, this is calculated from whale
-length, using \code{\link{whaleMassFromLength}} with \code{type="wetted"}.}
+\item{mw}{Whale mass [kg]. If this value is not provided, then
+it is calculated from whale length, using \code{\link{whaleMassFromLength}}
+with \code{type="wetted"}.}
 
 \item{Sw}{Whale surface area [m^2]. If not provided, this is calculated
 from whale length using \code{\link{whaleAreaFromLength}}.}

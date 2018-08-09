@@ -4,7 +4,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ## ----results="hide", fig.width=7, fig.height=3---------------------------
 library(whalestrike)
 t <- seq(0, 1, length.out=200)
-state <- c(xs=-2.5, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
+state <- list(xs=-2.5, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
 parms <- parameters(ms=20e3, Ly=0.5, Lz=1, lw=13)
 sol <- strike(t, state, parms)
 par(mfcol=c(1, 3), mar=c(3.3, 3, 1, 2), mgp=c(2, 0.7, 0), cex=0.7)
@@ -13,7 +13,7 @@ plot(sol)
 ## ----results="hide", fig.width=7, fig.height=4---------------------------
 library(whalestrike)
 t <- seq(0, 1, length.out=200)
-state <- c(xs=-1.5, vs=10*0.5144, xw=0, vw=0) # 10 knots
+state <- list(xs=-1.5, vs=10*0.5144, xw=0, vw=0) # 10 knots
 area <- seq(0.2, 1.5, length.out=100)
 stress <- rep(NA, length.out=length(area)) # compressive stress [MPa]
 for (i in seq_along(area)) {
@@ -44,7 +44,7 @@ stress <- matrix(NA, nrow=length(speed), ncol=length(l2))
 l <- parameters()$l
 for (i in seq_along(l2)) {
     for (j in seq_along(speed)) {
-        state <- c(xs=-1.5, vs=speed[j], xw=0, vw=0)
+        state <- list(xs=-1.5, vs=speed[j], xw=0, vw=0)
         parms <- parameters(l=c(l[1], l2[i], l[3], l[4]))
         sol <- strike(t, state, parms)
         stress[j, i] <- max(sol$WCF$stress) / 1e6
