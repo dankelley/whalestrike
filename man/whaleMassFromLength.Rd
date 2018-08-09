@@ -15,7 +15,18 @@ whaleMassFromLength(L, model = "fortune2012atlantic")
 Mass in kg.
 }
 \description{
-Calculate an estimate of the mass of a whale, based on its length.
+Calculate an estimate of the mass of a whale, based on its length, with
+formulae from the following sources.
+
+Moore, M.J., A.R. Knowlton, S.D. Kraus, W.A. McLellan, and R.K. Bonde.
+“Morphometry, Gross Morphology and Available Histopathology in North Atlantic
+Right Whale (Eubalaena Glacialis) Mortalities (1970 to 2002).” Journal of
+Cetacean Research and Management 6, no. 3 (2005): 199–214.
+
+Fortune, Sarah M. E., Andrew W. Trites, Wayne L. Perryman, Michael J. Moore,
+Heather M. Pettis, and Morgan S. Lynn. “Growth and Rapid Early Development of
+North Atlantic Right Whales (Eubalaena Glacialis).” Journal of Mammalogy 93,
+no. 5 (2012): 1342–54. \url{https://doi.org/10.1644/11-MAMM-A-297.1}.
 }
 \details{
 The permitted values for \code{model} are as follows.

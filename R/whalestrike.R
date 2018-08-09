@@ -515,8 +515,13 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
 
 #' Whale mass inferred from length
 #'
-#' Calculate an estimate of the mass of a whale, based on its length.
+#' @description
+#' Calculate an estimate of the mass of a whale, based on its length, with
+#' formulae from the following sources.
+#' @template ref_moore
+#' @template ref_fortune
 #'
+#' @details
 #' The permitted values for \code{model} are as follows.
 #'\itemize{
 #' \item \code{"moore2005"} yields
@@ -544,6 +549,7 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
 #' @param L Whale length in m.
 #' @param model Character string specifying the model (see \dQuote{Details}).
 #' @return Mass in kg.
+#'
 #' @examples
 #' library(whalestrike)
 #' L <- seq(5, 15, length.out=100)
