@@ -854,7 +854,7 @@ derivative <- function(var, t)
 #'
 #' @param t time [s].
 #'
-#' @param state A named vector holding the initial state of the model:
+#' @param state A list or named vector holding the initial state of the model:
 #' ship position \code{xs} [m],
 #' ship speed \code{vs} [m/s],
 #' whale position \code{xw} [m]
@@ -875,7 +875,7 @@ derivative <- function(var, t)
 #' @examples
 #' library(whalestrike)
 #' t <- seq(0, 0.7, length.out=200)
-#' state <- c(xs=-2, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
+#' state <- list(xs=-2, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
 #' parms <- parameters(ms=20e3, lw=13)
 #' sol <- strike(t, state, parms)
 #' par(mfcol=c(1, 3), mar=c(3, 3, 0.5, 2), mgp=c(2, 0.7, 0), cex=0.7)
@@ -887,8 +887,14 @@ strike <- function(t, state, parms, debug=0)
 {
     if (missing(t))
         stop("must supply t")
+    ## Ensure that the state is well-configured, because the error messages
+    ## otherwise will be too cryptic for many users to fathom.
     if (missing(state))
         stop("must supply state")
+    if (4 != sum(c("xs", "vs", "xw", "vw") %in% names(state)))
+        stop("state must hold \"xs\", \"vs\", \"xw\", and \"vw\"")
+    if (is.list(state))
+        state <- c(xs=state$xs, vs=state$vs, xw=state$xw, vw=state$vw)
     if (missing(parms))
         stop("must supply parms")
     if (!inherits(parms, "parameters"))

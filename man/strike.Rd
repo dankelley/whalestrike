@@ -9,7 +9,7 @@ strike(t, state, parms, debug = 0)
 \arguments{
 \item{t}{time [s].}
 
-\item{state}{A named vector holding the initial state of the model:
+\item{state}{A list or named vector holding the initial state of the model:
 ship position \code{xs} [m],
 ship speed \code{vs} [m/s],
 whale position \code{xw} [m]
@@ -42,7 +42,7 @@ The forces are calculated by
 \examples{
 library(whalestrike)
 t <- seq(0, 0.7, length.out=200)
-state <- c(xs=-2, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
+state <- list(xs=-2, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
 parms <- parameters(ms=20e3, lw=13)
 sol <- strike(t, state, parms)
 par(mfcol=c(1, 3), mar=c(3, 3, 0.5, 2), mgp=c(2, 0.7, 0), cex=0.7)
