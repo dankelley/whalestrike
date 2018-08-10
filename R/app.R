@@ -6,7 +6,7 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px;}")
                                 sliderInput("ms",  h6("Ship mass [tonne]"), tick=FALSE,
                                             min=10, max=311,  value=20, step=0.5),
                                 sliderInput("vs", h6("Ship speed [knot]"), tick=FALSE,
-                                            min=1,  max=20,  value=10, step=0.5)),
+                                            min=1,  max=20,  value=10)),
                          column(2,
                                 sliderInput("Ly",  h6("Impact width [m]"), tick=FALSE,
                                             min=0.1, max=2,  value=0.5, step=0.05),
@@ -90,6 +90,8 @@ server <- function(input, output, session)
         state <- c(xs=-(1 + parms$lsum), vs=input$vs * 0.514444, xw=0, vw=0)
         t <- seq(0, input$tmax, length.out=500)
         sol <- strike(t, state, parms)
+        if (sol$refinedGrid)
+            showNotification("Auto-refined grid to capture acceleration peak")
         npanels <- length(input$plot_panels)
         nrows <- floor(sqrt(npanels))
         ncols <- ceiling(npanels / nrows)

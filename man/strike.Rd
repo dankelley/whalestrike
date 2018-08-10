@@ -7,7 +7,15 @@
 strike(t, state, parms, debug = 0)
 }
 \arguments{
-\item{t}{time [s].}
+\item{t}{a suggested vector of times [s] at which the simulated state will be reported.
+This is only a suggestion, however, because \code{strike} is set up to detect high
+accelerations caused by bone compression, and may set a finer reporting interval,
+if such accelerations are detected. The detection is based on the ratio of
+maximal whale acceleration to median whale acceleration; if this exceeds 100,
+then a trial time step is constructed to try to get 10 points during the
+time when the bone is being compressed. (This compression time is computed
+as \eqn{2*sqrt(Ly*Lz*a[4]*b[4]/(l[4]*mw)}, with terms as discussed in
+the documentation for \code{\link{parameters}}.)}
 
 \item{state}{A list or named vector holding the initial state of the model:
 ship position \code{xs} [m],

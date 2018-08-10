@@ -857,7 +857,15 @@ derivative <- function(var, t)
 #' \code{\link{whaleCompressionForce}}, and
 #' \code{\link{whaleWaterForce}}.
 #'
-#' @param t time [s].
+#' @param t a suggested vector of times [s] at which the simulated state will be reported.
+#' This is only a suggestion, however, because \code{strike} is set up to detect high
+#' accelerations caused by bone compression, and may set a finer reporting interval,
+#' if such accelerations are detected. The detection is based on the ratio of
+#' maximal whale acceleration to median whale acceleration; if this exceeds 100,
+#' then a trial time step is constructed to try to get 10 points during the
+#' time when the bone is being compressed. (This compression time is computed
+#' as \eqn{2*sqrt(Ly*Lz*a[4]*b[4]/(l[4]*mw)}, with terms as discussed in
+#' the documentation for \code{\link{parameters}}.)
 #'
 #' @param state A list or named vector holding the initial state of the model:
 #' ship position \code{xs} [m],
@@ -922,18 +930,43 @@ strike <- function(t, state, parms, debug=0)
     vs <- sol[, 3]
     xw <- sol[, 4]
     vw <- sol[, 5]
+    dvsdt <- derivative(vs, t)
+    dvwdt <- derivative(vw, t)
+    refinedGrid <- max(abs(dvwdt)) > 100 * median(abs(dvwdt))
+    if (refinedGrid) {
+        message("max(abs(dvwdt))=", max(abs(dvwdt)))
+        message("median(abs(dvwdt))=", median(abs(dvwdt)))
+        NEED <- 10                     # desired number of points in peak
+        dt <- (1/NEED) * 0.5 * sqrt(parms$l[4] * parms$mw / (parms$Ly*parms$Lz*parms$a[4]*parms$b[4]))
+        tstart <- t[1]
+        tend <- tail(t, 1)
+        nold <- length(t)
+        n <- floor(0.5 * (tend - tstart) / dt)
+        message("increasing from ", nold, " to ", n, " time steps, to capture acceleration peak")
+        t <- seq(tstart, tend, length.out=n)
+        sol <- lsoda(state, t, dynamics, parms)
+        ## Add extra things for plotting convenience.
+        t <- sol[, 1]
+        xs <- sol[, 2]
+        vs <- sol[, 3]
+        xw <- sol[, 4]
+        vw <- sol[, 5]
+        dvsdt <- derivative(vs, t)
+        dvwdt <- derivative(vw, t)
+    }
     res <- list(t=t,
                 xs=xs,
                 vs=vs,
                 xw=xw,
                 vw=vw,
-                dvsdt=derivative(vs, t),
-                dvwdt=derivative(vw, t),
+                dvsdt=dvsdt,
+                dvwdt=dvwdt,
                 SWF=shipWaterForce(vs=vs, parms=parms),
                 WSF=whaleSkinForce(xs=xs, xw=xw, parms=parms),
                 WCF=whaleCompressionForce(xs=xs, xw=xw, parms=parms),
                 WWF=whaleWaterForce(vw=vw, parms=parms),
-                parms=parms)
+                parms=parms,
+                refinedGrid=refinedGrid)
     class(res) <- "strike"
     res
 }
