@@ -3,7 +3,7 @@
 library(whalestrike)
 
 if (!interactive()) pdf("strike_accel_auto.pdf", pointsize=9)
-par(mar=c(3,3,3,1), mgp=c(2,0.7,0), mfcol=c(3,4))
+par(mar=c(3,3,4,1), mgp=c(2,0.7,0), mfcol=c(3,4))
 
 a <- '"l1","l2","l3","l4","lw","Ly","Lz","ms","theta","tmax","vs"
 0.025,0.16,1.08,0.1,13.2,0.5,1,311000,50,1,8.231104'
@@ -22,9 +22,9 @@ for (knot in c(10, 15, 20, 25)) {
           xlab="Time [s]", ylab="Whale accel. [g]")
      accelmax <- max(abs(sol$dvwdt))
      accelmed <- median(abs(sol$dvwdt))
-     mtext(sprintf("vs=%.1fknot: dt=%.4fs, userTime=%.1fs\nmaxAccel=%.1f g, medAccel=%.1f g",
-                   state$vs/knot2ms, t[2]-t[1], userTime, accelmax, accelmed),
-           side=3, line=0, cex=0.7, col=2)
+     mtext(sprintf("%.1ft, %.1fknot\ndt=%.5fs, userTime=%.1fs\nmaxAccel=%.1f g, medAccel=%.1f g",
+                   parm$ms/1e3, state$vs/knot2ms, t[2]-t[1], userTime, accelmax, accelmed),
+           side=3, line=0.5, cex=0.7, col=2)
      if (accelmax > 100 * accelmed) {
          ## sqrt(A*E/(l*m)) is the bounce timescale
          NEED <- 5 # hoped-for number of points in peak
@@ -38,9 +38,9 @@ for (knot in c(10, 15, 20, 25)) {
               xlab="Time [s]", ylab="Whale accel. [g]")
          accelmax <- max(abs(sol$dvwdt))
          accelmed <- median(abs(sol$dvwdt))
-         mtext(sprintf("vs=%.1fknot: dt=%.4fs, userTime=%.1fs\nmaxAccel=%.1f g, medAccel=%.1f g",
-                       state$vs/knot2ms, t[2]-t[1], userTime, accelmax, accelmed),
-               side=3, line=0, cex=0.7, col=2)
+         mtext(sprintf("%.0ft, %.1fknot\ndt=%.5fs, userTime=%.1fs\nmaxAccel=%.1f g, medAccel=%.1f g",
+                       parm$ms/1e3, state$vs/knot2ms, t[2]-t[1], userTime, accelmax, accelmed),
+               side=3, line=0.5, cex=0.7, col=2)
 
          NEED <- 10 # hoped-for number of points in peak
          dt <- (1/NEED) * 0.5 * sqrt(parm$l[4] * parm$mw / (parm$Ly*parm$Lz*parm$a[4]*parm$b[4]))
@@ -53,14 +53,9 @@ for (knot in c(10, 15, 20, 25)) {
               xlab="Time [s]", ylab="Whale accel. [g]")
          accelmax <- max(abs(sol$dvwdt))
          accelmed <- median(abs(sol$dvwdt))
-         mtext(sprintf("vs=%.1fknot: dt=%.4fs, userTime=%.1fs\nmaxAccel=%.1f g, medAccel=%.1f g",
-                       state$vs/knot2ms, t[2]-t[1], userTime, accelmax, accelmed),
-               side=3, line=0, cex=0.7, col=2)
-
-
-
-
-
+         mtext(sprintf("%.0ft, %.1fknot\ndt=%.5fs, userTime=%.1fs\nmaxAccel=%.1f g, medAccel=%.1f g",
+                       parm$ms/1e3, state$vs/knot2ms, t[2]-t[1], userTime, accelmax, accelmed),
+               side=3, line=0.5, cex=0.7, col=2)
      } else {
          plot(0:1, 0:1, axes=FALSE, xlab="", ylab="", type="n")
          text(0.5, 0.5, "Above is OK since\nmax_accel/med_accel < 100")
