@@ -617,7 +617,7 @@ whaleLengthFromMass <- function(M, model="fortune2012atlantic")
 #'
 #' @param L length in m
 #' @param type character string indicating the type of area, with
-#' \code{"projected"} for a side-projected area, and 
+#' \code{"projected"} for a side-projected area, and
 #' \code{"wetted"} for the total wetted area. The wetted
 #' area was computed by mathematically spinning a spline fit to the
 #' side-view. In both cases, the original data source is the
@@ -860,12 +860,14 @@ derivative <- function(var, t)
 #' @param t a suggested vector of times [s] at which the simulated state will be reported.
 #' This is only a suggestion, however, because \code{strike} is set up to detect high
 #' accelerations caused by bone compression, and may set a finer reporting interval,
-#' if such accelerations are detected. The detection is based on the ratio of
-#' maximal whale acceleration to median whale acceleration; if this exceeds 100,
-#' then a trial time step is constructed to try to get 10 points during the
-#' time when the bone is being compressed. (This compression time is computed
-#' as \eqn{2*sqrt(Ly*Lz*a[4]*b[4]/(l[4]*mw)}, with terms as discussed in
-#' the documentation for \code{\link{parameters}}.)
+#' if such accelerations are detected. The detection is based on thickness of
+#' compressed blubber and sublayer; if either gets to zero thickness, then
+#' a new time grid is constructed, with 10 points during the timescale for
+#' bone compression, which is assumed to be
+#' \eqn{2*sqrt(Ly*Lz*a[4]*b[4]/(l[4]*mw)}, with terms as discussed in
+#' the documentation for \code{\link{parameters}}. If this grid is finer
+#' than the grid in the stated \code{t}, then the simulatoin is redone
+#' using the new grid.
 #'
 #' @param state A list or named vector holding the initial state of the model:
 #' ship position \code{xs} [m],
@@ -888,8 +890,8 @@ derivative <- function(var, t)
 #' @examples
 #' library(whalestrike)
 #' t <- seq(0, 0.7, length.out=200)
-#' state <- list(xs=-2, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
-#' parms <- parameters(ms=20e3, lw=13)
+#' state <- list(xs=-2, vs=10*0.5144, xw=0, vw=0) # ship speed 10 knots
+#' parms <- parameters(ms=20e3) # 20-tonne ship
 #' sol <- strike(t, state, parms)
 #' par(mfcol=c(1, 3), mar=c(3, 3, 0.5, 2), mgp=c(2, 0.7, 0), cex=0.7)
 #' plot(sol)
@@ -932,39 +934,42 @@ strike <- function(t, state, parms, debug=0)
     vw <- sol[, 5]
     dvsdt <- derivative(vs, t)
     dvwdt <- derivative(vw, t)
-    refinedGrid <- max(abs(dvwdt)) > 100 * median(abs(dvwdt))
+    SWF <- shipWaterForce(vs=vs, parms=parms)
+    WSF <- whaleSkinForce(xs=xs, xw=xw, parms=parms)
+    WCF <- whaleCompressionForce(xs=xs, xw=xw, parms=parms)
+    WWF <- whaleWaterForce(vw=vw, parms=parms)
+    ##. message("max stress ", max(abs(WCF$stress))/1e6, " MPA")
+    ##. message("blubber compression ratio=", min(WCF$compressed[,2])/WCF$compressed[1,2])
+    ##. message("sublayer compression ratio=", min(WCF$compressed[,3])/WCF$compressed[1,3])
+    refinedGrid <- min(WCF$compressed[,2])/WCF$compressed[1,2] < 0.01 || min(WCF$compressed[,3])/WCF$compressed[1,3] < 0.01
     if (refinedGrid) {
-        message("max(abs(dvwdt))=", max(abs(dvwdt)))
-        message("median(abs(dvwdt))=", median(abs(dvwdt)))
         NEED <- 10                     # desired number of points in peak
         dt <- (1/NEED) * 0.5 * sqrt(parms$l[4] * parms$mw / (parms$Ly*parms$Lz*parms$a[4]*parms$b[4]))
         tstart <- t[1]
         tend <- tail(t, 1)
         nold <- length(t)
         n <- floor(0.5 * (tend - tstart) / dt)
-        message("increasing from ", nold, " to ", n, " time steps, to capture acceleration peak")
-        t <- seq(tstart, tend, length.out=n)
-        sol <- lsoda(state, t, dynamics, parms)
-        ## Add extra things for plotting convenience.
-        t <- sol[, 1]
-        xs <- sol[, 2]
-        vs <- sol[, 3]
-        xw <- sol[, 4]
-        vw <- sol[, 5]
-        dvsdt <- derivative(vs, t)
-        dvwdt <- derivative(vw, t)
+        if (n > length(t)) {
+            message("increasing from ", nold, " to ", n, " time steps, to capture acceleration peak")
+            t <- seq(tstart, tend, length.out=n)
+            sol <- lsoda(state, t, dynamics, parms)
+            ## Add extra things for plotting convenience.
+            t <- sol[, 1]
+            xs <- sol[, 2]
+            vs <- sol[, 3]
+            xw <- sol[, 4]
+            vw <- sol[, 5]
+            dvsdt <- derivative(vs, t)
+            dvwdt <- derivative(vw, t)
+            SWF <- shipWaterForce(vs=vs, parms=parms)
+            WSF <- whaleSkinForce(xs=xs, xw=xw, parms=parms)
+            WCF <- whaleCompressionForce(xs=xs, xw=xw, parms=parms)
+            WWF <- whaleWaterForce(vw=vw, parms=parms)
+        }
     }
-    res <- list(t=t,
-                xs=xs,
-                vs=vs,
-                xw=xw,
-                vw=vw,
-                dvsdt=dvsdt,
-                dvwdt=dvwdt,
-                SWF=shipWaterForce(vs=vs, parms=parms),
-                WSF=whaleSkinForce(xs=xs, xw=xw, parms=parms),
-                WCF=whaleCompressionForce(xs=xs, xw=xw, parms=parms),
-                WWF=whaleWaterForce(vw=vw, parms=parms),
+    res <- list(t=t, xs=xs, vs=vs, xw=xw, vw=vw,
+                dvsdt=dvsdt, dvwdt=dvwdt,
+                SWF=SWF, WSF=WSF, WCF=WCF, WWF=WWF,
                 parms=parms,
                 refinedGrid=refinedGrid)
     class(res) <- "strike"
@@ -1544,8 +1549,12 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         parms["lsum"] <- NULL # inserted during calculation, not user-supplied
 
         parms <- lapply(parms, function(p) deparse(p))
+        ## parms$ms <- x$parms$ms
+        parms$vs_knots <- x$vs[1] / 0.5144
         names <- names(parms)
         values <- unname(unlist(parms))
+        ##values[["mw"]] <- x$parms$mw
+        ##values[["vs"]] <- x$vs
 
         ## values <- paste(deparse(parms), collapse=" ")
         ## values <- gsub("^list\\(", "", values)

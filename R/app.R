@@ -6,7 +6,7 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px;}")
                                 sliderInput("ms",  h6("Ship mass [tonne]"), tick=FALSE,
                                             min=10, max=311,  value=20, step=0.5),
                                 sliderInput("vs", h6("Ship speed [knot]"), tick=FALSE,
-                                            min=1,  max=20,  value=10)),
+                                            min=0,  max=20,  value=10, step=0.5)),
                          column(2,
                                 sliderInput("Ly",  h6("Impact width [m]"), tick=FALSE,
                                             min=0.1, max=2,  value=0.5, step=0.05),
@@ -16,7 +16,7 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px;}")
                                             min=5,  max=15, value=13.7, step=0.1)),
                          column(2,
                                 sliderInput("theta", h6("Skin theta [deg]"), tick=FALSE,
-                                            min=30, max=70, value=50, step=1),
+                                            min=30, max=70, value=55, step=1),
                                 sliderInput("l1", h6("Skin thickness [m]"), tick=FALSE,
                                             min=0.01, max=0.03, value=0.025, step=0.001),
                                 sliderInput("l2", h6("Blubber thickness [m]"), tick=FALSE,
@@ -88,7 +88,7 @@ server <- function(input, output, session)
                             l=c(input$l1, input$l2, input$l3, input$l4),
                             theta=input$theta) # in degrees; 0 means no bevel
         state <- c(xs=-(1 + parms$lsum), vs=input$vs * 0.514444, xw=0, vw=0)
-        t <- seq(0, input$tmax, length.out=500)
+        t <- seq(0, input$tmax, length.out=200)
         sol <- strike(t, state, parms)
         if (sol$refinedGrid)
             showNotification("Auto-refined grid to capture acceleration peak")

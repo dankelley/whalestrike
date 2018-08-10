@@ -10,12 +10,14 @@ strike(t, state, parms, debug = 0)
 \item{t}{a suggested vector of times [s] at which the simulated state will be reported.
 This is only a suggestion, however, because \code{strike} is set up to detect high
 accelerations caused by bone compression, and may set a finer reporting interval,
-if such accelerations are detected. The detection is based on the ratio of
-maximal whale acceleration to median whale acceleration; if this exceeds 100,
-then a trial time step is constructed to try to get 10 points during the
-time when the bone is being compressed. (This compression time is computed
-as \eqn{2*sqrt(Ly*Lz*a[4]*b[4]/(l[4]*mw)}, with terms as discussed in
-the documentation for \code{\link{parameters}}.)}
+if such accelerations are detected. The detection is based on thickness of
+compressed blubber and sublayer; if either gets to zero thickness, then
+a new time grid is constructed, with 10 points during the timescale for
+bone compression, which is assumed to be
+\eqn{2*sqrt(Ly*Lz*a[4]*b[4]/(l[4]*mw)}, with terms as discussed in
+the documentation for \code{\link{parameters}}. If this grid is finer
+than the grid in the stated \code{t}, then the simulatoin is redone
+using the new grid.}
 
 \item{state}{A list or named vector holding the initial state of the model:
 ship position \code{xs} [m],
@@ -50,8 +52,8 @@ The forces are calculated by
 \examples{
 library(whalestrike)
 t <- seq(0, 0.7, length.out=200)
-state <- list(xs=-2, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
-parms <- parameters(ms=20e3, lw=13)
+state <- list(xs=-2, vs=10*0.5144, xw=0, vw=0) # ship speed 10 knots
+parms <- parameters(ms=20e3) # 20-tonne ship
 sol <- strike(t, state, parms)
 par(mfcol=c(1, 3), mar=c(3, 3, 0.5, 2), mgp=c(2, 0.7, 0), cex=0.7)
 plot(sol)

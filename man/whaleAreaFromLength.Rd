@@ -10,7 +10,7 @@ whaleAreaFromLength(L, type = "wetted")
 \item{L}{length in m}
 
 \item{type}{character string indicating the type of area, with
-\code{"projected"} for a side-projected area, and 
+\code{"projected"} for a side-projected area, and
 \code{"wetted"} for the total wetted area. The wetted
 area was computed by mathematically spinning a spline fit to the
 side-view. In both cases, the original data source is the
