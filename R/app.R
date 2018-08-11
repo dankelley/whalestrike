@@ -2,11 +2,11 @@
 ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px;}")),
                 fluidRow(column(2,
                                 sliderInput("tmax",  h6("Max time [s]"), tick=FALSE,
-                                            min=0.1,  max=4, value=1, step=0.05),
+                                            min=0.1,  max=5, value=1, step=0.05),
                                 sliderInput("ms",  h6("Ship mass [tonne]"), tick=FALSE,
                                             min=10, max=311,  value=20, step=0.5),
                                 sliderInput("vs", h6("Ship speed [knot]"), tick=FALSE,
-                                            min=0,  max=20,  value=10, step=0.5)),
+                                            min=0.5,  max=20,  value=10, step=0.5)),
                          column(2,
                                 sliderInput("Ly",  h6("Impact width [m]"), tick=FALSE,
                                             min=0.1, max=2,  value=0.5, step=0.05),
@@ -87,7 +87,7 @@ server <- function(input, output, session)
                             Sw=whaleAreaFromLength(input$lw, "wetted"),
                             l=c(input$l1, input$l2, input$l3, input$l4),
                             theta=input$theta) # in degrees; 0 means no bevel
-        state <- c(xs=-(1 + parms$lsum), vs=input$vs * 0.514444, xw=0, vw=0)
+        state <- list(xs=-(1 + parms$lsum), vs=input$vs * 0.514444, xw=0, vw=0)
         t <- seq(0, input$tmax, length.out=200)
         sol <- strike(t, state, parms)
         if (sol$refinedGrid)
