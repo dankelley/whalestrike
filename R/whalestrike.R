@@ -441,18 +441,18 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
     } else {
         if (length(ms) != 1) stop("cannot handle more than one 'ms' at a time")
         if (ms <= 0)
-            stop("ship mass (ms) must be a positive number")
+            stop("ship mass (ms) must be a positive number, but it is ", ms)
         if (missing(Ss))
             Ss <- shipAreaFromMass(ms)
         if (length(Ss) != 1) stop("cannot handle more than one 'Ss' at a time")
         if (Ss <= 0)
-            stop("ship wetted area (Ss) must be a positive number, not ", Ss)
+            stop("ship wetted area (Ss) must be a positive number, but it is ", Ss)
         if (length(Ly) != 1) stop("cannot handle more than one 'Ly' at a time")
         if (Ly <= 0)
-            stop("impact width (Ly) must be a positive number, not ", Ly)
+            stop("impact width (Ly) must be a positive number, but it is ", Ly)
         if (length(Lz) != 1) stop("cannot handle more than one 'Lz' at a time")
         if (Lz <= 0)
-            stop("impact height (Lz) must be a positive number, not ", Lz)
+            stop("impact height (Lz) must be a positive number, but it is ", Lz)
         if (length(lw) != 1) stop("cannot handle more than one 'lw' at a time")
         if (lw <= 0)
             stop("Whale length (lw) must be a positive number")
@@ -483,13 +483,13 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
             stop("'b' must be 4 positive numbers")
         if (length(theta) != 1) stop("cannot handle more than one 'theta' at a time")
         if (theta < 0 || theta > 89)
-            stop("whale skin deformation angle (theta) must be between 0 and 89 deg, not ", theta)
+            stop("whale skin deformation angle (theta) must be between 0 and 89 deg, but it is ", theta)
         if (length(Cs) != 1) stop("cannot handle more than one 'Cs' at a time")
         if (Cs <= 0)
-            stop("ship resistance parameter (Cs) must be positive, not ", Cs)
+            stop("ship resistance parameter (Cs) must be positive, but it is ", Cs)
         if (length(Cw) != 1) stop("cannot handle more than one 'Cw' at a time")
         if (Cw <= 0)
-            stop("ship resistance parameter (Cw) must be positive, not ", Cw)
+            stop("ship resistance parameter (Cw) must be positive, but it is ", Cw)
 
         ## For efficiency, create and store an overall stress-strain function
         stressFromStrain <- stressFromStrainFunction(l, a, b)
@@ -641,7 +641,7 @@ whaleAreaFromLength <- function(L, type="wetted")
         0.143 * L^2
     else if (type == "wetted")
         0.448 * (0.877 * L)^2
-    else stop("'type' must be 'projected' or 'wetted', not '", type, "' as given")
+    else stop("'type' must be 'projected' or 'wetted', but it is '", type, "'")
 }
 
 #' Whale compression force
@@ -944,7 +944,8 @@ strike <- function(t, state, parms, debug=0)
         nold <- length(t)
         n <- floor(0.5 * (tend - tstart) / dt)
         if (n > length(t)) {
-            message("increasing from ", nold, " to ", n, " time steps, to capture acceleration peak")
+            message("strike() : increasing from ", nold, " to ", n, " time steps, to capture acceleration peak")
+            warning("strike() : increasing from ", nold, " to ", n, " time steps, to capture acceleration peak\n")
             t <- seq(tstart, tend, length.out=n)
             sol <- lsoda(state, t, dynamics, parms)
             ## Add extra things for plotting convenience.
