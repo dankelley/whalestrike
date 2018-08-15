@@ -428,7 +428,7 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
                        Cs=0.01, Cw=0.0025, file)
 {
     if (!missing(file)) {
-        rval <- read.csv(file)
+        rval <- as.list(read.csv(file))
         rval$Ss <- shipAreaFromMass(rval$ms)
         rval$mw <- whaleMassFromLength(rval$lw)
         rval$Sw <- whaleAreaFromLength(rval$lw, type="wetted")
@@ -436,6 +436,15 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
         rval$vs <- NULL
         rval$Cs <- Cs
         rval$Cw <- Cw
+        rval$l <- c(rval$l1, rval$l2, rval$l3, rval$l4)
+        rval$l1 <- rval$l2 <- rval$l3 <- rval$l4 <- NULL
+        rval$lsum <- sum(rval$l)
+        ## the next are copied from below. The app doesn't let the user
+        ## set these things, so we know their values.
+        ## NOTE: keep in synch with below!
+        rval$a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
+        rval$b <- c(0.1, 2.54, 2.54, 0.1)
+        rval$s <- c(19.6e6, 0.437e6, 0.437e6, 22.9e6)
         o <- sort(names(rval))
         rval <- rval[o]
     } else {
@@ -465,12 +474,15 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
         if (missing(l))
             l <- c(0.025, 0.16, 1.12, 0.1)
         if (length(l) != 4) stop("'l' must be a vector of length 4")
+        ## NOTE: keep in synch with above!
         if (missing(a))
             a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
         if (length(a) != 4) stop("'a' must be a vector of length 4")
+        ## NOTE: keep in synch with above!
         if (missing(b))
             b <- c(0.1, 2.54, 2.54, 0.1)
         if (length(b) != 4) stop("'b' must be a vector of length 4")
+        ## NOTE: keep in synch with above!
         if (missing(s))
             s <- c(19.6e6, 0.437e6, 0.437e6, 22.9e6)
         if (length(s) != 4) stop("'s' must be a vector of length 4")
@@ -490,17 +502,15 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
         if (length(Cw) != 1) stop("cannot handle more than one 'Cw' at a time")
         if (Cw <= 0)
             stop("ship resistance parameter (Cw) must be positive, but it is ", Cw)
-
-        ## For efficiency, create and store an overall stress-strain function
-        stressFromStrain <- stressFromStrainFunction(l, a, b)
         rval <- list(ms=ms, Ss=Ss,
                      Ly=Ly, Lz=Lz,
                      mw=mw, Sw=Sw, lw=lw,
                      l=l, lsum=sum(l), a=a, b=b, s=s,
                      theta=theta,
-                     Cs=Cs, Cw=Cw,
-                     stressFromStrain=stressFromStrain)
+                     Cs=Cs, Cw=Cw)
     }
+    ## For efficiency, create and store an overall stress-strain function
+    rval$stressFromStrain <- stressFromStrainFunction(rval$l, rval$a, rval$b)
     class(rval) <- "parameters"
     rval
 }
@@ -823,7 +833,8 @@ dynamics <- function(t, y, parms)
     Fship <- parms$engineForce + shipWaterForce(vs, parms) - Freactive
     ##. if ((t > 0.1 && t < 0.11) || (t > 0.5 && t < 0.51))
     ##.     cat("t=", t, " vs=", vs, " shipEngineForce=", parms$shipEngineForce, " shipWaterForce=", shipWaterForce(vs, parms), " Freactive=", Freactive, "\n")
-    if (is.na(Fship[1])) stop("Fship[1] is NA, probably indicating a programming error.")
+    if (is.na(Fship[1]))
+        stop("Fship[1] is NA, probably indicating a programming error.")
     Fwhale <- Freactive + whaleWaterForce(vw, parms)
     if (is.na(Fwhale[1])) stop("Fwhale[1] is NA, probably indicating a programming error.")
     list(c(dxsdt=vs, dvsdt=Fship/parms$ms, dxwdt=vw, dvwdt=Fwhale/parms$mw))
@@ -1155,9 +1166,13 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         lines(t, y, col=colwskin, lwd=lwd)
         waccel <- derivative(vw, t)
         saccel <- derivative(vs, t)
-        mtext(sprintf("ship: %.1f g", max(abs(saccel))/g),
+        mtext(sprintf("ship: %.1f g (%.1f g peak)",
+                      max(abs(runmed(saccel, 21)))/g,
+                      max(abs(saccel))/g),
                       side=1, line=-1.25, cex=par("cex"), adj=0.5)
-        mtext(sprintf("whale: %.1f g", max(abs(waccel))/g),
+        mtext(sprintf("whale: %.1f g (%.1f g peak)",
+                      max(abs(runmed(waccel, 21)))/g,
+                      max(abs(waccel))/g),
                       side=3, line=-1, cex=par("cex"), adj=0.5)
         showEvents(xs, xw)
     }
