@@ -439,30 +439,41 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
         o <- sort(names(rval))
         rval <- rval[o]
     } else {
+        if (length(ms) != 1) stop("cannot handle more than one 'ms' at a time")
         if (ms <= 0)
             stop("ship mass (ms) must be a positive number")
         if (missing(Ss))
             Ss <- shipAreaFromMass(ms)
+        if (length(Ss) != 1) stop("cannot handle more than one 'Ss' at a time")
         if (Ss <= 0)
             stop("ship wetted area (Ss) must be a positive number, not ", Ss)
+        if (length(Ly) != 1) stop("cannot handle more than one 'Ly' at a time")
         if (Ly <= 0)
             stop("impact width (Ly) must be a positive number, not ", Ly)
+        if (length(Lz) != 1) stop("cannot handle more than one 'Lz' at a time")
         if (Lz <= 0)
             stop("impact height (Lz) must be a positive number, not ", Lz)
+        if (length(lw) != 1) stop("cannot handle more than one 'lw' at a time")
         if (lw <= 0)
             stop("Whale length (lw) must be a positive number")
         if (missing(mw))
             mw <- whaleMassFromLength(lw)
+        if (length(mw) != 1) stop("cannot handle more than one 'mw' at a time")
         if (missing(Sw))
             Sw <- whaleAreaFromLength(lw, type="wetted")
+        if (length(Sw) != 1) stop("cannot handle more than one 'Sw' at a time")
         if (missing(l))
             l <- c(0.025, 0.16, 1.12, 0.1)
+        if (length(l) != 4) stop("'l' must be a vector of length 4")
         if (missing(a))
             a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
+        if (length(a) != 4) stop("'a' must be a vector of length 4")
         if (missing(b))
             b <- c(0.1, 2.54, 2.54, 0.1)
+        if (length(b) != 4) stop("'b' must be a vector of length 4")
         if (missing(s))
             s <- c(19.6e6, 0.437e6, 0.437e6, 22.9e6)
+        if (length(s) != 4) stop("'s' must be a vector of length 4")
         ## Value checks
         if (any(l <= 0) || length(l) != 4)
             stop("'l' must be 4 positive numbers")
@@ -470,40 +481,23 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
             stop("'a' must be 4 positive numbers")
         if (any(b <= 0) || length(b) != 4)
             stop("'b' must be 4 positive numbers")
+        if (length(theta) != 1) stop("cannot handle more than one 'theta' at a time")
         if (theta < 0 || theta > 89)
             stop("whale skin deformation angle (theta) must be between 0 and 89 deg, not ", theta)
+        if (length(Cs) != 1) stop("cannot handle more than one 'Cs' at a time")
         if (Cs <= 0)
             stop("ship resistance parameter (Cs) must be positive, not ", Cs)
+        if (length(Cw) != 1) stop("cannot handle more than one 'Cw' at a time")
         if (Cw <= 0)
             stop("ship resistance parameter (Cw) must be positive, not ", Cw)
 
-        ##DELETE if (Ealpha< 0)
-        ##DELETE     stop("whale skin elastic modulus (Ealpha) must be positive, not ", Ealpha)
-        ##DELETE if (UTSalpha< 0)
-        ##DELETE     stop("whale skin elastic modulus (UTSalpha) must be positive, not ", UTSalpha)
-        ##DELETE if (beta < 0)
-        ##DELETE     stop("whale blubber thickness (beta) must be positive, not ", beta)
-        ##DELETE if (Ebeta < 0)
-        ##DELETE     stop("whale blubber elastic modulus (Ebeta) must be positive, not ", Ebeta)
-        ##DELETE if (UTSbeta < 0)
-        ##DELETE     stop("whale blubber ultimate strength (UTSbeta) must be positive, not ", UTSbeta)
-        ##DELETE if (gamma < 0)
-        ##DELETE     stop("whale sublayer thickness (gamma) must be positive, not ", gamma)
-        ##DELETE if (Egamma < 0)
-        ##DELETE     stop("whale sublayer elastic modulus (Egamma) must be positive, not ", Egamma)
-        ##DELETE if (UTSgamma < 0)
-        ##DELETE     stop("whale sublayer ultimate strength (UTSgamma) must be positive, not ", UTSgamma)
-
-        ## overall-stress from overall-strain function
+        ## For efficiency, create and store an overall stress-strain function
         stressFromStrain <- stressFromStrainFunction(l, a, b)
         rval <- list(ms=ms, Ss=Ss,
                      Ly=Ly, Lz=Lz,
                      mw=mw, Sw=Sw, lw=lw,
                      l=l, lsum=sum(l), a=a, b=b, s=s,
-                     ##alpha=alpha, Ealpha=Ealpha, UTSalpha=UTSalpha,
                      theta=theta,
-                     ##Ebeta=Ebeta, beta=beta, UTSbeta=UTSbeta,
-                     ##Egamma=Egamma, gamma=gamma, UTSgamma=UTSgamma,
                      Cs=Cs, Cw=Cw,
                      stressFromStrain=stressFromStrain)
     }
