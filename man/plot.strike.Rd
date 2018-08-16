@@ -20,7 +20,14 @@ This choices for its entries are listed below, in no particular order.
 dashed black, whale centerline \code{xs} in solid gray,
 blubber-interior interface in red, and skin in blue. The maximum
 acceleration of ship and whale (in "g" units) are indicated in notes
-placed near the horizontal axes.
+placed near the horizontal axes. Those acceleration indications report
+just a single value for each of ship and whale, but if the blubber
+and sublayer have been squeezed to their limits, yielding a short and
+intense force spike as the bone compresses, then the summaries will
+also report on the spike duration and intensity. The spike is computed
+based on using \code{\link{runmed}} on the acceleration data, with a
+\code{k} value that is set to correspond to 5 ms, or to k=11, whichever
+is larger.
 
 \item \code{"section"} to plot skin thickness, blubber thickness and sublayer thickness
 in one panel, creating a cross-section diagram.

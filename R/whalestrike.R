@@ -955,8 +955,8 @@ strike <- function(t, state, parms, debug=0)
         nold <- length(t)
         n <- floor(0.5 * (tend - tstart) / dt)
         if (n > length(t)) {
-            message("strike() : increasing from ", nold, " to ", n, " time steps, to capture acceleration peak")
-            warning("strike() : increasing from ", nold, " to ", n, " time steps, to capture acceleration peak\n")
+            ##message("strike() : increasing from ", nold, " to ", n, " time steps, to capture acceleration peak")
+            warning("increasing from ", nold, " to ", n, " time steps, to capture acceleration peak\n")
             t <- seq(tstart, tend, length.out=n)
             sol <- lsoda(state, t, dynamics, parms)
             ## Add extra things for plotting convenience.
@@ -997,7 +997,14 @@ strike <- function(t, state, parms, debug=0)
 #' dashed black, whale centerline \code{xs} in solid gray,
 #' blubber-interior interface in red, and skin in blue. The maximum
 #' acceleration of ship and whale (in "g" units) are indicated in notes
-#' placed near the horizontal axes.
+#' placed near the horizontal axes. Those acceleration indications report
+#' just a single value for each of ship and whale, but if the blubber
+#' and sublayer have been squeezed to their limits, yielding a short and
+#' intense force spike as the bone compresses, then the summaries will
+#' also report on the spike duration and intensity. The spike is computed
+#' based on using \code{\link{runmed}} on the acceleration data, with a
+#' \code{k} value that is set to correspond to 5 ms, or to k=11, whichever
+#' is larger.
 #'
 #' \item \code{"section"} to plot skin thickness, blubber thickness and sublayer thickness
 #' in one panel, creating a cross-section diagram.
@@ -1164,16 +1171,33 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         lines(t, y, col=colwskin, lwd=lwd)
         y <- y - compressed[, 1]
         lines(t, y, col=colwskin, lwd=lwd)
-        waccel <- derivative(vw, t)
-        saccel <- derivative(vs, t)
-        mtext(sprintf("ship: %.1f g (%.1f g peak)",
-                      max(abs(runmed(saccel, 21)))/g,
-                      max(abs(saccel))/g),
-                      side=1, line=-1.25, cex=par("cex"), adj=0.5)
-        mtext(sprintf("whale: %.1f g (%.1f g peak)",
-                      max(abs(runmed(waccel, 21)))/g,
-                      max(abs(waccel))/g),
-                      side=3, line=-1, cex=par("cex"), adj=0.5)
+        ## Accelerations (quite complicated; possibly too confusing to viewer)
+        k <- round(0.005 / (t[2] - t[1]))
+        k <- max(k, 11L)
+        if (!(k %% 2))
+            k <- k + 1
+        as <- derivative(vs, t)
+        asmax <- max(abs(as))
+        asmaxs <- max(abs(runmed(as, k))) # smoothed
+        if (asmax > 2 * asmaxs) {
+            peakTime <- sum(abs(as) > 0.5*(asmax+asmaxs)) * (t[2] - t[1])
+            label <- sprintf("ship: %.1fg (%.1fms spike to %.0fg)",
+                             asmaxs/g, peakTime*1e3, asmax/g)
+        } else {
+            label <- sprintf("ship: %.1fg", asmax/g)
+        }
+        mtext(label, side=1, line=-1.25, cex=par("cex"), adj=0.5)
+        aw <- derivative(vw, t)
+        awmax <- max(abs(aw))
+        awmaxs <- max(abs(runmed(aw, k)))
+        if (awmax > 2 * awmaxs) {
+            peakTime <- sum(abs(aw) > 0.5*(awmax+awmaxs)) * (t[2] - t[1])
+            label <- sprintf("whale: %.1fg (%.1fms spike to %.0fg)",
+                             awmaxs/g, peakTime*1e3, awmax/g)
+        } else {
+            label <- sprintf("whale: %.1fg", awmax/g)
+        }
+        mtext(label, side=3, line=-1.25, cex=par("cex"), adj=0.5)
         showEvents(xs, xw)
     }
     if (all || "section" %in% which) {
