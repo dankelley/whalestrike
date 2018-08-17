@@ -289,7 +289,6 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
     for (i in seq_along(epsilon)) {
         aa <- a[use]
         bb <- b[use]
-        ll <- l[use]
         ##debug cat(sprintf("i=%3d, epsilon=%10.5f, ", i, epsilon[i]), ", use=", paste(use, collapse=" "), "\n")
         DL <- epsilon[i] * L
         sigma[i] <- uniroot(fcn, interval=c(0, 1e9))$root
@@ -684,8 +683,6 @@ whaleAreaFromLength <- function(L, type="wetted")
 #' See \link{whalestrike} for a list of references.
 whaleCompressionForce <- function(xs, xw, parms)
 {
-    pinToPositive <- function(x) # turn negatives into zeros
-        ifelse(0 < x, x, 0)
     touching <- xs < xw & xs > (xw - parms$lsum)
     dx <- ifelse(touching, xs - (xw - parms$lsum), 0) # penetration distance
     ## Note that the denominator of the strain expression vanishes in the stress calculation,
@@ -1111,15 +1108,12 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
                         colThreat=c("lightgray", "black"),
                         lwd=1, D=3, debug=0, ...)
 {
-    showLegend <- FALSE
     g <- 9.8 # gravity
     t <- x$t
     xs <- x$xs
     vs <- x$vs
     xw <- x$xw
     vw <- x$vw
-    dvsdt <- x$dvsdt
-    dvwdt <- x$dvwdt
     death <- xs >= xw
     if (any(death)) {
         firstDead <- which(death)[1]
@@ -1221,7 +1215,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         text(x0, -x$parms$l[4]-0.5*x$parms$l[3], "sublayer", pos=4)
         text(x0, -x$parms$l[4]-x$parms$l[3]-0.5*x$parms$l[2], "blubber", pos=4)
         text(x0, 0.5*(ylim[1] - x$parms$lsum), "", pos=4)
-        hatchPolygon <- FALSE
+        ##hatchPolygon <- FALSE
         ## Blubber
         ## if (FALSE) {
         ##     risk <- x$WCF$stress >= 0.5 * x$parms$UTSbeta
@@ -1451,7 +1445,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
             abline(h=y0+(i-1)*dy, lwd=lwd/2, lty="dotted")
         }
         x0 <- xlim[1] #+ 0.04 * (xlim[2] - xlim[1])
-        dylab <- 0.2
+        ##dylab <- 0.2
         mtext("bone", side=2, at=y0-0.5*dy, line=0.25, cex=par("cex"))
         mtext("sublayer", side=2, at=y0+dy-0.5*dy, line=0.25, cex=par("cex"))
         mtext("blubber", side=2, at=y0+2*dy-0.5*dy, line=0.25, cex=par("cex"))
