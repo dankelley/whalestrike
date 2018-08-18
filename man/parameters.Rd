@@ -4,7 +4,7 @@
 \alias{parameters}
 \title{Control parameters for whale strike simulation}
 \usage{
-parameters(ms = 20000, Ss, Ly = 0.87, Lz = 0.87, lw = 13.7, mw, Sw, l,
+parameters(ms = 20000, Ss, Ly = 1.23, Lz = 1.23, lw = 13.7, mw, Sw, l,
   a, b, s, theta = 55, Cs = 0.01, Cw = 0.0025, file)
 }
 \arguments{
@@ -15,11 +15,11 @@ used by \code{\link{shipWaterForce}} to estimate ship drag force. If \code{Ss}
 is not given, then an esimate is made by calling \code{\link{shipAreaFromMass}} with
 the provided value of \code{ms}.}
 
-\item{Ly}{Ship impact horizontal extent [m]; defaults to 0.87m if not specified,
+\item{Ly}{Ship impact horizontal extent [m]; defaults to 1.23m if not specified,
 based on an analysis of the shape of the bow of typical coastal fishing boats
 of the Cape Islander variety.}
 
-\item{Lz}{Ship impact vertical extent [m]; defaults to 0.87m if not specified,
+\item{Lz}{Ship impact vertical extent [m]; defaults to 1.23m if not specified,
 based on the same analysis as for Ly.}
 
 \item{lw}{Whale length [m]. This is used by \code{\link{whaleAreaFromLength}} to
