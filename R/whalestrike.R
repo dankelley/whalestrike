@@ -317,8 +317,11 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' used by \code{\link{shipWaterForce}} to estimate ship drag force. If \code{Ss}
 #' is not given, then an esimate is made by calling \code{\link{shipAreaFromMass}} with
 #' the provided value of \code{ms}.
-#' @param Ly Ship impact horizontal extent [m]; defaults to 0.5m if not specified.
-#' @param Lz Ship impact vertical extent [m]; defaults to 1.5m if not specified.
+#' @param Ly Ship impact horizontal extent [m]; defaults to 0.87m if not specified,
+#' based on an analysis of the shape of the bow of typical coastal fishing boats
+#' of the Cape Islander variety.
+#' @param Lz Ship impact vertical extent [m]; defaults to 0.87m if not specified,
+#' based on the same analysis as for Ly.
 #' @param lw Whale length [m]. This is used by \code{\link{whaleAreaFromLength}} to
 #' calculate area, which is needed for the water drag calculation done by
 #' \code{\link{whaleWaterForce}}.
@@ -420,7 +423,7 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' epsilon <- seq(0, 1, length.out=100) # strain
 #' sigma <- parms$stressFromStrain(epsilon) # stress
 #' plot(epsilon, log10(sigma), xlab="Strain", ylab="log10(Stress [MPa])", type="l")
-parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
+parameters <- function(ms=20e3, Ss, Ly=0.87, Lz=0.87,
                        lw=13.7, mw, Sw,
                        l, a, b, s,
                        theta=55,
