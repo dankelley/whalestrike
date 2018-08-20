@@ -4,7 +4,7 @@
 \alias{parameters}
 \title{Control parameters for whale strike simulation}
 \usage{
-parameters(ms = 20000, Ss, Ly = 1.23, Lz = 1.23, lw = 13.7, mw, Sw, l,
+parameters(ms = 20000, Ss, Ly = 1.15, Lz = 1.15, lw = 13.7, mw, Sw, l,
   a, b, s, theta = 55, Cs = 0.01, Cw = 0.0025, file)
 }
 \arguments{

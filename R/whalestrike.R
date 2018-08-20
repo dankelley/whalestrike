@@ -423,7 +423,7 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' epsilon <- seq(0, 1, length.out=100) # strain
 #' sigma <- parms$stressFromStrain(epsilon) # stress
 #' plot(epsilon, log10(sigma), xlab="Strain", ylab="log10(Stress [MPa])", type="l")
-parameters <- function(ms=20e3, Ss, Ly=1.23, Lz=1.23,
+parameters <- function(ms=20e3, Ss, Ly=1.15, Lz=1.15,
                        lw=13.7, mw, Sw,
                        l, a, b, s,
                        theta=55,
