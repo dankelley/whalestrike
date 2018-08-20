@@ -1,5 +1,6 @@
 library(deSolve)
 library(xtable)
+knot2SI <- 1.852e3 / 3600 # exact definition according to https://en.wikipedia.org/wiki/Knot_(unit)
 
 #' Pin numerical values between stated limits
 #' @param x Vector or matrix of numerical values
@@ -325,6 +326,8 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' @param lw Whale length [m]. This is used by \code{\link{whaleAreaFromLength}} to
 #' calculate area, which is needed for the water drag calculation done by
 #' \code{\link{whaleWaterForce}}.
+#' @param species A string indicating the whale species. For the permitted values,
+#' see \code{\link{whaleMassFromLength}}.
 #' @param mw Whale mass [kg]. If this value is not provided, then
 #' it is calculated from whale length, using \code{\link{whaleMassFromLength}}
 #' with \code{type="wetted"}.
@@ -424,6 +427,7 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' sigma <- parms$stressFromStrain(epsilon) # stress
 #' plot(epsilon, log10(sigma), xlab="Strain", ylab="log10(Stress [MPa])", type="l")
 parameters <- function(ms=20e3, Ss, Ly=1.15, Lz=1.15,
+                       species="N. Atl. Right Whale",
                        lw=13.7, mw, Sw,
                        l, a, b, s,
                        theta=55,
@@ -432,8 +436,8 @@ parameters <- function(ms=20e3, Ss, Ly=1.15, Lz=1.15,
     if (!missing(file)) {
         rval <- as.list(read.csv(file))
         rval$Ss <- shipAreaFromMass(rval$ms)
-        rval$mw <- whaleMassFromLength(rval$lw)
-        rval$Sw <- whaleAreaFromLength(rval$lw, type="wetted")
+        rval$mw <- whaleMassFromLength(rval$lw, species=species)
+        rval$Sw <- whaleAreaFromLength(rval$lw, species=species, type="wetted")
         rval$tmax <- NULL
         rval$vs <- NULL
         rval$Cs <- Cs
@@ -468,10 +472,10 @@ parameters <- function(ms=20e3, Ss, Ly=1.15, Lz=1.15,
         if (lw <= 0)
             stop("Whale length (lw) must be a positive number")
         if (missing(mw))
-            mw <- whaleMassFromLength(lw)
+            mw <- whaleMassFromLength(lw, species=species)
         if (length(mw) != 1) stop("cannot handle more than one 'mw' at a time")
         if (missing(Sw))
-            Sw <- whaleAreaFromLength(lw, type="wetted")
+            Sw <- whaleAreaFromLength(lw, species=species, type="wetted")
         if (length(Sw) != 1) stop("cannot handle more than one 'Sw' at a time")
         if (missing(l))
             l <- c(0.025, 0.16, 1.12, 0.1)
@@ -552,6 +556,8 @@ parameters <- function(ms=20e3, Ss, Ly=1.15, Lz=1.15,
 #'}
 #'
 #' @param L Whale length in m.
+#' @param species String specifying the species. This must be one of the following:
+#' \code{"N. Atl. Right Whale"} (the default), FIXME: add more.
 #' @param model Character string specifying the model (see \dQuote{Details}).
 #' @return Mass in kg.
 #'
@@ -571,8 +577,13 @@ parameters <- function(ms=20e3, Ss, Ly=1.15, Lz=1.15,
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
-whaleMassFromLength <- function(L, model="fortune2012atlantic")
+whaleMassFromLength <- function(L, species="N. Atl. Right Whale", model="fortune2012atlantic")
 {
+    speciesAllowed <- c("N. Atl. Right Whale")
+    if (!(species %in% speciesAllowed))
+        stop("unknown species \"", species, "\"; use one of the following: \"",
+             paste(speciesAllowed, collapse="\", \""), "\"")
+    ## FIXME: (1) remove model; (2) code for other species; (3) document this code; (4) other species names
     if (model == "moore2005")
         242.988 * exp(0.4 * L)
     else if (model == "fortune2012atlantic")
@@ -589,6 +600,8 @@ whaleMassFromLength <- function(L, model="fortune2012atlantic")
 #' \code{\link{uniroot}}.
 #'
 #' @param M Whale mass [kg].
+#' @param species A string indicating the whale species. For the permitted values,
+#' see \code{\link{whaleMassFromLength}}.
 #' @param model Character string specifying the model, with permitted
 #' values \code{"moore2005"}, \code{"fortune2012atlantic"} and
 #" \code{"fortune2012pacific"}. See the documentation
@@ -599,11 +612,13 @@ whaleMassFromLength <- function(L, model="fortune2012atlantic")
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
-whaleLengthFromMass <- function(M, model="fortune2012atlantic")
+whaleLengthFromMass <- function(M, species="N. Atl. Right Whale", model="fortune2012atlantic")
 {
     rval <- rep(NA, length(M))
     for (i in seq_along(M))
-        rval[i] <- uniroot(function(x) M[i] - whaleMassFromLength(x, model), c(0.1, 100))$root
+        rval[i] <- uniroot(function(x)
+                           M[i] - whaleMassFromLength(x, species=species, model=model),
+                           c(0.1, 100))$root
     rval
 }
 
@@ -622,6 +637,8 @@ whaleLengthFromMass <- function(M, model="fortune2012atlantic")
 #' agreed to under 0.7 percent percent between these digitizations.
 #'
 #' @param L length in m
+#' @param species A string indicating the whale species. For the permitted values,
+#' see \code{\link{whaleMassFromLength}}.
 #' @param type character string indicating the type of area, with
 #' \code{"projected"} for a side-projected area, and
 #' \code{"wetted"} for the total wetted area. The wetted
@@ -635,8 +652,12 @@ whaleLengthFromMass <- function(M, model="fortune2012atlantic")
 #'
 #' 2. Dan Kelley's internal document \code{dek/20180707_whale_mass.Rmd}, available
 #' upon request.
-whaleAreaFromLength <- function(L, type="wetted")
+whaleAreaFromLength <- function(L, species="N. Atl. Right Whale", type="wetted")
 {
+    speciesAllowed <- c("N. Atl. Right Whale")
+    if (!(species %in% speciesAllowed))
+        stop("unknown species \"", species, "\"; use one of the following: \"",
+             paste(speciesAllowed, collapse="\", \""), "\"")
     ## below from dek/20180623_whale_area.Rmd, updated 20180802 and inserted with
     ## cut/paste (changing bullet to asterisk, and using ^ for exponentiation).
     ##
@@ -895,7 +916,7 @@ derivative <- function(var, t)
 #' @examples
 #' library(whalestrike)
 #' t <- seq(0, 0.7, length.out=200)
-#' state <- list(xs=-2, vs=10*0.5144, xw=0, vw=0) # ship speed 10 knots
+#' state <- list(xs=-2, vs=10*knot2SI, xw=0, vw=0) # ship speed 10 knots
 #' parms <- parameters(ms=20e3) # 20-tonne ship
 #' sol <- strike(t, state, parms)
 #' par(mfcol=c(1, 3), mar=c(3, 3, 0.5, 2), mgp=c(2, 0.7, 0), cex=0.7)
@@ -1095,7 +1116,7 @@ strike <- function(t, state, parms, debug=0)
 #' @examples
 #' ## 1. default 3-panel plot
 #' t <- seq(0, 0.7, length.out=200)
-#' state <- c(xs=-2, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
+#' state <- c(xs=-2, vs=10*knot2SI, xw=0, vw=0) # 10 knot ship
 #' parms <- parameters(ms=20e3, lw=13)
 #' sol <- strike(t, state, parms)
 #' par(mar=c(3,3,1,1), mgp=c(2,0.7,0), mfrow=c(1, 3))
@@ -1581,7 +1602,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
 
         parms <- lapply(parms, function(p) deparse(p))
         ## parms$ms <- x$parms$ms
-        parms$vs_knots <- x$vs[1] / 0.5144
+        parms$vs_knots <- x$vs[1] / knot2SI
         names <- names(parms)
         values <- unname(unlist(parms))
         ##values[["mw"]] <- x$parms$mw

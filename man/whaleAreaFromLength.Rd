@@ -4,10 +4,13 @@
 \alias{whaleAreaFromLength}
 \title{Whale projected area, as function of length}
 \usage{
-whaleAreaFromLength(L, type = "wetted")
+whaleAreaFromLength(L, species = "N. Atl. Right Whale", type = "wetted")
 }
 \arguments{
 \item{L}{length in m}
+
+\item{species}{A string indicating the whale species. For the permitted values,
+see \code{\link{whaleMassFromLength}}.}
 
 \item{type}{character string indicating the type of area, with
 \code{"projected"} for a side-projected area, and

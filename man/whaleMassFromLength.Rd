@@ -4,10 +4,14 @@
 \alias{whaleMassFromLength}
 \title{Whale mass inferred from length}
 \usage{
-whaleMassFromLength(L, model = "fortune2012atlantic")
+whaleMassFromLength(L, species = "N. Atl. Right Whale",
+  model = "fortune2012atlantic")
 }
 \arguments{
 \item{L}{Whale length in m.}
+
+\item{species}{String specifying the species. This must be one of the following:
+\code{"N. Atl. Right Whale"} (the default), FIXME: add more.}
 
 \item{model}{Character string specifying the model (see \dQuote{Details}).}
 }

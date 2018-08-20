@@ -4,8 +4,9 @@
 \alias{parameters}
 \title{Control parameters for whale strike simulation}
 \usage{
-parameters(ms = 20000, Ss, Ly = 1.15, Lz = 1.15, lw = 13.7, mw, Sw, l,
-  a, b, s, theta = 55, Cs = 0.01, Cw = 0.0025, file)
+parameters(ms = 20000, Ss, Ly = 1.15, Lz = 1.15,
+  species = "N. Atl. Right Whale", lw = 13.7, mw, Sw, l, a, b, s,
+  theta = 55, Cs = 0.01, Cw = 0.0025, file)
 }
 \arguments{
 \item{ms}{Ship mass [kg].}
@@ -21,6 +22,9 @@ of the Cape Islander variety.}
 
 \item{Lz}{Ship impact vertical extent [m]; defaults to 1.23m if not specified,
 based on the same analysis as for Ly.}
+
+\item{species}{A string indicating the whale species. For the permitted values,
+see \code{\link{whaleMassFromLength}}.}
 
 \item{lw}{Whale length [m]. This is used by \code{\link{whaleAreaFromLength}} to
 calculate area, which is needed for the water drag calculation done by

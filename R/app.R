@@ -12,21 +12,23 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px;}")
                                             min=0.1, max=2,  value=1.15, step=0.05),
                                 sliderInput("Lz",  h6("Impact height [m]"), ticks=FALSE,
                                             min=0.1, max=2,  value=1.15, step=0.05),
-                                sliderInput("lw",  h6("Whale length [m]"), ticks=FALSE,
-                                            min=5,  max=15, value=13.7, step=0.1)),
+                                selectInput("species", "Whale species:",
+                                            choices=c("N. Atl. Right Whale",
+                                                      "NOTHING ELSE CODED YET"))),
                          column(2,
+                                sliderInput("lw",  h6("Whale length [m]"), ticks=FALSE,
+                                            min=5,  max=15, value=13.7, step=0.1),
                                 sliderInput("theta", h6("Skin theta [deg]"), ticks=FALSE,
                                             min=30, max=70, value=55, step=1),
                                 sliderInput("l1", h6("Skin thickness [m]"), ticks=FALSE,
-                                            min=0.01, max=0.03, value=0.025, step=0.001),
-                                sliderInput("l2", h6("Blubber thickness [m]"), ticks=FALSE,
-                                            min=0.05, max=.4, value=0.16, step=0.01)),
+                                            min=0.01, max=0.03, value=0.025, step=0.001)),
                          column(2,
+                                sliderInput("l2", h6("Blubber thickness [m]"), ticks=FALSE,
+                                            min=0.05, max=.4, value=0.16, step=0.01),
                                 sliderInput("l3", h6("Sub-layer thickness [m]"), ticks=FALSE,
                                             min=0.05, max=2, value=1.12, step=0.01),
                                 sliderInput("l4", h6("Bone thickness [m]"), ticks=FALSE,
-                                            min=0.05, max=.3, value=0.1, step=0.01),
-                                selectInput("whaleType", "Whale type:", choices=c("Right", "Blue"))),
+                                            min=0.05, max=.3, value=0.1, step=0.01)),
                          column(2,
                                 fileInput("loadFile", "Configuration", multiple=FALSE, accept=c("text/csv", ".csv")),
                                 actionButton("saveFile", "Save")),
@@ -56,7 +58,7 @@ server <- function(input, output, session)
                  w <- which("loadFile" == configNames | "saveFile" == configNames | "plot_panels" == configNames)
                  config <- config[-w]
                  ## Convert ship speed from to m/s, from knots in the GUI
-                 config$vs <- 0.514444 * config$vs
+                 config$vs <- whalestrike::knot2SI * config$vs
                  ## Convert ship mass to kg, from tonne in the GUI
                  config$ms <- 1e3 * config$ms
                  ## save in alphabetical order
@@ -67,7 +69,7 @@ server <- function(input, output, session)
     observeEvent(input$loadFile, {
                  config <- read.csv(input$loadFile$datapath)
                  ## Convert ship speed from m/s in the file, to knots in the GUI
-                 config$vs <- (1/0.514444) * config$vs
+                 config$vs <- (1/whalestrike::knot2SI) * config$vs
                  ## Convert ship mass from kg in file, to tonne in the GUI
                  config$ms <- 1e-3 * config$ms
                  ## Insert individual thickness entries (one slider each)
@@ -81,15 +83,15 @@ server <- function(input, output, session)
                      updateSliderInput(session, s, value=config[[s]])
                 })
     output$plot <- renderPlot({
-        message("WHALE TYPE: ", input$whaleType)
+        message("species: ", input$species)
         parms <- parameters(ms=1000*input$ms, Ss=shipAreaFromMass(1000*input$ms),
                             Ly=input$Ly, Lz=input$Lz,
                             lw=input$lw,
-                            mw=whaleMassFromLength(input$lw),
-                            Sw=whaleAreaFromLength(input$lw, "wetted"),
+                            mw=whaleMassFromLength(input$lw, species=input$species),
+                            Sw=whaleAreaFromLength(input$lw, species=input$species, "wetted"),
                             l=c(input$l1, input$l2, input$l3, input$l4),
                             theta=input$theta) # in degrees; 0 means no bevel
-        state <- list(xs=-(1 + parms$lsum), vs=input$vs * 0.514444, xw=0, vw=0)
+        state <- list(xs=-(1 + parms$lsum), vs=input$vs * whalestrike::knot2SI, xw=0, vw=0)
         t <- seq(0, input$tmax, length.out=200)
         sol <- strike(t, state, parms)
         if (sol$refinedGrid)
