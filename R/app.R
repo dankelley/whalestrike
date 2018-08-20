@@ -25,7 +25,8 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px;}")
                                 sliderInput("l3", h6("Sub-layer thickness [m]"), ticks=FALSE,
                                             min=0.05, max=2, value=1.12, step=0.01),
                                 sliderInput("l4", h6("Bone thickness [m]"), ticks=FALSE,
-                                            min=0.05, max=.3, value=0.1, step=0.01)),
+                                            min=0.05, max=.3, value=0.1, step=0.01),
+                                selectInput("whaleType", "Whale type:", choices=c("Right", "Blue"))),
                          column(2,
                                 fileInput("loadFile", "Configuration", multiple=FALSE, accept=c("text/csv", ".csv")),
                                 actionButton("saveFile", "Save")),
@@ -80,6 +81,7 @@ server <- function(input, output, session)
                      updateSliderInput(session, s, value=config[[s]])
                 })
     output$plot <- renderPlot({
+        message("WHALE TYPE: ", input$whaleType)
         parms <- parameters(ms=1000*input$ms, Ss=shipAreaFromMass(1000*input$ms),
                             Ly=input$Ly, Lz=input$Lz,
                             lw=input$lw,
