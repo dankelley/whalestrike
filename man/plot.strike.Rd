@@ -108,7 +108,7 @@ with \code{\link{strike}}.
 ## 1. default 3-panel plot
 t <- seq(0, 0.7, length.out=200)
 state <- c(xs=-2, vs=10*knot2SI, xw=0, vw=0) # 10 knot ship
-parms <- parameters(ms=20e3, lw=13)
+parms <- parameters() # default values
 sol <- strike(t, state, parms)
 par(mar=c(3,3,1,1), mgp=c(2,0.7,0), mfrow=c(1, 3))
 plot(sol)

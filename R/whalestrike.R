@@ -917,7 +917,7 @@ derivative <- function(var, t)
 #' library(whalestrike)
 #' t <- seq(0, 0.7, length.out=200)
 #' state <- list(xs=-2, vs=10*knot2SI, xw=0, vw=0) # ship speed 10 knots
-#' parms <- parameters(ms=20e3) # use a 20-tonne ship, not the default of 45t
+#' parms <- parameters()
 #' sol <- strike(t, state, parms)
 #' par(mfcol=c(1, 3), mar=c(3, 3, 0.5, 2), mgp=c(2, 0.7, 0), cex=0.7)
 #' plot(sol)
@@ -1117,7 +1117,7 @@ strike <- function(t, state, parms, debug=0)
 #' ## 1. default 3-panel plot
 #' t <- seq(0, 0.7, length.out=200)
 #' state <- c(xs=-2, vs=10*knot2SI, xw=0, vw=0) # 10 knot ship
-#' parms <- parameters(ms=20e3, lw=13)
+#' parms <- parameters() # default values
 #' sol <- strike(t, state, parms)
 #' par(mar=c(3,3,1,1), mgp=c(2,0.7,0), mfrow=c(1, 3))
 #' plot(sol)

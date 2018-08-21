@@ -53,7 +53,7 @@ The forces are calculated by
 library(whalestrike)
 t <- seq(0, 0.7, length.out=200)
 state <- list(xs=-2, vs=10*knot2SI, xw=0, vw=0) # ship speed 10 knots
-parms <- parameters(ms=20e3) # use a 20-tonne ship, not the default of 45t
+parms <- parameters()
 sol <- strike(t, state, parms)
 par(mfcol=c(1, 3), mar=c(3, 3, 0.5, 2), mgp=c(2, 0.7, 0), cex=0.7)
 plot(sol)
