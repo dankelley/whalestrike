@@ -16,7 +16,7 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px;}")
                                             choices=c("N. Atl. Right Whale",
                                                       "NOTHING ELSE CODED YET"))),
                          column(2,
-                                sliderInput("lw",  h6("Whale length [m]"), ticks=FALSE,
+                                sliderInput("lw",  h6("Right whale length [m]"), ticks=FALSE,
                                             min=5,  max=15, value=13.7, step=0.1),
                                 sliderInput("theta", h6("Skin theta [deg]"), ticks=FALSE,
                                             min=30, max=70, value=55, step=1),
