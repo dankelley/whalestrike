@@ -3,29 +3,29 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px;}")
                 fluidRow(column(2,
                                 sliderInput("tmax",  h6("Max time [s]"), ticks=FALSE,
                                             min=0.1,  max=5, value=1, step=0.05),
-                                sliderInput("ms",  h6("Ship mass [tonne]"), ticks=FALSE,
+                                sliderInput("ms",  HTML("<font color=\"FF0000\">Ship mass [tonne]</font>"), ticks=FALSE,
                                             min=10, max=311,  value=20, step=0.5),
-                                sliderInput("vs", h6("Ship speed [knot]"), ticks=FALSE,
+                                sliderInput("vs", HTML("<font color=\"FF0000\">Ship speed [knot]</font>"), ticks=FALSE,
                                             min=0.5,  max=20,  value=10, step=0.5)),
                          column(2,
                                 sliderInput("Ly",  h6("Impact width [m]"), ticks=FALSE,
                                             min=0.1, max=2,  value=1.15, step=0.05),
                                 sliderInput("Lz",  h6("Impact height [m]"), ticks=FALSE,
-                                            min=0.1, max=2,  value=1.15, step=0.05),
-                                selectInput("species", "Whale species:",
-                                            choices=c("N. Atl. Right Whale",
-                                                      "NOTHING ELSE CODED YET"))),
+                                            min=0.1, max=2,  value=1.15, step=0.05)),
+                                ##selectInput("species", "Whale species:",
+                                ##            choices=c("N. Atl. Right Whale",
+                                ##                      "NOTHING ELSE CODED YET"))),
                          column(2,
                                 sliderInput("lw",  h6("Right whale length [m]"), ticks=FALSE,
                                             min=5,  max=15, value=13.7, step=0.1),
-                                sliderInput("theta", h6("Skin theta [deg]"), ticks=FALSE,
-                                            min=30, max=70, value=55, step=1),
+                                ##sliderInput("theta", h6("Skin theta [deg]"), ticks=FALSE,
+                                ##            min=30, max=70, value=55, step=1),
                                 sliderInput("l1", h6("Skin thickness [m]"), ticks=FALSE,
-                                            min=0.01, max=0.03, value=0.025, step=0.001)),
-                         column(2,
+                                            min=0.01, max=0.03, value=0.025, step=0.001),
                                 sliderInput("l2", h6("Blubber thickness [m]"), ticks=FALSE,
-                                            min=0.05, max=.4, value=0.16, step=0.01),
-                                sliderInput("l3", h6("Sub-layer thickness [m]"), ticks=FALSE,
+                                            min=0.05, max=.4, value=0.16, step=0.01)),
+                         column(2,
+                                sliderInput("l3", HTML("<font color=\"FF0000\">Sublayer thickness[m]</font>"), ticks=FALSE,
                                             min=0.05, max=2, value=1.12, step=0.01),
                                 sliderInput("l4", h6("Bone thickness [m]"), ticks=FALSE,
                                             min=0.05, max=.3, value=0.1, step=0.01)),
@@ -78,19 +78,18 @@ server <- function(input, output, session)
                  config$l3 <- config$l[3]
                  config$l4 <- config$l[4]
                  ## FIXME: l1, l2 etc
-                 for (s in c("tmax", "ms", "lw", "vs", "Ly", "Lz", "theta",
+                 for (s in c("tmax", "ms", "lw", "vs", "Ly", "Lz",
                              "l1", "l2", "l3", "l4"))
                      updateSliderInput(session, s, value=config[[s]])
                 })
     output$plot <- renderPlot({
-        message("species: ", input$species)
+        ##message("species: ", input$species)
         parms <- parameters(ms=1000*input$ms, Ss=shipAreaFromMass(1000*input$ms),
                             Ly=input$Ly, Lz=input$Lz,
                             lw=input$lw,
-                            mw=whaleMassFromLength(input$lw, species=input$species),
-                            Sw=whaleAreaFromLength(input$lw, species=input$species, "wetted"),
-                            l=c(input$l1, input$l2, input$l3, input$l4),
-                            theta=input$theta) # in degrees; 0 means no bevel
+                            mw=whaleMassFromLength(input$lw, species="N. Atl. Right Whale"),
+                            Sw=whaleAreaFromLength(input$lw, species="N. Atl. Right Whale", "wetted"),
+                            l=c(input$l1, input$l2, input$l3, input$l4))
         state <- list(xs=-(1 + parms$lsum), vs=input$vs * whalestrike::knot2SI, xw=0, vw=0)
         t <- seq(0, input$tmax, length.out=200)
         sol <- strike(t, state, parms)
