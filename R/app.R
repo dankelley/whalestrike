@@ -1,6 +1,6 @@
 #' User interface for app
 ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; margin-left:1ex}")),
-                fluidRow(radioButtons("instructions", "Instructions", choices=c("Hide", "Show"), inline=TRUE)),
+                fluidRow(radioButtons("instructions", "Instructions", choices=c("Hide", "Show"), selected="Show", inline=TRUE)),
                 conditionalPanel(condition="input.instructions=='Show'", fluidRow(includeMarkdown("app_help.md"))),
                 fluidRow(column(2,
                                 sliderInput("tmax",  h6("Max time [s]"), ticks=FALSE,
