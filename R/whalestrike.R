@@ -1238,6 +1238,8 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         text(x0, -0.5*x$parms$l[4], "bone", pos=4)
         text(x0, -x$parms$l[4]-0.5*x$parms$l[3], "sublayer", pos=4)
         text(x0, -x$parms$l[4]-x$parms$l[3]-0.5*x$parms$l[2], "blubber", pos=4)
+        if (x$parms$l[1] > 0.1 * sum(x$parms$l))
+            text(x0, -x$parms$l[4]-x$parms$l[3]-x$parms$l[2]-0.5*x$parms$l[1], "skin", pos=4)
         text(x0, 0.5*(ylim[1] - x$parms$lsum), "", pos=4)
         ##hatchPolygon <- FALSE
         ## Blubber
