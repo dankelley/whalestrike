@@ -93,7 +93,7 @@ server <- function(input, output, session)
                             Sw=whaleAreaFromLength(input$lw, species="N. Atl. Right Whale", "wetted"),
                             l=c(input$l1, input$l2, input$l3, input$l4))
         state <- list(xs=-(1 + parms$lsum), vs=input$vs * whalestrike::knot2SI, xw=0, vw=0)
-        t <- seq(0, input$tmax, length.out=200)
+        t <- seq(0, input$tmax, length.out=2000)
         sol <- strike(t, state, parms)
         if (sol$refinedGrid)
             showNotification("Auto-refined grid to capture acceleration peak")
