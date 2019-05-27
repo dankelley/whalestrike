@@ -9,10 +9,6 @@ This is a data frame with elements \code{strain} and \code{stess},
 found by digitizing (accurate to perhaps 1 percent) the curve shown in Figure 2.13
 of Raymond (2007). It is used to develop a stress-strain relationship used
 by \code{\link{parameters}}, as shown in \dQuote{Examples}.
-
-Raymond, J. J. “Development of a Numerical Model to Predict Impact Forces on a
-North Atlantic Right Whale during Collision with a Vessel.” University of New
-Hampshire, 2007. \url{https://scholars.unh.edu/thesis/309}.
 }
 \examples{
 data(raymond2007)

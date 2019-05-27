@@ -13,12 +13,6 @@ data frame contains \code{x} and \code{y}, which are distances
 nondimensionalized by the range in \code{x}; that is, \code{x}
 ranges from 0 to 1. The point at the front of the whale is
 designated as x=y=0.
-
-Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
-“Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
-Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
-Society, and Fisheries and Oceans Canada, 2018.
-\url{http://publications.gc.ca/site/eng/9.850838/publication.html}.
 }
 \examples{
 library(whalestrike)

@@ -6,8 +6,8 @@
 \usage{
 \method{plot}{strike}(x, which = "default", drawEvents = TRUE,
   colwcenter = "black", colwinterface = "black", colwskin = "black",
-  cols = "black", colThreat = c("lightgray", "black"), lwd = 1, D = 3,
-  debug = 0, ...)
+  cols = "black", colThreat = c("lightgray", "black"), lwd = 1,
+  D = 3, debug = 0, ...)
 }
 \arguments{
 \item{x}{An object inheriting from class \code{strike}}
@@ -107,7 +107,7 @@ with \code{\link{strike}}.
 \examples{
 ## 1. default 3-panel plot
 t <- seq(0, 0.7, length.out=200)
-state <- c(xs=-2, vs=10*knot2SI, xw=0, vw=0) # 10 knot ship
+state <- c(xs=-2, vs=knot2mps(10), xw=0, vw=0) # 10 knot ship
 parms <- parameters() # default values
 sol <- strike(t, state, parms)
 par(mar=c(3,3,1,1), mgp=c(2,0.7,0), mfrow=c(1, 3))

@@ -60,7 +60,7 @@ server <- function(input, output, session)
                  w <- which("loadFile" == configNames | "saveFile" == configNames | "plot_panels" == configNames)
                  config <- config[-w]
                  ## Convert ship speed from to m/s, from knots in the GUI
-                 config$vs <- whalestrike::knot2SI * config$vs
+                 config$vs <- knot2mps(config$vs)
                  ## Convert ship mass to kg, from tonne in the GUI
                  config$ms <- 1e3 * config$ms
                  ## save in alphabetical order
@@ -71,7 +71,7 @@ server <- function(input, output, session)
     observeEvent(input$loadFile, {
                  config <- read.csv(input$loadFile$datapath)
                  ## Convert ship speed from m/s in the file, to knots in the GUI
-                 config$vs <- (1/whalestrike::knot2SI) * config$vs
+                 config$vs <- (1/knot2mps(1)) * config$vs
                  ## Convert ship mass from kg in file, to tonne in the GUI
                  config$ms <- 1e-3 * config$ms
                  ## Insert individual thickness entries (one slider each)
@@ -92,7 +92,7 @@ server <- function(input, output, session)
                             mw=whaleMassFromLength(input$lw, species="N. Atl. Right Whale"),
                             Sw=whaleAreaFromLength(input$lw, species="N. Atl. Right Whale", "wetted"),
                             l=c(input$l1, input$l2, input$l3, input$l4))
-        state <- list(xs=-(1 + parms$lsum), vs=input$vs * whalestrike::knot2SI, xw=0, vw=0)
+        state <- list(xs=-(1 + parms$lsum), vs=knot2mps(input$vs), xw=0, vw=0)
         t <- seq(0, input$tmax, length.out=2000)
         sol <- strike(t, state, parms)
         if (sol$refinedGrid)
