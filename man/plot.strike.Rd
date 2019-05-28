@@ -6,8 +6,8 @@
 \usage{
 \method{plot}{strike}(x, which = "default", drawEvents = TRUE,
   colwcenter = "black", colwinterface = "black", colwskin = "black",
-  cols = "black", colThreat = c("lightgray", "black"), lwd = 1, D = 3,
-  debug = 0, ...)
+  cols = "black", colThreat = c("lightgray", "black"), lwd = 1,
+  D = 3, debug = 0, ...)
 }
 \arguments{
 \item{x}{An object inheriting from class \code{strike}}
@@ -20,7 +20,14 @@ This choices for its entries are listed below, in no particular order.
 dashed black, whale centerline \code{xs} in solid gray,
 blubber-interior interface in red, and skin in blue. The maximum
 acceleration of ship and whale (in "g" units) are indicated in notes
-placed near the horizontal axes.
+placed near the horizontal axes. Those acceleration indications report
+just a single value for each of ship and whale, but if the blubber
+and sublayer have been squeezed to their limits, yielding a short and
+intense force spike as the bone compresses, then the summaries will
+also report on the spike duration and intensity. The spike is computed
+based on using \code{\link{runmed}} on the acceleration data, with a
+\code{k} value that is set to correspond to 5 ms, or to k=11, whichever
+is larger.
 
 \item \code{"section"} to plot skin thickness, blubber thickness and sublayer thickness
 in one panel, creating a cross-section diagram.
@@ -100,8 +107,8 @@ with \code{\link{strike}}.
 \examples{
 ## 1. default 3-panel plot
 t <- seq(0, 0.7, length.out=200)
-state <- c(xs=-2, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
-parms <- parameters(ms=20e3, lw=13)
+state <- c(xs=-2, vs=knot2mps(10), xw=0, vw=0) # 10 knot ship
+parms <- parameters() # default values
 sol <- strike(t, state, parms)
 par(mar=c(3,3,1,1), mgp=c(2,0.7,0), mfrow=c(1, 3))
 plot(sol)

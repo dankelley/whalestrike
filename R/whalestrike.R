@@ -1,6 +1,28 @@
 library(deSolve)
 library(xtable)
 
+#' Version of parameter defaults
+#'
+#' A Either "2018" (to get default parameter values from the work
+#' in summer of 2018) or "2019a" to get parameter values as of
+#' the start of summer, 2019.
+#' @name versionOfDefaults
+#' @docType data
+NULL
+versionOfDefaults <- "2019a"
+
+
+#' Convert a speed in knots to a speed in m/s
+#'
+#' This is done by multiplying by the factor 1.852e3/3600,
+#' according to https://en.wikipedia.org/wiki/Knot_(unit)
+#' @param knot Speed in knots
+#' @return Speed in m/s
+knot2mps <- function(knot)
+{
+    knot * 1.852e3 / 3600 # exact definition according to https://en.wikipedia.org/wiki/Knot_(unit)
+}
+
 #' Pin numerical values between stated limits
 #' @param x Vector or matrix of numerical values
 #' @param lower Numerical values of minimum value allowed; set to \code{NULL}
@@ -289,7 +311,6 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
     for (i in seq_along(epsilon)) {
         aa <- a[use]
         bb <- b[use]
-        ll <- l[use]
         ##debug cat(sprintf("i=%3d, epsilon=%10.5f, ", i, epsilon[i]), ", use=", paste(use, collapse=" "), "\n")
         DL <- epsilon[i] * L
         sigma[i] <- uniroot(fcn, interval=c(0, 1e9))$root
@@ -318,15 +339,19 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' used by \code{\link{shipWaterForce}} to estimate ship drag force. If \code{Ss}
 #' is not given, then an esimate is made by calling \code{\link{shipAreaFromMass}} with
 #' the provided value of \code{ms}.
-#' @param Ly Ship impact horizontal extent [m]; defaults to 0.5m if not specified.
-#' @param Lz Ship impact vertical extent [m]; defaults to 1.5m if not specified.
-#' @param lw Whale length [m]. If not supplied, \code{\link{whaleLengthFromMass}} is used
-#' to calculate this, given \code{lm}, but if neither \code{mw} nor \code{ml} is provided,
-#' an error is reported. The length is used by \code{\link{whaleAreaFromLength}} to
+#' @param Ly Ship impact horizontal extent [m]; defaults to 1.23m if not specified,
+#' based on an analysis of the shape of the bow of typical coastal fishing boats
+#' of the Cape Islander variety.
+#' @param Lz Ship impact vertical extent [m]; defaults to 1.23m if not specified,
+#' based on the same analysis as for Ly.
+#' @param lw Whale length [m]. This is used by \code{\link{whaleAreaFromLength}} to
 #' calculate area, which is needed for the water drag calculation done by
 #' \code{\link{whaleWaterForce}}.
-#' @param mw Whale mass [kg]. If not provided, this is calculated from whale
-#' length, using \code{\link{whaleMassFromLength}} with \code{type="wetted"}.
+#' @param species A string indicating the whale species. For the permitted values,
+#' see \code{\link{whaleMassFromLength}}.
+#' @param mw Whale mass [kg]. If this value is not provided, then
+#' it is calculated from whale length, using \code{\link{whaleMassFromLength}}
+#' with \code{type="wetted"}.
 #' @param Sw Whale surface area [m^2]. If not provided, this is calculated
 #' from whale length using \code{\link{whaleAreaFromLength}}.
 #' @param l Numerical vector of length 4, giving thickness [m] of skin, blubber,
@@ -422,48 +447,83 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' epsilon <- seq(0, 1, length.out=100) # strain
 #' sigma <- parms$stressFromStrain(epsilon) # stress
 #' plot(epsilon, log10(sigma), xlab="Strain", ylab="log10(Stress [MPa])", type="l")
-parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
-                       lw=13, mw, Sw,
+parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
+                       species="N. Atl. Right Whale",
+                       lw=13.7, mw, Sw,
                        l, a, b, s,
                        theta=55,
                        Cs=0.01, Cw=0.0025, file)
 {
     if (!missing(file)) {
-        rval <- read.csv(file)
+        rval <- as.list(read.csv(file))
         rval$Ss <- shipAreaFromMass(rval$ms)
-        rval$mw <- whaleMassFromLength(rval$lw)
-        rval$Sw <- whaleAreaFromLength(rval$lw, type="wetted")
+        rval$mw <- whaleMassFromLength(rval$lw, species=species)
+        rval$Sw <- whaleAreaFromLength(rval$lw, species=species, type="wetted")
         rval$tmax <- NULL
         rval$vs <- NULL
         rval$Cs <- Cs
         rval$Cw <- Cw
+        rval$l <- c(rval$l1, rval$l2, rval$l3, rval$l4)
+        rval$l1 <- rval$l2 <- rval$l3 <- rval$l4 <- NULL
+        rval$lsum <- sum(rval$l)
+        ## the next are copied from below. The app doesn't let the user
+        ## set these things, so we know their values.
+        ## NOTE: keep in synch with below!
+        rval$a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
+        rval$b <- c(0.1, 2.54, 2.54, 0.1)
+        rval$s <- c(19.6e6, 0.437e6, 0.437e6, 22.9e6)
         o <- sort(names(rval))
         rval <- rval[o]
     } else {
+        if (length(ms) != 1) stop("cannot handle more than one 'ms' at a time")
         if (ms <= 0)
-            stop("ship mass (ms) must be a positive number")
+            stop("ship mass (ms) must be a positive number, but it is ", ms)
         if (missing(Ss))
             Ss <- shipAreaFromMass(ms)
+        if (length(Ss) != 1) stop("cannot handle more than one 'Ss' at a time")
         if (Ss <= 0)
-            stop("ship wetted area (Ss) must be a positive number, not ", Ss)
+            stop("ship wetted area (Ss) must be a positive number, but it is ", Ss)
+        if (length(Ly) != 1) stop("cannot handle more than one 'Ly' at a time")
         if (Ly <= 0)
-            stop("impact width (Ly) must be a positive number, not ", Ly)
+            stop("impact width (Ly) must be a positive number, but it is ", Ly)
+        if (length(Lz) != 1) stop("cannot handle more than one 'Lz' at a time")
         if (Lz <= 0)
-            stop("impact height (Lz) must be a positive number, not ", Lz)
+            stop("impact height (Lz) must be a positive number, but it is ", Lz)
+        if (length(lw) != 1) stop("cannot handle more than one 'lw' at a time")
         if (lw <= 0)
             stop("Whale length (lw) must be a positive number")
         if (missing(mw))
-            mw <- whaleMassFromLength(lw)
+            mw <- whaleMassFromLength(lw, species=species)
+        if (length(mw) != 1) stop("cannot handle more than one 'mw' at a time")
         if (missing(Sw))
-            Sw <- whaleAreaFromLength(lw, type="wetted")
+            Sw <- whaleAreaFromLength(lw, species=species, type="wetted")
+        if (length(Sw) != 1) stop("cannot handle more than one 'Sw' at a time")
         if (missing(l))
             l <- c(0.025, 0.16, 1.12, 0.1)
-        if (missing(a))
-            a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
+        if (length(l) != 4) stop("'l' must be a vector of length 4")
+        ## NOTE: keep in synch with above!
+        if (missing(a)) {
+            a <- if (exists(versionOfDefaults)) {
+                if (versionOfDefaults == "2018") {
+                    c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
+                } else if (versionOfDefaults == "2019a") {
+                    c(17.8e6/0.1, 1.58e5*1.2, 1.58e5*1.2, 8.54e8/0.1)
+                } else {
+                    stop("versionOfDefaults='", versionOfDefaults, "' is not understood; see ?versionOfDefaults")
+                }
+            } else {
+                c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
+            }
+        }
+        if (length(a) != 4) stop("'a' must be a vector of length 4")
+        ## NOTE: keep in synch with above!
         if (missing(b))
             b <- c(0.1, 2.54, 2.54, 0.1)
+        if (length(b) != 4) stop("'b' must be a vector of length 4")
+        ## NOTE: keep in synch with above!
         if (missing(s))
             s <- c(19.6e6, 0.437e6, 0.437e6, 22.9e6)
+        if (length(s) != 4) stop("'s' must be a vector of length 4")
         ## Value checks
         if (any(l <= 0) || length(l) != 4)
             stop("'l' must be 4 positive numbers")
@@ -471,43 +531,24 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
             stop("'a' must be 4 positive numbers")
         if (any(b <= 0) || length(b) != 4)
             stop("'b' must be 4 positive numbers")
+        if (length(theta) != 1) stop("cannot handle more than one 'theta' at a time")
         if (theta < 0 || theta > 89)
-            stop("whale skin deformation angle (theta) must be between 0 and 89 deg, not ", theta)
+            stop("whale skin deformation angle (theta) must be between 0 and 89 deg, but it is ", theta)
+        if (length(Cs) != 1) stop("cannot handle more than one 'Cs' at a time")
         if (Cs <= 0)
-            stop("ship resistance parameter (Cs) must be positive, not ", Cs)
+            stop("ship resistance parameter (Cs) must be positive, but it is ", Cs)
+        if (length(Cw) != 1) stop("cannot handle more than one 'Cw' at a time")
         if (Cw <= 0)
-            stop("ship resistance parameter (Cw) must be positive, not ", Cw)
-
-        ##DELETE if (Ealpha< 0)
-        ##DELETE     stop("whale skin elastic modulus (Ealpha) must be positive, not ", Ealpha)
-        ##DELETE if (UTSalpha< 0)
-        ##DELETE     stop("whale skin elastic modulus (UTSalpha) must be positive, not ", UTSalpha)
-        ##DELETE if (beta < 0)
-        ##DELETE     stop("whale blubber thickness (beta) must be positive, not ", beta)
-        ##DELETE if (Ebeta < 0)
-        ##DELETE     stop("whale blubber elastic modulus (Ebeta) must be positive, not ", Ebeta)
-        ##DELETE if (UTSbeta < 0)
-        ##DELETE     stop("whale blubber ultimate strength (UTSbeta) must be positive, not ", UTSbeta)
-        ##DELETE if (gamma < 0)
-        ##DELETE     stop("whale sublayer thickness (gamma) must be positive, not ", gamma)
-        ##DELETE if (Egamma < 0)
-        ##DELETE     stop("whale sublayer elastic modulus (Egamma) must be positive, not ", Egamma)
-        ##DELETE if (UTSgamma < 0)
-        ##DELETE     stop("whale sublayer ultimate strength (UTSgamma) must be positive, not ", UTSgamma)
-
-        ## overall-stress from overall-strain function
-        stressFromStrain <- stressFromStrainFunction(l, a, b)
+            stop("ship resistance parameter (Cw) must be positive, but it is ", Cw)
         rval <- list(ms=ms, Ss=Ss,
                      Ly=Ly, Lz=Lz,
                      mw=mw, Sw=Sw, lw=lw,
                      l=l, lsum=sum(l), a=a, b=b, s=s,
-                     ##alpha=alpha, Ealpha=Ealpha, UTSalpha=UTSalpha,
                      theta=theta,
-                     ##Ebeta=Ebeta, beta=beta, UTSbeta=UTSbeta,
-                     ##Egamma=Egamma, gamma=gamma, UTSgamma=UTSgamma,
-                     Cs=Cs, Cw=Cw,
-                     stressFromStrain=stressFromStrain)
+                     Cs=Cs, Cw=Cw)
     }
+    ## For efficiency, create and store an overall stress-strain function
+    rval$stressFromStrain <- stressFromStrainFunction(rval$l, rval$a, rval$b)
     class(rval) <- "parameters"
     rval
 }
@@ -515,8 +556,13 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
 
 #' Whale mass inferred from length
 #'
-#' Calculate an estimate of the mass of a whale, based on its length.
+#' @description
+#' Calculate an estimate of the mass of a whale, based on its length, with
+#' formulae from the following sources.
+#' @template ref_moore
+#' @template ref_fortune
 #'
+#' @details
 #' The permitted values for \code{model} are as follows.
 #'\itemize{
 #' \item \code{"moore2005"} yields
@@ -542,8 +588,11 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
 #'}
 #'
 #' @param L Whale length in m.
+#' @param species String specifying the species. This must be one of the following:
+#' \code{"N. Atl. Right Whale"} (the default), FIXME: add more.
 #' @param model Character string specifying the model (see \dQuote{Details}).
 #' @return Mass in kg.
+#'
 #' @examples
 #' library(whalestrike)
 #' L <- seq(5, 15, length.out=100)
@@ -560,8 +609,13 @@ parameters <- function(ms=20e3, Ss, Ly=0.5, Lz=1.0,
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
-whaleMassFromLength <- function(L, model="fortune2012atlantic")
+whaleMassFromLength <- function(L, species="N. Atl. Right Whale", model="fortune2012atlantic")
 {
+    speciesAllowed <- c("N. Atl. Right Whale")
+    if (!(species %in% speciesAllowed))
+        stop("unknown species \"", species, "\"; use one of the following: \"",
+             paste(speciesAllowed, collapse="\", \""), "\"")
+    ## FIXME: (1) remove model; (2) code for other species; (3) document this code; (4) other species names
     if (model == "moore2005")
         242.988 * exp(0.4 * L)
     else if (model == "fortune2012atlantic")
@@ -578,6 +632,8 @@ whaleMassFromLength <- function(L, model="fortune2012atlantic")
 #' \code{\link{uniroot}}.
 #'
 #' @param M Whale mass [kg].
+#' @param species A string indicating the whale species. For the permitted values,
+#' see \code{\link{whaleMassFromLength}}.
 #' @param model Character string specifying the model, with permitted
 #' values \code{"moore2005"}, \code{"fortune2012atlantic"} and
 #" \code{"fortune2012pacific"}. See the documentation
@@ -588,11 +644,13 @@ whaleMassFromLength <- function(L, model="fortune2012atlantic")
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
-whaleLengthFromMass <- function(M, model="fortune2012atlantic")
+whaleLengthFromMass <- function(M, species="N. Atl. Right Whale", model="fortune2012atlantic")
 {
     rval <- rep(NA, length(M))
     for (i in seq_along(M))
-        rval[i] <- uniroot(function(x) M[i] - whaleMassFromLength(x, model), c(0.1, 100))$root
+        rval[i] <- uniroot(function(x)
+                           M[i] - whaleMassFromLength(x, species=species, model=model),
+                           c(0.1, 100))$root
     rval
 }
 
@@ -611,8 +669,10 @@ whaleLengthFromMass <- function(M, model="fortune2012atlantic")
 #' agreed to under 0.7 percent percent between these digitizations.
 #'
 #' @param L length in m
+#' @param species A string indicating the whale species. For the permitted values,
+#' see \code{\link{whaleMassFromLength}}.
 #' @param type character string indicating the type of area, with
-#' \code{"projected"} for a side-projected area, and 
+#' \code{"projected"} for a side-projected area, and
 #' \code{"wetted"} for the total wetted area. The wetted
 #' area was computed by mathematically spinning a spline fit to the
 #' side-view. In both cases, the original data source is the
@@ -624,8 +684,12 @@ whaleLengthFromMass <- function(M, model="fortune2012atlantic")
 #'
 #' 2. Dan Kelley's internal document \code{dek/20180707_whale_mass.Rmd}, available
 #' upon request.
-whaleAreaFromLength <- function(L, type="wetted")
+whaleAreaFromLength <- function(L, species="N. Atl. Right Whale", type="wetted")
 {
+    speciesAllowed <- c("N. Atl. Right Whale")
+    if (!(species %in% speciesAllowed))
+        stop("unknown species \"", species, "\"; use one of the following: \"",
+             paste(speciesAllowed, collapse="\", \""), "\"")
     ## below from dek/20180623_whale_area.Rmd, updated 20180802 and inserted with
     ## cut/paste (changing bullet to asterisk, and using ^ for exponentiation).
     ##
@@ -642,7 +706,7 @@ whaleAreaFromLength <- function(L, type="wetted")
         0.143 * L^2
     else if (type == "wetted")
         0.448 * (0.877 * L)^2
-    else stop("'type' must be 'projected' or 'wetted', not '", type, "' as given")
+    else stop("'type' must be 'projected' or 'wetted', but it is '", type, "'")
 }
 
 #' Whale compression force
@@ -675,8 +739,6 @@ whaleAreaFromLength <- function(L, type="wetted")
 #' See \link{whalestrike} for a list of references.
 whaleCompressionForce <- function(xs, xw, parms)
 {
-    pinToPositive <- function(x) # turn negatives into zeros
-        ifelse(0 < x, x, 0)
     touching <- xs < xw & xs > (xw - parms$lsum)
     dx <- ifelse(touching, xs - (xw - parms$lsum), 0) # penetration distance
     ## Note that the denominator of the strain expression vanishes in the stress calculation,
@@ -824,7 +886,8 @@ dynamics <- function(t, y, parms)
     Fship <- parms$engineForce + shipWaterForce(vs, parms) - Freactive
     ##. if ((t > 0.1 && t < 0.11) || (t > 0.5 && t < 0.51))
     ##.     cat("t=", t, " vs=", vs, " shipEngineForce=", parms$shipEngineForce, " shipWaterForce=", shipWaterForce(vs, parms), " Freactive=", Freactive, "\n")
-    if (is.na(Fship[1])) stop("Fship[1] is NA, probably indicating a programming error.")
+    if (is.na(Fship[1]))
+        stop("Fship[1] is NA, probably indicating a programming error.")
     Fwhale <- Freactive + whaleWaterForce(vw, parms)
     if (is.na(Fwhale[1])) stop("Fwhale[1] is NA, probably indicating a programming error.")
     list(c(dxsdt=vs, dvsdt=Fship/parms$ms, dxwdt=vw, dvwdt=Fwhale/parms$mw))
@@ -852,9 +915,19 @@ derivative <- function(var, t)
 #' \code{\link{whaleCompressionForce}}, and
 #' \code{\link{whaleWaterForce}}.
 #'
-#' @param t time [s].
+#' @param t a suggested vector of times [s] at which the simulated state will be reported.
+#' This is only a suggestion, however, because \code{strike} is set up to detect high
+#' accelerations caused by bone compression, and may set a finer reporting interval,
+#' if such accelerations are detected. The detection is based on thickness of
+#' compressed blubber and sublayer; if either gets to zero thickness, then
+#' a new time grid is constructed, with 10 points during the timescale for
+#' bone compression, which is assumed to be
+#' \eqn{2*sqrt(Ly*Lz*a[4]*b[4]/(l[4]*mw)}, with terms as discussed in
+#' the documentation for \code{\link{parameters}}. If this grid is finer
+#' than the grid in the stated \code{t}, then the simulatoin is redone
+#' using the new grid.
 #'
-#' @param state A named vector holding the initial state of the model:
+#' @param state A list or named vector holding the initial state of the model:
 #' ship position \code{xs} [m],
 #' ship speed \code{vs} [m/s],
 #' whale position \code{xw} [m]
@@ -875,8 +948,8 @@ derivative <- function(var, t)
 #' @examples
 #' library(whalestrike)
 #' t <- seq(0, 0.7, length.out=200)
-#' state <- c(xs=-2, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
-#' parms <- parameters(ms=20e3, lw=13)
+#' state <- list(xs=-2, vs=knot2mps(10), xw=0, vw=0) # ship speed 10 knots
+#' parms <- parameters()
 #' sol <- strike(t, state, parms)
 #' par(mfcol=c(1, 3), mar=c(3, 3, 0.5, 2), mgp=c(2, 0.7, 0), cex=0.7)
 #' plot(sol)
@@ -887,8 +960,14 @@ strike <- function(t, state, parms, debug=0)
 {
     if (missing(t))
         stop("must supply t")
+    ## Ensure that the state is well-configured, because the error messages
+    ## otherwise will be too cryptic for many users to fathom.
     if (missing(state))
         stop("must supply state")
+    if (4 != sum(c("xs", "vs", "xw", "vw") %in% names(state)))
+        stop("state must hold \"xs\", \"vs\", \"xw\", and \"vw\"")
+    if (is.list(state))
+        state <- c(xs=state$xs, vs=state$vs, xw=state$xw, vw=state$vw)
     if (missing(parms))
         stop("must supply parms")
     if (!inherits(parms, "parameters"))
@@ -911,18 +990,47 @@ strike <- function(t, state, parms, debug=0)
     vs <- sol[, 3]
     xw <- sol[, 4]
     vw <- sol[, 5]
-    res <- list(t=t,
-                xs=xs,
-                vs=vs,
-                xw=xw,
-                vw=vw,
-                dvsdt=derivative(vs, t),
-                dvwdt=derivative(vw, t),
-                SWF=shipWaterForce(vs=vs, parms=parms),
-                WSF=whaleSkinForce(xs=xs, xw=xw, parms=parms),
-                WCF=whaleCompressionForce(xs=xs, xw=xw, parms=parms),
-                WWF=whaleWaterForce(vw=vw, parms=parms),
-                parms=parms)
+    dvsdt <- derivative(vs, t)
+    dvwdt <- derivative(vw, t)
+    SWF <- shipWaterForce(vs=vs, parms=parms)
+    WSF <- whaleSkinForce(xs=xs, xw=xw, parms=parms)
+    WCF <- whaleCompressionForce(xs=xs, xw=xw, parms=parms)
+    WWF <- whaleWaterForce(vw=vw, parms=parms)
+    ##. message("max stress ", max(abs(WCF$stress))/1e6, " MPA")
+    ##. message("blubber compression ratio=", min(WCF$compressed[,2])/WCF$compressed[1,2])
+    ##. message("sublayer compression ratio=", min(WCF$compressed[,3])/WCF$compressed[1,3])
+    refinedGrid <- min(WCF$compressed[,2])/WCF$compressed[1,2] < 0.01 || min(WCF$compressed[,3])/WCF$compressed[1,3] < 0.01
+    if (refinedGrid) {
+        NEED <- 10                     # desired number of points in peak
+        dt <- (1/NEED) * 0.5 * sqrt(parms$l[4] * parms$mw / (parms$Ly*parms$Lz*parms$a[4]*parms$b[4]))
+        tstart <- t[1]
+        tend <- tail(t, 1)
+        nold <- length(t)
+        n <- floor(0.5 * (tend - tstart) / dt)
+        if (n > length(t)) {
+            ##message("strike() : increasing from ", nold, " to ", n, " time steps, to capture acceleration peak")
+            warning("increasing from ", nold, " to ", n, " time steps, to capture acceleration peak\n")
+            t <- seq(tstart, tend, length.out=n)
+            sol <- lsoda(state, t, dynamics, parms)
+            ## Add extra things for plotting convenience.
+            t <- sol[, 1]
+            xs <- sol[, 2]
+            vs <- sol[, 3]
+            xw <- sol[, 4]
+            vw <- sol[, 5]
+            dvsdt <- derivative(vs, t)
+            dvwdt <- derivative(vw, t)
+            SWF <- shipWaterForce(vs=vs, parms=parms)
+            WSF <- whaleSkinForce(xs=xs, xw=xw, parms=parms)
+            WCF <- whaleCompressionForce(xs=xs, xw=xw, parms=parms)
+            WWF <- whaleWaterForce(vw=vw, parms=parms)
+        }
+    }
+    res <- list(t=t, xs=xs, vs=vs, xw=xw, vw=vw,
+                dvsdt=dvsdt, dvwdt=dvwdt,
+                SWF=SWF, WSF=WSF, WCF=WCF, WWF=WWF,
+                parms=parms,
+                refinedGrid=refinedGrid)
     class(res) <- "strike"
     res
 }
@@ -942,7 +1050,14 @@ strike <- function(t, state, parms, debug=0)
 #' dashed black, whale centerline \code{xs} in solid gray,
 #' blubber-interior interface in red, and skin in blue. The maximum
 #' acceleration of ship and whale (in "g" units) are indicated in notes
-#' placed near the horizontal axes.
+#' placed near the horizontal axes. Those acceleration indications report
+#' just a single value for each of ship and whale, but if the blubber
+#' and sublayer have been squeezed to their limits, yielding a short and
+#' intense force spike as the bone compresses, then the summaries will
+#' also report on the spike duration and intensity. The spike is computed
+#' based on using \code{\link{runmed}} on the acceleration data, with a
+#' \code{k} value that is set to correspond to 5 ms, or to k=11, whichever
+#' is larger.
 #'
 #' \item \code{"section"} to plot skin thickness, blubber thickness and sublayer thickness
 #' in one panel, creating a cross-section diagram.
@@ -1033,8 +1148,8 @@ strike <- function(t, state, parms, debug=0)
 #' @examples
 #' ## 1. default 3-panel plot
 #' t <- seq(0, 0.7, length.out=200)
-#' state <- c(xs=-2, vs=10*0.5144, xw=0, vw=0) # 10 knot ship
-#' parms <- parameters(ms=20e3, lw=13)
+#' state <- c(xs=-2, vs=knot2mps(10), xw=0, vw=0) # 10 knot ship
+#' parms <- parameters() # default values
 #' sol <- strike(t, state, parms)
 #' par(mar=c(3,3,1,1), mgp=c(2,0.7,0), mfrow=c(1, 3))
 #' plot(sol)
@@ -1049,15 +1164,12 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
                         colThreat=c("lightgray", "black"),
                         lwd=1, D=3, debug=0, ...)
 {
-    showLegend <- FALSE
     g <- 9.8 # gravity
     t <- x$t
     xs <- x$xs
     vs <- x$vs
     xw <- x$xw
     vw <- x$vw
-    dvsdt <- x$dvsdt
-    dvwdt <- x$dvwdt
     death <- xs >= xw
     if (any(death)) {
         firstDead <- which(death)[1]
@@ -1109,12 +1221,33 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         lines(t, y, col=colwskin, lwd=lwd)
         y <- y - compressed[, 1]
         lines(t, y, col=colwskin, lwd=lwd)
-        waccel <- derivative(vw, t)
-        saccel <- derivative(vs, t)
-        mtext(sprintf("ship: %.1f g", max(abs(saccel))/g),
-                      side=1, line=-1.25, cex=par("cex"), adj=0.5)
-        mtext(sprintf("whale: %.1f g", max(abs(waccel))/g),
-                      side=3, line=-1, cex=par("cex"), adj=0.5)
+        ## Accelerations (quite complicated; possibly too confusing to viewer)
+        k <- round(0.005 / (t[2] - t[1]))
+        k <- max(k, 11L)
+        if (!(k %% 2))
+            k <- k + 1
+        as <- derivative(vs, t)
+        asmax <- max(abs(as))
+        asmaxs <- max(abs(runmed(as, k))) # smoothed
+        if (asmax > 2 * asmaxs) {
+            peakTime <- sum(abs(as) > 0.5*(asmax+asmaxs)) * (t[2] - t[1])
+            label <- sprintf("ship: %.1fg (%.1fms spike to %.0fg)",
+                             asmaxs/g, peakTime*1e3, asmax/g)
+        } else {
+            label <- sprintf("ship: %.1fg", asmax/g)
+        }
+        mtext(label, side=1, line=-1.25, cex=par("cex"), adj=0.5)
+        aw <- derivative(vw, t)
+        awmax <- max(abs(aw))
+        awmaxs <- max(abs(runmed(aw, k)))
+        if (awmax > 2 * awmaxs) {
+            peakTime <- sum(abs(aw) > 0.5*(awmax+awmaxs)) * (t[2] - t[1])
+            label <- sprintf("whale: %.1fg (%.1fms spike to %.0fg)",
+                             awmaxs/g, peakTime*1e3, awmax/g)
+        } else {
+            label <- sprintf("whale: %.1fg", awmax/g)
+        }
+        mtext(label, side=3, line=-1.25, cex=par("cex"), adj=0.5)
         showEvents(xs, xw)
     }
     if (all || "section" %in% which) {
@@ -1125,7 +1258,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         bone <- x$WCF$compressed[,4]
         maxy <- max(c(skin+blubber+sublayer+bone))
         ylim <- c(-maxy*1.2, 0)
-        plot(t, -(skin+blubber+sublayer+bone), xlab="Time [s]", ylab="Cross Section [m]",
+        plot(t, -(skin+blubber+sublayer+bone), xlab="Time [s]", ylab="Whale-centred location [m]",
              type="l", lwd=lwd, ylim=ylim, xaxs="i", yaxs="i", col=colwskin)# outside skin margin
         lines(t, -(blubber+sublayer+bone), lwd=lwd, col=colwskin)
         lines(t, -(sublayer+bone), lwd=lwd, col=colwinterface)# , lty="42")
@@ -1137,8 +1270,10 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         text(x0, -0.5*x$parms$l[4], "bone", pos=4)
         text(x0, -x$parms$l[4]-0.5*x$parms$l[3], "sublayer", pos=4)
         text(x0, -x$parms$l[4]-x$parms$l[3]-0.5*x$parms$l[2], "blubber", pos=4)
-        text(x0, 0.5*(ylim[1] - x$parms$lsum), "water/ship", pos=4)
-        hatchPolygon <- FALSE
+        if (x$parms$l[1] > 0.1 * sum(x$parms$l))
+            text(x0, -x$parms$l[4]-x$parms$l[3]-x$parms$l[2]-0.5*x$parms$l[1], "skin", pos=4)
+        text(x0, 0.5*(ylim[1] - x$parms$lsum), "", pos=4)
+        ##hatchPolygon <- FALSE
         ## Blubber
         ## if (FALSE) {
         ##     risk <- x$WCF$stress >= 0.5 * x$parms$UTSbeta
@@ -1368,7 +1503,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
             abline(h=y0+(i-1)*dy, lwd=lwd/2, lty="dotted")
         }
         x0 <- xlim[1] #+ 0.04 * (xlim[2] - xlim[1])
-        dylab <- 0.2
+        ##dylab <- 0.2
         mtext("bone", side=2, at=y0-0.5*dy, line=0.25, cex=par("cex"))
         mtext("sublayer", side=2, at=y0+dy-0.5*dy, line=0.25, cex=par("cex"))
         mtext("blubber", side=2, at=y0+2*dy-0.5*dy, line=0.25, cex=par("cex"))
@@ -1500,8 +1635,12 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         parms["lsum"] <- NULL # inserted during calculation, not user-supplied
 
         parms <- lapply(parms, function(p) deparse(p))
+        ## parms$ms <- x$parms$ms
+        parms$vs_knots <- knot2mps(x$vs[1])
         names <- names(parms)
         values <- unname(unlist(parms))
+        ##values[["mw"]] <- x$parms$mw
+        ##values[["vs"]] <- x$vs
 
         ## values <- paste(deparse(parms), collapse=" ")
         ## values <- gsub("^list\\(", "", values)

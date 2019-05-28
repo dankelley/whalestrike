@@ -1,8 +1,3 @@
-whalestrike is an R package for simulating the collisions of ships with whales,
-using simplified dynamics of point masses separated by compressible materials.
-
-**App help**
-
 When this starts, the sliders and tick-boxes are set up to model a small
 fishing boat, of mass 45 tonnes, moving at speed 10 knots towards a whale of
 length 13.7m. (The whale length is used to compute its mass, using a formula

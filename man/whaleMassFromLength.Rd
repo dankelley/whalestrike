@@ -4,10 +4,14 @@
 \alias{whaleMassFromLength}
 \title{Whale mass inferred from length}
 \usage{
-whaleMassFromLength(L, model = "fortune2012atlantic")
+whaleMassFromLength(L, species = "N. Atl. Right Whale",
+  model = "fortune2012atlantic")
 }
 \arguments{
 \item{L}{Whale length in m.}
+
+\item{species}{String specifying the species. This must be one of the following:
+\code{"N. Atl. Right Whale"} (the default), FIXME: add more.}
 
 \item{model}{Character string specifying the model (see \dQuote{Details}).}
 }
@@ -15,7 +19,8 @@ whaleMassFromLength(L, model = "fortune2012atlantic")
 Mass in kg.
 }
 \description{
-Calculate an estimate of the mass of a whale, based on its length.
+Calculate an estimate of the mass of a whale, based on its length, with
+formulae from the following sources.
 }
 \details{
 The permitted values for \code{model} are as follows.

@@ -4,10 +4,14 @@
 \alias{whaleLengthFromMass}
 \title{Compute whale length from mass}
 \usage{
-whaleLengthFromMass(M, model = "fortune2012atlantic")
+whaleLengthFromMass(M, species = "N. Atl. Right Whale",
+  model = "fortune2012atlantic")
 }
 \arguments{
 \item{M}{Whale mass [kg].}
+
+\item{species}{A string indicating the whale species. For the permitted values,
+see \code{\link{whaleMassFromLength}}.}
 
 \item{model}{Character string specifying the model, with permitted
 values \code{"moore2005"}, \code{"fortune2012atlantic"} and

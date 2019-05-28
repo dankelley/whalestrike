@@ -4,8 +4,9 @@
 \alias{parameters}
 \title{Control parameters for whale strike simulation}
 \usage{
-parameters(ms = 20000, Ss, Ly = 0.5, Lz = 1, lw = 13, mw, Sw, l, a, b,
-  s, theta = 55, Cs = 0.01, Cw = 0.0025, file)
+parameters(ms = 45000, Ss, Ly = 1.15, Lz = 1.15,
+  species = "N. Atl. Right Whale", lw = 13.7, mw, Sw, l, a, b, s,
+  theta = 55, Cs = 0.01, Cw = 0.0025, file)
 }
 \arguments{
 \item{ms}{Ship mass [kg].}
@@ -15,18 +16,23 @@ used by \code{\link{shipWaterForce}} to estimate ship drag force. If \code{Ss}
 is not given, then an esimate is made by calling \code{\link{shipAreaFromMass}} with
 the provided value of \code{ms}.}
 
-\item{Ly}{Ship impact horizontal extent [m]; defaults to 0.5m if not specified.}
+\item{Ly}{Ship impact horizontal extent [m]; defaults to 1.23m if not specified,
+based on an analysis of the shape of the bow of typical coastal fishing boats
+of the Cape Islander variety.}
 
-\item{Lz}{Ship impact vertical extent [m]; defaults to 1.5m if not specified.}
+\item{Lz}{Ship impact vertical extent [m]; defaults to 1.23m if not specified,
+based on the same analysis as for Ly.}
 
-\item{lw}{Whale length [m]. If not supplied, \code{\link{whaleLengthFromMass}} is used
-to calculate this, given \code{lm}, but if neither \code{mw} nor \code{ml} is provided,
-an error is reported. The length is used by \code{\link{whaleAreaFromLength}} to
+\item{species}{A string indicating the whale species. For the permitted values,
+see \code{\link{whaleMassFromLength}}.}
+
+\item{lw}{Whale length [m]. This is used by \code{\link{whaleAreaFromLength}} to
 calculate area, which is needed for the water drag calculation done by
 \code{\link{whaleWaterForce}}.}
 
-\item{mw}{Whale mass [kg]. If not provided, this is calculated from whale
-length, using \code{\link{whaleMassFromLength}} with \code{type="wetted"}.}
+\item{mw}{Whale mass [kg]. If this value is not provided, then
+it is calculated from whale length, using \code{\link{whaleMassFromLength}}
+with \code{type="wetted"}.}
 
 \item{Sw}{Whale surface area [m^2]. If not provided, this is calculated
 from whale length using \code{\link{whaleAreaFromLength}}.}
@@ -128,26 +134,6 @@ Assembles control parameters into a list suitable for passing to \code{\link{str
 and the functions that it calls. If \code{file} is provided, then all the other
 arguments are read from that source.
 Below are some sources cited in the discussion of the function arguments.
-
-Campbell-Malone, Regina. “Biomechanics of North Atlantic Right Whale Bone :
-Mandibular Fracture as a Fatal Endpoint for Blunt Vessel-Whale Collision
-Modeling.” PhD Thesis, Massachusetts Institute of Technology and Woods Hole
-Oceanographic Institution, 2007. \url{https://doi.org/10.1575/1912/1817}.
-
-Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
-“Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
-Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
-Society, and Fisheries and Oceans Canada, 2018.
-\url{http://publications.gc.ca/site/eng/9.850838/publication.html}.
-
-Grear, Molly E., Michael R. Motley, Stephanie B. Crofts, Amanda E. Witt, Adam
-P. Summers, and Petra Ditsche. “Mechanical Properties of Harbor Seal Skin and
-Blubber − a Test of Anisotropy.” Zoology 126 (2018): 137–44.
-\url{https://doi.org/10.1016/j.zool.2017.11.002}.
-
-Raymond, J. J. “Development of a Numerical Model to Predict Impact Forces on a
-North Atlantic Right Whale during Collision with a Vessel.” University of New
-Hampshire, 2007. \url{https://scholars.unh.edu/thesis/309}.
 }
 \examples{
 parms <- parameters()

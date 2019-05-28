@@ -1,30 +1,35 @@
 #' User interface for app
-ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px;}")),
+ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; margin-left:1ex}")),
+                fluidRow(radioButtons("instructions", "Instructions", choices=c("Hide", "Show"), selected="Show", inline=TRUE)),
+                conditionalPanel(condition="input.instructions=='Show'", fluidRow(includeMarkdown("app_help.md"))),
                 fluidRow(column(2,
-                                sliderInput("tmax",  h6("Max time [s]"), tick=FALSE,
-                                            min=0.1,  max=4, value=1, step=0.05),
-                                sliderInput("ms",  h6("Ship mass [tonne]"), tick=FALSE,
-                                            min=10, max=311,  value=20, step=0.5),
-                                sliderInput("vs", h6("Ship speed [knot]"), tick=FALSE,
-                                            min=1,  max=20,  value=10, step=0.5)),
+                                sliderInput("tmax",  h6("Max time [s]"), ticks=FALSE,
+                                            min=0.1,  max=5, value=1, step=0.05),
+                                sliderInput("ms",  HTML("<font color=\"FF0000\">Ship mass [tonne]</font>"), ticks=FALSE,
+                                            min=10, max=500,  value=45, step=0.5),
+                                sliderInput("vs", HTML("<font color=\"FF0000\">Ship speed [knot]</font>"), ticks=FALSE,
+                                            min=0.5,  max=30,  value=10, step=0.5)),
                          column(2,
-                                sliderInput("Ly",  h6("Impact width [m]"), tick=FALSE,
-                                            min=0.1, max=2,  value=0.5, step=0.05),
-                                sliderInput("Lz",  h6("Impact height [m]"), tick=FALSE,
-                                            min=0.1, max=2,  value=1.0, step=0.05),
-                                sliderInput("lw",  h6("Whale length [m]"), tick=FALSE,
-                                            min=5,  max=15, value=13.7, step=0.1)),
+                                sliderInput("Ly",  h6("Impact width [m]"), ticks=FALSE,
+                                            min=0.1, max=2,  value=1.15, step=0.05),
+                                sliderInput("Lz",  h6("Impact height [m]"), ticks=FALSE,
+                                            min=0.1, max=2,  value=1.15, step=0.05)),
+                                ##selectInput("species", "Whale species:",
+                                ##            choices=c("N. Atl. Right Whale",
+                                ##                      "NOTHING ELSE CODED YET"))),
                          column(2,
-                                sliderInput("theta", h6("Skin theta [deg]"), tick=FALSE,
-                                            min=30, max=70, value=50, step=1),
-                                sliderInput("l1", h6("Skin thickness [m]"), tick=FALSE,
+                                sliderInput("lw",  h6("Right whale length [m]"), ticks=FALSE,
+                                            min=5,  max=20, value=13.7, step=0.1),
+                                ##sliderInput("theta", h6("Skin theta [deg]"), ticks=FALSE,
+                                ##            min=30, max=70, value=55, step=1),
+                                sliderInput("l1", h6("Skin thickness [m]"), ticks=FALSE,
                                             min=0.01, max=0.03, value=0.025, step=0.001),
-                                sliderInput("l2", h6("Blubber thickness [m]"), tick=FALSE,
+                                sliderInput("l2", h6("Blubber thickness [m]"), ticks=FALSE,
                                             min=0.05, max=.4, value=0.16, step=0.01)),
                          column(2,
-                                sliderInput("l3", h6("Sub-layer thickness [m]"), tick=FALSE,
+                                sliderInput("l3", HTML("<font color=\"FF0000\">Sublayer thickness[m]</font>"), ticks=FALSE,
                                             min=0.05, max=2, value=1.12, step=0.01),
-                                sliderInput("l4", h6("Bone thickness [m]"), tick=FALSE,
+                                sliderInput("l4", h6("Bone thickness [m]"), ticks=FALSE,
                                             min=0.05, max=.3, value=0.1, step=0.01)),
                          column(2,
                                 fileInput("loadFile", "Configuration", multiple=FALSE, accept=c("text/csv", ".csv")),
@@ -55,7 +60,7 @@ server <- function(input, output, session)
                  w <- which("loadFile" == configNames | "saveFile" == configNames | "plot_panels" == configNames)
                  config <- config[-w]
                  ## Convert ship speed from to m/s, from knots in the GUI
-                 config$vs <- 0.514444 * config$vs
+                 config$vs <- knot2mps(config$vs)
                  ## Convert ship mass to kg, from tonne in the GUI
                  config$ms <- 1e3 * config$ms
                  ## save in alphabetical order
@@ -66,7 +71,7 @@ server <- function(input, output, session)
     observeEvent(input$loadFile, {
                  config <- read.csv(input$loadFile$datapath)
                  ## Convert ship speed from m/s in the file, to knots in the GUI
-                 config$vs <- (1/0.514444) * config$vs
+                 config$vs <- (1/knot2mps(1)) * config$vs
                  ## Convert ship mass from kg in file, to tonne in the GUI
                  config$ms <- 1e-3 * config$ms
                  ## Insert individual thickness entries (one slider each)
@@ -75,22 +80,23 @@ server <- function(input, output, session)
                  config$l3 <- config$l[3]
                  config$l4 <- config$l[4]
                  ## FIXME: l1, l2 etc
-                 for (s in c("tmax", "ms", "lw", "vs", "Ly", "Lz", "theta",
+                 for (s in c("tmax", "ms", "lw", "vs", "Ly", "Lz",
                              "l1", "l2", "l3", "l4"))
                      updateSliderInput(session, s, value=config[[s]])
                 })
     output$plot <- renderPlot({
-        lm <- 10
+        ##message("species: ", input$species)
         parms <- parameters(ms=1000*input$ms, Ss=shipAreaFromMass(1000*input$ms),
                             Ly=input$Ly, Lz=input$Lz,
                             lw=input$lw,
-                            mw=whaleMassFromLength(input$lw),
-                            Sw=whaleAreaFromLength(input$lw, "wetted"),
-                            l=c(input$l1, input$l2, input$l3, input$l4),
-                            theta=input$theta) # in degrees; 0 means no bevel
-        state <- c(xs=-(1 + parms$lsum), vs=input$vs * 0.514444, xw=0, vw=0)
-        t <- seq(0, input$tmax, length.out=500)
+                            mw=whaleMassFromLength(input$lw, species="N. Atl. Right Whale"),
+                            Sw=whaleAreaFromLength(input$lw, species="N. Atl. Right Whale", "wetted"),
+                            l=c(input$l1, input$l2, input$l3, input$l4))
+        state <- list(xs=-(1 + parms$lsum), vs=knot2mps(input$vs), xw=0, vw=0)
+        t <- seq(0, input$tmax, length.out=2000)
         sol <- strike(t, state, parms)
+        if (sol$refinedGrid)
+            showNotification("Auto-refined grid to capture acceleration peak")
         npanels <- length(input$plot_panels)
         nrows <- floor(sqrt(npanels))
         ncols <- ceiling(npanels / nrows)
