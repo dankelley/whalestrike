@@ -1,6 +1,27 @@
 library(deSolve)
 library(xtable)
-knot2SI <- 1.852e3 / 3600 # exact definition according to https://en.wikipedia.org/wiki/Knot_(unit)
+
+#' Version of parameter defaults
+#'
+#' A Either "2018" (to get default parameter values from the work
+#' in summer of 2018) or "2019a" to get parameter values as of
+#' the start of summer, 2019.
+#' @name versionOfDefaults
+#' @docType data
+NULL
+versionOfDefaults <- "2019a"
+
+
+#' Convert a speed in knots to a speed in m/s
+#'
+#' This is done by multiplying by the factor 1.852e3/3600,
+#' according to https://en.wikipedia.org/wiki/Knot_(unit)
+#' @param knot Speed in knots
+#' @return Speed in m/s
+knot2mps <- function(knot)
+{
+    knot * 1.852e3 / 3600 # exact definition according to https://en.wikipedia.org/wiki/Knot_(unit)
+}
 
 #' Pin numerical values between stated limits
 #' @param x Vector or matrix of numerical values
@@ -481,8 +502,19 @@ parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
             l <- c(0.025, 0.16, 1.12, 0.1)
         if (length(l) != 4) stop("'l' must be a vector of length 4")
         ## NOTE: keep in synch with above!
-        if (missing(a))
-            a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
+        if (missing(a)) {
+            a <- if (exists(versionOfDefaults)) {
+                if (versionOfDefaults == "2018") {
+                    c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
+                } else if (versionOfDefaults == "2019a") {
+                    c(17.8e6/0.1, 1.58e5*1.2, 1.58e5*1.2, 8.54e8/0.1)
+                } else {
+                    stop("versionOfDefaults='", versionOfDefaults, "' is not understood; see ?versionOfDefaults")
+                }
+            } else {
+                c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
+            }
+        }
         if (length(a) != 4) stop("'a' must be a vector of length 4")
         ## NOTE: keep in synch with above!
         if (missing(b))
@@ -916,7 +948,7 @@ derivative <- function(var, t)
 #' @examples
 #' library(whalestrike)
 #' t <- seq(0, 0.7, length.out=200)
-#' state <- list(xs=-2, vs=10*knot2SI, xw=0, vw=0) # ship speed 10 knots
+#' state <- list(xs=-2, vs=knot2mps(10), xw=0, vw=0) # ship speed 10 knots
 #' parms <- parameters()
 #' sol <- strike(t, state, parms)
 #' par(mfcol=c(1, 3), mar=c(3, 3, 0.5, 2), mgp=c(2, 0.7, 0), cex=0.7)
@@ -1116,7 +1148,7 @@ strike <- function(t, state, parms, debug=0)
 #' @examples
 #' ## 1. default 3-panel plot
 #' t <- seq(0, 0.7, length.out=200)
-#' state <- c(xs=-2, vs=10*knot2SI, xw=0, vw=0) # 10 knot ship
+#' state <- c(xs=-2, vs=knot2mps(10), xw=0, vw=0) # 10 knot ship
 #' parms <- parameters() # default values
 #' sol <- strike(t, state, parms)
 #' par(mar=c(3,3,1,1), mgp=c(2,0.7,0), mfrow=c(1, 3))
@@ -1604,7 +1636,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
 
         parms <- lapply(parms, function(p) deparse(p))
         ## parms$ms <- x$parms$ms
-        parms$vs_knots <- x$vs[1] / knot2SI
+        parms$vs_knots <- knot2mps(x$vs[1])
         names <- names(parms)
         values <- unname(unlist(parms))
         ##values[["mw"]] <- x$parms$mw
