@@ -24,3 +24,6 @@ estimates values of the \code{Ss} argument to \code{\link{parameters}}.
 It would be much preferable, for a particular simulation, to use the
 wetted area for a particular ship.
 }
+\author{
+Dan Kelley
+}

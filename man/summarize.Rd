@@ -19,3 +19,6 @@ Summarize the parameters of a simulation, and its results
 \references{
 See \link{whalestrike} for a list of references.
 }
+\author{
+Dan Kelley
+}

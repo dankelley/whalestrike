@@ -65,3 +65,6 @@ legend("topleft", lwd=1, col=1:3,
 \references{
 See \link{whalestrike} for a list of references.
 }
+\author{
+Dan Kelley
+}

@@ -61,4 +61,8 @@ y <- param$stressFromStrain(x)
 plot(x, y, type='l', lwd=4, col="gray")
 data("raymond2007")
 points(raymond2007$strain, raymond2007$stress, col=2)
+
+}
+\author{
+Dan Kelley
 }

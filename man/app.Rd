@@ -18,3 +18,6 @@ to \code{\link[shiny]{shinyApp}}, which creates the GUI app.}
 \description{
 Run a GUI app for interactive simulations
 }
+\author{
+Dan Kelley
+}

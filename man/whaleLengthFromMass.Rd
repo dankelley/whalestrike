@@ -28,3 +28,6 @@ This works by inverting \code{\link{whaleMassFromLength}} using
 \references{
 See \link{whalestrike} for a list of references.
 }
+\author{
+Dan Kelley
+}

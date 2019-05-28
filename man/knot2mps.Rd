@@ -16,3 +16,6 @@ Speed in m/s
 This is done by multiplying by the factor 1.852e3/3600,
 according to https://en.wikipedia.org/wiki/Knot_(unit)
 }
+\author{
+Dan Kelley
+}

@@ -140,4 +140,8 @@ parms <- parameters()
 epsilon <- seq(0, 1, length.out=100) # strain
 sigma <- parms$stressFromStrain(epsilon) # stress
 plot(epsilon, log10(sigma), xlab="Strain", ylab="log10(Stress [MPa])", type="l")
+
+}
+\author{
+Dan Kelley
 }

@@ -21,3 +21,6 @@ Compute the retarding force of water on the ship, based on a drag law
 where \code{rho} is 1024 (kg/m^3), \code{Cs} is \code{parms$Cs} and
 \code{A} is \code{parms$Ss}.
 }
+\author{
+Dan Kelley
+}

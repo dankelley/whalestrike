@@ -21,3 +21,6 @@ Compute the retarding force of water on the whale, based on a drag law
 where \code{rho} is 1024 (kg/m^3), \code{Cw} is \code{parms$Cw} and
 \code{A} is \code{parms$Sw}.
 }
+\author{
+Dan Kelley
+}

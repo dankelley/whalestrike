@@ -41,4 +41,8 @@ plot(range(x), range(lower, lower+upper), type='n',
      xaxs="i", yaxs="i")
 fillplot(x, min(lower), lower, col="darkgray")
 fillplot(x, lower, lower+upper, col="lightgray")
+
+}
+\author{
+Dan Kelley
 }

@@ -27,6 +27,10 @@ library(xtable)
 #' according to https://en.wikipedia.org/wiki/Knot_(unit)
 #' @param knot Speed in knots
 #' @return Speed in m/s
+#'
+#' @author Dan Kelley
+#'
+#' @export
 knot2mps <- function(knot)
 {
     knot * 1.852e3 / 3600 # exact definition according to https://en.wikipedia.org/wiki/Knot_(unit)
@@ -38,6 +42,10 @@ knot2mps <- function(knot)
 #' according to https://en.wikipedia.org/wiki/Knot_(unit)
 #' @param mps Speed in metres per second
 #' @return Speed in knots
+#'
+#' @author Dan Kelley
+#'
+#' @export
 mps2knot <- function(mps)
 {
     mps / (1.852e3 / 3600)
@@ -50,6 +58,10 @@ mps2knot <- function(mps)
 #' @param upper As for \code{lower}, but for the upper limit.
 #' @return Copy of \code{x}, with any value that exceeds \code{lim} having
 #' been replaced by \code{lim}.
+#'
+#' @author Dan Kelley
+#'
+#' @export
 pin <- function(x, lower=NULL, upper=NULL)
 {
     ## Protect the ifelse() operation from getting riled by NAs
@@ -94,6 +106,11 @@ pin <- function(x, lower=NULL, upper=NULL)
 #'      xaxs="i", yaxs="i")
 #' fillplot(x, min(lower), lower, col="darkgray")
 #' fillplot(x, lower, lower+upper, col="lightgray")
+#'
+#' @author Dan Kelley
+#'
+#' @export
+#' @importFrom graphics polygon
 fillplot <- function(x, lower, upper, ...)
 {
     n <- length(x)
@@ -314,6 +331,11 @@ NULL
 #' plot(x, y, type='l', lwd=4, col="gray")
 #' data("raymond2007")
 #' points(raymond2007$strain, raymond2007$stress, col=2)
+#'
+#' @author Dan Kelley
+#'
+#' @export
+#' @importFrom stats approxfun uniroot
 stressFromStrainFunction <- function(l, a, b, N=1000)
 {
     fcn <- function(sigma) {
@@ -467,6 +489,11 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' epsilon <- seq(0, 1, length.out=100) # strain
 #' sigma <- parms$stressFromStrain(epsilon) # stress
 #' plot(epsilon, log10(sigma), xlab="Strain", ylab="log10(Stress [MPa])", type="l")
+#'
+#' @author Dan Kelley
+#'
+#' @export
+#' @importFrom utils read.csv
 parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
                        species="N. Atl. Right Whale",
                        lw=13.7, mw, Sw,
@@ -618,6 +645,10 @@ parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
+#'
+#' @author Dan Kelley
+#'
+#' @export
 whaleMassFromLength <- function(L, species="N. Atl. Right Whale", model="fortune2012atlantic")
 {
     speciesAllowed <- c("N. Atl. Right Whale")
@@ -653,6 +684,11 @@ whaleMassFromLength <- function(L, species="N. Atl. Right Whale", model="fortune
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
+#'
+#' @author Dan Kelley
+#'
+#' @export
+#' @importFrom stats approxfun
 whaleLengthFromMass <- function(M, species="N. Atl. Right Whale", model="fortune2012atlantic")
 {
     rval <- rep(NA, length(M))
@@ -693,6 +729,10 @@ whaleLengthFromMass <- function(M, species="N. Atl. Right Whale", model="fortune
 #'
 #' 2. Dan Kelley's internal document \code{dek/20180707_whale_mass.Rmd}, available
 #' upon request.
+#'
+#' @author Dan Kelley
+#'
+#' @export
 whaleAreaFromLength <- function(L, species="N. Atl. Right Whale", type="wetted")
 {
     speciesAllowed <- c("N. Atl. Right Whale")
@@ -746,6 +786,10 @@ whaleAreaFromLength <- function(L, species="N. Atl. Right Whale", type="wetted")
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
+#'
+#' @author Dan Kelley
+#'
+#' @export
 whaleCompressionForce <- function(xs, xw, parms)
 {
     touching <- xs < xw & xs > (xw - parms$lsum)
@@ -787,6 +831,10 @@ whaleCompressionForce <- function(xs, xw, parms)
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
+#'
+#' @author Dan Kelley
+#'
+#' @export
 whaleSkinForce <- function(xs, xw, parms)
 {
     touching <- xs < xw & xs > (xw - parms$lsum)
@@ -825,6 +873,10 @@ whaleSkinForce <- function(xs, xw, parms)
 #' @param ms Ship mass [kg].
 #'
 #' @return Estimated area in m^2.
+#'
+#' @author Dan Kelley
+#'
+#' @export
 shipAreaFromMass <- function(ms)
 {
     length <- 11.73                        # m
@@ -848,6 +900,10 @@ shipAreaFromMass <- function(ms)
 #' @template parmsTemplate
 #'
 #' @return Water drag force [N]
+#'
+#' @author Dan Kelley
+#'
+#' @export
 shipWaterForce <- function(vs, parms)
 {
     - (1/2) * 1024 * parms$Cs * parms$Ss * vs * abs(vs)
@@ -866,6 +922,10 @@ shipWaterForce <- function(vs, parms)
 #' @template parmsTemplate
 #'
 #' @return Water drag force [N]
+#'
+#' @author Dan Kelley
+#'
+#' @export
 whaleWaterForce <- function(vw, parms)
 {
     - (1/2) * 1024 * parms$Cw * parms$Sw * vw * abs(vw)
@@ -883,6 +943,10 @@ whaleWaterForce <- function(vw, parms)
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
+#'
+#' @author Dan Kelley
+#'
+#' @export
 dynamics <- function(t, y, parms)
 {
     xs <- y[1]                         # ship position
@@ -908,6 +972,11 @@ dynamics <- function(t, y, parms)
 #' @return Derivative estimated by using \code{\link{diff}} on both \code{x}
 #' and \code{t}. In order to return a value of the same length as \code{x} and
 #' \code{t}, the last value is repeated.
+#'
+#' @author Dan Kelley
+#'
+#' @export
+#' @importFrom utils tail
 derivative <- function(var, t)
 {
     res <- diff(var) / diff(t)
@@ -965,6 +1034,11 @@ derivative <- function(var, t)
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
+#'
+#' @author Dan Kelley
+#'
+#' @export
+#' @importFrom deSolve lsoda
 strike <- function(t, state, parms, debug=0)
 {
     if (missing(t))
@@ -1165,6 +1239,13 @@ strike <- function(t, state, parms, debug=0)
 #' ## 2. all 12 plot types
 #' par(mar=c(3,3,1,1) ,mgp=c(2,0.7,0), mfrow=c(4,3))
 #' plot(sol, "all")
+#'
+#' @author Dan Kelley
+#'
+#' @export
+#' @importFrom graphics abline axis box lines legend mtext par plot text
+#' @importFrom grDevices hcl
+#' @importFrom stats runmed
 plot.strike <- function(x, which="default", drawEvents=TRUE,
                         colwcenter="black", #Slate Gray",
                         colwinterface="black", #colwinterface="Firebrick",
@@ -1676,6 +1757,11 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
 #'
 #' @references
 #' See \link{whalestrike} for a list of references.
+#'
+#' @author Dan Kelley
+#'
+#' @export
+#' @importFrom xtable xtable
 summarize <- function(object, style="text")
 {
     parm <- object$parm

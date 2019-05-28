@@ -115,7 +115,11 @@ plot(sol)
 ## 2. all 12 plot types
 par(mar=c(3,3,1,1) ,mgp=c(2,0.7,0), mfrow=c(4,3))
 plot(sol, "all")
+
 }
 \references{
 See \link{whalestrike} for a list of references.
+}
+\author{
+Dan Kelley
 }

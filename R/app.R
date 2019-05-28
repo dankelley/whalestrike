@@ -51,6 +51,8 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
 #' @param input A list created by the shiny server, with entries for slider settings, etc.
 #' @param output A list of output entries, for plotting, etc.
 #' @param session A list used for various purposes.
+#' @importFrom utils write.csv
+#' @importFrom shiny observeEvent reactiveValuesToList renderPlot showNotification updateSliderInput 
 server <- function(input, output, session)
 {
     observeEvent(input$saveFile, {
@@ -119,6 +121,12 @@ server <- function(input, output, session)
 #' called with default arguments.
 #' @param options List containing options that are provided
 #' to \code{\link[shiny]{shinyApp}}, which creates the GUI app.
+#'
+#' @author Dan Kelley
+#'
+#' @export
+#'
+#' @importFrom shiny shinyApp
 app <- function(mode="simple", options=list(height=500)) # NOTE: height has no effect
 {
     if (mode == "simple")

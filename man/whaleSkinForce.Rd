@@ -29,3 +29,6 @@ degrees, measured from a vector normal to undisturbed skin).
 \references{
 See \link{whalestrike} for a list of references.
 }
+\author{
+Dan Kelley
+}

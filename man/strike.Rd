@@ -62,3 +62,6 @@ plot(sol)
 \references{
 See \link{whalestrike} for a list of references.
 }
+\author{
+Dan Kelley
+}

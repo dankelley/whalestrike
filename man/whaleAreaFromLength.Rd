@@ -41,3 +41,6 @@ upon request.
 2. Dan Kelley's internal document \code{dek/20180707_whale_mass.Rmd}, available
 upon request.
 }
+\author{
+Dan Kelley
+}

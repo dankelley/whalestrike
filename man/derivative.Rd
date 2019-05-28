@@ -19,3 +19,6 @@ and \code{t}. In order to return a value of the same length as \code{x} and
 \description{
 Calculate derivative using first difference
 }
+\author{
+Dan Kelley
+}
