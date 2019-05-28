@@ -488,8 +488,18 @@ parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
         rval$lsum <- sum(rval$l)
         ## the next are copied from below. The app doesn't let the user
         ## set these things, so we know their values.
-        ## NOTE: keep in synch with below!
-        rval$a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
+        ## NOTE: keep in synch with 'BBBB' below!
+        rval$a <- if (exists(versionOfDefaults)) {
+            if (versionOfDefaults == "2018") {
+                c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
+            } else if (versionOfDefaults == "2019a") {
+                c(17.8e6/0.1, 1.58e5*1.2, 1.58e5*1.2, 8.54e8/0.1)
+            } else {
+                stop("versionOfDefaults='", versionOfDefaults, "' is not understood; see ?versionOfDefaults")
+            }
+        } else {
+            c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
+        }
         rval$b <- c(0.1, 2.54, 2.54, 0.1)
         rval$s <- c(19.6e6, 0.437e6, 0.437e6, 22.9e6)
         o <- sort(names(rval))
@@ -521,7 +531,7 @@ parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
         if (missing(l))
             l <- c(0.025, 0.16, 1.12, 0.1)
         if (length(l) != 4) stop("'l' must be a vector of length 4")
-        ## NOTE: keep in synch with above!
+        ## NOTE: keep in synch with 'AAAA' above!
         if (missing(a)) {
             a <- if (exists(versionOfDefaults)) {
                 if (versionOfDefaults == "2018") {
