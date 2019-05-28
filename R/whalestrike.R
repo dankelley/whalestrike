@@ -32,6 +32,17 @@ knot2mps <- function(knot)
     knot * 1.852e3 / 3600 # exact definition according to https://en.wikipedia.org/wiki/Knot_(unit)
 }
 
+#' Convert a speed in m/s to a speed in knots
+#'
+#' This is done by dividing by the factor 1.852e3/3600,
+#' according to https://en.wikipedia.org/wiki/Knot_(unit)
+#' @param mps Speed in metres per second
+#' @return Speed in knots
+mps2knot <- function(mps)
+{
+    mps / (1.852e3 / 3600)
+}
+
 #' Pin numerical values between stated limits
 #' @param x Vector or matrix of numerical values
 #' @param lower Numerical values of minimum value allowed; set to \code{NULL}
