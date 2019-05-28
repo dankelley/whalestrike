@@ -1,6 +1,6 @@
 create_data
 man-roxygen
-development
+sandbox
 ^.*\.Rproj$
 ^\.Rproj\.user$
 .build.timestamp

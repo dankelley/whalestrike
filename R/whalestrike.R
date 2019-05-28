@@ -3,9 +3,18 @@ library(xtable)
 
 #' Version of parameter defaults
 #'
-#' A Either "2018" (to get default parameter values from the work
-#' in summer of 2018) or "2019a" to get parameter values as of
+#' A character value that indicates which defaults are to be
+#' used by \code{\link{parameters}}.
+#'
+#' There are two choices, as of 2019 May 28:
+#'
+#'\itemize{
+#' \item \code{"2018"} to get default parameter values from the work
+#' in summer of 2018
+#' \item \code{"2019a"} to get parameter values as of
 #' the start of summer, 2019.
+#'}
+#'
 #' @name versionOfDefaults
 #' @docType data
 NULL
@@ -1074,15 +1083,15 @@ strike <- function(t, state, parms, debug=0)
 #' ad-hoc measure of the possible threat to skin, blubber and sublayer.
 #' The threat level is computed as the ratio
 #' of stress to ultimate strength, e.g. for blubber, it is
-#' \code{x$WCF$stress/x$parms$s[2]}. The vertical same scale is used in
+#' \code{x$WCF$stress/x$parms$s[2]}. The same vertical scale is used in
 #' each of the subpanels that make up the stack. Any values exceeding
 #' 10 are clipped to 10, and in such a case the overall label on the vertical
 #' axis will note this clipping, although it should be easy to see, because
 #' the way it most often occurs is if the soft layers "bottom out" onto
-#' the bone, which yields a short period of high stress, owing to the
-#' high elastic modulus of bone. Each of the curves is filled in with a light
-#' gray colour for stress/strength values up to 1, and with black for
-#' higher values, making it easy to tell at a glance whether the
+#' the bone, which yields a short period of very high stress, owing to the
+#' very high compression modulus of bone. Each of the curves is filled in with a light
+#' gray colour for stress/strength values up to 1, and with black
+#' for higher values; this makes it easy to tell at a glance whether the
 #' threat level is high.
 #'
 #' \item \code{"whale acceleration"} for a time-series plot of whale acceleration.
@@ -1404,26 +1413,26 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
                     if (trimmed) paste(" trimmed to", trimThreat) else ""),
               side=2, line=2, cex=par("cex"))
         ## Skin
-        mtext("Skin", side=4, at=0, cex=par("cex"))
+        mtext("Skin", side=4, at=0, cex=0.8*par("cex"))
         y0 <- 0 # if (log) -1 else 0
         fillplot(t, y0, skinThreat, col=colThreat[2]) # high threat
         fillplot(t, y0, ifelse(skinThreat<=1, skinThreat, 1), col=colThreat[1]) # low threat
         abline(h=0, lty=3)
         axis(2, at=y0+yTicks, labels=yTicks)
         ## Blubber
-        mtext("Blubber", side=4, at=dy, cex=par("cex"))
+        mtext("Blubber", side=4, at=dy, cex=0.8*par("cex"))
         fillplot(t, y0+dy, dy+blubberThreat,  col=colThreat[2])
         fillplot(t, y0+dy, dy+ifelse(blubberThreat<=1, blubberThreat, 1), col=colThreat[1])
         abline(h=dy, lty=3)
         axis(2, at=y0+dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
         ## Sublayer
-        mtext("Sublayer", side=4, at=2*dy, cex=par("cex"))
+        mtext("Sublayer", side=4, at=2*dy, cex=0.8*par("cex"))
         fillplot(t, y0+2*dy, 2*dy+sublayerThreat,  col=colThreat[2])
         fillplot(t, y0+2*dy, 2*dy+ifelse(sublayerThreat<=1, sublayerThreat, 1), col=colThreat[1])
         abline(h=2*dy, lty=3)
         axis(2, at=y0+2*dy+yTicks, labels=yTicks)
         ## Bone
-        mtext("Bone", side=4, at=3*dy, cex=par("cex"))
+        mtext("Bone", side=4, at=3*dy, cex=0.8*par("cex"))
         fillplot(t, y0+3*dy, 3*dy+boneThreat,  col=colThreat[2])
         fillplot(t, y0+3*dy, 3*dy+ifelse(boneThreat<=1, boneThreat, 1), col=colThreat[1])
         axis(2, at=y0+3*dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)

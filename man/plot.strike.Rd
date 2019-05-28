@@ -37,15 +37,15 @@ in one panel, creating a cross-section diagram.
 ad-hoc measure of the possible threat to skin, blubber and sublayer.
 The threat level is computed as the ratio
 of stress to ultimate strength, e.g. for blubber, it is
-\code{x$WCF$stress/x$parms$s[2]}. The vertical same scale is used in
+\code{x$WCF$stress/x$parms$s[2]}. The same vertical scale is used in
 each of the subpanels that make up the stack. Any values exceeding
 10 are clipped to 10, and in such a case the overall label on the vertical
 axis will note this clipping, although it should be easy to see, because
 the way it most often occurs is if the soft layers "bottom out" onto
-the bone, which yields a short period of high stress, owing to the
-high elastic modulus of bone. Each of the curves is filled in with a light
-gray colour for stress/strength values up to 1, and with black for
-higher values, making it easy to tell at a glance whether the
+the bone, which yields a short period of very high stress, owing to the
+very high compression modulus of bone. Each of the curves is filled in with a light
+gray colour for stress/strength values up to 1, and with black
+for higher values; this makes it easy to tell at a glance whether the
 threat level is high.
 
 \item \code{"whale acceleration"} for a time-series plot of whale acceleration.

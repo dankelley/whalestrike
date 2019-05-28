@@ -5,7 +5,16 @@
 \alias{versionOfDefaults}
 \title{Version of parameter defaults}
 \description{
-A Either "2018" (to get default parameter values from the work
-in summer of 2018) or "2019a" to get parameter values as of
+A character value that indicates which defaults are to be
+used by \code{\link{parameters}}.
+}
+\details{
+There are two choices, as of 2019 May 28:
+
+\itemize{
+\item \code{"2018"} to get default parameter values from the work
+in summer of 2018
+\item \code{"2019a"} to get parameter values as of
 the start of summer, 2019.
+}
 }
