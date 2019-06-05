@@ -1,7 +1,8 @@
 #' User interface for app
 ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; margin-left:1ex}")),
                 fluidRow(radioButtons("instructions", "Instructions", choices=c("Hide", "Show"), selected="Show", inline=TRUE)),
-                conditionalPanel(condition="input.instructions=='Show'", fluidRow(includeMarkdown("app_help.md"))),
+                conditionalPanel(condition="input.instructions=='Show'",
+                                 fluidRow(includeMarkdown(system.file("doc", "app_help.md", package="whalestrike")))),
                 fluidRow(column(2,
                                 sliderInput("tmax",  h6("Max time [s]"), ticks=FALSE,
                                             min=0.1,  max=5, value=1, step=0.05),
@@ -92,7 +93,7 @@ server <- function(input, output, session)
     output$plot <- renderPlot({
         ##message("species: ", input$species)
         aDefault <- parameters()$a
-        cat(file=stderr(), "input$a23=", input$a23, "\n")
+        ##cat(file=stderr(), "input$a23=", input$a23, "\n")
         parms <- parameters(ms=1000*input$ms, Ss=shipAreaFromMass(1000*input$ms),
                             Ly=input$Ly, Lz=input$Lz,
                             lw=input$lw,
