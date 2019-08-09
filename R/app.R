@@ -6,7 +6,7 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
                                 sliderInput("tmax",  h6("Max time [s]"), ticks=FALSE,
                                             min=0.1,  max=5, value=1, step=0.05),
                                 sliderInput("ms",  HTML("<font color=\"FF0000\">Ship mass [tonne]</font>"), ticks=FALSE,
-                                            min=10, max=500,  value=45, step=0.5),
+                                            min=10, max=50000,  value=45, step=0.5),
                                 sliderInput("vs", HTML("<font color=\"FF0000\">Ship speed [knot]</font>"), ticks=FALSE,
                                             min=0.5,  max=30,  value=10, step=0.5)),
                          column(2,
