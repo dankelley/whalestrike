@@ -6,3 +6,4 @@
 *.swp
 .Rapp.history
 .build.timestamp
+.DS_Store

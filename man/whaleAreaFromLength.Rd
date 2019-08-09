@@ -4,7 +4,8 @@
 \alias{whaleAreaFromLength}
 \title{Whale projected area, as function of length}
 \usage{
-whaleAreaFromLength(L, species = "N. Atl. Right Whale", type = "wetted")
+whaleAreaFromLength(L, species = "N. Atl. Right Whale",
+  type = "wetted")
 }
 \arguments{
 \item{L}{length in m}
