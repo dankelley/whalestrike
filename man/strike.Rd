@@ -7,7 +7,7 @@
 strike(t, state, parms, debug = 0)
 }
 \arguments{
-\item{t}{a suggested vector of times [s] at which the simulated state will be reported.
+\item{t}{a suggested vector of times (s) at which the simulated state will be reported.
 This is only a suggestion, however, because \code{strike} is set up to detect high
 accelerations caused by bone compression, and may set a finer reporting interval,
 if such accelerations are detected. The detection is based on thickness of
@@ -15,15 +15,15 @@ compressed blubber and sublayer; if either gets to zero thickness, then
 a new time grid is constructed, with 10 points during the timescale for
 bone compression, which is assumed to be
 \eqn{2*sqrt(Ly*Lz*a[4]*b[4]/(l[4]*mw)}, with terms as discussed in
-the documentation for \code{\link{parameters}}. If this grid is finer
+the documentation for \code{\link[=parameters]{parameters()}}. If this grid is finer
 than the grid in the stated \code{t}, then the simulatoin is redone
 using the new grid.}
 
 \item{state}{A list or named vector holding the initial state of the model:
-ship position \code{xs} [m],
-ship speed \code{vs} [m/s],
-whale position \code{xw} [m]
-and whale speed \code{vw} [m/s].}
+ship position \code{xs} (m),
+ship speed \code{vs} (m/s),
+whale position \code{xw} (m),
+and whale speed \code{vw} (m/s).}
 
 \item{parms}{A named list holding model parameters, created by
 \code{\link{parameters}}.}
@@ -32,10 +32,10 @@ and whale speed \code{vw} [m/s].}
 higher values for more verbose monitoring of progress through the function.}
 }
 \value{
-An object of class \code{"whalestrike"}, consisting of a
-list containing vectors for time (\code{t} [s]), ship position (\code{xs} [m]),
-boat speed (\code{vs} [m/s]), whale position (\code{xw} [m]), whale speed (\code{vw} [m/s]),
-boat acceleration (\code{dvsdt} [m/s^2]), and whale acceleration (\code{dvwdt} [m/s^2]),
+An object of class \code{"strike"}, consisting of a
+list containing vectors for time (\code{t} (s)), ship position (\code{xs} (m)),
+boat speed (\code{vs} (m/s)), whale position (\code{xw} (m)), whale speed (\code{vw} (m/s)),
+boat acceleration (\code{dvsdt} (m/s^2)), and whale acceleration (\code{dvwdt} (m/s^2)),
 a list containing the model parameters (\code{parms}), a list with the results of
 the skin force calculation (\code{SWF}), a list with the results of the compression
 force calculations (\code{WCF}), and a vector of whale water force (\code{WWF}).
@@ -44,13 +44,14 @@ force calculations (\code{WCF}), and a vector of whale water force (\code{WWF}).
 Newtonian mechanics are used, taking the ship as undeformable,
 and the whale as being cushioned by a skin layer and a blubber layer.
 The forces are calculated by
-\code{\link{shipWaterForce}},
-\code{\link{whaleSkinForce}},
-\code{\link{whaleCompressionForce}}, and
-\code{\link{whaleWaterForce}}.
+\code{\link[=shipWaterForce]{shipWaterForce()}},
+\code{\link[=whaleSkinForce]{whaleSkinForce()}},
+\code{\link[=whaleCompressionForce]{whaleCompressionForce()}}, and
+\code{\link[=whaleWaterForce]{whaleWaterForce()}}.
 }
 \examples{
 library(whalestrike)
+# Example 1: graphs, as in the shiny app
 t <- seq(0, 0.7, length.out=200)
 state <- list(xs=-2, vs=knot2mps(10), xw=0, vw=0) # ship speed 10 knots
 parms <- parameters()
@@ -58,7 +59,44 @@ sol <- strike(t, state, parms)
 par(mfcol=c(1, 3), mar=c(3, 3, 0.5, 2), mgp=c(2, 0.7, 0), cex=0.7)
 plot(sol)
 
+# Example 2: time-series plots of blubber stress and stress/strength,
+# for a 200 tonne ship moving at 10 knots
+t <- seq(0, 0.7, length.out=1000)
+state <- list(xs=-2, vs=knot2mps(10), xw=0, vw=0) # ship speed 10 knots
+parms <- parameters(ms=200 * 1000) # 1 metric tonne is 1000 kg
+sol <- strike(t, state, parms)
+par(mfrow=c(2, 1), mar=c(3, 3, 0.5, 2), mgp=c(2, 0.7, 0), cex=0.7)
+plot(t, sol$WCF$stress / 1e6, type="l", xlab="Time [s]", ylab="Blubber stress [MPa]")
+plot(t, sol$WCF$stress/sol$parms$s[2], type="l", xlab="Time [s]", ylab="Blubber stress / strength")
+
+# Example 3: max stress and stress/strength, for a 200 tonne ship moving at various speeds
+# This is a slow calculation, so we do not run it by default
+\dontrun{
+knots <- seq(0, 20, 0.5)
+maxStress <- NULL
+maxStressOverStrength <- NULL
+for (speed in knot2mps(knots)) {
+    t <- seq(0, 10, length.out=1000)
+    state <- list(xs=-2, vs=speed, xw=0, vw=0)
+    parms <- parameters(ms=200 * 1000) # 1 metric tonne is 1000 kg
+    sol <- strike(t, state, parms)
+    maxStress <- c(maxStress, max(sol$WCF$stress))
+    maxStressOverStrength <- c(maxStressOverStrength, max(sol$WCF$stress/sol$parms$s[2]))
+}
+par(mfrow=c(2, 1), mar=c(3, 3, 0.5, 2), mgp=c(2, 0.7, 0), cex=0.7)
+nonzero <- maxStress > 0
+plot(knots[nonzero], log10(maxStress[nonzero]), type="o", pch=20, xaxs="i", yaxs="i",
+     xlab="Ship Speed [knots]", ylab="log10 peak blubber stress")
+abline(h=log10(sol$parms$s[2]), lty=2)
+plot(knots[nonzero], log10(maxStressOverStrength[nonzero]), type="o", pch=20, xaxs="i", yaxs="i",
+     xlab="Ship Speed [knots]", ylab="log10 peak blubber stress / strength")
+abline(h=0, lty=2)
+}
+
 }
 \references{
-See \link{whalestrike} for a list of references.
+See \code{\link[=whalestrike]{whalestrike()}} for a list of references.
+}
+\author{
+Dan Kelley
 }

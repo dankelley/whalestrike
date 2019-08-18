@@ -7,17 +7,20 @@
 shipWaterForce(vs, parms)
 }
 \arguments{
-\item{vs}{ship velocity [m/s]}
+\item{vs}{ship velocity (m/s).}
 
 \item{parms}{A named list holding model parameters, created by
 \code{\link{parameters}}.}
 }
 \value{
-Water drag force [N]
+Water drag force (N).
 }
 \description{
 Compute the retarding force of water on the ship, based on a drag law
 \eqn{(1/2)*rho*Cs*A*vs^2}{(1/2)*rho*Cs*A*vs^2}
 where \code{rho} is 1024 (kg/m^3), \code{Cs} is \code{parms$Cs} and
 \code{A} is \code{parms$Ss}.
+}
+\author{
+Dan Kelley
 }

@@ -16,7 +16,7 @@ stressFromStrainFunction(l, a, b, N = 1000)
 \item{N}{integer specifying how many segments to use in the spline}
 }
 \value{
-A piecewise-linear function, created with \code{\link{approxfun}},
+A piecewise-linear function, created with \code{\link[=approxfun]{approxfun()}},
 that returns stress as a function of total strain of the
 system of compressing layers. For the purposes of the whale-strike
 analysis, the strain should be between 0 and 1, i.e. there is
@@ -42,10 +42,10 @@ to avoid spurious forces.
 This expression is not easily inverted to get
 \eqn{\sigma} in terms of \eqn{\DeltaL}
 but it may be solved
-easily for particular numerical values, using \code{\link{uniroot}}.
+easily for particular numerical values, using \code{\link[=uniroot]{uniroot()}}.
 
 This is done for a sequence of \code{N} values of strain \eqn{\epsilon}
-that range from 0 to 1. Then \code{\link{approxfun}} is used to create
+that range from 0 to 1. Then \code{\link[=approxfun]{approxfun()}} is used to create
 a piecewise-linear represention of the relationship between \eqn{\sigma} and \eqn{\DeltaL},
 which becomes the return value of the present function.
 (The purpose of using a the piecewise-linear representation os to shorten
@@ -61,4 +61,8 @@ y <- param$stressFromStrain(x)
 plot(x, y, type='l', lwd=4, col="gray")
 data("raymond2007")
 points(raymond2007$strain, raymond2007$stress, col=2)
+
+}
+\author{
+Dan Kelley
 }

@@ -1,7 +1,8 @@
 #' User interface for app
 ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; margin-left:1ex}")),
                 fluidRow(radioButtons("instructions", "Instructions", choices=c("Hide", "Show"), selected="Show", inline=TRUE)),
-                conditionalPanel(condition="input.instructions=='Show'", fluidRow(includeMarkdown("app_help.md"))),
+                conditionalPanel(condition="input.instructions=='Show'",
+                                 fluidRow(includeMarkdown(system.file("doc", "app_help.md", package="whalestrike")))),
                 fluidRow(column(2,
                                 sliderInput("tmax",  h6("Max time [s]"), ticks=FALSE,
                                             min=0.1,  max=5, value=1, step=0.05),
@@ -27,6 +28,9 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
                                 sliderInput("l2", h6("Blubber thickness [m]"), ticks=FALSE,
                                             min=0.05, max=.4, value=0.16, step=0.01)),
                          column(2,
+                                ## default: a[2]=a[3]=1.58e5 Pa
+                                sliderInput("a23", HTML("<font color=\"FF0000\">Blubber/Sublayer 'a' value [MPa]</font>"), ticks=FALSE,
+                                            min=0.100, max=0.200, value=0.158, step=0.01),
                                 sliderInput("l3", HTML("<font color=\"FF0000\">Sublayer thickness[m]</font>"), ticks=FALSE,
                                             min=0.05, max=2, value=1.12, step=0.01),
                                 sliderInput("l4", h6("Bone thickness [m]"), ticks=FALSE,
@@ -48,6 +52,8 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
 #' @param input A list created by the shiny server, with entries for slider settings, etc.
 #' @param output A list of output entries, for plotting, etc.
 #' @param session A list used for various purposes.
+#' @importFrom utils write.csv
+#' @importFrom shiny observeEvent reactiveValuesToList renderPlot showNotification updateSliderInput 
 server <- function(input, output, session)
 {
     observeEvent(input$saveFile, {
@@ -86,12 +92,15 @@ server <- function(input, output, session)
                 })
     output$plot <- renderPlot({
         ##message("species: ", input$species)
+        aDefault <- parameters()$a
+        ##cat(file=stderr(), "input$a23=", input$a23, "\n")
         parms <- parameters(ms=1000*input$ms, Ss=shipAreaFromMass(1000*input$ms),
                             Ly=input$Ly, Lz=input$Lz,
                             lw=input$lw,
                             mw=whaleMassFromLength(input$lw, species="N. Atl. Right Whale"),
                             Sw=whaleAreaFromLength(input$lw, species="N. Atl. Right Whale", "wetted"),
-                            l=c(input$l1, input$l2, input$l3, input$l4))
+                            l=c(input$l1, input$l2, input$l3, input$l4),
+                            a=c(aDefault[1], 1e6*input$a23, 1e6*input$a23, aDefault[4]))
         state <- list(xs=-(1 + parms$lsum), vs=knot2mps(input$vs), xw=0, vw=0)
         t <- seq(0, input$tmax, length.out=2000)
         sol <- strike(t, state, parms)
@@ -113,6 +122,12 @@ server <- function(input, output, session)
 #' called with default arguments.
 #' @param options List containing options that are provided
 #' to \code{\link[shiny]{shinyApp}}, which creates the GUI app.
+#'
+#' @author Dan Kelley
+#'
+#' @export
+#'
+#' @importFrom shiny shinyApp
 app <- function(mode="simple", options=list(height=500)) # NOTE: height has no effect
 {
     if (mode == "simple")

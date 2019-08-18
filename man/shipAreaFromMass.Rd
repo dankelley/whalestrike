@@ -7,10 +7,10 @@
 shipAreaFromMass(ms)
 }
 \arguments{
-\item{ms}{Ship mass [kg].}
+\item{ms}{Ship mass (kg).}
 }
 \value{
-Estimated area in m^2.
+Estimated area (m^2).
 }
 \description{
 The method is based on scaling up the results for a single Cape
@@ -20,7 +20,10 @@ is length*(2*draft+beam). This reference area is scaled to
 the specified mass, \code{ms}, by multiplying by the 2/3
 power of mass ratio.
 This is a crude calculation meant as a stop-gap measure, for
-estimates values of the \code{Ss} argument to \code{\link{parameters}}.
+estimates values of the \code{Ss} argument to \code{\link[=parameters]{parameters()}}.
 It would be much preferable, for a particular simulation, to use the
 wetted area for a particular ship.
+}
+\author{
+Dan Kelley
 }
