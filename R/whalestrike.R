@@ -1465,10 +1465,10 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         awmaxs <- max(abs(runmed(aw, k)))
         if (awmax > 2 * awmaxs) {
             peakTime <- sum(abs(aw) > 0.5*(awmax+awmaxs)) * (t[2] - t[1])
-            label <- sprintf("whale: %.1fg (%.1fms spike to %.0fg)",
+            label <- sprintf("whale accel.: %.1fg (%.1fms spike to %.0fg)",
                              awmaxs/g, peakTime*1e3, awmax/g)
         } else {
-            label <- sprintf("whale: %.1fg", awmax/g)
+            label <- sprintf("whale accel.: %.1fg", awmax/g)
         }
         mtext(label, side=3, line=-1.25, cex=par("cex"), adj=0.5)
         showEvents(xs, xw)
