@@ -7,13 +7,13 @@
 whaleWaterForce(vw, parms)
 }
 \arguments{
-\item{vw}{Whale velocity [m/s]}
+\item{vw}{Whale velocity (m/s).}
 
 \item{parms}{A named list holding model parameters, created by
 \code{\link{parameters}}.}
 }
 \value{
-Water drag force [N]
+Water drag force (N).
 }
 \description{
 Compute the retarding force of water on the whale, based on a drag law

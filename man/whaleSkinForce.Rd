@@ -7,16 +7,16 @@
 whaleSkinForce(xs, xw, parms)
 }
 \arguments{
-\item{xs}{Ship position [m]}
+\item{xs}{Ship position (m).}
 
-\item{xw}{Whale position [m]}
+\item{xw}{Whale position (m).}
 
 \item{parms}{A named list holding model parameters, created by
 \code{\link{parameters}}.}
 }
 \value{
-A list containing \code{force}, the normal force [N], along with
-\code{sigmay} and \code{sigmaz}, which are stresses [Pa] in the y (beam)
+A list containing \code{force}, the normal force (N), along with
+\code{sigmay} and \code{sigmaz}, which are stresses (Pa) in the y (beam)
 and z (draft) directions.
 }
 \description{
@@ -27,7 +27,7 @@ parameters of the calculation are \code{parms$Ly} (impact area width, m),
 degrees, measured from a vector normal to undisturbed skin).
 }
 \references{
-See \link{whalestrike} for a list of references.
+See \code{\link[=whalestrike]{whalestrike()}} for a list of references.
 }
 \author{
 Dan Kelley

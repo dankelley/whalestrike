@@ -26,7 +26,7 @@ to add new forces, and to explore a range of
 criteria for whale damage.
 }
 \details{
-The documentation for \code{\link{strike}} provides
+The documentation for \link{strike} provides
 a practical example of using the main functions of this package,
 while the package vignette provides a general overview.
 A companion manuscript is intended to

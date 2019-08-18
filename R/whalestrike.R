@@ -4,7 +4,7 @@ library(xtable)
 ### #' Version of parameter defaults
 ### #'
 ### #' A character value that indicates which defaults are to be
-### #' used by \code{\link{parameters}}.
+### #' used by [parameters()].
 ### #'
 ### #' There are two choices, as of 2019 May 28:
 ### #'
@@ -24,13 +24,18 @@ library(xtable)
 #' Convert a speed in knots to a speed in m/s
 #'
 #' This is done by multiplying by the factor 1.852e3/3600,
-#' according to https://en.wikipedia.org/wiki/Knot_(unit)
-#' @param knot Speed in knots
-#' @return Speed in m/s
+#' according to https://en.wikipedia.org/wiki/Knot_(unit).
+#' See also [mps2knot()], which is the inverse of this function.
+#'
+#' @param knot Speed in knots.
+#'
+#' @return Speed in m/s.
 #'
 #' @author Dan Kelley
 #'
 #' @export
+#'
+#' @md
 knot2mps <- function(knot)
 {
     knot * 1.852e3 / 3600 # exact definition according to https://en.wikipedia.org/wiki/Knot_(unit)
@@ -39,29 +44,39 @@ knot2mps <- function(knot)
 #' Convert a speed in m/s to a speed in knots
 #'
 #' This is done by dividing by the factor 1.852e3/3600,
-#' according to https://en.wikipedia.org/wiki/Knot_(unit)
-#' @param mps Speed in metres per second
-#' @return Speed in knots
+#' according to https://en.wikipedia.org/wiki/Knot_(unit).
+#' See also [knot2mps()], which is the inverse of this function.
+#'
+#' @param mps Speed in metres per second.
+#'
+#' @return Speed in knots.
 #'
 #' @author Dan Kelley
 #'
 #' @export
+#' @md
 mps2knot <- function(mps)
 {
     mps / (1.852e3 / 3600)
 }
 
 #' Pin numerical values between stated limits
+#'
 #' @param x Vector or matrix of numerical values
-#' @param lower Numerical values of minimum value allowed; set to \code{NULL}
+#'
+#' @param lower Numerical values of minimum value allowed; set to `NULL`
 #' to avoid trimming the lower limit.
-#' @param upper As for \code{lower}, but for the upper limit.
-#' @return Copy of \code{x}, with any value that exceeds \code{lim} having
-#' been replaced by \code{lim}.
+#'
+#' @param upper As for `lower`, but for the upper limit.
+#'
+#' @return Copy of `x`, with any value that exceeds `lim` having
+#' been replaced by `lim`.
 #'
 #' @author Dan Kelley
 #'
 #' @export
+#'
+#' @md
 pin <- function(x, lower=NULL, upper=NULL)
 {
     ## Protect the ifelse() operation from getting riled by NAs
@@ -80,18 +95,22 @@ pin <- function(x, lower=NULL, upper=NULL)
 #' This adds to an existing plot by filling the area between the
 #' lower=lower(x) and upper=upper(x) curves.  In most cases, as
 #' shown in \dQuote{Examples}, it is helpful
-#' to use \code{xaxs="i"} in the preceding plot call, so that the
+#' to use `xaxs="i"` in the preceding plot call, so that the
 #' polygon reaches to the edge of the plot area.
 #'
 #' @param x Coordinate along horizontal axis
-#' @param lower Coordinates of the lower curve, of same length as \code{x},
-#' or a single value that gets repeated to the length of \code{x}.
+#'
+#' @param lower Coordinates of the lower curve, of same length as `x`,
+#' or a single value that gets repeated to the length of `x`.
+#'
 #' @param upper Coordinates of the upper curve, or a single value that gets
-#' repeated to the length of \code{x}.
-#' @param ... passed to \code{\link{polygon}}. In most cases, this
-#' will contain \code{col}, the fill colour, and possibly \code{border},
-#' the border colour, although cross-hatching with \code{density}
-#' and \code{angle} is also a good choice.
+#' repeated to the length of `x`.
+#'
+#' @param ... passed to [polygon]. In most cases, this
+#' will contain `col`, the fill colour, and possibly `border`,
+#' the border colour, although cross-hatching with `density`
+#' and `angle` is also a good choice.
+#'
 #' @examples
 #' ## 1. CO2 record
 #' plot(co2, xaxs="i", yaxs="i")
@@ -110,7 +129,10 @@ pin <- function(x, lower=NULL, upper=NULL)
 #' @author Dan Kelley
 #'
 #' @export
+#'
 #' @importFrom graphics polygon
+#'
+#' @md
 fillplot <- function(x, lower, upper, ...)
 {
     n <- length(x)
@@ -128,10 +150,10 @@ fillplot <- function(x, lower, upper, ...)
 
 #' Whale blubber stress-strain relationship
 #'
-#' This is a data frame with elements \code{strain} and \code{stess},
+#' This is a data frame with elements `strain` and `stress`,
 #' found by digitizing (accurate to perhaps 1 percent) the curve shown in Figure 2.13
 #' of Raymond (2007). It is used to develop a stress-strain relationship used
-#' by \code{\link{parameters}}, as shown in \dQuote{Examples}.
+#' by [parameters], as shown in \dQuote{Examples}.
 #'
 #' @template ref_raymond
 #'
@@ -145,7 +167,10 @@ fillplot <- function(x, lower, upper, ...)
 #' lines(x, predict(m, list(strain=x)))
 #'
 #' @name raymond2007
+#'
 #' @docType data
+#'
+#' @md
 NULL
 
 #' Whale side-view shape
@@ -154,8 +179,8 @@ NULL
 #' of a right whale, viewed from the side. It was created
 #' by digitizing the whale shape (ignoring fins) that is
 #' provided in the necropsy reports of Daoust et al. (2018). The
-#' data frame contains \code{x} and \code{y}, which are distances
-#' nondimensionalized by the range in \code{x}; that is, \code{x}
+#' data frame contains `x` and `y`, which are distances
+#' nondimensionalized by the range in `x`; that is, `x`
 #' ranges from 0 to 1. The point at the front of the whale is
 #' designated as x=y=0.
 #'
@@ -171,7 +196,10 @@ NULL
 #' mtext(sprintf("Max. radius %.2fm for %.1fm-long whale", Rmax, lw), side=3)
 #'
 #' @name whaleshape
+#'
 #' @docType data
+#'
+#' @md
 NULL
 
 
@@ -196,7 +224,7 @@ NULL
 #' to add new forces, and to explore a range of
 #' criteria for whale damage.
 #'
-#' The documentation for \code{\link{strike}} provides
+#' The documentation for [strike] provides
 #' a practical example of using the main functions of this package,
 #' while the package vignette provides a general overview.
 #' A companion manuscript is intended to
@@ -278,7 +306,10 @@ NULL
 #'}
 #'
 #' @docType package
+#'
 #' @name whalestrike
+#'
+#' @md
 NULL
 
 #' Create a function for stress in laminated layers
@@ -301,21 +332,24 @@ NULL
 #' This expression is not easily inverted to get
 #' \eqn{\sigma} in terms of \eqn{\DeltaL}
 #' but it may be solved
-#' easily for particular numerical values, using \code{\link{uniroot}}.
+#' easily for particular numerical values, using [uniroot()].
 #'
-#' This is done for a sequence of \code{N} values of strain \eqn{\epsilon}
-#' that range from 0 to 1. Then \code{\link{approxfun}} is used to create
+#' This is done for a sequence of `N` values of strain \eqn{\epsilon}
+#' that range from 0 to 1. Then [approxfun()] is used to create
 #' a piecewise-linear represention of the relationship between \eqn{\sigma} and \eqn{\DeltaL},
 #' which becomes the return value of the present function.
 #' (The purpose of using a the piecewise-linear representation os to shorten
 #' computation times.)
 #'
 #' @param l vector of layer thicknesses
+#'
 #' @param a vector of multipliers
+#'
 #' @param b vector of e-fold parameters
+#'
 #' @param N integer specifying how many segments to use in the spline
 #'
-#' @return A piecewise-linear function, created with \code{\link{approxfun}},
+#' @return A piecewise-linear function, created with [approxfun()],
 #' that returns stress as a function of total strain of the
 #' system of compressing layers. For the purposes of the whale-strike
 #' analysis, the strain should be between 0 and 1, i.e. there is
@@ -335,7 +369,10 @@ NULL
 #' @author Dan Kelley
 #'
 #' @export
+#'
 #' @importFrom stats approxfun uniroot
+#'
+#' @md
 stressFromStrainFunction <- function(l, a, b, N=1000)
 {
     fcn <- function(sigma) {
@@ -367,8 +404,8 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 
 #' Control parameters for whale strike simulation
 #'
-#' Assembles control parameters into a list suitable for passing to \code{\link{strike}}
-#' and the functions that it calls. If \code{file} is provided, then all the other
+#' Assembles control parameters into a list suitable for passing to [strike()]
+#' and the functions that it calls. If `file` is provided, then all the other
 #' arguments are read from that source.
 #' Below are some sources cited in the discussion of the function arguments.
 #' @template ref_campbell_malone
@@ -376,29 +413,37 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' @template ref_grear
 #' @template ref_raymond
 #'
-#' @param ms Ship mass [kg].
-#' @param Ss Ship wetted area [m^2]. This, together with \code{Cs}, is used by
-#' used by \code{\link{shipWaterForce}} to estimate ship drag force. If \code{Ss}
-#' is not given, then an esimate is made by calling \code{\link{shipAreaFromMass}} with
-#' the provided value of \code{ms}.
-#' @param Ly Ship impact horizontal extent [m]; defaults to 1.23m if not specified,
+#' @param ms Ship mass (kg).
+#'
+#' @param Ss Ship wetted area (m^2). This, together with `Cs`, is used by
+#' used by [shipWaterForce()] to estimate ship drag force. If `Ss`
+#' is not given, then an esimate is made by calling [shipAreaFromMass()] with
+#' the provided value of `ms`.
+#'
+#' @param Ly Ship impact horizontal extent (m); defaults to 1.23m if not specified,
 #' based on an analysis of the shape of the bow of typical coastal fishing boats
 #' of the Cape Islander variety.
-#' @param Lz Ship impact vertical extent [m]; defaults to 1.23m if not specified,
+#'
+#' @param Lz Ship impact vertical extent (m); defaults to 1.23m if not specified,
 #' based on the same analysis as for Ly.
-#' @param lw Whale length [m]. This is used by \code{\link{whaleAreaFromLength}} to
+#'
+#' @param lw Whale length (m). This is used by [whaleAreaFromLength()] to
 #' calculate area, which is needed for the water drag calculation done by
-#' \code{\link{whaleWaterForce}}.
+#' [whaleWaterForce()].
+#'
 #' @param species A string indicating the whale species. For the permitted values,
-#' see \code{\link{whaleMassFromLength}}.
-#' @param mw Whale mass [kg]. If this value is not provided, then
-#' it is calculated from whale length, using \code{\link{whaleMassFromLength}}
-#' with \code{type="wetted"}.
-#' @param Sw Whale surface area [m^2]. If not provided, this is calculated
-#' from whale length using \code{\link{whaleAreaFromLength}}.
-#' @param l Numerical vector of length 4, giving thickness [m] of skin, blubber,
+#' see [whaleMassFromLength()].
+#'
+#' @param mw Whale mass (kg). If this value is not provided, then
+#' it is calculated from whale length, using [whaleMassFromLength()]
+#' with `type="wetted"`.
+#'
+#' @param Sw Whale surface area (m^2). If not provided, this is calculated
+#' from whale length using [whaleAreaFromLength()].
+#'
+#' @param l Numerical vector of length 4, giving thickness (m) of skin, blubber,
 #' sublayer, and bone. If not provided, this is set to
-#' \code{c(0.025, 0.16, 1.12, 0.1)}.
+#' `c(0.025, 0.16, 1.12, 0.1)`.
 #' The skin thicknes default of 0.025 m represents the 0.9-1.0 inch value
 #' stated in Section 2.2.3 of Raymond (2007).
 #' The blubber default of 0.16 m is a rounded average of the values inferred
@@ -410,36 +455,38 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' The sum of these default values, 1.40 m, is a whale radius that
 #' is consistent with a half-circumferance of 4.4 m, reported in Table 2.2
 #' of Raymond (2007).
+#'
 #' @param a,b Numerical vectors of length 4, giving values to use in the
-#' stress-strain law \code{stress=a*(exp(b*strain)-1)}, where \code{a} is in Pa
-#' and \code{b} is unitless. By construction, \code{a*b} is the local modulus at
-#' low strain (i.e. at low \code{b*strain} values), and that \code{b} is the
+#' stress-strain law `stress=a*(exp(b*strain)-1)`, where `a` is in Pa
+#' and `b` is unitless. By construction, `a*b` is the local modulus at
+#' low strain (i.e. at low `b*strain` values), and that `b` is the
 #' efolding scale for nonlinear increase in stress with strain.
 #' This exponential relationship has been mapped out
 #' for whale blubber, using a curve fit to Figure 2.13 of Raymond (2007), and
 #' these values are used for the second layer (blubber); see
-#' the documentation for the \link{raymond2007} dataset, to see
+#' the documentation for the [raymond2007] dataset, to see
 #' for how that fit was done.
-#' If not provided, \code{a} defaults to
-#' \code{c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)}
-#' and \code{b} defaults to
-#' \code{c(0.1, 2.54, 2.54, 0.1)}.
-#' The skin defaults are set up to give a linear shape (since \code{b} is small)
-#' with the \code{a*b} product
+#' If not provided, `a` defaults to
+#' `c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)`
+#' and `b` defaults to
+#' `c(0.1, 2.54, 2.54, 0.1)`.
+#' The skin defaults are set up to give a linear shape (since `b` is small)
+#' with the `a*b` product
 #' being 17.8e6 Pa, which is the adult-seal value
 #' given in Table 3 of Grear et al. (2017).
 #' The blubber defaults are from a regression of the stress-strain
 #' relationship shown in Figure 2.13 of Raymond (2007).
 #' The sublayer defaults are set to match those of blubber, lacking
 #' any other information.
-#' The bone default for \code{b} is small, to set up a linear function,
-#' and \code{a*b} is set to equal 8.54e8 Pa,
+#' The bone default for `b` is small, to set up a linear function,
+#' and `a*b` is set to equal 8.54e8 Pa,
 #' given in Table 2.3 of Raymond (2007) and Table 4.5 of
 #' Campbell-Malone (2007).
-#' @param s Numerical vector of length 4, giving the ultimate strengths [Pa] of
+#'
+#' @param s Numerical vector of length 4, giving the ultimate strengths (Pa) of
 #' skin, blubber, sublayer, and bone, respectively. If not provided, the
 #' value is set to
-#' \code{c(19.6e6, 0.437e6, 0.437e6, 22.9e6)},
+#' `c(19.6e6, 0.437e6, 0.437e6, 22.9e6)`,
 #' with reasoning as follows.
 #' The skin default of 19.6 MPa
 #' is a rounded value from Table 3 of Grear et al. (2018) for adult seal skin strength at
@@ -452,37 +499,41 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' more specific information.
 #' The bone default o 22.9 MPa is from Table 2.3 of Raymond (2007) and
 #' Table 4.5 of Campbell-Malone (2007).
-#' @param theta Whale skin deformation angle [deg]; defaults to 55 degrees,
+#'
+#' @param theta Whale skin deformation angle (deg); defaults to 55 degrees,
 #' if not supplied, because that angle produces a good match to Raymond's (2007)
 #' Figure 6.1 for the total force as a function of vessel speed, for large
 #' vessels. (Note that the match works almost as well in the range 50 deg
 #' to 70 deg.)
-#' @param Cs Drag coefficient for ship [dimensionless],
-#' used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults
+#'
+#' @param Cs Drag coefficient for ship (dimensionless),
+#' used by [shipWaterForce()] to estimate ship drag force. Defaults
 #' to 1e-2, which is 4 times the frictional coefficient of 2.5e-3
 #' inferred from Figure 4 of Manen and van Oossanen (1988), assuming
 #' a Reynolds number of 5e7, computed from speed 5m/s, lengthscale 10m
 #' and viscosity 1e-6 m^2/s. (The factor of 4 is under the assumption
 #' that frictional drag is about a quarter of total drag.)
-#' The drag force is computed with \code{\link{shipWaterForce}}.
-#' @param Cw Drag coefficient for whale [dimensionless],
-#' used by \code{\link{whaleWaterForce}} to estimate whale drag force.
+#' The drag force is computed with [shipWaterForce()].
+#'
+#' @param Cw Drag coefficient for whale (dimensionless),
+#' used by [whaleWaterForce()] to estimate whale drag force.
 #' Defaults to 2.5e-3, for Reynolds number 2e7, computed from speed
 #' 2 m/s, lengthscale 5m (between radius and length) and
 #' viscosity 1e-6 m^2/s.  The drag force is computed with
-#' \code{\link{whaleWaterForce}}.
+#' [whaleWaterForce()].
+#'
 #' @param file Optional name a comma-separated file that holds all of the
-#' previous values, except \code{Cs} and \code{Cw}. If provided,
-#' then other parameters (except \code{Cs} and \code{Cw}) are
+#' previous values, except `Cs` and `Cw`. If provided,
+#' then other parameters (except `Cs` and `Cw`) are
 #' ignored, because values are sought from the file. The purpose of
 #' this is in shiny apps that want to save a simulation framework.
-#' The file should be saved \code{\link{write.csv}} with
-#' \code{row.names=FALSE}.
+#' The file should be saved [write.csv()] with
+#' `row.names=FALSE`.
 #'
 #' @return
 #' A named list holding the parameters, with defaults and alternatives reconciled
 #' according to the system described above, along with a function that computes
-#' compression force, which created by \code{\link{stressFromStrainFunction}}.
+#' compression force, which created by [stressFromStrainFunction()].
 #'
 #' @examples
 #' parms <- parameters()
@@ -493,7 +544,10 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' @author Dan Kelley
 #'
 #' @export
+#'
 #' @importFrom utils read.csv
+#'
+#' @md
 parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
                        species="N. Atl. Right Whale",
                        lw=13.7, mw, Sw,
@@ -592,30 +646,36 @@ parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
 
 #' Whale mass inferred from length
 #'
-#' @description
 #' Calculate an estimate of the mass of a whale, based on its length, with
 #' formulae from the following sources.
-#' @template ref_moore
-#' @template ref_fortune
 #'
-#' @details
-#' The permitted values for \code{model} are as follows.
+#' Moore, M.J., A.R. Knowlton, S.D. Kraus, W.A. McLellan, and R.K. Bonde.
+#' “Morphometry, Gross Morphology and Available Histopathology in North Atlantic
+#' Right Whale (Eubalaena Glacialis) Mortalities (1970 to 2002).” Journal of
+#' Cetacean Research and Management 6, no. 3 (2005): 199–214.
+#'
+#' Fortune, Sarah M. E., Andrew W. Trites, Wayne L. Perryman, Michael J. Moore,
+#' Heather M. Pettis, and Morgan S. Lynn. “Growth and Rapid Early Development of
+#' North Atlantic Right Whales (Eubalaena Glacialis).” Journal of Mammalogy 93,
+#' no. 5 (2012): 1342–54. \url{https://doi.org/10.1644/11-MAMM-A-297.1}.
+#'
+#' The permitted values for `model` are as follows.
 #'\itemize{
-#' \item \code{"moore2005"} yields
+#' \item `"moore2005"` yields
 #' \eqn{242.988 * exp(0.4 * length)}{242.988 * exp(0.4 * L)},
-#' which (apart from a unit change on \code{L}) is the regression equation
+#' which (apart from a unit change on `L`) is the regression equation
 #' shown above Figure 1d in Moore et al. (2005) for right whales. A
 #' difficult in the Moore et al. (2005) use of a single nonzero digit
-#' in the multiplier on \code{L} is illustrated in \dQuote{Examples}.
+#' in the multiplier on `L` is illustrated in \dQuote{Examples}.
 #'
-#' \item \code{"fortune2012atlantic"} yields the formula
+#' \item `"fortune2012atlantic"` yields the formula
 #' \eqn{exp(-10.095 + 2.825*log(100*L))}{exp(-10.095 + 2.825*log(100*L))}
 #' for North Atlantic right whales, according to corrected version of the
 #' erroneous formula given in the caption of Figure 4 in Fortune et al (2012).
 #' (The error, an exchange of slope and intercept, was confirmed by
 #' S. Fortune in an email to D. Kelley dated June 22, 2018.)
 #'
-#' \item \code{"fortune2012pacific"} yields the formula
+#' \item `"fortune2012pacific"` yields the formula
 #' \eqn{exp(-12.286 + 3.158*log(100*L))}{exp(-12.286 + 3.158*log(100*L))}
 #' for North Pacific right whales, according to corrected version of the
 #' erroneous formula given in the caption of Figure 4 in Fortune et al (2012).
@@ -624,9 +684,12 @@ parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
 #'}
 #'
 #' @param L Whale length in m.
+#'
 #' @param species String specifying the species. This must be one of the following:
-#' \code{"N. Atl. Right Whale"} (the default), FIXME: add more.
+#' `"N. Atl. Right Whale"` (the default), FIXME: add more.
+#'
 #' @param model Character string specifying the model (see \dQuote{Details}).
+#'
 #' @return Mass in kg.
 #'
 #' @examples
@@ -644,11 +707,13 @@ parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
 #'        legend=c("moore2005", "fortune2012atlantic", "fortune2012pacific"))
 #'
 #' @references
-#' See \link{whalestrike} for a list of references.
+#' See [whalestrike()] for a list of references.
 #'
 #' @author Dan Kelley
 #'
 #' @export
+#'
+#' @md
 whaleMassFromLength <- function(L, species="N. Atl. Right Whale", model="fortune2012atlantic")
 {
     speciesAllowed <- c("N. Atl. Right Whale")
@@ -668,27 +733,31 @@ whaleMassFromLength <- function(L, species="N. Atl. Right Whale", model="fortune
 
 #' Compute whale length from mass
 #'
-#' This works by inverting \code{\link{whaleMassFromLength}} using
-#' \code{\link{uniroot}}.
+#' This works by inverting [whaleMassFromLength()] using [uniroot()].
 #'
-#' @param M Whale mass [kg].
+#' @param M Whale mass (kg).
+#'
 #' @param species A string indicating the whale species. For the permitted values,
-#' see \code{\link{whaleMassFromLength}}.
+#' see [whaleMassFromLength()].
+#'
 #' @param model Character string specifying the model, with permitted
-#' values \code{"moore2005"}, \code{"fortune2012atlantic"} and
-#" \code{"fortune2012pacific"}. See the documentation
-#' for \code{\link{whaleMassFromLength}} for the details of these
+#' values `"moore2005"`, `"fortune2012atlantic"` and
+#" `"fortune2012pacific"`. See the documentation
+#' for [whaleMassFromLength()] for the details of these
 #' formulations.
 #'
-#' @return Whale length [m].
+#' @return Whale length (m).
 #'
 #' @references
-#' See \link{whalestrike} for a list of references.
+#' See [whalestrike()] for a list of references.
 #'
 #' @author Dan Kelley
 #'
 #' @export
+#'
 #' @importFrom stats approxfun
+#'
+#' @md
 whaleLengthFromMass <- function(M, species="N. Atl. Right Whale", model="fortune2012atlantic")
 {
     rval <- rep(NA, length(M))
@@ -702,37 +771,41 @@ whaleLengthFromMass <- function(M, species="N. Atl. Right Whale", model="fortune
 #' Whale projected area, as function of length
 #'
 #' This depends on calculations based on the digitized shape of
-#' a whale necropsy, which is provided as \code{data(\link{whaleshape})}.
+#' a whale necropsy, which is provided as `data([whaleshape])`.
 #' The results are
-#' \preformatted{0.143 * L^2} for the projected area [1]
+#' \preformatted{0.143 * L^2} for the projected area (see reference 1)
 #' and
 #' \preformatted{0.448 * (0.877 * L)^2} for the wetted area,
-#' where the latter uses a correction related to whale mass [2].
+#' where the latter uses a correction related to whale mass (see reference 2).
 #'
 #' Note that multiple digitizations were done,
 #' and that the coefficients used in the formulae
 #' agreed to under 0.7 percent percent between these digitizations.
 #'
-#' @param L length in m
+#' @param L length in m.
+#'
 #' @param species A string indicating the whale species. For the permitted values,
-#' see \code{\link{whaleMassFromLength}}.
+#' see [whaleMassFromLength()].
+#'
 #' @param type character string indicating the type of area, with
-#' \code{"projected"} for a side-projected area, and
-#' \code{"wetted"} for the total wetted area. The wetted
+#' `"projected"` for a side-projected area, and
+#' `"wetted"` for the total wetted area. The wetted
 #' area was computed by mathematically spinning a spline fit to the
 #' side-view. In both cases, the original data source is the
 #' necropsy side-view presented in Daoust et al. (2018).
 #'
 #' @references
-#' 1. Dan Kelley's internal document \code{dek/20180623_whale_area.Rmd}, available
+#' 1. Dan Kelley's internal document `dek/20180623_whale_area.Rmd`, available
 #' upon request.
 #'
-#' 2. Dan Kelley's internal document \code{dek/20180707_whale_mass.Rmd}, available
+#' 2. Dan Kelley's internal document `dek/20180707_whale_mass.Rmd`, available
 #' upon request.
 #'
 #' @author Dan Kelley
 #'
 #' @export
+#'
+#' @md
 whaleAreaFromLength <- function(L, species="N. Atl. Right Whale", type="wetted")
 {
     speciesAllowed <- c("N. Atl. Right Whale")
@@ -762,34 +835,36 @@ whaleAreaFromLength <- function(L, species="N. Atl. Right Whale", type="wetted")
 #'
 #' Calculate the total compression stress and force, along
 #' with the thicknesses of skin, blubber, sublayer, and bone.
-#' The stess is computed with the \code{stressFromStrain} function that
-#' is created by \code{\link{parameters}} and stored in \code{para}.
+#' The stess is computed with the [stressFromStrainFunction()] function that
+#' is created by [parameters] and stored in `para`.
 #' the force is computed by multiplying stess by area
-#' computed as the product of \code{parms$Ly} and \code{parms$Lz}.
+#' computed as the product of `parms$Ly` and `parms$Lz`.
 #' Any negative layer thicknesses are set to zero, as a way to
 #' avoid problems with aphysical engineering compression strains that
 #' exceed 1.
 #'
-#' @param xs Ship position [m]
+#' @param xs Ship position (m).
 #'
-#' @param xw Whale position [m]
+#' @param xw Whale position (m).
 #'
 #' @template parmsTemplate
 #'
-#' @return A list containing: \code{force} [N], the
-#' compression-resisting force; \code{stress} [Pa], the ratio
-#' of that force to the impact area; \code{strain}, the total
-#' strain, and \code{compressed}, a four-column matrix [m]
+#' @return A list containing: `force` (N), the
+#' compression-resisting force; `stress` (Pa), the ratio
+#' of that force to the impact area; `strain`, the total
+#' strain, and `compressed`, a four-column matrix (m)
 #' with first column for skin compression, second for blubber
 #' compression, third for sublayer compression, and fourth
 #' for bone compression.
 #'
 #' @references
-#' See \link{whalestrike} for a list of references.
+#' See [whalestrike()] for a list of references.
 #'
 #' @author Dan Kelley
 #'
 #' @export
+#'
+#' @md
 whaleCompressionForce <- function(xs, xw, parms)
 {
     touching <- xs < xw & xs > (xw - parms$lsum)
@@ -815,26 +890,29 @@ whaleCompressionForce <- function(xs, xw, parms)
 #' Skin force
 #'
 #' The ship-whale separation is used to calculate the deformation of the skin. The
-#' parameters of the calculation are \code{parms$Ly} (impact area width, m),
-#' \code{parms$Lz} (impact area height, in m), \code{parms$Ealpha} (skin elastic modulus in Pa),
-#' \code{parms$alpha} (skin thickness in m), and \code{parms$theta} (skin bevel angle
+#' parameters of the calculation are `parms$Ly` (impact area width, m),
+#' `parms$Lz` (impact area height, in m), `parms$Ealpha` (skin elastic modulus in Pa),
+#' `parms$alpha` (skin thickness in m), and `parms$theta` (skin bevel angle
 #' degrees, measured from a vector normal to undisturbed skin).
 #'
-#' @param xs Ship position [m]
-#' @param xw Whale position [m]
+#' @param xs Ship position (m).
+#'
+#' @param xw Whale position (m).
 #'
 #' @template parmsTemplate
 #'
-#' @return A list containing \code{force}, the normal force [N], along with
-#' \code{sigmay} and \code{sigmaz}, which are stresses [Pa] in the y (beam)
+#' @return A list containing `force`, the normal force (N), along with
+#' `sigmay` and `sigmaz`, which are stresses (Pa) in the y (beam)
 #' and z (draft) directions.
 #'
 #' @references
-#' See \link{whalestrike} for a list of references.
+#' See [whalestrike()] for a list of references.
 #'
 #' @author Dan Kelley
 #'
 #' @export
+#'
+#' @md
 whaleSkinForce <- function(xs, xw, parms)
 {
     touching <- xs < xw & xs > (xw - parms$lsum)
@@ -863,20 +941,22 @@ whaleSkinForce <- function(xs, xw, parms)
 #' Islander ship, of displacement 20.46 tonnes, length 11.73m,
 #' beam 4.63m, and draft 1.58m, on the assumption that the wetted area
 #' is length*(2*draft+beam). This reference area is scaled to
-#' the specified mass, \code{ms}, by multiplying by the 2/3
+#' the specified mass, `ms`, by multiplying by the 2/3
 #' power of mass ratio.
 #' This is a crude calculation meant as a stop-gap measure, for
-#' estimates values of the \code{Ss} argument to \code{\link{parameters}}.
+#' estimates values of the `Ss` argument to [parameters()].
 #' It would be much preferable, for a particular simulation, to use the
 #' wetted area for a particular ship.
 #'
-#' @param ms Ship mass [kg].
+#' @param ms Ship mass (kg).
 #'
-#' @return Estimated area in m^2.
+#' @return Estimated area (m^2).
 #'
 #' @author Dan Kelley
 #'
 #' @export
+#'
+#' @md
 shipAreaFromMass <- function(ms)
 {
     length <- 11.73                        # m
@@ -892,18 +972,20 @@ shipAreaFromMass <- function(ms)
 #'
 #' Compute the retarding force of water on the ship, based on a drag law
 #' \eqn{(1/2)*rho*Cs*A*vs^2}{(1/2)*rho*Cs*A*vs^2}
-#' where \code{rho} is 1024 (kg/m^3), \code{Cs} is \code{parms$Cs} and
-#' \code{A} is \code{parms$Ss}.
+#' where `rho` is 1024 (kg/m^3), `Cs` is `parms$Cs` and
+#' `A` is `parms$Ss`.
 #
-#' @param vs ship velocity [m/s]
+#' @param vs ship velocity (m/s).
 #'
 #' @template parmsTemplate
 #'
-#' @return Water drag force [N]
+#' @return Water drag force (N).
 #'
 #' @author Dan Kelley
 #'
 #' @export
+#'
+#' @md
 shipWaterForce <- function(vs, parms)
 {
     - (1/2) * 1024 * parms$Cs * parms$Ss * vs * abs(vs)
@@ -914,18 +996,20 @@ shipWaterForce <- function(vs, parms)
 #'
 #' Compute the retarding force of water on the whale, based on a drag law
 #' \eqn{(1/2)*rho*Cw*A*vw^2}{(1/2)*rho*Cw*A*vw^2}
-#' where \code{rho} is 1024 (kg/m^3), \code{Cw} is \code{parms$Cw} and
-#' \code{A} is \code{parms$Sw}.
+#' where `rho` is 1024 (kg/m^3), `Cw` is `parms$Cw` and
+#' `A` is `parms$Sw`.
 #'
-#' @param vw Whale velocity [m/s]
+#' @param vw Whale velocity (m/s).
 #'
 #' @template parmsTemplate
 #'
-#' @return Water drag force [N]
+#' @return Water drag force (N).
 #'
 #' @author Dan Kelley
 #'
 #' @export
+#'
+#' @md
 whaleWaterForce <- function(vw, parms)
 {
     - (1/2) * 1024 * parms$Cw * parms$Sw * vw * abs(vw)
@@ -933,20 +1017,22 @@ whaleWaterForce <- function(vw, parms)
 
 #' Dynamical law
 #'
-#' @param t time [s].
+#' @param t time (s).
 #'
-#' @param y model state, a vector containing ship position \code{xs} [m],
-#' ship speed \code{vs} [m/s], whale position \code{xw} [m],
-#' and whale speed \code{vw} [m/s].
+#' @param y model state, a vector containing ship position `xs` (m),
+#' ship speed `vs` (m/s), whale position `xw` (m),
+#' and whale speed `vw` (m/s).
 #'
 #' @template parmsTemplate
 #'
 #' @references
-#' See \link{whalestrike} for a list of references.
+#' See [whalestrike()] for a list of references.
 #'
 #' @author Dan Kelley
 #'
 #' @export
+#'
+#' @md
 dynamics <- function(t, y, parms)
 {
     xs <- y[1]                         # ship position
@@ -967,16 +1053,22 @@ dynamics <- function(t, y, parms)
 }
 
 #' Calculate derivative using first difference
+#'
 #' @param var variable.
+#'
 #' @param t time in seconds.
-#' @return Derivative estimated by using \code{\link{diff}} on both \code{x}
-#' and \code{t}. In order to return a value of the same length as \code{x} and
-#' \code{t}, the last value is repeated.
+#'
+#' @return Derivative estimated by using [diff()] on both `x`
+#' and `t`. In order to return a value of the same length as `x` and
+#' `t`, the last value is repeated.
 #'
 #' @author Dan Kelley
 #'
 #' @export
+#'
 #' @importFrom utils tail
+#'
+#' @md
 derivative <- function(var, t)
 {
     res <- diff(var) / diff(t)
@@ -988,40 +1080,40 @@ derivative <- function(var, t)
 #' Newtonian mechanics are used, taking the ship as undeformable,
 #' and the whale as being cushioned by a skin layer and a blubber layer.
 #' The forces are calculated by
-#' \code{\link{shipWaterForce}},
-#' \code{\link{whaleSkinForce}},
-#' \code{\link{whaleCompressionForce}}, and
-#' \code{\link{whaleWaterForce}}.
+#' [shipWaterForce()],
+#' [whaleSkinForce()],
+#' [whaleCompressionForce()], and
+#' [whaleWaterForce()].
 #'
-#' @param t a suggested vector of times [s] at which the simulated state will be reported.
-#' This is only a suggestion, however, because \code{strike} is set up to detect high
+#' @param t a suggested vector of times (s) at which the simulated state will be reported.
+#' This is only a suggestion, however, because `strike` is set up to detect high
 #' accelerations caused by bone compression, and may set a finer reporting interval,
 #' if such accelerations are detected. The detection is based on thickness of
 #' compressed blubber and sublayer; if either gets to zero thickness, then
 #' a new time grid is constructed, with 10 points during the timescale for
 #' bone compression, which is assumed to be
 #' \eqn{2*sqrt(Ly*Lz*a[4]*b[4]/(l[4]*mw)}, with terms as discussed in
-#' the documentation for \code{\link{parameters}}. If this grid is finer
-#' than the grid in the stated \code{t}, then the simulatoin is redone
+#' the documentation for [parameters()]. If this grid is finer
+#' than the grid in the stated `t`, then the simulatoin is redone
 #' using the new grid.
 #'
 #' @param state A list or named vector holding the initial state of the model:
-#' ship position \code{xs} [m],
-#' ship speed \code{vs} [m/s],
-#' whale position \code{xw} [m]
-#' and whale speed \code{vw} [m/s].
+#' ship position `xs` (m),
+#' ship speed `vs` (m/s),
+#' whale position `xw` (m),
+#' and whale speed `vw` (m/s).
 #'
 #' @template parmsTemplate
 #'
 #' @template debugTemplate
 #'
-#' @return An object of class \code{"whalestrike"}, consisting of a
-#' list containing vectors for time (\code{t} [s]), ship position (\code{xs} [m]),
-#' boat speed (\code{vs} [m/s]), whale position (\code{xw} [m]), whale speed (\code{vw} [m/s]),
-#' boat acceleration (\code{dvsdt} [m/s^2]), and whale acceleration (\code{dvwdt} [m/s^2]),
-#' a list containing the model parameters (\code{parms}), a list with the results of
-#' the skin force calculation (\code{SWF}), a list with the results of the compression
-#' force calculations (\code{WCF}), and a vector of whale water force (\code{WWF}).
+#' @return An object of class `"strike"`, consisting of a
+#' list containing vectors for time (`t` (s)), ship position (`xs` (m)),
+#' boat speed (`vs` (m/s)), whale position (`xw` (m)), whale speed (`vw` (m/s)),
+#' boat acceleration (`dvsdt` (m/s^2)), and whale acceleration (`dvwdt` (m/s^2)),
+#' a list containing the model parameters (`parms`), a list with the results of
+#' the skin force calculation (`SWF`), a list with the results of the compression
+#' force calculations (`WCF`), and a vector of whale water force (`WWF`).
 #'
 #' @examples
 #' library(whalestrike)
@@ -1068,12 +1160,15 @@ derivative <- function(var, t)
 #'}
 #'
 #' @references
-#' See \link{whalestrike} for a list of references.
+#' See [whalestrike()] for a list of references.
 #'
 #' @author Dan Kelley
 #'
 #' @export
+#'
 #' @importFrom deSolve lsoda
+#'
+#' @md
 strike <- function(t, state, parms, debug=0)
 {
     if (missing(t))
@@ -1155,17 +1250,17 @@ strike <- function(t, state, parms, debug=0)
 
 #' Plot a strike object
 #'
-#' @description
 #' Creates displays of various results of a simulation performed
-#' with \code{\link{strike}}.
+#' with [strike()].
 #'
-#' @param x An object inheriting from class \code{strike}
+#' @param x An object inheriting from class [strike].
+#'
 #' @param which A character vector that indicates what to plot.
 #' This choices for its entries are listed below, in no particular order.
 #' \itemize{
 #'
-#' \item \code{"location"} for a time-series plot of boat location \code{xw} in
-#' dashed black, whale centerline \code{xs} in solid gray,
+#' \item `"location"` for a time-series plot of boat location `xw` in
+#' dashed black, whale centerline `xs` in solid gray,
 #' blubber-interior interface in red, and skin in blue. The maximum
 #' acceleration of ship and whale (in "g" units) are indicated in notes
 #' placed near the horizontal axes. Those acceleration indications report
@@ -1173,11 +1268,11 @@ strike <- function(t, state, parms, debug=0)
 #' and sublayer have been squeezed to their limits, yielding a short and
 #' intense force spike as the bone compresses, then the summaries will
 #' also report on the spike duration and intensity. The spike is computed
-#' based on using \code{\link{runmed}} on the acceleration data, with a
-#' \code{k} value that is set to correspond to 5 ms, or to k=11, whichever
+#' based on using [runmed()] on the acceleration data, with a
+#' `k` value that is set to correspond to 5 ms, or to k=11, whichever
 #' is larger.
 #'
-#' \item \code{"section"} to plot skin thickness, blubber thickness and sublayer thickness
+#' \item `"section"` to plot skin thickness, blubber thickness and sublayer thickness
 #' in one panel, creating a cross-section diagram.
 #'
 ## \item \code{"injury"} a stacked plot showing time-series traces of health
@@ -1188,11 +1283,11 @@ strike <- function(t, state, parms, debug=0)
 ## line is overdrawn with a thick gray line. During times when the criterion
 ## is exceeded, the colour shifts to black.
 #'
-#' \item \code{"threat"} a stacked plot showing time-series traces of an
+#' \item `"threat"` a stacked plot showing time-series traces of an
 #' ad-hoc measure of the possible threat to skin, blubber and sublayer.
 #' The threat level is computed as the ratio
 #' of stress to ultimate strength, e.g. for blubber, it is
-#' \code{x$WCF$stress/x$parms$s[2]}. The same vertical scale is used in
+#' `x$WCF$stress/x$parms$s[2]`. The same vertical scale is used in
 #' each of the subpanels that make up the stack. Any values exceeding
 #' 10 are clipped to 10, and in such a case the overall label on the vertical
 #' axis will note this clipping, although it should be easy to see, because
@@ -1203,28 +1298,28 @@ strike <- function(t, state, parms, debug=0)
 #' for higher values; this makes it easy to tell at a glance whether the
 #' threat level is high.
 #'
-#' \item \code{"whale acceleration"} for a time-series plot of whale acceleration.
+#' \item `"whale acceleration"` for a time-series plot of whale acceleration.
 #'
-#' \item \code{"blubber thickness"} for a time-series plot of blubber thickness.
+#' \item `"blubber thickness"` for a time-series plot of blubber thickness.
 #'
-#' \item \code{"sublayer thickness"} for a time-series plot of the thickness
+#' \item `"sublayer thickness"` for a time-series plot of the thickness
 #' of the layer interior to the blubber.
 #'
-#' \item \code{"reactive forces"} for a time-series showing the reactive
+#' \item `"reactive forces"` for a time-series showing the reactive
 #' forces associated with skin stretching (solid) and the compression of the
 #' blubber and sublayer components (dashed).
 #'
-#' \item \code{"compression stress"} for a time-series plot of the compression stress on the blubber
+#' \item `"compression stress"` for a time-series plot of the compression stress on the blubber
 #' and the layer to its interior. (These stresses are equal, under an equilibrium assumption.)
 #'
-#' \item \code{"skin stress"} for a time-series of skin stress in the along-skin y and z directions.
+#' \item `"skin stress"` for a time-series of skin stress in the along-skin y and z directions.
 #'
-#' \item \code{"values"} for a listing of \code{param} values.
+#' \item `"values"` for a listing of `param` values.
 #'
-#' \item \code{"all"} for all of the above.
+#' \item `"all"` for all of the above.
 #'
-#' \item \code{"default"} for a three-element plot showing \code{"location"},
-#' \code{"section"}, and \code{"threat"}.
+#' \item `"default"` for a three-element plot showing `"location"`,
+#' `"section"`, and `"threat"`.
 #'}
 #'
 #' @param drawEvents Logical, indicating whether to draw lines for some events,
@@ -1237,15 +1332,15 @@ strike <- function(t, state, parms, debug=0)
 #'
 #' @param colwskin Colour used to indicate the whale skin.
 #'
-#' @param cols As \code{colw}, but the colour to be used for the ship bow location,
+#' @param cols As `colw`, but the colour to be used for the ship bow location,
 #' which is drawn with a dashed line.
 #'
-## @param colInjury Two-element colour specification used in \code{"injury"}
+## @param colInjury Two-element colour specification used in `"injury"`
 ## panels. The first colour is used to indicate values that are halfway to the
 ## injury crition, and the second is used to indicte values that exceed the
 ## criterion.
 #'
-#' @param colThreat Two-element colour specification used in \code{"threat"}.
+#' @param colThreat Two-element colour specification used in `"threat"`.
 #' The first colour is used for threat levels between 0 and 1, the second
 #' for levels exceeding 1. The defaults are to use light gray and black.
 #'
@@ -1261,7 +1356,7 @@ strike <- function(t, state, parms, debug=0)
 #' @param ... Ignored.
 #'
 #' @references
-#' See \link{whalestrike} for a list of references.
+#' See [whalestrike()] for a list of references.
 #'
 #' @examples
 #' ## 1. default 3-panel plot
@@ -1278,9 +1373,12 @@ strike <- function(t, state, parms, debug=0)
 #' @author Dan Kelley
 #'
 #' @export
+#'
 #' @importFrom graphics abline axis box lines legend mtext par plot text
 #' @importFrom grDevices hcl
 #' @importFrom stats runmed
+#'
+#' @md
 plot.strike <- function(x, which="default", drawEvents=TRUE,
                         colwcenter="black", #Slate Gray",
                         colwinterface="black", #colwinterface="Firebrick",
@@ -1785,18 +1883,22 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
 
 #' Summarize the parameters of a simulation, and its results
 #'
-#' @param object An object inheriting from class \code{strike}
+#' @param object An object inheriting from class [strike]
+#'
 #' @param style Character value indicating the representation to be used.
-#' If \code{style} is \code{"text"}, then the output is in a textual format. If it
-#' is \code{"latex"}, then the output is in latex format.
+#' If `style` is `"text"`, then the output is in a textual format. If it
+#' is `"latex"`, then the output is in latex format.
 #'
 #' @references
-#' See \link{whalestrike} for a list of references.
+#' See [whalestrike()] for a list of references.
 #'
 #' @author Dan Kelley
 #'
 #' @export
+#'
 #' @importFrom xtable xtable
+#'
+#' @md
 summarize <- function(object, style="text")
 {
     parm <- object$parm

@@ -7,14 +7,15 @@
 knot2mps(knot)
 }
 \arguments{
-\item{knot}{Speed in knots}
+\item{knot}{Speed in knots.}
 }
 \value{
-Speed in m/s
+Speed in m/s.
 }
 \description{
 This is done by multiplying by the factor 1.852e3/3600,
-according to https://en.wikipedia.org/wiki/Knot_(unit)
+according to https://en.wikipedia.org/wiki/Knot_(unit).
+See also \code{\link[=mps2knot]{mps2knot()}}, which is the inverse of this function.
 }
 \author{
 Dan Kelley

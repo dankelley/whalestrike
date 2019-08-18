@@ -7,18 +7,18 @@
 whaleCompressionForce(xs, xw, parms)
 }
 \arguments{
-\item{xs}{Ship position [m]}
+\item{xs}{Ship position (m).}
 
-\item{xw}{Whale position [m]}
+\item{xw}{Whale position (m).}
 
 \item{parms}{A named list holding model parameters, created by
 \code{\link{parameters}}.}
 }
 \value{
-A list containing: \code{force} [N], the
-compression-resisting force; \code{stress} [Pa], the ratio
+A list containing: \code{force} (N), the
+compression-resisting force; \code{stress} (Pa), the ratio
 of that force to the impact area; \code{strain}, the total
-strain, and \code{compressed}, a four-column matrix [m]
+strain, and \code{compressed}, a four-column matrix (m)
 with first column for skin compression, second for blubber
 compression, third for sublayer compression, and fourth
 for bone compression.
@@ -26,8 +26,8 @@ for bone compression.
 \description{
 Calculate the total compression stress and force, along
 with the thicknesses of skin, blubber, sublayer, and bone.
-The stess is computed with the \code{stressFromStrain} function that
-is created by \code{\link{parameters}} and stored in \code{para}.
+The stess is computed with the \code{\link[=stressFromStrainFunction]{stressFromStrainFunction()}} function that
+is created by \link{parameters} and stored in \code{para}.
 the force is computed by multiplying stess by area
 computed as the product of \code{parms$Ly} and \code{parms$Lz}.
 Any negative layer thicknesses are set to zero, as a way to
@@ -35,7 +35,7 @@ avoid problems with aphysical engineering compression strains that
 exceed 1.
 }
 \references{
-See \link{whalestrike} for a list of references.
+See \code{\link[=whalestrike]{whalestrike()}} for a list of references.
 }
 \author{
 Dan Kelley

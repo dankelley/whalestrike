@@ -12,7 +12,7 @@ derivative(var, t)
 \item{t}{time in seconds.}
 }
 \value{
-Derivative estimated by using \code{\link{diff}} on both \code{x}
+Derivative estimated by using \code{\link[=diff]{diff()}} on both \code{x}
 and \code{t}. In order to return a value of the same length as \code{x} and
 \code{t}, the last value is repeated.
 }

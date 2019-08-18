@@ -7,11 +7,11 @@
 dynamics(t, y, parms)
 }
 \arguments{
-\item{t}{time [s].}
+\item{t}{time (s).}
 
-\item{y}{model state, a vector containing ship position \code{xs} [m],
-ship speed \code{vs} [m/s], whale position \code{xw} [m],
-and whale speed \code{vw} [m/s].}
+\item{y}{model state, a vector containing ship position \code{xs} (m),
+ship speed \code{vs} (m/s), whale position \code{xw} (m),
+and whale speed \code{vw} (m/s).}
 
 \item{parms}{A named list holding model parameters, created by
 \code{\link{parameters}}.}
@@ -20,7 +20,7 @@ and whale speed \code{vw} [m/s].}
 Dynamical law
 }
 \references{
-See \link{whalestrike} for a list of references.
+See \code{\link[=whalestrike]{whalestrike()}} for a list of references.
 }
 \author{
 Dan Kelley

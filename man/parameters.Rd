@@ -9,35 +9,35 @@ parameters(ms = 45000, Ss, Ly = 1.15, Lz = 1.15,
   theta = 55, Cs = 0.01, Cw = 0.0025, file)
 }
 \arguments{
-\item{ms}{Ship mass [kg].}
+\item{ms}{Ship mass (kg).}
 
-\item{Ss}{Ship wetted area [m^2]. This, together with \code{Cs}, is used by
-used by \code{\link{shipWaterForce}} to estimate ship drag force. If \code{Ss}
-is not given, then an esimate is made by calling \code{\link{shipAreaFromMass}} with
+\item{Ss}{Ship wetted area (m^2). This, together with \code{Cs}, is used by
+used by \code{\link[=shipWaterForce]{shipWaterForce()}} to estimate ship drag force. If \code{Ss}
+is not given, then an esimate is made by calling \code{\link[=shipAreaFromMass]{shipAreaFromMass()}} with
 the provided value of \code{ms}.}
 
-\item{Ly}{Ship impact horizontal extent [m]; defaults to 1.23m if not specified,
+\item{Ly}{Ship impact horizontal extent (m); defaults to 1.23m if not specified,
 based on an analysis of the shape of the bow of typical coastal fishing boats
 of the Cape Islander variety.}
 
-\item{Lz}{Ship impact vertical extent [m]; defaults to 1.23m if not specified,
+\item{Lz}{Ship impact vertical extent (m); defaults to 1.23m if not specified,
 based on the same analysis as for Ly.}
 
 \item{species}{A string indicating the whale species. For the permitted values,
-see \code{\link{whaleMassFromLength}}.}
+see \code{\link[=whaleMassFromLength]{whaleMassFromLength()}}.}
 
-\item{lw}{Whale length [m]. This is used by \code{\link{whaleAreaFromLength}} to
+\item{lw}{Whale length (m). This is used by \code{\link[=whaleAreaFromLength]{whaleAreaFromLength()}} to
 calculate area, which is needed for the water drag calculation done by
-\code{\link{whaleWaterForce}}.}
+\code{\link[=whaleWaterForce]{whaleWaterForce()}}.}
 
-\item{mw}{Whale mass [kg]. If this value is not provided, then
-it is calculated from whale length, using \code{\link{whaleMassFromLength}}
+\item{mw}{Whale mass (kg). If this value is not provided, then
+it is calculated from whale length, using \code{\link[=whaleMassFromLength]{whaleMassFromLength()}}
 with \code{type="wetted"}.}
 
-\item{Sw}{Whale surface area [m^2]. If not provided, this is calculated
-from whale length using \code{\link{whaleAreaFromLength}}.}
+\item{Sw}{Whale surface area (m^2). If not provided, this is calculated
+from whale length using \code{\link[=whaleAreaFromLength]{whaleAreaFromLength()}}.}
 
-\item{l}{Numerical vector of length 4, giving thickness [m] of skin, blubber,
+\item{l}{Numerical vector of length 4, giving thickness (m) of skin, blubber,
 sublayer, and bone. If not provided, this is set to
 \code{c(0.025, 0.16, 1.12, 0.1)}.
 The skin thicknes default of 0.025 m represents the 0.9-1.0 inch value
@@ -77,7 +77,7 @@ and \code{a*b} is set to equal 8.54e8 Pa,
 given in Table 2.3 of Raymond (2007) and Table 4.5 of
 Campbell-Malone (2007).}
 
-\item{s}{Numerical vector of length 4, giving the ultimate strengths [Pa] of
+\item{s}{Numerical vector of length 4, giving the ultimate strengths (Pa) of
 skin, blubber, sublayer, and bone, respectively. If not provided, the
 value is set to
 \code{c(19.6e6, 0.437e6, 0.437e6, 22.9e6)},
@@ -94,43 +94,43 @@ more specific information.
 The bone default o 22.9 MPa is from Table 2.3 of Raymond (2007) and
 Table 4.5 of Campbell-Malone (2007).}
 
-\item{theta}{Whale skin deformation angle [deg]; defaults to 55 degrees,
+\item{theta}{Whale skin deformation angle (deg); defaults to 55 degrees,
 if not supplied, because that angle produces a good match to Raymond's (2007)
 Figure 6.1 for the total force as a function of vessel speed, for large
 vessels. (Note that the match works almost as well in the range 50 deg
 to 70 deg.)}
 
-\item{Cs}{Drag coefficient for ship [dimensionless],
-used by \code{\link{shipWaterForce}} to estimate ship drag force. Defaults
+\item{Cs}{Drag coefficient for ship (dimensionless),
+used by \code{\link[=shipWaterForce]{shipWaterForce()}} to estimate ship drag force. Defaults
 to 1e-2, which is 4 times the frictional coefficient of 2.5e-3
 inferred from Figure 4 of Manen and van Oossanen (1988), assuming
 a Reynolds number of 5e7, computed from speed 5m/s, lengthscale 10m
 and viscosity 1e-6 m^2/s. (The factor of 4 is under the assumption
 that frictional drag is about a quarter of total drag.)
-The drag force is computed with \code{\link{shipWaterForce}}.}
+The drag force is computed with \code{\link[=shipWaterForce]{shipWaterForce()}}.}
 
-\item{Cw}{Drag coefficient for whale [dimensionless],
-used by \code{\link{whaleWaterForce}} to estimate whale drag force.
+\item{Cw}{Drag coefficient for whale (dimensionless),
+used by \code{\link[=whaleWaterForce]{whaleWaterForce()}} to estimate whale drag force.
 Defaults to 2.5e-3, for Reynolds number 2e7, computed from speed
 2 m/s, lengthscale 5m (between radius and length) and
 viscosity 1e-6 m^2/s.  The drag force is computed with
-\code{\link{whaleWaterForce}}.}
+\code{\link[=whaleWaterForce]{whaleWaterForce()}}.}
 
 \item{file}{Optional name a comma-separated file that holds all of the
 previous values, except \code{Cs} and \code{Cw}. If provided,
 then other parameters (except \code{Cs} and \code{Cw}) are
 ignored, because values are sought from the file. The purpose of
 this is in shiny apps that want to save a simulation framework.
-The file should be saved \code{\link{write.csv}} with
+The file should be saved \code{\link[=write.csv]{write.csv()}} with
 \code{row.names=FALSE}.}
 }
 \value{
 A named list holding the parameters, with defaults and alternatives reconciled
 according to the system described above, along with a function that computes
-compression force, which created by \code{\link{stressFromStrainFunction}}.
+compression force, which created by \code{\link[=stressFromStrainFunction]{stressFromStrainFunction()}}.
 }
 \description{
-Assembles control parameters into a list suitable for passing to \code{\link{strike}}
+Assembles control parameters into a list suitable for passing to \code{\link[=strike]{strike()}}
 and the functions that it calls. If \code{file} is provided, then all the other
 arguments are read from that source.
 Below are some sources cited in the discussion of the function arguments.
