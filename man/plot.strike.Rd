@@ -10,7 +10,7 @@
   D = 3, debug = 0, ...)
 }
 \arguments{
-\item{x}{An object inheriting from class \link{strike}.}
+\item{x}{An object created by \code{\link[=strike]{strike()}}.}
 
 \item{which}{A character vector that indicates what to plot.
 This choices for its entries are listed below, in no particular order.

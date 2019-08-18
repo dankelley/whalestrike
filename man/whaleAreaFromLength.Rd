@@ -22,7 +22,7 @@ necropsy side-view presented in Daoust et al. (2018).}
 }
 \description{
 This depends on calculations based on the digitized shape of
-a whale necropsy, which is provided as \code{data([whaleshape])}.
+a whale necropsy, which is provided as \link{whaleshape}.
 The results are
 \preformatted{0.143 * L^2} for the projected area (see reference 1)
 and

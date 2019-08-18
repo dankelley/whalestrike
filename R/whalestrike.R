@@ -106,7 +106,7 @@ pin <- function(x, lower=NULL, upper=NULL)
 #' @param upper Coordinates of the upper curve, or a single value that gets
 #' repeated to the length of `x`.
 #'
-#' @param ... passed to [polygon]. In most cases, this
+#' @param ... passed to [polygon()]. In most cases, this
 #' will contain `col`, the fill colour, and possibly `border`,
 #' the border colour, although cross-hatching with `density`
 #' and `angle` is also a good choice.
@@ -153,7 +153,7 @@ fillplot <- function(x, lower, upper, ...)
 #' This is a data frame with elements `strain` and `stress`,
 #' found by digitizing (accurate to perhaps 1 percent) the curve shown in Figure 2.13
 #' of Raymond (2007). It is used to develop a stress-strain relationship used
-#' by [parameters], as shown in \dQuote{Examples}.
+#' by [parameters()], as shown in \dQuote{Examples}.
 #'
 #' @template ref_raymond
 #'
@@ -224,7 +224,7 @@ NULL
 #' to add new forces, and to explore a range of
 #' criteria for whale damage.
 #'
-#' The documentation for [strike] provides
+#' The documentation for [strike()] provides
 #' a practical example of using the main functions of this package,
 #' while the package vignette provides a general overview.
 #' A companion manuscript is intended to
@@ -253,7 +253,7 @@ NULL
 #' \item
 #' Grear, Molly E., Michael R. Motley, Stephanie B. Crofts, Amanda E. Witt, Adam
 #' P. Summers, and Petra Ditsche. “Mechanical Properties of Harbor Seal Skin and
-#' Blubber − a Test of Anisotropy.” Zoology 126 (2018): 137–44.
+#' Blubber--a Test of Anisotropy.” Zoology 126 (2018): 137–44.
 #' \url{https://doi.org/10.1016/j.zool.2017.11.002}.
 #'
 #' \item
@@ -270,7 +270,7 @@ NULL
 #'
 #' \item
 #' MAN Diesel & Turbo. “Basic Principles of Propulsion.” MAN Diesel & Turbo, 2011.
-#' \url{https://marine.mandieselturbo.com/docs/librariesprovider6/propeller-aftship/basic-principles-of-propulsion.pdf?sfvrsn=0}.
+#' \url{https://spain.mandieselturbo.com/docs/librariesprovider10/sistemas-propulsivos-marinos/basic-principles-of-ship-propulsion.pdf?sfvrsn=2}
 #'
 #' \item
 #' Manen, J. D. van, and P. van Oossanen. “Resistance.” In Principles of Naval
@@ -315,7 +315,7 @@ NULL
 #' Create a function for stress in laminated layers
 #'
 #' Denoting unforced layer thickness in the \eqn{i} layer as
-#' \eqn{l_i} and strain there as \eqn{\epsilon_i=\Deltal_i/l_i},
+#' \eqn{l_i} and strain there as \eqn{\epsilon_i=\Delta l_i/l_i},
 #' we may write the stress-strain relationship as
 #' \deqn{\sigma = a_i*(exp(b_i*\epsilon_i)-1)}
 #' for each layer, where it is assumed that stress
@@ -323,20 +323,20 @@ NULL
 #' Inverting this yields
 #' \deqn{\epsilon_i= ln(1 + \sigma/a_i)/b_i}
 #' where \eqn{ln} is the natural logarithm.  Therefore,
-#' the change \eqn{\DeltaL} in the total thickness \eqn{L=\suml_i}
+#' the change \eqn{\Delta L} in the total thickness \eqn{L=\sum l_i}
 #' may be written
-#' \deqn{0 = \DeltaL - \sum((l_i/b_i) ln(1+\sigma/a_i))}.
+#' \deqn{0 = \Delta L - \sum((l_i/b_i) ln(1+\sigma/a_i))}.
 #' Note that zero-thickness layers are removed from the calculation,
 #' to avoid spurious forces.
 #'
 #' This expression is not easily inverted to get
-#' \eqn{\sigma} in terms of \eqn{\DeltaL}
+#' \eqn{\sigma} in terms of \eqn{\Delta L}
 #' but it may be solved
 #' easily for particular numerical values, using [uniroot()].
 #'
 #' This is done for a sequence of `N` values of strain \eqn{\epsilon}
 #' that range from 0 to 1. Then [approxfun()] is used to create
-#' a piecewise-linear represention of the relationship between \eqn{\sigma} and \eqn{\DeltaL},
+#' a piecewise-linear represention of the relationship between \eqn{\sigma} and \eqn{\Delta L},
 #' which becomes the return value of the present function.
 #' (The purpose of using a the piecewise-linear representation os to shorten
 #' computation times.)
@@ -771,7 +771,7 @@ whaleLengthFromMass <- function(M, species="N. Atl. Right Whale", model="fortune
 #' Whale projected area, as function of length
 #'
 #' This depends on calculations based on the digitized shape of
-#' a whale necropsy, which is provided as `data([whaleshape])`.
+#' a whale necropsy, which is provided as [whaleshape].
 #' The results are
 #' \preformatted{0.143 * L^2} for the projected area (see reference 1)
 #' and
@@ -836,7 +836,7 @@ whaleAreaFromLength <- function(L, species="N. Atl. Right Whale", type="wetted")
 #' Calculate the total compression stress and force, along
 #' with the thicknesses of skin, blubber, sublayer, and bone.
 #' The stess is computed with the [stressFromStrainFunction()] function that
-#' is created by [parameters] and stored in `para`.
+#' is created by [parameters()] and stored in `para`.
 #' the force is computed by multiplying stess by area
 #' computed as the product of `parms$Ly` and `parms$Lz`.
 #' Any negative layer thicknesses are set to zero, as a way to
@@ -1253,7 +1253,7 @@ strike <- function(t, state, parms, debug=0)
 #' Creates displays of various results of a simulation performed
 #' with [strike()].
 #'
-#' @param x An object inheriting from class [strike].
+#' @param x An object created by [strike()].
 #'
 #' @param which A character vector that indicates what to plot.
 #' This choices for its entries are listed below, in no particular order.
@@ -1465,10 +1465,10 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         awmaxs <- max(abs(runmed(aw, k)))
         if (awmax > 2 * awmaxs) {
             peakTime <- sum(abs(aw) > 0.5*(awmax+awmaxs)) * (t[2] - t[1])
-            label <- sprintf("whale: %.1fg (%.1fms spike to %.0fg)",
+            label <- sprintf("whale accel.: %.1fg (%.1fms spike to %.0fg)",
                              awmaxs/g, peakTime*1e3, awmax/g)
         } else {
-            label <- sprintf("whale: %.1fg", awmax/g)
+            label <- sprintf("whale accel.: %.1fg", awmax/g)
         }
         mtext(label, side=3, line=-1.25, cex=par("cex"), adj=0.5)
         showEvents(xs, xw)
@@ -1883,7 +1883,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
 
 #' Summarize the parameters of a simulation, and its results
 #'
-#' @param object An object inheriting from class [strike]
+#' @param object An object created by [strike()].
 #'
 #' @param style Character value indicating the representation to be used.
 #' If `style` is `"text"`, then the output is in a textual format. If it
