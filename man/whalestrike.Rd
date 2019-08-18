@@ -73,7 +73,7 @@ Kelley, Dan. “Whale Mass,” July 7, 2018. 20180707_whale_mass. Dan Kelley’s
 
 \item
 MAN Diesel & Turbo. “Basic Principles of Propulsion.” MAN Diesel & Turbo, 2011.
-\url{https://marine.mandieselturbo.com/docs/librariesprovider6/propeller-aftship/basic-principles-of-propulsion.pdf?sfvrsn=0}.
+\url{https://spain.mandieselturbo.com/docs/librariesprovider10/sistemas-propulsivos-marinos/basic-principles-of-ship-propulsion.pdf?sfvrsn=2}
 
 \item
 Manen, J. D. van, and P. van Oossanen. “Resistance.” In Principles of Naval
