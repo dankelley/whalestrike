@@ -24,7 +24,7 @@ no notion of compressing blubber, etc. to negative thickness.
 }
 \description{
 Denoting unforced layer thickness in the \eqn{i} layer as
-\eqn{l_i} and strain there as \eqn{\epsilon_i=\Deltal_i/l_i},
+\eqn{l_i} and strain there as \eqn{\epsilon_i=\Delta l_i/l_i},
 we may write the stress-strain relationship as
 \deqn{\sigma = a_i*(exp(b_i*\epsilon_i)-1)}
 for each layer, where it is assumed that stress
@@ -32,21 +32,21 @@ for each layer, where it is assumed that stress
 Inverting this yields
 \deqn{\epsilon_i= ln(1 + \sigma/a_i)/b_i}
 where \eqn{ln} is the natural logarithm.  Therefore,
-the change \eqn{\DeltaL} in the total thickness \eqn{L=\suml_i}
+the change \eqn{\Delta L} in the total thickness \eqn{L=\sum l_i}
 may be written
-\deqn{0 = \DeltaL - \sum((l_i/b_i) ln(1+\sigma/a_i))}.
+\deqn{0 = \Delta L - \sum((l_i/b_i) ln(1+\sigma/a_i))}.
 Note that zero-thickness layers are removed from the calculation,
 to avoid spurious forces.
 }
 \details{
 This expression is not easily inverted to get
-\eqn{\sigma} in terms of \eqn{\DeltaL}
+\eqn{\sigma} in terms of \eqn{\Delta L}
 but it may be solved
 easily for particular numerical values, using \code{\link[=uniroot]{uniroot()}}.
 
 This is done for a sequence of \code{N} values of strain \eqn{\epsilon}
 that range from 0 to 1. Then \code{\link[=approxfun]{approxfun()}} is used to create
-a piecewise-linear represention of the relationship between \eqn{\sigma} and \eqn{\DeltaL},
+a piecewise-linear represention of the relationship between \eqn{\sigma} and \eqn{\Delta L},
 which becomes the return value of the present function.
 (The purpose of using a the piecewise-linear representation os to shorten
 computation times.)

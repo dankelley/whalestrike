@@ -7,7 +7,7 @@
 summarize(object, style = "text")
 }
 \arguments{
-\item{object}{An object inheriting from class \link{strike}}
+\item{object}{An object created by \code{\link[=strike]{strike()}}.}
 
 \item{style}{Character value indicating the representation to be used.
 If \code{style} is \code{"text"}, then the output is in a textual format. If it

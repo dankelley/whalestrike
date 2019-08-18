@@ -53,7 +53,8 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
 #' @param output A list of output entries, for plotting, etc.
 #' @param session A list used for various purposes.
 #' @importFrom utils write.csv
-#' @importFrom shiny observeEvent reactiveValuesToList renderPlot showNotification updateSliderInput 
+#' @importFrom shiny observeEvent reactiveValuesToList renderPlot showNotification updateSliderInput
+#' @md
 server <- function(input, output, session)
 {
     observeEvent(input$saveFile, {
@@ -128,6 +129,7 @@ server <- function(input, output, session)
 #' @export
 #'
 #' @importFrom shiny shinyApp
+#' @md
 app <- function(mode="simple", options=list(height=500)) # NOTE: height has no effect
 {
     if (mode == "simple")

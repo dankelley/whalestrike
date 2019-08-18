@@ -8,7 +8,7 @@
 This is a data frame with elements \code{strain} and \code{stress},
 found by digitizing (accurate to perhaps 1 percent) the curve shown in Figure 2.13
 of Raymond (2007). It is used to develop a stress-strain relationship used
-by \link{parameters}, as shown in \dQuote{Examples}.
+by \code{\link[=parameters]{parameters()}}, as shown in \dQuote{Examples}.
 }
 \examples{
 data(raymond2007)
