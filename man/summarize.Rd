@@ -7,7 +7,7 @@
 summarize(object, style = "text")
 }
 \arguments{
-\item{object}{An object inheriting from class \code{strike}}
+\item{object}{An object created by \code{\link[=strike]{strike()}}.}
 
 \item{style}{Character value indicating the representation to be used.
 If \code{style} is \code{"text"}, then the output is in a textual format. If it
@@ -17,5 +17,8 @@ is \code{"latex"}, then the output is in latex format.}
 Summarize the parameters of a simulation, and its results
 }
 \references{
-See \link{whalestrike} for a list of references.
+See \code{\link[=whalestrike]{whalestrike()}} for a list of references.
+}
+\author{
+Dan Kelley
 }

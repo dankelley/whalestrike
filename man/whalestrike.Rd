@@ -26,7 +26,7 @@ to add new forces, and to explore a range of
 criteria for whale damage.
 }
 \details{
-The documentation for \code{\link{strike}} provides
+The documentation for \code{\link[=strike]{strike()}} provides
 a practical example of using the main functions of this package,
 while the package vignette provides a general overview.
 A companion manuscript is intended to
@@ -56,7 +56,7 @@ no. 5 (2012): 1342–54. \url{https://doi.org/10.1644/11-MAMM-A-297.1}.
 \item
 Grear, Molly E., Michael R. Motley, Stephanie B. Crofts, Amanda E. Witt, Adam
 P. Summers, and Petra Ditsche. “Mechanical Properties of Harbor Seal Skin and
-Blubber − a Test of Anisotropy.” Zoology 126 (2018): 137–44.
+Blubber--a Test of Anisotropy.” Zoology 126 (2018): 137–44.
 \url{https://doi.org/10.1016/j.zool.2017.11.002}.
 
 \item
@@ -73,7 +73,7 @@ Kelley, Dan. “Whale Mass,” July 7, 2018. 20180707_whale_mass. Dan Kelley’s
 
 \item
 MAN Diesel & Turbo. “Basic Principles of Propulsion.” MAN Diesel & Turbo, 2011.
-\url{https://marine.mandieselturbo.com/docs/librariesprovider6/propeller-aftship/basic-principles-of-propulsion.pdf?sfvrsn=0}.
+\url{https://spain.mandieselturbo.com/docs/librariesprovider10/sistemas-propulsivos-marinos/basic-principles-of-ship-propulsion.pdf?sfvrsn=2}
 
 \item
 Manen, J. D. van, and P. van Oossanen. “Resistance.” In Principles of Naval

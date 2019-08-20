@@ -178,6 +178,7 @@ on this graph.
 
 # Further reading
 
-See [whalestrike](../help/whalestrike) for some references to the literature, and
-individual help pages for details of the various functions in the package.
+The documentation for the `whalestrike` package provides many references to the
+literature. A good start is to use `help("strike",package="whalestrike")` to
+get help on a key function of the package.
 

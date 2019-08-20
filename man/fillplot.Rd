@@ -15,7 +15,7 @@ or a single value that gets repeated to the length of \code{x}.}
 \item{upper}{Coordinates of the upper curve, or a single value that gets
 repeated to the length of \code{x}.}
 
-\item{...}{passed to \code{\link{polygon}}. In most cases, this
+\item{...}{passed to \code{\link[=polygon]{polygon()}}. In most cases, this
 will contain \code{col}, the fill colour, and possibly \code{border},
 the border colour, although cross-hatching with \code{density}
 and \code{angle} is also a good choice.}
@@ -41,4 +41,8 @@ plot(range(x), range(lower, lower+upper), type='n',
      xaxs="i", yaxs="i")
 fillplot(x, min(lower), lower, col="darkgray")
 fillplot(x, lower, lower+upper, col="lightgray")
+
+}
+\author{
+Dan Kelley
 }

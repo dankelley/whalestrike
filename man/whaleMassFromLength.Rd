@@ -23,6 +23,16 @@ Calculate an estimate of the mass of a whale, based on its length, with
 formulae from the following sources.
 }
 \details{
+Moore, M.J., A.R. Knowlton, S.D. Kraus, W.A. McLellan, and R.K. Bonde.
+“Morphometry, Gross Morphology and Available Histopathology in North Atlantic
+Right Whale (Eubalaena Glacialis) Mortalities (1970 to 2002).” Journal of
+Cetacean Research and Management 6, no. 3 (2005): 199–214.
+
+Fortune, Sarah M. E., Andrew W. Trites, Wayne L. Perryman, Michael J. Moore,
+Heather M. Pettis, and Morgan S. Lynn. “Growth and Rapid Early Development of
+North Atlantic Right Whales (Eubalaena Glacialis).” Journal of Mammalogy 93,
+no. 5 (2012): 1342–54. \url{https://doi.org/10.1644/11-MAMM-A-297.1}.
+
 The permitted values for \code{model} are as follows.
 \itemize{
 \item \code{"moore2005"} yields
@@ -63,5 +73,8 @@ legend("topleft", lwd=1, col=1:3,
 
 }
 \references{
-See \link{whalestrike} for a list of references.
+See \code{\link[=whalestrike]{whalestrike()}} for a list of references.
+}
+\author{
+Dan Kelley
 }

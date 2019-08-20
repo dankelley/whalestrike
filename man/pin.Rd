@@ -21,3 +21,6 @@ been replaced by \code{lim}.
 \description{
 Pin numerical values between stated limits
 }
+\author{
+Dan Kelley
+}
