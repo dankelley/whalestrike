@@ -736,7 +736,7 @@ whaleMassFromLength <- function(L, species="N. Atl. Right Whale", model="fortune
     } else if (model == "fortune2012") {
         if (species == "N. Atl. Right Whale")
             exp(-10.095 + 2.825*log(100*L))
-        else if (species != "Pac. Right Whale")
+        else if (species == "Pac. Right Whale")
             exp(-12.286 + 3.158*log(100*L))
         else
             stop("The 'moore2005' model only works if species is 'N. Atl. Right Whale' or 'N. Pac. Right Whale'")
