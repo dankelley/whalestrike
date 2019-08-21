@@ -7,13 +7,13 @@
 shipWaterForce(vs, parms)
 }
 \arguments{
-\item{vs}{ship velocity [m/s]}
+\item{vs}{ship velocity (m/s).}
 
 \item{parms}{A named list holding model parameters, created by
 \code{\link{parameters}}.}
 }
 \value{
-Water drag force [N]
+Water drag force (N).
 }
 \description{
 Compute the retarding force of water on the ship, based on a drag law

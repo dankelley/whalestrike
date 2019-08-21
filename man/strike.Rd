@@ -7,7 +7,7 @@
 strike(t, state, parms, debug = 0)
 }
 \arguments{
-\item{t}{a suggested vector of times [s] at which the simulated state will be reported.
+\item{t}{a suggested vector of times (s) at which the simulated state will be reported.
 This is only a suggestion, however, because \code{strike} is set up to detect high
 accelerations caused by bone compression, and may set a finer reporting interval,
 if such accelerations are detected. The detection is based on thickness of
@@ -15,15 +15,15 @@ compressed blubber and sublayer; if either gets to zero thickness, then
 a new time grid is constructed, with 10 points during the timescale for
 bone compression, which is assumed to be
 \eqn{2*sqrt(Ly*Lz*a[4]*b[4]/(l[4]*mw)}, with terms as discussed in
-the documentation for \code{\link{parameters}}. If this grid is finer
+the documentation for \code{\link[=parameters]{parameters()}}. If this grid is finer
 than the grid in the stated \code{t}, then the simulatoin is redone
 using the new grid.}
 
 \item{state}{A list or named vector holding the initial state of the model:
-ship position \code{xs} [m],
-ship speed \code{vs} [m/s],
-whale position \code{xw} [m]
-and whale speed \code{vw} [m/s].}
+ship position \code{xs} (m),
+ship speed \code{vs} (m/s),
+whale position \code{xw} (m),
+and whale speed \code{vw} (m/s).}
 
 \item{parms}{A named list holding model parameters, created by
 \code{\link{parameters}}.}
@@ -32,10 +32,10 @@ and whale speed \code{vw} [m/s].}
 higher values for more verbose monitoring of progress through the function.}
 }
 \value{
-An object of class \code{"whalestrike"}, consisting of a
-list containing vectors for time (\code{t} [s]), ship position (\code{xs} [m]),
-boat speed (\code{vs} [m/s]), whale position (\code{xw} [m]), whale speed (\code{vw} [m/s]),
-boat acceleration (\code{dvsdt} [m/s^2]), and whale acceleration (\code{dvwdt} [m/s^2]),
+An object of class \code{"strike"}, consisting of a
+list containing vectors for time (\code{t} (s)), ship position (\code{xs} (m)),
+boat speed (\code{vs} (m/s)), whale position (\code{xw} (m)), whale speed (\code{vw} (m/s)),
+boat acceleration (\code{dvsdt} (m/s^2)), and whale acceleration (\code{dvwdt} (m/s^2)),
 a list containing the model parameters (\code{parms}), a list with the results of
 the skin force calculation (\code{SWF}), a list with the results of the compression
 force calculations (\code{WCF}), and a vector of whale water force (\code{WWF}).
@@ -44,10 +44,10 @@ force calculations (\code{WCF}), and a vector of whale water force (\code{WWF}).
 Newtonian mechanics are used, taking the ship as undeformable,
 and the whale as being cushioned by a skin layer and a blubber layer.
 The forces are calculated by
-\code{\link{shipWaterForce}},
-\code{\link{whaleSkinForce}},
-\code{\link{whaleCompressionForce}}, and
-\code{\link{whaleWaterForce}}.
+\code{\link[=shipWaterForce]{shipWaterForce()}},
+\code{\link[=whaleSkinForce]{whaleSkinForce()}},
+\code{\link[=whaleCompressionForce]{whaleCompressionForce()}}, and
+\code{\link[=whaleWaterForce]{whaleWaterForce()}}.
 }
 \examples{
 library(whalestrike)
@@ -95,7 +95,7 @@ abline(h=0, lty=2)
 
 }
 \references{
-See \link{whalestrike} for a list of references.
+See \code{\link[=whalestrike]{whalestrike()}} for a list of references.
 }
 \author{
 Dan Kelley

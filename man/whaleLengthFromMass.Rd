@@ -8,25 +8,24 @@ whaleLengthFromMass(M, species = "N. Atl. Right Whale",
   model = "fortune2012atlantic")
 }
 \arguments{
-\item{M}{Whale mass [kg].}
+\item{M}{Whale mass (kg).}
 
 \item{species}{A string indicating the whale species. For the permitted values,
-see \code{\link{whaleMassFromLength}}.}
+see \code{\link[=whaleMassFromLength]{whaleMassFromLength()}}.}
 
 \item{model}{Character string specifying the model, with permitted
 values \code{"moore2005"}, \code{"fortune2012atlantic"} and
-for \code{\link{whaleMassFromLength}} for the details of these
+for \code{\link[=whaleMassFromLength]{whaleMassFromLength()}} for the details of these
 formulations.}
 }
 \value{
-Whale length [m].
+Whale length (m).
 }
 \description{
-This works by inverting \code{\link{whaleMassFromLength}} using
-\code{\link{uniroot}}.
+This works by inverting \code{\link[=whaleMassFromLength]{whaleMassFromLength()}} using \code{\link[=uniroot]{uniroot()}}.
 }
 \references{
-See \link{whalestrike} for a list of references.
+See \code{\link[=whalestrike]{whalestrike()}} for a list of references.
 }
 \author{
 Dan Kelley

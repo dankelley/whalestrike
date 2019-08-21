@@ -10,7 +10,7 @@
   D = 3, debug = 0, ...)
 }
 \arguments{
-\item{x}{An object inheriting from class \code{strike}}
+\item{x}{An object created by \code{\link[=strike]{strike()}}.}
 
 \item{which}{A character vector that indicates what to plot.
 This choices for its entries are listed below, in no particular order.
@@ -25,13 +25,12 @@ just a single value for each of ship and whale, but if the blubber
 and sublayer have been squeezed to their limits, yielding a short and
 intense force spike as the bone compresses, then the summaries will
 also report on the spike duration and intensity. The spike is computed
-based on using \code{\link{runmed}} on the acceleration data, with a
+based on using \code{\link[=runmed]{runmed()}} on the acceleration data, with a
 \code{k} value that is set to correspond to 5 ms, or to k=11, whichever
 is larger.
 
 \item \code{"section"} to plot skin thickness, blubber thickness and sublayer thickness
 in one panel, creating a cross-section diagram.
-
 
 \item \code{"threat"} a stacked plot showing time-series traces of an
 ad-hoc measure of the possible threat to skin, blubber and sublayer.
@@ -102,7 +101,7 @@ for more verbose monitoring of progress through the function.}
 }
 \description{
 Creates displays of various results of a simulation performed
-with \code{\link{strike}}.
+with \code{\link[=strike]{strike()}}.
 }
 \examples{
 ## 1. default 3-panel plot
@@ -118,7 +117,7 @@ plot(sol, "all")
 
 }
 \references{
-See \link{whalestrike} for a list of references.
+See \code{\link[=whalestrike]{whalestrike()}} for a list of references.
 }
 \author{
 Dan Kelley
