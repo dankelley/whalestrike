@@ -5,56 +5,54 @@
 \title{Whale mass inferred from length}
 \usage{
 whaleMassFromLength(L, species = "N. Atl. Right Whale",
-  model = "fortune2012atlantic")
+  model = "fortune2012")
 }
 \arguments{
 \item{L}{Whale length in m.}
 
-\item{species}{String specifying the species. This must be one of the following:
-\code{"N. Atl. Right Whale"} (the default), FIXME: add more.}
+\item{species}{character value specifying the species; see \dQuote{Details}.}
 
-\item{model}{Character string specifying the model (see \dQuote{Details}).}
+\item{model}{character value specifying the model (see \dQuote{Details}).}
 }
 \value{
 Mass in kg.
 }
 \description{
-Calculate an estimate of the mass of a whale, based on its length, with
-formulae from the following sources.
+Calculate an estimate of the mass of different species of whale,
+based on animal length, based on formulae as listed in
+\dQuote{Details}.
 }
 \details{
-Moore, M.J., A.R. Knowlton, S.D. Kraus, W.A. McLellan, and R.K. Bonde.
-“Morphometry, Gross Morphology and Available Histopathology in North Atlantic
-Right Whale (Eubalaena Glacialis) Mortalities (1970 to 2002).” Journal of
-Cetacean Research and Management 6, no. 3 (2005): 199–214.
-
-Fortune, Sarah M. E., Andrew W. Trites, Wayne L. Perryman, Michael J. Moore,
-Heather M. Pettis, and Morgan S. Lynn. “Growth and Rapid Early Development of
-North Atlantic Right Whales (Eubalaena Glacialis).” Journal of Mammalogy 93,
-no. 5 (2012): 1342–54. \url{https://doi.org/10.1644/11-MAMM-A-297.1}.
-
 The permitted values for \code{model} are as follows.
 \itemize{
-\item \code{"moore2005"} yields
+\item \code{"moore2005"} (which only works if \code{species} is \code{"N. Atl. Right Whale"}) yields
 \eqn{242.988 * exp(0.4 * length)}{242.988 * exp(0.4 * L)},
 which (apart from a unit change on \code{L}) is the regression equation
 shown above Figure 1d in Moore et al. (2005) for right whales. A
 difficult in the Moore et al. (2005) use of a single nonzero digit
 in the multiplier on \code{L} is illustrated in \dQuote{Examples}.
-
-\item \code{"fortune2012atlantic"} yields the formula
+\item \code{"fortune2012"} with \code{species="N. Atl. Right Whale"} yields the formula
 \eqn{exp(-10.095 + 2.825*log(100*L))}{exp(-10.095 + 2.825*log(100*L))}
 for North Atlantic right whales, according to corrected version of the
 erroneous formula given in the caption of Figure 4 in Fortune et al (2012).
 (The error, an exchange of slope and intercept, was confirmed by
 S. Fortune in an email to D. Kelley dated June 22, 2018.)
-
-\item \code{"fortune2012pacific"} yields the formula
+\item \code{"fortune2012"} with \code{species="N. Pac. Right Whale"} yields the formula
 \eqn{exp(-12.286 + 3.158*log(100*L))}{exp(-12.286 + 3.158*log(100*L))}
 for North Pacific right whales, according to corrected version of the
 erroneous formula given in the caption of Figure 4 in Fortune et al (2012).
 (The error, an exchange of slope and intercept, was confirmed by
 S. Fortune in an email to D. Kelley dated June 22, 2018.)
+\item \code{"lockyer1976"} uses formulae from table 1 of Lockyer (1976). The
+permitted \code{species} and the formulae used are as follows.
+\item `"Pac. Right Whale": \eqn{1e3 * 0.013200 * L^3.06}{1e3 * 0.013200 * L^3.06}
+\item \code{"Blue Whale"}: \eqn{1e3 * 0.002899 * L^3.25}{1e3 * 0.002899 * L^3.25}
+\item \code{"Fin Whale"}: \eqn{1e3 * 0.007996 * L^2.90}{1e3 * 0.007996 * L^2.90}
+\item \code{"Sei Whale"}: \eqn{1e3 * 0.025763 * L^2.43}{1e3 * 0.025763 * L^2.43}
+\item \code{"Bryde Whale"}: \eqn{1e3 * 0.012965 * L^2.74}{1e3 * 0.012965 * L^2.74}
+\item \code{"Minke Whale"}: \eqn{1e3 * 0.049574 * L^2.31}{1e3 * 0.049574 * L^2.31}
+\item \code{"Humpback Whale"}: \eqn{1e3 * 0.016473 * L^2.95}{1e3 * 0.016473 * L^2.95}
+\item \code{"Sperm Whale"}: \eqn{1e3 * 0.006648 * L^3.18}{1e3 * 0.006648 * L^3.18}
 }
 }
 \examples{
@@ -73,7 +71,18 @@ legend("topleft", lwd=1, col=1:3,
 
 }
 \references{
-See \code{\link[=whalestrike]{whalestrike()}} for a list of references.
+\itemize{
+\item Lockyer, C. “Body Weights of Some Species of Large Whales.” J. Cons. Int.
+Explor. Mer. 36, no. 3 (1976): 259–73.
+\item Moore, M.J., A.R. Knowlton, S.D. Kraus, W.A. McLellan, and R.K. Bonde.
+“Morphometry, Gross Morphology and Available Histopathology in North Atlantic
+Right Whale (Eubalaena Glacialis) Mortalities (1970 to 2002).” Journal of
+Cetacean Research and Management 6, no. 3 (2005): 199–214.
+\item Fortune, Sarah M. E., Andrew W. Trites, Wayne L. Perryman, Michael J. Moore,
+Heather M. Pettis, and Morgan S. Lynn. “Growth and Rapid Early Development of
+North Atlantic Right Whales (Eubalaena Glacialis).” Journal of Mammalogy 93,
+no. 5 (2012): 1342–54. https://doi.org/10.1644/11-MAMM-A-297.1.
+}
 }
 \author{
 Dan Kelley

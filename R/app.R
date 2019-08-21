@@ -82,7 +82,7 @@ server <- function(input, output, session)
     observeEvent(input$loadFile, {
                  config <- read.csv(input$loadFile$datapath)
                  ## Convert ship speed from m/s in the file, to knots in the GUI
-                 config$vs <- (1/knot2mps(1)) * config$vs
+                 config$vs <- mps2knot(config$vs)
                  ## Convert ship mass from kg in file, to tonne in the GUI
                  config$ms <- 1e-3 * config$ms
                  ## Insert individual thickness entries (one slider each)
@@ -142,3 +142,4 @@ app <- function(mode="simple", options=list(height=500)) # NOTE: height has no e
         stop("unknown mode; only \"simple\" is permitted")
 }
 
+shinyApp(ui, server)

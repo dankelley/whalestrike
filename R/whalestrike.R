@@ -646,49 +646,49 @@ parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
 
 #' Whale mass inferred from length
 #'
-#' Calculate an estimate of the mass of a whale, based on its length, with
-#' formulae from the following sources.
-#'
-#' Moore, M.J., A.R. Knowlton, S.D. Kraus, W.A. McLellan, and R.K. Bonde.
-#' “Morphometry, Gross Morphology and Available Histopathology in North Atlantic
-#' Right Whale (Eubalaena Glacialis) Mortalities (1970 to 2002).” Journal of
-#' Cetacean Research and Management 6, no. 3 (2005): 199–214.
-#'
-#' Fortune, Sarah M. E., Andrew W. Trites, Wayne L. Perryman, Michael J. Moore,
-#' Heather M. Pettis, and Morgan S. Lynn. “Growth and Rapid Early Development of
-#' North Atlantic Right Whales (Eubalaena Glacialis).” Journal of Mammalogy 93,
-#' no. 5 (2012): 1342–54. \url{https://doi.org/10.1644/11-MAMM-A-297.1}.
+#' Calculate an estimate of the mass of different species of whale,
+#' based on animal length, based on formulae as listed in
+#' \dQuote{Details}.
 #'
 #' The permitted values for `model` are as follows.
-#'\itemize{
-#' \item `"moore2005"` yields
+#'
+#' * `"moore2005"` (which only works if `species` is `"N. Atl. Right Whale"`) yields
 #' \eqn{242.988 * exp(0.4 * length)}{242.988 * exp(0.4 * L)},
 #' which (apart from a unit change on `L`) is the regression equation
 #' shown above Figure 1d in Moore et al. (2005) for right whales. A
 #' difficult in the Moore et al. (2005) use of a single nonzero digit
 #' in the multiplier on `L` is illustrated in \dQuote{Examples}.
 #'
-#' \item `"fortune2012atlantic"` yields the formula
+#' * `"fortune2012"` with `species="N. Atl. Right Whale"` yields the formula
 #' \eqn{exp(-10.095 + 2.825*log(100*L))}{exp(-10.095 + 2.825*log(100*L))}
 #' for North Atlantic right whales, according to corrected version of the
 #' erroneous formula given in the caption of Figure 4 in Fortune et al (2012).
 #' (The error, an exchange of slope and intercept, was confirmed by
 #' S. Fortune in an email to D. Kelley dated June 22, 2018.)
 #'
-#' \item `"fortune2012pacific"` yields the formula
+#' * `"fortune2012"` with `species="N. Pac. Right Whale"` yields the formula
 #' \eqn{exp(-12.286 + 3.158*log(100*L))}{exp(-12.286 + 3.158*log(100*L))}
 #' for North Pacific right whales, according to corrected version of the
 #' erroneous formula given in the caption of Figure 4 in Fortune et al (2012).
 #' (The error, an exchange of slope and intercept, was confirmed by
 #' S. Fortune in an email to D. Kelley dated June 22, 2018.)
-#'}
+#'
+#' * `"lockyer1976"` uses formulae from table 1 of Lockyer (1976). The
+#' permitted `species` and the formulae used are as follows.
+#' * `"Pac. Right Whale": \eqn{1e3 * 0.013200 * L^3.06}{1e3 * 0.013200 * L^3.06}
+#' * `"Blue Whale"`: \eqn{1e3 * 0.002899 * L^3.25}{1e3 * 0.002899 * L^3.25}
+#' * `"Fin Whale"`: \eqn{1e3 * 0.007996 * L^2.90}{1e3 * 0.007996 * L^2.90}
+#' * `"Sei Whale"`: \eqn{1e3 * 0.025763 * L^2.43}{1e3 * 0.025763 * L^2.43}
+#' * `"Bryde Whale"`: \eqn{1e3 * 0.012965 * L^2.74}{1e3 * 0.012965 * L^2.74}
+#' * `"Minke Whale"`: \eqn{1e3 * 0.049574 * L^2.31}{1e3 * 0.049574 * L^2.31}
+#' * `"Humpback Whale"`: \eqn{1e3 * 0.016473 * L^2.95}{1e3 * 0.016473 * L^2.95}
+#' * `"Sperm Whale"`: \eqn{1e3 * 0.006648 * L^3.18}{1e3 * 0.006648 * L^3.18}
 #'
 #' @param L Whale length in m.
 #'
-#' @param species String specifying the species. This must be one of the following:
-#' `"N. Atl. Right Whale"` (the default), FIXME: add more.
+#' @param species character value specifying the species; see \dQuote{Details}.
 #'
-#' @param model Character string specifying the model (see \dQuote{Details}).
+#' @param model character value specifying the model (see \dQuote{Details}).
 #'
 #' @return Mass in kg.
 #'
@@ -707,28 +707,61 @@ parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
 #'        legend=c("moore2005", "fortune2012atlantic", "fortune2012pacific"))
 #'
 #' @references
-#' See [whalestrike()] for a list of references.
+#'
+#' * Lockyer, C. “Body Weights of Some Species of Large Whales.” J. Cons. Int.
+#' Explor. Mer. 36, no. 3 (1976): 259–73.
+#'
+#' * Moore, M.J., A.R. Knowlton, S.D. Kraus, W.A. McLellan, and R.K. Bonde.
+#' “Morphometry, Gross Morphology and Available Histopathology in North Atlantic
+#' Right Whale (Eubalaena Glacialis) Mortalities (1970 to 2002).” Journal of
+#' Cetacean Research and Management 6, no. 3 (2005): 199–214.
+#'
+#' * Fortune, Sarah M. E., Andrew W. Trites, Wayne L. Perryman, Michael J. Moore,
+#' Heather M. Pettis, and Morgan S. Lynn. “Growth and Rapid Early Development of
+#' North Atlantic Right Whales (Eubalaena Glacialis).” Journal of Mammalogy 93,
+#' no. 5 (2012): 1342–54. https://doi.org/10.1644/11-MAMM-A-297.1.
 #'
 #' @author Dan Kelley
 #'
 #' @export
 #'
 #' @md
-whaleMassFromLength <- function(L, species="N. Atl. Right Whale", model="fortune2012atlantic")
+whaleMassFromLength <- function(L, species="N. Atl. Right Whale", model="fortune2012")
 {
-    speciesAllowed <- c("N. Atl. Right Whale")
-    if (!(species %in% speciesAllowed))
-        stop("unknown species \"", species, "\"; use one of the following: \"",
-             paste(speciesAllowed, collapse="\", \""), "\"")
-    ## FIXME: (1) remove model; (2) code for other species; (3) document this code; (4) other species names
-    if (model == "moore2005")
-        242.988 * exp(0.4 * L)
-    else if (model == "fortune2012atlantic")
-        exp(-10.095 + 2.825*log(100*L))
-    else if (model == "fortune2012pacific")
-        exp(-12.286 + 3.158*log(100*L))
-    else
-        stop("unrecognized model '", model, "'")
+    if (model == "moore2005") {
+        if (species == "N. Atl. Right Whale")
+            242.988 * exp(0.4 * L)
+        else
+            stop("The 'moore2005' model only works if species is 'N. Atl. Right Whale'")
+    } else if (model == "fortune2012") {
+        if (species == "N. Atl. Right Whale")
+            exp(-10.095 + 2.825*log(100*L))
+        else if (species != "Pac. Right Whale")
+            exp(-12.286 + 3.158*log(100*L))
+        else
+            stop("The 'moore2005' model only works if species is 'N. Atl. Right Whale' or 'N. Pac. Right Whale'")
+    } else if (model == "lockyer1976") {
+        if (species == "Pac. Right Whale")
+            1e3 * 0.013200 * L^3.06
+        else if (species == "Blue Whale")
+            1e3 * 0.002899 * L^3.25
+        else if (species == "Fin Whale")
+            1e3 * 0.007996 * L^2.90
+        else if (species == "Sei Whale")
+            1e3 * 0.025763 * L^2.43
+        else if (species == "Bryde Whale")
+            1e3 * 0.012965 * L^2.74
+        else if (species == "Minke Whale")
+            1e3 * 0.049574 * L^2.31
+        else if (species == "Humpback Whale")
+            1e3 * 0.016473 * L^2.95
+        else if (species == "Sperm Whale")
+            1e3 * 0.006648 * L^3.18
+        else
+            stop('The "lockyer1976" model requires the species to be one of the following: `"Blue Whale"`, `"Fin Whale"`, `"Sei Whale"`, `"Bryde Whale"`, `"Minke Whale"`, or `"Humpback Whale"`')
+    } else {
+        stop('model "', model, '" is unknown. This must be one of: "moore2005", "fortune2012", or "lockyer1976"')
+    }
 }
 
 #' Compute whale length from mass
@@ -1454,10 +1487,10 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         asmaxs <- max(abs(runmed(as, k))) # smoothed
         if (asmax > 2 * asmaxs) {
             peakTime <- sum(abs(as) > 0.5*(asmax+asmaxs)) * (t[2] - t[1])
-            label <- sprintf("ship: %.1fg (%.1fms spike to %.0fg)",
+            label <- sprintf("ship accel: %.1fg (%.1fms spike to %.0fg)",
                              asmaxs/g, peakTime*1e3, asmax/g)
         } else {
-            label <- sprintf("ship: %.1fg", asmax/g)
+            label <- sprintf("ship accel: %.1fg", asmax/g)
         }
         mtext(label, side=1, line=-1.25, cex=par("cex"), adj=0.5)
         aw <- derivative(vw, t)
@@ -1465,10 +1498,10 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         awmaxs <- max(abs(runmed(aw, k)))
         if (awmax > 2 * awmaxs) {
             peakTime <- sum(abs(aw) > 0.5*(awmax+awmaxs)) * (t[2] - t[1])
-            label <- sprintf("whale accel.: %.1fg (%.1fms spike to %.0fg)",
+            label <- sprintf("whale accel: %.1fg (%.1fms spike to %.0fg)",
                              awmaxs/g, peakTime*1e3, awmax/g)
         } else {
-            label <- sprintf("whale accel.: %.1fg", awmax/g)
+            label <- sprintf("whale accel: %.1fg", awmax/g)
         }
         mtext(label, side=3, line=-1.25, cex=par("cex"), adj=0.5)
         showEvents(xs, xw)
