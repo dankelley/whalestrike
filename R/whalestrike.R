@@ -675,18 +675,18 @@ parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
 #'
 #' * `"lockyer1976"` uses formulae from table 1 of Lockyer (1976). The
 #' permitted `species` and the formulae used are as follows.
-#' * `"Pac. Right Whale": \eqn{1e3 * 0.013200 * L^3.06}{1e3 * 0.013200 * L^3.06}
-#' * `"Blue Whale"`: \eqn{1e3 * 0.002899 * L^3.25}{1e3 * 0.002899 * L^3.25}
-#' * `"Fin Whale"`: \eqn{1e3 * 0.007996 * L^2.90}{1e3 * 0.007996 * L^2.90}
-#' * `"Sei Whale"`: \eqn{1e3 * 0.025763 * L^2.43}{1e3 * 0.025763 * L^2.43}
-#' * `"Bryde Whale"`: \eqn{1e3 * 0.012965 * L^2.74}{1e3 * 0.012965 * L^2.74}
-#' * `"Minke Whale"`: \eqn{1e3 * 0.049574 * L^2.31}{1e3 * 0.049574 * L^2.31}
-#' * `"Humpback Whale"`: \eqn{1e3 * 0.016473 * L^2.95}{1e3 * 0.016473 * L^2.95}
-#' * `"Sperm Whale"`: \eqn{1e3 * 0.006648 * L^3.18}{1e3 * 0.006648 * L^3.18}
+#'     * `"Pac. Right Whale"`: \eqn{1000 * 0.013200 * L^3.06}{1000 * 0.013200 * L^3.06}
+#'     * `"Blue Whale"`: \eqn{1000 * 0.002899 * L^3.25}{1000 * 0.002899 * L^3.25}
+#'     * `"Fin Whale"`: \eqn{1000 * 0.007996 * L^2.90}{1000 * 0.007996 * L^2.90}
+#'     * `"Sei Whale"`: \eqn{1000 * 0.025763 * L^2.43}{1000 * 0.025763 * L^2.43}
+#'     * `"Bryde Whale"`: \eqn{1000 * 0.012965 * L^2.74}{1000 * 0.012965 * L^2.74}
+#'     * `"Minke Whale"`: \eqn{1000 * 0.049574 * L^2.31}{1000 * 0.049574 * L^2.31}
+#'     * `"Humpback Whale"`: \eqn{1000 * 0.016473 * L^2.95}{1000 * 0.016473 * L^2.95}
+#'     * `"Sperm Whale"`: \eqn{1000 * 0.006648 * L^3.18}{1000 * 0.006648 * L^3.18}
 #'
 #' @param L Whale length in m.
 #'
-#' @param species character value specifying the species; see \dQuote{Details}.
+#' @param species character value specifying the species (see \dQuote{Details}).
 #'
 #' @param model character value specifying the model (see \dQuote{Details}).
 #'
@@ -696,18 +696,49 @@ parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
 #' library(whalestrike)
 #' L <- seq(5, 15, length.out=100)
 #' kpt <- 1000 # kg per tonne
-#' plot(L, whaleMassFromLength(L, model="moore2005")/kpt, type='l',
+#' # Demonstrate (with dashing) the sensitivity involved in the single-digit
+#' # parameter in Moore's formula, and (with colour) the difference to the
+#' # Fortune et al. (2012) formulae.
+#' plot(L, whaleMassFromLength(L, model="moore2005")/kpt, type="l",
 #'      xlab="Right-whale Length [m]", ylab="Mass [tonne]")
-#' # Demonstrate sensitivity involved in the single-digit parameter in Moore's formula
-#' lines(L, 242.988 * exp(0.35 * L)/kpt, lty='dotted')
-#' lines(L, 242.988 * exp(0.45 * L)/kpt, lty='dashed')
-#' lines(L, whaleMassFromLength(L, model="fortune2012atlantic")/kpt, col=2)
-#' lines(L, whaleMassFromLength(L, model="fortune2012pacific")/kpt, col=3)
+#' lines(L, 242.988 * exp(0.35 * L)/kpt, lty="dotted")
+#' lines(L, 242.988 * exp(0.45 * L)/kpt, lty="dashed")
+#' lines(L, whaleMassFromLength(L, species="N. Atl. Right Whale", model="fortune2012")/kpt, col=2)
+#' lines(L, whaleMassFromLength(L, species="N. Pac. Right Whale", model="fortune2012")/kpt, col=3)
 #' legend("topleft", lwd=1, col=1:3,
-#'        legend=c("moore2005", "fortune2012atlantic", "fortune2012pacific"))
+#'        legend=c("moore2005", "fortune2012 Atlantic", "fortune2012 Pacific"))
+#'
+#' # Emulate Figure 1 of Lockyer (1976), with roughly-chosen plot limits.
+#' L <- seq(0, 18, 0.5)
+#' m <- whaleMassFromLength(L, species="Pac. Right Whale", model="lockyer1976")/kpt
+#' plot(L, m, col=1, xlab="Length [m]", ylab="Mass [tonne]", type="l",
+#'      xaxs="i", yaxs="i", xlim=c(3, 30), ylim=c(0, 180))
+#' L <- seq(0, 28, 0.5)
+#' m <- whaleMassFromLength(L, species="Blue Whale", model="lockyer1976")/kpt
+#' lines(L, m, col=2)
+#' L <- seq(0, 24, 0.5)
+#' m <- whaleMassFromLength(L, species="Fin Whale", model="lockyer1976")/kpt
+#' lines(L, m, col=3)
+#' L <- seq(0, 18, 0.5)
+#' m <- whaleMassFromLength(L, species="Sei Whale", model="lockyer1976")/kpt
+#' lines(L, m, col=1, lty=2)
+#' L <- seq(0, 17, 0.5)
+#' m <- whaleMassFromLength(L, species="Bryde Whale", model="lockyer1976")/kpt
+#' lines(L, m, col=2, lty=2)
+#' L <- seq(0, 12, 0.5)
+#' m <- whaleMassFromLength(L, species="Minke Whale", model="lockyer1976")/kpt
+#' lines(L, m, col=3, lty=2)
+#' L <- seq(0, 17, 0.5)
+#' m <- whaleMassFromLength(L, species="Humpback Whale", model="lockyer1976")/kpt
+#' lines(L, m, col=1, lty=3)
+#' L <- seq(0, 18, 0.5)
+#' m <- whaleMassFromLength(L, species="Sperm Whale", model="lockyer1976")/kpt
+#' lines(L, m, col=2, lty=3)
+#' grid()
+#' legend("topleft", col=c(1:3,1:3,1:2), lty=c(rep(1,3), rep(2,3), rep(3,2)),
+#'        legend=c("Right", "Blue", "Fin", "Sei", "Bryde", "Minke", "Humpback", "Sperm"))
 #'
 #' @references
-#'
 #' * Lockyer, C. “Body Weights of Some Species of Large Whales.” J. Cons. Int.
 #' Explor. Mer. 36, no. 3 (1976): 259–73.
 #'
@@ -736,7 +767,7 @@ whaleMassFromLength <- function(L, species="N. Atl. Right Whale", model="fortune
     } else if (model == "fortune2012") {
         if (species == "N. Atl. Right Whale")
             exp(-10.095 + 2.825*log(100*L))
-        else if (species == "Pac. Right Whale")
+        else if (species == "N. Pac. Right Whale")
             exp(-12.286 + 3.158*log(100*L))
         else
             stop("The 'moore2005' model only works if species is 'N. Atl. Right Whale' or 'N. Pac. Right Whale'")
@@ -758,7 +789,9 @@ whaleMassFromLength <- function(L, species="N. Atl. Right Whale", model="fortune
         else if (species == "Sperm Whale")
             1e3 * 0.006648 * L^3.18
         else
-            stop('The "lockyer1976" model requires the species to be one of the following: `"Blue Whale"`, `"Fin Whale"`, `"Sei Whale"`, `"Bryde Whale"`, `"Minke Whale"`, or `"Humpback Whale"`')
+            stop('The "lockyer1976" model requires the species to be one of the following:
+                 "Pac. Right Whale", "Blue Whale", "Fin Whale", "Sei Whale",
+                 "Bryde Whale", "Minke Whale", or "Humpback Whale"')
     } else {
         stop('model "', model, '" is unknown. This must be one of: "moore2005", "fortune2012", or "lockyer1976"')
     }
@@ -770,14 +803,11 @@ whaleMassFromLength <- function(L, species="N. Atl. Right Whale", model="fortune
 #'
 #' @param M Whale mass (kg).
 #'
-#' @param species A string indicating the whale species. For the permitted values,
-#' see [whaleMassFromLength()].
+#' @param species A string indicating the whale species
+#' (see [whaleMassFromLength()] for details).
 #'
-#' @param model Character string specifying the model, with permitted
-#' values `"moore2005"`, `"fortune2012atlantic"` and
-#" `"fortune2012pacific"`. See the documentation
-#' for [whaleMassFromLength()] for the details of these
-#' formulations.
+#' @param model Character string specifying the model
+#' (see [whaleMassFromLength()] for details).
 #'
 #' @return Whale length (m).
 #'
@@ -791,7 +821,7 @@ whaleMassFromLength <- function(L, species="N. Atl. Right Whale", model="fortune
 #' @importFrom stats approxfun
 #'
 #' @md
-whaleLengthFromMass <- function(M, species="N. Atl. Right Whale", model="fortune2012atlantic")
+whaleLengthFromMass <- function(M, species="N. Atl. Right Whale", model="fortune2012")
 {
     rval <- rep(NA, length(M))
     for (i in seq_along(M))

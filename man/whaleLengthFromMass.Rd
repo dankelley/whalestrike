@@ -5,18 +5,16 @@
 \title{Compute whale length from mass}
 \usage{
 whaleLengthFromMass(M, species = "N. Atl. Right Whale",
-  model = "fortune2012atlantic")
+  model = "fortune2012")
 }
 \arguments{
 \item{M}{Whale mass (kg).}
 
-\item{species}{A string indicating the whale species. For the permitted values,
-see \code{\link[=whaleMassFromLength]{whaleMassFromLength()}}.}
+\item{species}{A string indicating the whale species
+(see \code{\link[=whaleMassFromLength]{whaleMassFromLength()}} for details).}
 
-\item{model}{Character string specifying the model, with permitted
-values \code{"moore2005"}, \code{"fortune2012atlantic"} and
-for \code{\link[=whaleMassFromLength]{whaleMassFromLength()}} for the details of these
-formulations.}
+\item{model}{Character string specifying the model
+(see \code{\link[=whaleMassFromLength]{whaleMassFromLength()}} for details).}
 }
 \value{
 Whale length (m).
