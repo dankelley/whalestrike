@@ -4,3 +4,4 @@ sandbox
 ^.*\.Rproj$
 ^\.Rproj\.user$
 .build.timestamp
+Rplot.pdf
