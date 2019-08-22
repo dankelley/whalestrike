@@ -10,9 +10,13 @@ whaleMassFromLength(L, species = "N. Atl. Right Whale",
 \arguments{
 \item{L}{Whale length in m.}
 
-\item{species}{character value specifying the species (see \dQuote{Details}).}
+\item{species}{character value specifying the species (see \dQuote{Details}).
+If  only one value is given, then it will repeated to have the same length
+as \code{L}. Otherwise, its length must match the length of \code{L}.}
 
-\item{model}{character value specifying the model (see \dQuote{Details}).}
+\item{model}{character value specifying the model (see \dQuote{Details}).
+If  only one value is given, then it will repeated to have the same length
+as \code{L}. Otherwise, its length must match the length of \code{L}.}
 }
 \value{
 Mass in kg.
@@ -23,7 +27,7 @@ based on animal length, based on formulae as listed in
 \dQuote{Details}.
 }
 \details{
-The permitted values for \code{model} are as follows.
+The permitted values for \code{model} and \code{species} are as follows.
 \itemize{
 \item \code{"moore2005"} (which only works if \code{species} is \code{"N. Atl. Right Whale"}) yields
 \eqn{242.988 * exp(0.4 * length)}{242.988 * exp(0.4 * L)},
@@ -46,14 +50,15 @@ S. Fortune in an email to D. Kelley dated June 22, 2018.)
 \item \code{"lockyer1976"} uses formulae from table 1 of Lockyer (1976). The
 permitted \code{species} and the formulae used are as follows.
 \itemize{
-\item \code{"Pac. Right Whale"}: \eqn{1000 * 0.013200 * L^3.06}{1000 * 0.013200 * L^3.06}
-\item \code{"Blue Whale"}: \eqn{1000 * 0.002899 * L^3.25}{1000 * 0.002899 * L^3.25}
-\item \code{"Fin Whale"}: \eqn{1000 * 0.007996 * L^2.90}{1000 * 0.007996 * L^2.90}
-\item \code{"Sei Whale"}: \eqn{1000 * 0.025763 * L^2.43}{1000 * 0.025763 * L^2.43}
-\item \code{"Bryde Whale"}: \eqn{1000 * 0.012965 * L^2.74}{1000 * 0.012965 * L^2.74}
-\item \code{"Minke Whale"}: \eqn{1000 * 0.049574 * L^2.31}{1000 * 0.049574 * L^2.31}
-\item \code{"Humpback Whale"}: \eqn{1000 * 0.016473 * L^2.95}{1000 * 0.016473 * L^2.95}
-\item \code{"Sperm Whale"}: \eqn{1000 * 0.006648 * L^3.18}{1000 * 0.006648 * L^3.18}
+\item \code{"Blue Whale"}:       \eqn{2.899 * L^3.25}{2.899 * L^3.25}
+\item \code{"Bryde Whale"}:      \eqn{12.965 * L^2.74}{12.965 * L^2.74}
+\item \code{"Fin Whale"}:        \eqn{7.996 * L^2.90}{7.996 * L^2.90}
+\item \code{"Gray Whale"}:       \eqn{5.4 * L^3.28}{5.4 * L^3.28}
+\item \code{"Humpback Whale"}:   \eqn{16.473 * L^2.95}{16.473 * L^2.95}
+\item \code{"Minke Whale"}:      \eqn{49.574 * L^2.31}{49.574 * L^2.31}
+\item \code{"Pac. Right Whale"}: \eqn{13.200 * L^3.06}{13.200 * L^3.06}
+\item \code{"Sei Whale"}:        \eqn{25.763 * L^2.43}{25.763 * L^2.43}
+\item \code{"Sperm Whale"}:      \eqn{6.648 * L^3.18}{6.648 * L^3.18}
 }
 }
 }
@@ -64,44 +69,49 @@ kpt <- 1000 # kg per tonne
 # Demonstrate (with dashing) the sensitivity involved in the single-digit
 # parameter in Moore's formula, and (with colour) the difference to the
 # Fortune et al. (2012) formulae.
-plot(L, whaleMassFromLength(L, model="moore2005")/kpt, type="l",
+plot(L, whaleMassFromLength(L, model="moore2005")/kpt, type="l", lwd=2,
      xlab="Right-whale Length [m]", ylab="Mass [tonne]")
-lines(L, 242.988 * exp(0.35 * L)/kpt, lty="dotted")
-lines(L, 242.988 * exp(0.45 * L)/kpt, lty="dashed")
-lines(L, whaleMassFromLength(L, species="N. Atl. Right Whale", model="fortune2012")/kpt, col=2)
-lines(L, whaleMassFromLength(L, species="N. Pac. Right Whale", model="fortune2012")/kpt, col=3)
-legend("topleft", lwd=1, col=1:3,
+lines(L, 242.988 * exp(0.35 * L)/kpt, lty="dotted", lwd=2)
+lines(L, 242.988 * exp(0.45 * L)/kpt, lty="dashed", lwd=2)
+lines(L, whaleMassFromLength(L, species="N. Atl. Right Whale",
+      model="fortune2012")/kpt, col=2, lwd=2)
+lines(L, whaleMassFromLength(L, species="N. Pac. Right Whale",
+      model="fortune2012")/kpt, col=3, lwd=2)
+legend("topleft", lwd=2, col=1:3,
        legend=c("moore2005", "fortune2012 Atlantic", "fortune2012 Pacific"))
 
 # Emulate Figure 1 of Lockyer (1976), with roughly-chosen plot limits.
 L <- seq(0, 18, 0.5)
 m <- whaleMassFromLength(L, species="Pac. Right Whale", model="lockyer1976")/kpt
-plot(L, m, col=1, xlab="Length [m]", ylab="Mass [tonne]", type="l",
+plot(L, m, col=1, xlab="Length [m]", ylab="Mass [tonne]", type="l", lwd=2,
      xaxs="i", yaxs="i", xlim=c(3, 30), ylim=c(0, 180))
 L <- seq(0, 28, 0.5)
 m <- whaleMassFromLength(L, species="Blue Whale", model="lockyer1976")/kpt
-lines(L, m, col=2)
+lines(L, m, col=2, lwd=2)
 L <- seq(0, 24, 0.5)
 m <- whaleMassFromLength(L, species="Fin Whale", model="lockyer1976")/kpt
-lines(L, m, col=3)
+lines(L, m, col=3, lwd=2)
 L <- seq(0, 18, 0.5)
 m <- whaleMassFromLength(L, species="Sei Whale", model="lockyer1976")/kpt
-lines(L, m, col=1, lty=2)
+lines(L, m, col=1, lty=2, lwd=2)
 L <- seq(0, 17, 0.5)
 m <- whaleMassFromLength(L, species="Bryde Whale", model="lockyer1976")/kpt
-lines(L, m, col=2, lty=2)
+lines(L, m, col=2, lty=2, lwd=2)
 L <- seq(0, 12, 0.5)
 m <- whaleMassFromLength(L, species="Minke Whale", model="lockyer1976")/kpt
-lines(L, m, col=3, lty=2)
+lines(L, m, col=3, lty=2, lwd=2)
 L <- seq(0, 17, 0.5)
 m <- whaleMassFromLength(L, species="Humpback Whale", model="lockyer1976")/kpt
-lines(L, m, col=1, lty=3)
+lines(L, m, col=1, lty=3, lwd=2)
 L <- seq(0, 18, 0.5)
 m <- whaleMassFromLength(L, species="Sperm Whale", model="lockyer1976")/kpt
-lines(L, m, col=2, lty=3)
+lines(L, m, col=2, lty=3, lwd=2)
+L <- seq(0, 15, 0.5)
+m <- whaleMassFromLength(L, species="Gray Whale", model="lockyer1976")/kpt
+lines(L, m, col=3, lty=3, lwd=2)
 grid()
-legend("topleft", col=c(1:3,1:3,1:2), lty=c(rep(1,3), rep(2,3), rep(3,2)),
-       legend=c("Right", "Blue", "Fin", "Sei", "Bryde", "Minke", "Humpback", "Sperm"))
+legend("topleft", col=c(1:3,1:3,1:2), lwd=2, lty=c(rep(1,3), rep(2,3), rep(3,3)),
+       legend=c("Right", "Blue", "Fin", "Sei", "Bryde", "Minke", "Humpback", "Sperm", "Gray"))
 
 }
 \references{
@@ -117,6 +127,9 @@ Heather M. Pettis, and Morgan S. Lynn. “Growth and Rapid Early Development of
 North Atlantic Right Whales (Eubalaena Glacialis).” Journal of Mammalogy 93,
 no. 5 (2012): 1342–54. https://doi.org/10.1644/11-MAMM-A-297.1.
 }
+}
+\seealso{
+\code{\link[=whaleLengthFromMass]{whaleLengthFromMass()}} is the reverse of this.
 }
 \author{
 Dan Kelley

@@ -25,6 +25,9 @@ This works by inverting \code{\link[=whaleMassFromLength]{whaleMassFromLength()}
 \references{
 See \code{\link[=whalestrike]{whalestrike()}} for a list of references.
 }
+\seealso{
+\code{\link[=whaleMassFromLength]{whaleMassFromLength()}} is the reverse of this.
+}
 \author{
 Dan Kelley
 }
