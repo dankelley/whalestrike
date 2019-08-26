@@ -1149,7 +1149,8 @@ dynamics <- function(t, y, parms)
     if (is.na(Fship[1]))
         stop("Fship[1] is NA, probably indicating a programming error.")
     Fwhale <- Freactive + whaleWaterForce(vw, parms)
-    if (is.na(Fwhale[1])) stop("Fwhale[1] is NA, probably indicating a programming error.")
+    if (is.na(Fwhale[1]))
+        stop("Fwhale[1] is NA, probably indicating a programming error.")
     list(c(dxsdt=vs, dvsdt=Fship/parms$ms, dxwdt=vw, dvwdt=Fwhale/parms$mw))
 }
 
@@ -1286,6 +1287,28 @@ strike <- function(t, state, parms, debug=0)
         stop("must supply parms")
     if (!inherits(parms, "parameters"))
         stop("parms must be the output of parameters()")
+    ## Check parameters
+    parmsRequired <- c("a", "b", "Cs", "Cw", "l", "lsum", "lw", "Ly", "Lz",
+                       "ms", "mw", "s", "Ss", "stressFromStrain", "Sw",
+                       "theta")
+    if (!all(parmsRequired %in% names(parms)))
+        stop('parms must hold: "', paste(parmsRequired, collapse='", "'), '"')
+    ## All required elements are present, but it's prudent to check some values that
+    ## a user might be setting.
+    if (!is.finite(parms$ms) || parms$ms <= 0)
+        stop("parms$ms (ship mass, in kg) must be a positive number, not ", parms$ms)
+    if (!is.finite(parms$mw) || parms$mw <= 0)
+        stop("parms$mw (whale mass, in kg) must be a positive number, not ", parms$mw)
+    if (!is.finite(parms$Ly) || parms$Ly <= 0)
+        stop("parms$Ly (impact width, in m) must be a positive number, not ", parms$Ly)
+    if (!is.finite(parms$Lz) || parms$Lz <= 0)
+        stop("parms$Lz (impact height, in m) must be a positive number, not ", parms$Lz)
+    if (!is.finite(parms$Cs) || parms$Cs <= 0)
+        stop("parms$Cs (drag coefficient of ship, dimensionless) must be a positive number, not ", parms$Cs)
+    if (!is.finite(parms$Cw) || parms$Cw <= 0)
+        stop("parms$Cw (drag coefficient of whale, dimensionless) must be a positive number, not ", parms$Cw)
+    if (!is.function(parms$stressFromStrain))
+        stop("parms$stressFromStrain must be a function")
     if (debug > 0) {
         print("state:")
         print(state)
