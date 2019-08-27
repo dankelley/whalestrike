@@ -486,17 +486,18 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' @param s Numerical vector of length 4, giving the ultimate strengths (Pa) of
 #' skin, blubber, sublayer, and bone, respectively. If not provided, the
 #' value is set to
-#' `c(19.6e6, 0.437e6, 0.437e6, 22.9e6)`,
+#' `c(19.6e6, 10^5.4057, 10^5.4057, 22.9e6)`,
 #' with reasoning as follows.
 #' The skin default of 19.6 MPa
 #' is a rounded value from Table 3 of Grear et al. (2018) for adult seal skin strength at
-#' an orientation of 0 degrees.  The blubber value of
-#' 0.437 MPa is inferred by
+#' an orientation of 0 degrees.  The blubber and sublayer values were chosen
+#' as the central point of a logistic fit of whale collision damage
+#' to maximal stress during a default impact simulation.
+#' (For comparison, a strength of
+#' 0.437 MPa may be inferred by
 #' multiplying Raymond's (2007) Figure 2.13 elastic modulus of 0.636 MPa
 #' by the ratio 0.97/1.41 determined for adult seal strength/modulus, as reported
-#' in Table 3 of Grear et al. (2018).
-#' The sublayer value is taken to be identical to the blubber value, lacking
-#' more specific information.
+#' in Table 3 of Grear et al. (2018).)
 #' The bone default o 22.9 MPa is from Table 2.3 of Raymond (2007) and
 #' Table 4.5 of Campbell-Malone (2007).
 #'
@@ -611,8 +612,10 @@ parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
             b <- c(0.1, 2.54, 2.54, 0.1)
         if (length(b) != 4) stop("'b' must be a vector of length 4")
         ## NOTE: keep in synch with above!
-        if (missing(s))
-            s <- c(19.6e6, 0.437e6, 0.437e6, 22.9e6)
+        if (missing(s)) {
+            ## s <- c(19.6e6, 0.437e6, 0.437e6, 22.9e6)
+            s <- c(19.6e6, 10^5.4057, 10^5.4057, 22.9e6)
+        }
         if (length(s) != 4) stop("'s' must be a vector of length 4")
         ## Value checks
         if (any(l <= 0) || length(l) != 4)
