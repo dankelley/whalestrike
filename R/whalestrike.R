@@ -613,8 +613,12 @@ parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
         if (length(b) != 4) stop("'b' must be a vector of length 4")
         ## NOTE: keep in synch with above!
         if (missing(s)) {
-            ## s <- c(19.6e6, 0.437e6, 0.437e6, 22.9e6)
-            s <- c(19.6e6, 10^5.4057, 10^5.4057, 22.9e6)
+            ## OLD s <- c(19.6e6, 0.437e6, 0.437e6, 22.9e6)
+            ## NEW. Note that we round to the newly-added s[2] and s[3] to
+            ## three digits because that is what we say in the manuscript.
+            ## > round(c(19.6e6, 10^5.4057, 10^5.4057, 22.9e6)/1e6,3)
+            ## [1] 19.600  0.255  0.255 22.900
+            s <-1e6 * c(19.600, 0.255, 0.255, 22.900)
         }
         if (length(s) != 4) stop("'s' must be a vector of length 4")
         ## Value checks
