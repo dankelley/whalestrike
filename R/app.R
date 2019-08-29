@@ -1,6 +1,4 @@
 ## app for simulating the effect of a vessel strike on a whale
-library(shiny)
-library(whalestrike)
 ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; margin-left:1ex}")),
                 fluidRow(radioButtons("instructions", "Instructions", choices=c("Hide", "Show"), selected="Show", inline=TRUE)),
                 conditionalPanel(condition="input.instructions=='Show'",
