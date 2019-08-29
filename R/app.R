@@ -31,7 +31,7 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
                                             ##min=0.05, max=.4, value=0.16, step=0.01)),
                          column(2,
                                 ## default: a[2]=a[3]=1.58e5 pa
-                                sliderinput("a23", h6("Blubber/Sublayer 'a' value [MPa]"), ticks=FALSE,
+                                sliderInput("a23", h6("Blubber/Sublayer 'a' value [MPa]"), ticks=FALSE,
                                             min=0.100, max=0.200, value=0.158, step=0.01),
                                 sliderInput("l3", HTML("<font color=\"FF0000\">Sublayer thickness [cm]</font>"), ticks=FALSE,
                                             min=5, max=200, value=112, step=1),
