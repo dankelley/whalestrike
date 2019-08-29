@@ -1,4 +1,6 @@
-#' User interface for app
+## app for simulating the effect of a vessel strike on a whale
+library(shiny)
+library(whalestrike)
 ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; margin-left:1ex}")),
                 fluidRow(radioButtons("instructions", "Instructions", choices=c("Hide", "Show"), selected="Show", inline=TRUE)),
                 conditionalPanel(condition="input.instructions=='Show'",
@@ -7,7 +9,7 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
                                 sliderInput("tmax",  h6("Max time [s]"), ticks=FALSE,
                                             min=0.1,  max=5, value=1, step=0.05),
                                 sliderInput("ms",  HTML("<font color=\"FF0000\">Ship mass [tonne]</font>"), ticks=FALSE,
-                                            min=10, max=50000,  value=45, step=1),
+                                            min=10, max=500,  value=45, step=1),
                                 sliderInput("vs", HTML("<font color=\"FF0000\">Ship speed [knot]</font>"), ticks=FALSE,
                                             min=1,  max=30,  value=10, step=1)),
                          column(2,
@@ -26,12 +28,12 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
                                 sliderInput("l1", h6("Skin thickness [cm]"), ticks=FALSE,
                                             min=1, max=3, value=2.5, step=0.1),
                                             ##min=0.01, max=0.03, value=0.025, step=0.001),
-                                sliderInput("l2", h6("Blubber thickness [cm]"), ticks=FALSE,
+                                sliderInput("l2", HTML("<font color=\"FF0000\">Blubber thickness [cm]</font>"), ticks=FALSE,
                                             min=5, max=40, value=16, step=1)),
                                             ##min=0.05, max=.4, value=0.16, step=0.01)),
                          column(2,
-                                ## default: a[2]=a[3]=1.58e5 Pa
-                                sliderInput("a23", HTML("<font color=\"FF0000\">Blubber/Sublayer 'a' value [MPa]</font>"), ticks=FALSE,
+                                ## default: a[2]=a[3]=1.58e5 pa
+                                sliderinput("a23", h6("Blubber/Sublayer 'a' value [MPa]"), ticks=FALSE,
                                             min=0.100, max=0.200, value=0.158, step=0.01),
                                 sliderInput("l3", HTML("<font color=\"FF0000\">Sublayer thickness [cm]</font>"), ticks=FALSE,
                                             min=5, max=200, value=112, step=1),
@@ -71,7 +73,7 @@ server <- function(input, output, session)
                  w <- which("loadFile" == configNames | "saveFile" == configNames | "plot_panels" == configNames)
                  config <- config[-w]
                  ## Convert ship speed from to m/s, from knots in the GUI
-                 config$vs <- knot2mps(config$vs)
+                 config$vs <- whalestrike::knot2mps(config$vs)
                  ## Convert ship mass to kg, from tonne in the GUI
                  config$ms <- 1e3 * config$ms
                  ## save in alphabetical order
@@ -97,16 +99,16 @@ server <- function(input, output, session)
                 })
     output$plot <- renderPlot({
         ##message("species: ", input$species)
-        aDefault <- parameters()$a
+        aDefault <- whalestrike::parameters()$a
         ##cat(file=stderr(), "input$a23=", input$a23, "\n")
-        parms <- parameters(ms=1000*input$ms, Ss=shipAreaFromMass(1000*input$ms),
-                            Ly=input$Ly, Lz=input$Lz,
-                            lw=input$lw,
-                            mw=whaleMassFromLength(input$lw, species="N. Atl. Right Whale"),
-                            Sw=whaleAreaFromLength(input$lw, species="N. Atl. Right Whale", "wetted"),
-                            l=c(input$l1/100, input$l2/100, input$l3/100, input$l4/100),
-                            a=c(aDefault[1], 1e6*input$a23, 1e6*input$a23, aDefault[4]))
-        state <- list(xs=-(1 + parms$lsum), vs=knot2mps(input$vs), xw=0, vw=0)
+        parms <- whalestrike::parameters(ms=1000*input$ms, Ss=shipAreaFromMass(1000*input$ms),
+                                         Ly=input$Ly, Lz=input$Lz,
+                                         lw=input$lw,
+                                         mw=whalestrike::whaleMassFromLength(input$lw, species="N. Atl. Right Whale"),
+                                         Sw=whalestrike::whaleAreaFromLength(input$lw, species="N. Atl. Right Whale", "wetted"),
+                                         l=c(input$l1/100, input$l2/100, input$l3/100, input$l4/100),
+                                         a=c(aDefault[1], 1e6*input$a23, 1e6*input$a23, aDefault[4]))
+        state <- list(xs=-(1 + parms$lsum), vs=whalestrike::knot2mps(input$vs), xw=0, vw=0)
         t <- seq(0, input$tmax, length.out=2000)
         sol <- strike(t, state, parms)
         if (sol$refinedGrid)
