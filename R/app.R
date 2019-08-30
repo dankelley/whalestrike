@@ -17,9 +17,6 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
                                             min=0.1, max=2,  value=1.15, step=0.05),
                                 sliderInput("Lz",  h6("Impact height [m]"), ticks=FALSE,
                                             min=0.1, max=2,  value=1.15, step=0.05)),
-                                ##selectInput("species", "Whale species:",
-                                ##            choices=c("N. Atl. Right Whale",
-                                ##                      "NOTHING ELSE CODED YET"))),
                          column(2,
                                 sliderInput("lw",  h6("Whale length [m]"), ticks=FALSE,
                                             min=5,  max=20, value=13.7, step=0.1),
@@ -33,16 +30,16 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
                                             min=5, max=40, value=16, step=1)),
                                             ##min=0.05, max=.4, value=0.16, step=0.01)),
                          column(2,
-                                ## default: a[2]=a[3]=1.58e5 pa
-                                sliderInput("a23", h6("Blubber/Sublayer 'a' value [MPa]"), ticks=FALSE,
-                                            min=0.100, max=0.200, value=0.158, step=0.01),
-                                ##sliderInput("l3", HTML("<font color=\"FF0000\">Sublayer thickness [cm]</font>"), ticks=FALSE,
+                                selectInput("species", "",
+                                            choices= c("N. Atl. Right", "Bryde", "Fin",
+                                              "Gray", "Humpback", "Minke",
+                                              "Pac. Right", "Sei", "Sperm"),
+                                            selected="N. Atl. Right"),
                                 sliderInput("l3", h6(tags$i("Sublayer thickness [cm]")), ticks=FALSE,
                                             min=5, max=200, value=112, step=1),
                                             ##min=0.05, max=2, value=1.12, step=0.01),
                                 sliderInput("l4", h6("Bone thickness [cm]"), ticks=FALSE,
                                             min=5, max=30, value=10, step=1)),
-                                            ##min=0.05, max=.3, value=0.1, step=0.01)),
                          column(2,
                                 fileInput("loadFile", "Configuration", multiple=FALSE, accept=c("text/csv", ".csv")),
                                 actionButton("saveFile", "Save"),
@@ -107,13 +104,36 @@ server <- function(input, output, session)
         ##message("species: ", input$species)
         aDefault <- whalestrike::parameters()$a
         ##cat(file=stderr(), "input$a23=", input$a23, "\n")
-        parms <- whalestrike::parameters(ms=1000*input$ms, Ss=shipAreaFromMass(1000*input$ms),
-                                         Ly=input$Ly, Lz=input$Lz,
+        mw <- if (input$species == "N. Atl. Right") {
+            whaleMassFromLength(input$lw, species="N. Atl. Right Whale", model="fortune2012")
+        } else if (input$species == "Bryde") {
+            whaleMassFromLength(input$lw, species="Bryde Whale", model="lockyer1976")
+        } else if (input$species == "Fin") {
+            whaleMassFromLength(input$lw, species="Fin Whale", model="lockyer1976")
+        } else if (input$species == "Gray") {
+            whaleMassFromLength(input$lw, species="Gray Whale", model="lockyer1976")
+        } else if (input$species == "Humpback") {
+            whaleMassFromLength(input$lw, species="Humpback Whale", model="lockyer1976")
+        } else if (input$species == "Minke") {
+            whaleMassFromLength(input$lw, species="Minke Whale", model="lockyer1976")
+        } else if (input$species == "Pac. Right") {
+            whaleMassFromLength(input$lw, species="Pac. Right Whale", model="lockyer1976")
+        } else if (input$species == "Sei") {
+            whaleMassFromLength(input$lw, species="Sei Whale", model="lockyer1976")
+        } else if (input$species == "Sperm") {
+            whaleMassFromLength(input$lw, species="Sperm Whale", model="lockyer1976")
+        } else {
+            stop("programming error: cannot compute mass from length, for species '", input$species)
+        }
+
+        parms <- whalestrike::parameters(ms=1000*input$ms,
+                                         Ss=shipAreaFromMass(1000*input$ms),
+                                         Ly=input$Ly,
+                                         Lz=input$Lz,
                                          lw=input$lw,
-                                         mw=whalestrike::whaleMassFromLength(input$lw, species="N. Atl. Right Whale"),
+                                         mw=mw,
                                          Sw=whalestrike::whaleAreaFromLength(input$lw, species="N. Atl. Right Whale", "wetted"),
-                                         l=c(input$l1/100, input$l2/100, input$l3/100, input$l4/100),
-                                         a=c(aDefault[1], 1e6*input$a23, 1e6*input$a23, aDefault[4]))
+                                         l=c(input$l1/100, input$l2/100, input$l3/100, input$l4/100))
         state <- list(xs=-(1 + parms$lsum), vs=whalestrike::knot2mps(input$vs), xw=0, vw=0)
         t <- seq(0, input$tmax, length.out=2000)
         sol <- strike(t, state, parms)
