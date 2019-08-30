@@ -1,25 +1,6 @@
 library(deSolve)
 library(xtable)
 
-### #' Version of parameter defaults
-### #'
-### #' A character value that indicates which defaults are to be
-### #' used by [parameters()].
-### #'
-### #' There are two choices, as of 2019 May 28:
-### #'
-### #'\itemize{
-### #' \item \code{"2018"} to get default parameter values from the work
-### #' in summer of 2018
-### #' \item \code{"2019a"} to get parameter values as of
-### #' the start of summer, 2019.
-### #'}
-### #'
-### #' @name versionOfDefaults
-### #' @docType data
-### NULL
-### versionOfDefaults <- "2019a"
-
 
 #' Convert a speed in knots to a speed in m/s
 #'
@@ -1020,7 +1001,6 @@ whaleCompressionForce <- function(xs, xw, parms)
     ## so the next three lines could be simplified. However, retaining it might be clearer,
     ## if a nonlinear stress-strain relationship becomes desirable in the future.
     strain <- dx / parms$lsum
-    ##E <- (parms$alpha + parms$beta + parms$gamma) / (parms$alpha/parms$Ealpha + parms$beta/parms$Ebeta + parms$gamma/parms$Egamma)
     stress <- parms$stressFromStrain(strain)
     force <- stress * parms$Ly * parms$Lz
     stress <- ifelse(stress < 0, 0, stress) # just in case; we don't want log(negative number)
@@ -1028,9 +1008,7 @@ whaleCompressionForce <- function(xs, xw, parms)
                         parms$l[2]*(1-log(1 + stress / parms$a[2]) / parms$b[2]),
                         parms$l[3]*(1-log(1 + stress / parms$a[3]) / parms$b[3]),
                         parms$l[4]*(1-log(1 + stress / parms$a[4]) / parms$b[4]))
-    ##. message("compressed=", paste(compressed, " "), "before zero trim")
     compressed <- pin(compressed, lower=0)
-    ##. message("compressed=", paste(compressed, " "), "after zero trim")
     list(force=force, stress=stress, strain=strain, compressed=compressed)
 }
 
@@ -1190,8 +1168,6 @@ dynamics <- function(t, y, parms)
     Fextension <- whaleSkinForce(xs, xw, parms)$force
     Freactive <- Fcompression + Fextension
     Fship <- parms$engineForce + shipWaterForce(vs, parms) - Freactive
-    ##. if ((t > 0.1 && t < 0.11) || (t > 0.5 && t < 0.51))
-    ##.     cat("t=", t, " vs=", vs, " shipEngineForce=", parms$shipEngineForce, " shipWaterForce=", shipWaterForce(vs, parms), " Freactive=", Freactive, "\n")
     if (is.na(Fship[1]))
         stop("Fship[1] is NA, probably indicating a programming error.")
     Fwhale <- Freactive + whaleWaterForce(vw, parms)
@@ -1379,9 +1355,6 @@ strike <- function(t, state, parms, debug=0)
     WSF <- whaleSkinForce(xs=xs, xw=xw, parms=parms)
     WCF <- whaleCompressionForce(xs=xs, xw=xw, parms=parms)
     WWF <- whaleWaterForce(vw=vw, parms=parms)
-    ##. message("max stress ", max(abs(WCF$stress))/1e6, " MPA")
-    ##. message("blubber compression ratio=", min(WCF$compressed[,2])/WCF$compressed[1,2])
-    ##. message("sublayer compression ratio=", min(WCF$compressed[,3])/WCF$compressed[1,3])
     refinedGrid <- min(WCF$compressed[,2])/WCF$compressed[1,2] < 0.01 || min(WCF$compressed[,3])/WCF$compressed[1,3] < 0.01
     if (refinedGrid) {
         NEED <- 10                     # desired number of points in peak
@@ -1391,7 +1364,6 @@ strike <- function(t, state, parms, debug=0)
         nold <- length(t)
         n <- floor(0.5 * (tend - tstart) / dt)
         if (n > length(t)) {
-            ##message("strike() : increasing from ", nold, " to ", n, " time steps, to capture acceleration peak")
             warning("increasing from ", nold, " to ", n, " time steps, to capture acceleration peak\n")
             t <- seq(tstart, tend, length.out=n)
             sol <- lsoda(state, t, dynamics, parms)
@@ -1581,15 +1553,12 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
     }
     showEvents <- function(xs, xw) {
         if (drawEvents) {
-            ##grid()
             death <- which(xs >= xw)[1]
             tdeath <- if (is.finite(death)) t[death] else NA
             if (is.finite(tdeath)) {
                 abline(v=tdeath, lwd=lwd, col="blue")
                 mtext("Fatality", at=tdeath, side=3, line=0, col="blue", font=2, cex=par("cex"))
             }
-            ## tclosest <- t[which.min(abs(xs-xw))]
-            ## abline(v=tclosest, col="darkgreen", lwd=lwd, lty=3)
         }
     }
     all <- "all" %in% which
@@ -1652,7 +1621,6 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         showEvents(xs, xw)
     }
     if (all || "section" %in% which) {
-        ##REMOVE_CRITERIA <- TRUE
         skin <- x$WCF$compressed[,1]
         blubber <- x$WCF$compressed[,2]
         sublayer <- x$WCF$compressed[,3]
@@ -1664,7 +1632,6 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         lines(t, -(blubber+sublayer+bone), lwd=lwd, col=colwskin)
         lines(t, -(sublayer+bone), lwd=lwd, col=colwinterface)# , lty="42")
         lines(t, -bone, lwd=lwd, col=colwinterface)# , lty="42")
-        ##abline(h=0, col=colwcenter, lwd=D*lwd)
         showEvents(xs, xw)
         xusr <- par("usr")[1:2]
         x0 <- xusr[1] - 0.01*(xusr[2] - xusr[1]) # snuggle up to axis
@@ -1705,9 +1672,9 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         ## Skin
         mtext("Skin", side=4, at=0, cex=0.8*par("cex"))
         y0 <- 0 # if (log) -1 else 0
-        fillplot(t, y0, skinThreat, col=colThreat[2]) # high threat
-        fillplot(t, y0, ifelse(skinThreat<=1, skinThreat, 1), col=colThreat[1]) # low threat
-        abline(h=0, lty=3)
+        Y <- skinThreat
+        fillplot4(t, skinThreat, yOffset=dy, breaks=c(1/4, 1/2, 3/4), col=colThreat)
+        abline(h=0)
         axis(2, at=y0+yTicks, labels=yTicks)
         ## Blubber
         mtext("Blubber", side=4, at=dy, cex=0.8*par("cex"))
@@ -1729,9 +1696,9 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         axis(2, at=y0+2*dy+yTicks, labels=yTicks)
         ## Bone
         mtext("Bone", side=4, at=3*dy, cex=0.8*par("cex"))
-        fillplot(t, y0+3*dy, 3*dy+boneThreat,  col=colThreat[2])
-        fillplot(t, y0+3*dy, 3*dy+ifelse(boneThreat<=1, boneThreat, 1), col=colThreat[1])
+        fillplot4(t, boneThreat, yOffset=dy, breaks=c(1/4, 1/2, 3/4), col=colThreat)
         axis(2, at=y0+3*dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
+        abline(h=3*dy)
         showEvents(xs, xw)
     }
     if (all || "whale acceleration" %in% which) {
@@ -1739,7 +1706,6 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         plot(t, a, xlab="Time [s]", ylab="Whale accel. [m/s^2]", type="l", lwd=lwd, xaxs="i")
         showEvents(xs, xw)
     }
-
     if (all || "blubber thickness" %in% which) {
         WCF <- x$WCF
         y <- WCF$compressed[, 2]
@@ -1764,21 +1730,13 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         WWF <- x$WWF
         ylim <- range(c(WWF, SF, CF), na.rm=TRUE)/1e6
         plot(t, SF/1e6, type="l", xlab="Time [s]", ylab="Forces [MN]", lwd=lwd, ylim=ylim, xaxs="i")
-        ##lines(t, CF/1e6, lty="dotdash", lwd=lwd)
         lines(t, CF/1e6, lty="dotted", lwd=lwd)
-        ## legend("topleft", col=1:2, lwd=lwd, legend=c("Skin", "Blubber"))
         mtext(expression(" "*F[E]), side=3, line=-1.2, adj=0, cex=par("cex"))
         mtext(" (solid)", side=3, line=-2.2, adj=0, cex=par("cex"))
         mtext(expression(F[C]*" "), side=3, line=-1.2, adj=1, cex=par("cex"))
         mtext(" (dotted) ", side=3, line=-2.2, adj=1, cex=par("cex"))
-        ## lines(t, WWF / 1e6 , lwd=lwd)
         showEvents(xs, xw)
     }
-    ## if (all || "skin force" %in% which) {
-    ##     Fs <- whaleSkinForce(xs, xw, x$parms)
-    ##     plot(t, Fs$force/1e6, type="l", xlab="Time [s]", ylab="Skin Force [MN]", lwd=lwd)
-    ##     showEvents(xs, xw)
-    ## }
     if (all || "skin stress" %in% which) {
         Fs <- whaleSkinForce(xs, xw, x$parms)
         ylim <- range(c(Fs$sigmay, Fs$sigmaz)/1e6)
@@ -1790,10 +1748,6 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         mtext("(dotted) ", side=3, line=-2.2, adj=1, cex=par("cex"))
         showEvents(xs, xw)
     }
-    ##OLDif (all || "compression force" %in% which) {
-    ##OLD    plot(t, x$WCF$force/1e6, type="l", xlab="Time [s]", ylab="Compress. Force [MN]", lwd=lwd, xaxs="i")
-    ##OLD    showEvents(xs, xw)
-    ##OLD}
     if (all || "compression stress" %in% which) {
         force <- x$WCF$force
         stress <- force / (x$parms$Lz*x$parms$Ly)
@@ -1803,27 +1757,15 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
     if (all || "values" %in% which) {
         omar <- par("mar")
         par(mar=rep(0, 4))
-        ## Only take the vectors, thus ignoring stressFromStrain, a function
         parms <- x$parms[unlist(lapply(x$parms, function(p) is.vector(p)))]
+        parms$logistic <- NULL         # we have no GUI for this, so do not display
+        parms$engineForce <- NULL      # inserted during calculation, not user-supplied
+        parms$lsum <- NULL             # inserted during calculation, not user-supplied
         parms <- lapply(parms, function(x) signif(x, 4))
-        parms["engineForce"] <- NULL # inserted during calculation, not user-supplied
-        parms["lsum"] <- NULL # inserted during calculation, not user-supplied
-
         parms <- lapply(parms, function(p) deparse(p))
-        ## parms$ms <- x$parms$ms
         parms$vs_knots <- mps2knot(x$vs[1])
         names <- names(parms)
         values <- unname(unlist(parms))
-        ##values[["mw"]] <- x$parms$mw
-        ##values[["vs"]] <- x$vs
-
-        ## values <- paste(deparse(parms), collapse=" ")
-        ## values <- gsub("^list\\(", "", values)
-        ## values <- gsub(")$", "", values)
-        ## values <- strsplit(gsub(".*\\((.*)\\)$", "\\1", values), ",")[[1]]
-        ## values <- gsub("^ *", "", values)
-        ## values <- gsub("([0-9])L$", "\\1", values) # it's ugly to see e.g. 1 as 1L
-
         n <- 1 + length(values)
         plot(1:n, 1:n, type="n", xlab="", ylab="", axes=FALSE)
         o <- order(names(parms), decreasing=TRUE)
@@ -1922,12 +1864,6 @@ summarize <- function(object, style="text")
     meaning[names=="s3"] <- "Sublayer strength [Pa]."
     meaning[names=="s4"] <- "Bone strength [Pa]."
     if (style == "latex") {
-        ## names[which(names == "Ealpha")] <- "E_alpha"
-        ## names[which(names == "Ebeta")] <- "E_beta"
-        ## names[which(names == "Egamma")] <- "E_gamma"
-        ## names[which(names == "UTSalpha")] <- "UTS_alpha"
-        ## names[which(names == "UTSbeta")] <- "UTS_beta"
-        ## names[which(names == "UTSgamma")] <- "UTS_gamma"
         names[which(names == "Cs")] <- "$C_s$"
         names[which(names == "Cw")] <- "$C_w$"
         names[which(names == "lw")] <- "$l_w$"
