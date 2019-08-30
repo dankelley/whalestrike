@@ -6,10 +6,8 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
                 fluidRow(column(2,
                                 sliderInput("tmax",  h6("Max time [s]"), ticks=FALSE,
                                             min=0.1,  max=5, value=1, step=0.05),
-                                ##sliderInput("ms",  HTML("<font color=\"FF0000\">Ship mass [tonne]</font>"), ticks=FALSE,
                                 sliderInput("ms",  h6(tags$i("Ship mass [tonne]")), ticks=FALSE,
                                             min=10, max=500,  value=45, step=1),
-                                ##sliderInput("vs", HTML("<font color=\"FF0000\">Ship speed [knot]</font>"), ticks=FALSE,
                                 sliderInput("vs", h6(tags$i("Ship speed [knot]")), ticks=FALSE,
                                             min=1,  max=30,  value=10, step=1)),
                          column(2,
@@ -20,15 +18,10 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
                          column(2,
                                 sliderInput("lw",  h6("Whale length [m]"), ticks=FALSE,
                                             min=5,  max=20, value=13.7, step=0.1),
-                                ##sliderInput("theta", h6("Skin theta [deg]"), ticks=FALSE,
-                                ##            min=30, max=70, value=55, step=1),
                                 sliderInput("l1", h6("Skin thickness [cm]"), ticks=FALSE,
                                             min=1, max=3, value=2.5, step=0.1),
-                                            ##min=0.01, max=0.03, value=0.025, step=0.001),
-                                ##sliderInput("l2", HTML("<font color=\"FF0000\">Blubber thickness [cm]</font>"), ticks=FALSE,
                                 sliderInput("l2", h6(tags$i("Blubber thickness [cm]")), ticks=FALSE,
                                             min=5, max=40, value=16, step=1)),
-                                            ##min=0.05, max=.4, value=0.16, step=0.01)),
                          column(2,
                                 selectInput("species", "",
                                             choices= c("N. Atl. Right", "Bryde", "Fin",
@@ -37,7 +30,6 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
                                             selected="N. Atl. Right"),
                                 sliderInput("l3", h6(tags$i("Sublayer thickness [cm]")), ticks=FALSE,
                                             min=5, max=200, value=112, step=1),
-                                            ##min=0.05, max=2, value=1.12, step=0.01),
                                 sliderInput("l4", h6("Bone thickness [cm]"), ticks=FALSE,
                                             min=5, max=30, value=10, step=1)),
                          column(2,
@@ -48,11 +40,10 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
                          column(2,
                                 checkboxGroupInput("plot_panels", "",
                                                    choices=c("location", "section", "threat", "whale acceleration",
-                                                             "blubber thickness", "sublayer thickness",
                                                              "whale water force", "reactive forces", "skin stress",
                                                              "compression stress", "values"),
                                                    selected=c("location", "section", "threat")))),
-                fluidRow(plotOutput("plot")))# , height='200px'))) # NOTE: height has no effect
+                fluidRow(plotOutput("plot")))
 
 
 #' Server for app, with standard arguments.
@@ -149,10 +140,12 @@ server <- function(input, output, session)
 }
 
 #' Run a GUI app for interactive simulations
+#'
 #' @param mode Character string specifying the style to use.  Only
 #' the value \code{"simple"} is permitted at present. This yields a
 #' 3-panel plot, constructed by \code{\link{plot.strike}},
 #' called with default arguments.
+#'
 #' @param options List containing options that are provided
 #' to \code{\link[shiny]{shinyApp}}, which creates the GUI app.
 #'

@@ -1989,7 +1989,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
 
         parms <- lapply(parms, function(p) deparse(p))
         ## parms$ms <- x$parms$ms
-        parms$vs_knots <- knot2mps(x$vs[1])
+        parms$vs_knots <- mps2knot(x$vs[1])
         names <- names(parms)
         values <- unname(unlist(parms))
         ##values[["mw"]] <- x$parms$mw
