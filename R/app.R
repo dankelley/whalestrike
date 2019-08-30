@@ -64,7 +64,7 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
 #' @md
 server <- function(input, output, session)
 {
-    observeEvent(input$quit, { stopApp() })
+    observeEvent(input$quit, { shiny::stopApp() })
 
     observeEvent(input$saveFile, {
                  file <- "boat_whale.csv"
