@@ -79,8 +79,7 @@ Campbell-Malone (2007).}
 
 \item{s}{Numerical vector of length 4, giving the ultimate strengths (Pa) of
 skin, blubber, sublayer, and bone, respectively. If not provided, the
-value is set to
-\code{c(19.6e6, 10^5.4057, 10^5.4057, 22.9e6)},
+value is set to \code{1e6 * c(19.600,0.255,0.255,22.900)}
 with reasoning as follows.
 The skin default of 19.6 MPa
 is a rounded value from Table 3 of Grear et al. (2018) for adult seal skin strength at

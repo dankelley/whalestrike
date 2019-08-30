@@ -485,8 +485,7 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #'
 #' @param s Numerical vector of length 4, giving the ultimate strengths (Pa) of
 #' skin, blubber, sublayer, and bone, respectively. If not provided, the
-#' value is set to
-#' `c(19.6e6, 10^5.4057, 10^5.4057, 22.9e6)`,
+#' value is set to `1e6 * c(19.600,0.255,0.255,22.900)`
 #' with reasoning as follows.
 #' The skin default of 19.6 MPa
 #' is a rounded value from Table 3 of Grear et al. (2018) for adult seal skin strength at
@@ -618,7 +617,7 @@ parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
             ## three digits because that is what we say in the manuscript.
             ## > round(c(19.6e6, 10^5.4057, 10^5.4057, 22.9e6)/1e6,3)
             ## [1] 19.600  0.255  0.255 22.900
-            s <-1e6 * c(19.600, 0.255, 0.255, 22.900)
+            s <- 1e6 * c(19.600, 0.255, 0.255, 22.900)
         }
         if (length(s) != 4) stop("'s' must be a vector of length 4")
         ## Value checks

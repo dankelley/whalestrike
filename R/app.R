@@ -6,9 +6,11 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
                 fluidRow(column(2,
                                 sliderInput("tmax",  h6("Max time [s]"), ticks=FALSE,
                                             min=0.1,  max=5, value=1, step=0.05),
-                                sliderInput("ms",  HTML("<font color=\"FF0000\">Ship mass [tonne]</font>"), ticks=FALSE,
+                                ##sliderInput("ms",  HTML("<font color=\"FF0000\">Ship mass [tonne]</font>"), ticks=FALSE,
+                                sliderInput("ms",  h6(tags$i("Ship mass [tonne]")), ticks=FALSE,
                                             min=10, max=500,  value=45, step=1),
-                                sliderInput("vs", HTML("<font color=\"FF0000\">Ship speed [knot]</font>"), ticks=FALSE,
+                                ##sliderInput("vs", HTML("<font color=\"FF0000\">Ship speed [knot]</font>"), ticks=FALSE,
+                                sliderInput("vs", h6(tags$i("Ship speed [knot]")), ticks=FALSE,
                                             min=1,  max=30,  value=10, step=1)),
                          column(2,
                                 sliderInput("Ly",  h6("Impact width [m]"), ticks=FALSE,
@@ -26,14 +28,16 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
                                 sliderInput("l1", h6("Skin thickness [cm]"), ticks=FALSE,
                                             min=1, max=3, value=2.5, step=0.1),
                                             ##min=0.01, max=0.03, value=0.025, step=0.001),
-                                sliderInput("l2", HTML("<font color=\"FF0000\">Blubber thickness [cm]</font>"), ticks=FALSE,
+                                ##sliderInput("l2", HTML("<font color=\"FF0000\">Blubber thickness [cm]</font>"), ticks=FALSE,
+                                sliderInput("l2", h6(tags$i("Blubber thickness [cm]")), ticks=FALSE,
                                             min=5, max=40, value=16, step=1)),
                                             ##min=0.05, max=.4, value=0.16, step=0.01)),
                          column(2,
                                 ## default: a[2]=a[3]=1.58e5 pa
                                 sliderInput("a23", h6("Blubber/Sublayer 'a' value [MPa]"), ticks=FALSE,
                                             min=0.100, max=0.200, value=0.158, step=0.01),
-                                sliderInput("l3", HTML("<font color=\"FF0000\">Sublayer thickness [cm]</font>"), ticks=FALSE,
+                                ##sliderInput("l3", HTML("<font color=\"FF0000\">Sublayer thickness [cm]</font>"), ticks=FALSE,
+                                sliderInput("l3", h6(tags$i("Sublayer thickness [cm]")), ticks=FALSE,
                                             min=5, max=200, value=112, step=1),
                                             ##min=0.05, max=2, value=1.12, step=0.01),
                                 sliderInput("l4", h6("Bone thickness [cm]"), ticks=FALSE,
@@ -41,7 +45,9 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
                                             ##min=0.05, max=.3, value=0.1, step=0.01)),
                          column(2,
                                 fileInput("loadFile", "Configuration", multiple=FALSE, accept=c("text/csv", ".csv")),
-                                actionButton("saveFile", "Save")),
+                                actionButton("saveFile", "Save"),
+                                hr(),
+                                actionButton("quit", "Quit")),
                          column(2,
                                 checkboxGroupInput("plot_panels", "",
                                                    choices=c("location", "section", "threat", "whale acceleration",
@@ -61,6 +67,8 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
 #' @md
 server <- function(input, output, session)
 {
+    observeEvent(input$quit, { stopApp() })
+
     observeEvent(input$saveFile, {
                  file <- "boat_whale.csv"
                  ## Remove the load and save file items from the list of input items to save
