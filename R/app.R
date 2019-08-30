@@ -2,7 +2,7 @@
 ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; margin-left:1ex}")),
                 fluidRow(radioButtons("instructions", "Instructions", choices=c("Hide", "Show"), selected="Show", inline=TRUE)),
                 conditionalPanel(condition="input.instructions=='Show'",
-                                 fluidRow(includeMarkdown(system.file("doc", "app_help.md", package="whalestrike")))),
+                                 fluidRow(includeMarkdown(system.file("extdata", "app_help.md", package="whalestrike")))),
                 fluidRow(column(2,
                                 sliderInput("tmax",  h6("Max time [s]"), ticks=FALSE,
                                             min=0.1,  max=5, value=1, step=0.05),
