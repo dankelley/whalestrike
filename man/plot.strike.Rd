@@ -6,8 +6,8 @@
 \usage{
 \method{plot}{strike}(x, which = "default", drawEvents = TRUE,
   colwcenter = "black", colwinterface = "black", colwskin = "black",
-  cols = "black", colThreat = c("lightgray", "black"), lwd = 1,
-  D = 3, debug = 0, ...)
+  cols = "black", colThreat = c("white", "lightgray", "darkgray",
+  "black"), lwd = 1, D = 3, debug = 0, ...)
 }
 \arguments{
 \item{x}{An object created by \code{\link[=strike]{strike()}}.}
@@ -84,9 +84,17 @@ between whale blubber and sublayer.}
 \item{cols}{As \code{colw}, but the colour to be used for the ship bow location,
 which is drawn with a dashed line.}
 
-\item{colThreat}{Two-element colour specification used in \code{"threat"}.
-The first colour is used for threat levels between 0 and 1, the second
-for levels exceeding 1. The defaults are to use light gray and black.}
+\item{colThreat}{a 4-element colour specification used in \code{"threat"} plots.
+The colour transitions depend on the layer being plotted.
+For skin and bone (i.e. in the bottom and top subpanels of the plot),
+the first colour is used up to a stress:strength ratio
+of 1/4, the second up to 1/2, the third up to 3/4, and the fourth above
+3/4.  For blubber and sublayer (i.e. the second and third subpanels,
+counting from the bottom), the colours are defined by comparing compressive
+stress to the values of \code{tau25}, \code{tau50} and \code{tau75} (see the \code{\link[=parameters]{parameters()}}
+documentation), with the first colour for stress under \code{tau25}, the second
+for stress up to \code{tau50}, the third for stress up to \code{tau75}, and the fourth
+for higher stresses.}
 
 \item{lwd}{Line width used in plots for time intervals in which damage
 criteria are not exceeded.}
@@ -106,7 +114,7 @@ with \code{\link[=strike]{strike()}}.
 \examples{
 ## 1. default 3-panel plot
 t <- seq(0, 0.7, length.out=200)
-state <- c(xs=-2, vs=knot2mps(10), xw=0, vw=0) # 10 knot ship
+state <- c(xs=-2, vs=knot2mps(12), xw=0, vw=0) # 12 knot ship
 parms <- parameters() # default values
 sol <- strike(t, state, parms)
 par(mar=c(3,3,1,1), mgp=c(2,0.7,0), mfrow=c(1, 3))

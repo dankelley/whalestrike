@@ -6,7 +6,9 @@
 \usage{
 parameters(ms = 45000, Ss, Ly = 1.15, Lz = 1.15,
   species = "N. Atl. Right Whale", lw = 13.7, mw, Sw, l, a, b, s,
-  theta = 55, Cs = 0.01, Cw = 0.0025, file)
+  theta = 55, Cs = 0.01, Cw = 0.0025,
+  logistic = list(logStressCenter = 5.4057, logStressWidth = 0.2929,
+  tau25 = 121000, tau50 = 254000, tau75 = 534000), file)
 }
 \arguments{
 \item{ms}{Ship mass (kg).}
@@ -115,6 +117,15 @@ Defaults to 2.5e-3, for Reynolds number 2e7, computed from speed
 2 m/s, lengthscale 5m (between radius and length) and
 viscosity 1e-6 m^2/s.  The drag force is computed with
 \code{\link[=whaleWaterForce]{whaleWaterForce()}}.}
+
+\item{logistic}{a \link{list} containing \code{logStressCenter} and \code{logStressWidth},
+which define an empirical logistic fit of an index of whale injury in
+observed strikes (ranging from 0 for no injury to 1 for fatal injury),
+as a function of the base-10 logarithm of compressive
+stress, as well as \code{tau25}, \code{tau50} and \code{tau75}, which are the stresses
+in that fit that yield index values of 0.25, 0.50 and 0.75, respectively;
+these values set colour boundaries in \code{\link[=plot.strike]{plot.strike()}} plots that have
+\code{which="threat"}.}
 
 \item{file}{Optional name a comma-separated file that holds all of the
 previous values, except \code{Cs} and \code{Cw}. If provided,

@@ -147,6 +147,33 @@ fillplot <- function(x, lower, upper, ...)
     polygon(xx, yy, ...)
 }
 
+fillplot4 <- function(x, y, yOffset=0, breaks, col, ...)
+{
+    if (missing(x)) stop("must give x")
+    if (missing(y)) stop("must give y")
+    nx <- length(x)
+    if (length(y) != nx)
+        stop("x and must be of equal length")
+    if (missing(breaks)) stop("must give breaks")
+    if (missing(col)) stop("must give col")
+    nbreaks <- length(breaks)
+    if (nbreaks != 3) stop("invalid use of non-exported function (programmr error)")
+    if (length(col) != nbreaks + 1) stop("must have 1 more col than break")
+    xx <- c(x, rev(x), x[1])
+    yy <- c(y, rep(0,nx), y[1])
+    polygon(xx, yy+yOffset, col=col[4], border=col[4])
+    yy <- ifelse(yy < breaks[3], yy, breaks[3])
+    ## message("breaks[3]=", breaks[3], "; max(y)=", max(y), "; max(yy) after trim=", max(yy), "; col=", col[3])
+    polygon(xx, yy+yOffset, col=col[3], border=col[3])
+    yy <- ifelse(yy < breaks[2], yy, breaks[2])
+    ## message("breaks[2]=", breaks[3], "; max(y)=", max(y), "; max(yy) after trim=", max(yy), "; col=", col[2])
+    polygon(xx, yy+yOffset, col=col[2], border=col[2])
+    yy <- ifelse(yy < breaks[1], yy, breaks[1])
+    ## message("breaks[1]=", breaks[3], "; max(y)=", max(y), "; max(yy) after trim=", max(yy), "; col=", col[1])
+    polygon(xx, yy+yOffset, col=col[1], border=col[1])
+    lines(x, y+yOffset)
+}
+
 
 #' Whale blubber stress-strain relationship
 #'
@@ -522,6 +549,15 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' viscosity 1e-6 m^2/s.  The drag force is computed with
 #' [whaleWaterForce()].
 #'
+#' @param logistic a [list] containing `logStressCenter` and `logStressWidth`,
+#' which define an empirical logistic fit of an index of whale injury in
+#' observed strikes (ranging from 0 for no injury to 1 for fatal injury),
+#' as a function of the base-10 logarithm of compressive
+#' stress, as well as `tau25`, `tau50` and `tau75`, which are the stresses
+#' in that fit that yield index values of 0.25, 0.50 and 0.75, respectively;
+#' these values set colour boundaries in [plot.strike()] plots that have
+#' `which="threat"`.
+#'
 #' @param file Optional name a comma-separated file that holds all of the
 #' previous values, except `Cs` and `Cw`. If provided,
 #' then other parameters (except `Cs` and `Cw`) are
@@ -553,7 +589,10 @@ parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
                        lw=13.7, mw, Sw,
                        l, a, b, s,
                        theta=55,
-                       Cs=0.01, Cw=0.0025, file)
+                       Cs=0.01, Cw=0.0025,
+                       logistic=list(logStressCenter=5.4057, logStressWidth=0.2929,
+                                     tau25=0.121e6, tau50=0.254e6, tau75=0.534e6),
+                       file)
 {
     if (!missing(file)) {
         rval <- as.list(read.csv(file))
@@ -645,6 +684,7 @@ parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
     }
     ## For efficiency, create and store an overall stress-strain function
     rval$stressFromStrain <- stressFromStrainFunction(rval$l, rval$a, rval$b)
+    rval$logistic <- logistic
     class(rval) <- "parameters"
     rval
 }
@@ -1467,12 +1507,20 @@ strike <- function(t, state, parms, debug=0)
 #'
 ## @param colInjury Two-element colour specification used in `"injury"`
 ## panels. The first colour is used to indicate values that are halfway to the
-## injury crition, and the second is used to indicte values that exceed the
+## injury crition, and the second is used to indicate values that exceed the
 ## criterion.
 #'
-#' @param colThreat Two-element colour specification used in `"threat"`.
-#' The first colour is used for threat levels between 0 and 1, the second
-#' for levels exceeding 1. The defaults are to use light gray and black.
+#' @param colThreat a 4-element colour specification used in `"threat"` plots.
+#' The colour transitions depend on the layer being plotted.
+#' For skin and bone (i.e. in the bottom and top subpanels of the plot),
+#' the first colour is used up to a stress:strength ratio
+#' of 1/4, the second up to 1/2, the third up to 3/4, and the fourth above
+#' 3/4.  For blubber and sublayer (i.e. the second and third subpanels,
+#' counting from the bottom), the colours are defined by comparing compressive
+#' stress to the values of `tau25`, `tau50` and `tau75` (see the [parameters()]
+#' documentation), with the first colour for stress under `tau25`, the second
+#' for stress up to `tau50`, the third for stress up to `tau75`, and the fourth
+#' for higher stresses.
 #'
 #' @param lwd Line width used in plots for time intervals in which damage
 #' criteria are not exceeded.
@@ -1491,7 +1539,7 @@ strike <- function(t, state, parms, debug=0)
 #' @examples
 #' ## 1. default 3-panel plot
 #' t <- seq(0, 0.7, length.out=200)
-#' state <- c(xs=-2, vs=knot2mps(10), xw=0, vw=0) # 10 knot ship
+#' state <- c(xs=-2, vs=knot2mps(12), xw=0, vw=0) # 12 knot ship
 #' parms <- parameters() # default values
 #' sol <- strike(t, state, parms)
 #' par(mar=c(3,3,1,1), mgp=c(2,0.7,0), mfrow=c(1, 3))
@@ -1514,7 +1562,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
                         colwinterface="black", #colwinterface="Firebrick",
                         colwskin="black", #colwskin="Dodger Blue 4",
                         cols="black",
-                        colThreat=c("lightgray", "black"),
+                        colThreat=c("white", "lightgray", "darkgray", "black"),
                         lwd=1, D=3, debug=0, ...)
 {
     g <- 9.8 # gravity
@@ -1626,109 +1674,8 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         if (x$parms$l[1] > 0.1 * sum(x$parms$l))
             text(x0, -x$parms$l[4]-x$parms$l[3]-x$parms$l[2]-0.5*x$parms$l[1], "skin", pos=4)
         text(x0, 0.5*(ylim[1] - x$parms$lsum), "", pos=4)
-        ##hatchPolygon <- FALSE
-        ## Blubber
-        ## if (FALSE) {
-        ##     risk <- x$WCF$stress >= 0.5 * x$parms$UTSbeta
-        ##     px <- c(t, rev(t))
-        ##     py <- c(sublayer+blubber,
-        ##             ifelse(rev(risk), rev(sublayer), rev(sublayer+blubber)))
-        ##     if (hatchPolygon) {
-        ##         polygon(px, py, border=NA, density=18, angle=45, col="lightgray")
-        ##         polygon(px, py, border=NA, density=18, angle=-45, col="lightgray")
-        ##     } else {
-        ##         polygon(px, py, col=colInjury[1], border=NA)
-        ##     }
-        ##     injury <- x$WCF$stress >= x$parms$s[2]
-        ##     px <- c(t, rev(t))
-        ##     py <- c(sublayer+blubber,
-        ##             ifelse(rev(injury), rev(sublayer), rev(sublayer+blubber)))
-        ##     if (hatchPolygon) {
-        ##         polygon(px, py, border=NA, density=18, angle=45, col="lightgray")
-        ##         polygon(px, py, border=NA, density=18, angle=-45, col="lightgray")
-        ##     } else {
-        ##         polygon(px, py, col=colInjury[2], border=NA)
-        ##     }
-        ## }
-        ## Sublayer
-        ## if (FALSE) {
-        ##     risk <- x$WCF$stress >= 0.5 * x$parms$s[3]
-        ##     px <- t
-        ##     py <- ifelse(risk, sublayer, 0)
-        ##     if (hatchPolygon) {
-        ##         polygon(px, py, border=NA, density=15, angle=45, col="darkgray")
-        ##         polygon(px, py, border=NA, density=15, angle=-45, col="darkgray")
-        ##     } else {
-        ##         polygon(px, py, col=colInjury[1], border=NA)
-        ##     }
-        ##     injury <- x$WCF$stress >= x$parms$UTSgamma
-        ##     px <- t
-        ##     py <- ifelse(injury, sublayer, 0)
-        ##     if (hatchPolygon) {
-        ##         polygon(px, py, border=NA, density=15, angle=45, col="darkgray")
-        ##         polygon(px, py, border=NA, density=15, angle=-45, col="darkgray")
-        ##     } else {
-        ##         polygon(px, py, col=colInjury[2], border=NA)
-        ##     }
-        ## }
-        ##OLD Redraw lines (to clean up polygons that might have been drawn)
-        ##OLD lines(t, sublayer+blubber, lwd=lwd*1.25, col="white")
-        ##OLD lines(t, sublayer, lwd=lwd*1.25, col="white")
-        ##OLD lines(t, sublayer+blubber, lwd=lwd, col=colwskin)
-        ##OLD lines(t, sublayer, lwd=lwd, col=colwinterface)
     }
-    ## if (all || "injury" %in% which) {
-    ##     skinzInjury <- x$WSF$sigmaz / x$parms$s[1]
-    ##     skinyInjury <- x$WSF$sigmay / x$parms$s[1]
-    ##     blubberInjury <- x$WCF$stress /  x$parms$s[2]
-    ##     sublayerInjury <- x$WCF$stress /  x$parms$s[3]
-    ##     plot(range(t), c(0.5, 4.5), type="n", xlab="Time [s]", ylab="", axes=FALSE, xaxs="i")
-    ##     mtext("Risk of Injury", side=2, line=1, cex=par("cex"))
-    ##     axis(1)
-    ##     box()
-    ##     ## axis(2)
-    ##     dy <- -1
-    ##     y0 <- 4
-    ##     xlim <- par('usr')[1:2]
-    ##     for (i in 1:5) {
-    ##         abline(h=y0+(i-1)*dy, lwd=lwd/2, lty="dotted")
-    ##     }
-    ##     x0 <- xlim[1] #+ 0.04 * (xlim[2] - xlim[1])
-    ##     dylab <- 0.2
-    ##     text(x0, y0     +dylab, "skin z", pos=4)
-    ##     text(x0, y0+  dy+dylab, "skin y", pos=4)
-    ##     text(x0, y0+2*dy+dylab, "blubber", pos=4)
-    ##     text(x0, y0+3*dy+dylab, "sublayer", pos=4)
-    ##     cex <- 1
-    ##     pch <- 20
-    ##     del <- 3
-    ##     n <- length(t)
-    ##     ## Halfway to criterion (i.e. caution)
-    ##     y <- ifelse(skinzInjury >= 0.5, y0, NA)
-    ##     lines(t, y, lwd=5*lwd, col=colInjury[1])
-    ##     y <- ifelse(skinyInjury >= 0.5, y0+dy, NA)
-    ##     lines(t, y, lwd=5*lwd, col=colInjury[1])
-    ##     y <- ifelse(blubberInjury >= 0.5, y0+2*dy, NA)
-    ##     lines(t, y, lwd=5*lwd, col=colInjury[1])
-    ##     y <- ifelse(sublayerInjury >= 0.5, y0+3*dy, NA)
-    ##     lines(t, y, lwd=5*lwd, col=colInjury[1])
-    ##     ## Exceeding criterion (i.e. likely injury)
-    ##     y <- ifelse(skinzInjury >= 1, y0, NA)
-    ##     lines(t, y, lwd=5*lwd, col=colInjury[2])
-    ##     y <- ifelse(skinyInjury >= 1, y0+dy, NA)
-    ##     lines(t, y, lwd=5*lwd, col=colInjury[2])
-    ##     y <- ifelse(blubberInjury >= 1, y0+2*dy, NA)
-    ##     lines(t, y, lwd=5*lwd, col=colInjury[2])
-    ##     y <- ifelse(sublayerInjury >= 1, y0+3*dy, NA)
-    ##     lines(t, y, lwd=5*lwd, col=colInjury[2])
-    ##     showEvents(xs, xw)
-    ## }
-
-    ## This version became the default 20180801T1200; older
-    ## and trial ones are kept, but not documented.
     if (all || "threat" %in% which) {
-        ## tcol <- hcl(h=c(30, 120, 210, 300), c=20, l=90, fixup=FALSE)
-        ## tcol <- hcl(h=c(30, 120, 210, 300))
         tcol <- rep(1, 4)
         skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
         skinyThreat <- x$WSF$sigmay / x$parms$s[1]
@@ -1736,7 +1683,6 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         blubberThreat <- x$WCF$stress /  x$parms$s[2]
         sublayerThreat <- x$WCF$stress /  x$parms$s[3]
         boneThreat <- x$WCF$stress /  x$parms$s[4]
-        totalThreat <- skinThreat + blubberThreat + sublayerThreat + boneThreat
         worst <- max(c(skinThreat, blubberThreat, sublayerThreat, boneThreat))
         trimThreat <- 10
         trimmed <- worst > trimThreat
@@ -1753,7 +1699,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         axis(1)
         box()
         yTicks <- pretty(c(0, worst))
-        mtext(paste("Threat (stress / strength)",
+        mtext(paste("Threat",
                     if (trimmed) paste(" trimmed to", trimThreat) else ""),
               side=2, line=2, cex=par("cex"))
         ## Skin
@@ -1765,151 +1711,27 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         axis(2, at=y0+yTicks, labels=yTicks)
         ## Blubber
         mtext("Blubber", side=4, at=dy, cex=0.8*par("cex"))
-        fillplot(t, y0+dy, dy+blubberThreat,  col=colThreat[2])
-        fillplot(t, y0+dy, dy+ifelse(blubberThreat<=1, blubberThreat, 1), col=colThreat[1])
-        abline(h=dy, lty=3)
+        Y <- x$WCF$stress / x$parms$s[2]
+        tau25scaled <- x$parms$logistic$tau25/x$parms$s[2]
+        tau50scaled <- x$parms$logistic$tau50/x$parms$s[2]
+        tau75scaled <- x$parms$logistic$tau75/x$parms$s[2]
+        fillplot4(t, Y, yOffset=dy, breaks=c(tau25scaled, tau50scaled, tau75scaled), col=colThreat)
+        abline(h=dy)
         axis(2, at=y0+dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
         ## Sublayer
+        Y <- x$WCF$stress / x$parms$s[3]
+        tau25scaled <- x$parms$logistic$tau25/x$parms$s[3]
+        tau50scaled <- x$parms$logistic$tau50/x$parms$s[3]
+        tau75scaled <- x$parms$logistic$tau75/x$parms$s[3]
         mtext("Sublayer", side=4, at=2*dy, cex=0.8*par("cex"))
-        fillplot(t, y0+2*dy, 2*dy+sublayerThreat,  col=colThreat[2])
-        fillplot(t, y0+2*dy, 2*dy+ifelse(sublayerThreat<=1, sublayerThreat, 1), col=colThreat[1])
-        abline(h=2*dy, lty=3)
+        fillplot4(t, Y, yOffset=2*dy, breaks=c(tau25scaled, tau50scaled, tau75scaled), col=colThreat)
+        abline(h=2*dy)
         axis(2, at=y0+2*dy+yTicks, labels=yTicks)
         ## Bone
         mtext("Bone", side=4, at=3*dy, cex=0.8*par("cex"))
         fillplot(t, y0+3*dy, 3*dy+boneThreat,  col=colThreat[2])
         fillplot(t, y0+3*dy, 3*dy+ifelse(boneThreat<=1, boneThreat, 1), col=colThreat[1])
         axis(2, at=y0+3*dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
-        showEvents(xs, xw)
-    }
-
-    if (all || "threat-style-1" %in% which) {
-        skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
-        skinyThreat <- x$WSF$sigmay / x$parms$s[1]
-        skinThreat <- ifelse(skinyThreat > skinzThreat, skinyThreat, skinzThreat)
-        blubberThreat <- x$WCF$stress /  x$parms$s[2]
-        sublayerThreat <- x$WCF$stress /  x$parms$s[3]
-        boneThreat <- x$WCF$stress /  x$parms$s[4]
-        ylim <- c(0, max(c(skinThreat, blubberThreat, sublayerThreat, boneThreat),na.rm=TRUE))
-        plot(t, skinThreat, ylim=ylim, col=1, type="l")
-        lines(t, blubberThreat, col=2)
-        lines(t, sublayerThreat, col=3)
-        lines(t, boneThreat, col=4)
-        legend("topright", lwd=par("lwd"), col=1:4, legend=c("Skin", "Blubber", "Sublayer", "Bone"))
-        showEvents(xs, xw)
-    }
-    if (all || "threat-style-2" %in% which) {
-        skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
-        skinyThreat <- x$WSF$sigmay / x$parms$s[1]
-        skinThreat <- ifelse(skinyThreat > skinzThreat, skinyThreat, skinzThreat)
-        blubberThreat <- x$WCF$stress /  x$parms$s[2]
-        sublayerThreat <- x$WCF$stress /  x$parms$s[3]
-        boneThreat <- x$WCF$stress /  x$parms$s[4]
-        totalThreat <- skinThreat + blubberThreat + sublayerThreat + boneThreat
-        ylim <- c(0, max(totalThreat, na.rm=TRUE))
-        plot(t, skinThreat, ylim=ylim, col=1, type="l")
-        lines(t, skinThreat+blubberThreat, col=2)
-        lines(t, skinThreat+blubberThreat+sublayerThreat, col=3)
-        lines(t, skinThreat+blubberThreat+sublayerThreat+boneThreat, col=4)
-        legend("topright", title="Cumulative threat",
-               lwd=4*par("lwd"), col=rev(1:4),
-               legend=rev(c("Skin", "Blubber", "Sublayer", "Bone")))
-        showEvents(xs, xw)
-    }
-    if (all || "threat-style-3" %in% which) {
-        ##tcol <- hcl(h=c(30, 120, 210, 300), c=20, l=90, fixup=FALSE)
-        tcol <- hcl(h=c(30, 120, 210, 300))
-        skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
-        skinyThreat <- x$WSF$sigmay / x$parms$s[1]
-        skinThreat <- ifelse(skinyThreat > skinzThreat, skinyThreat, skinzThreat)
-        blubberThreat <- x$WCF$stress /  x$parms$s[2]
-        sublayerThreat <- x$WCF$stress /  x$parms$s[3]
-        boneThreat <- x$WCF$stress /  x$parms$s[4]
-        totalThreat <- skinThreat + blubberThreat + sublayerThreat + boneThreat
-        ylim <- c(0, max(totalThreat, na.rm=TRUE))
-        plot(range(t), ylim, type="n", xlab="Time [s]", ylab="Cumulative Threat")
-        fillplot(t, 0, skinThreat, col=tcol[1])
-        fillplot(t, skinThreat, skinThreat+blubberThreat, col=tcol[2])
-        fillplot(t, skinThreat+blubberThreat, skinThreat+blubberThreat+sublayerThreat, col=tcol[3])
-        fillplot(t, skinThreat+blubberThreat+sublayerThreat, skinThreat+blubberThreat+sublayerThreat+boneThreat, col=tcol[4])
-        legend("topright", lwd=8*par("lwd"), col=rev(tcol),
-               legend=rev(c("Skin", "Blubber", "Sublayer", "Bone")))
-        showEvents(xs, xw)
-    }
-    if (all || "threat-style-4" %in% which) {
-        skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
-        skinyThreat <- x$WSF$sigmay / x$parms$s[1]
-        skinThreat <- ifelse(skinyThreat > skinzThreat, skinyThreat, skinzThreat)
-        blubberThreat <- x$WCF$stress /  x$parms$s[2]
-        sublayerThreat <- x$WCF$stress /  x$parms$s[3]
-        boneThreat <- x$WCF$stress /  x$parms$s[4]
-        dy <- -2.25
-        y0 <- 8.0
-        plot(range(t), c(1, 10),
-             type="n", xlab="Time [s]", ylab="", axes=FALSE, xaxs="i")
-        mtext("Threat of Injury", side=2, line=2, cex=par("cex"))
-        axis(1)
-        box()
-        ## axis(2)
-        xlim <- par('usr')[1:2]
-        for (i in 1:4) {
-            abline(h=y0+(i-1)*dy, lwd=lwd/2, lty="dotted")
-        }
-        x0 <- xlim[1] #+ 0.04 * (xlim[2] - xlim[1])
-        ##dylab <- 0.2
-        mtext("bone", side=2, at=y0-0.5*dy, line=0.25, cex=par("cex"))
-        mtext("sublayer", side=2, at=y0+dy-0.5*dy, line=0.25, cex=par("cex"))
-        mtext("blubber", side=2, at=y0+2*dy-0.5*dy, line=0.25, cex=par("cex"))
-        mtext("skin", side=2, at=y0+3*dy-0.5*dy, line=0.25, cex=par("cex"))
-        n <- length(t)
-
-        for (l in 0:3) {
-            abline(h=y0+l*dy + 0.5, lty='dotted', lwd=0.5*lwd)
-            abline(h=y0+l*dy + 1.0, lty='dotted', lwd=0.5*lwd)
-            abline(h=y0+l*dy + 1.5, lty='dotted', lwd=0.5*lwd)
-        }
-
-        ## Make polygon fill down to lowest value
-        polygonWindow <- function(x, y, floor=min(y), col="pink")
-        {
-            n <- length(x)
-            xx <- c(x[1], x, x[n])
-            yy <- c(floor, y, floor)
-            polygon(xx, yy, col=col)
-        }
-        thicker <- 2.0
-        thinner <- 0.8
-        ## Bone at top
-        polygonWindow(t, y0+0*dy+boneThreat, col=colThreat[3], floor=y0)
-        polygonWindow(t, y0+0*dy+ifelse(boneThreat<1, boneThreat, 1), col=colThreat[2], floor=y0)
-        polygonWindow(t, y0+0*dy+ifelse(boneThreat<0.5, boneThreat, 0.5), col=colThreat[1], floor=y0)
-        lines(t, boneThreat + y0 + 0 * dy, lwd=thicker*lwd, col="white")
-        lines(t, boneThreat + y0 + 0 * dy, lwd=thinner*lwd)
-        ## Sublayer below bone
-        polygonWindow(t, y0+1*dy+sublayerThreat, col=colThreat[3], floor=y0+dy)
-        polygonWindow(t, y0+1*dy+ifelse(sublayerThreat<1, sublayerThreat, 1), col=colThreat[2], floor=y0+dy)
-        polygonWindow(t, y0+1*dy+ifelse(sublayerThreat<0.5, sublayerThreat, 0.5), col=colThreat[1], floor=y0+dy)
-        lines(t, sublayerThreat + y0 + 1 * dy, lwd=thicker*lwd, col="white")
-        lines(t, sublayerThreat + y0 + 1 * dy, lwd=thinner*lwd)
-        ## Blubber second from bottom
-        polygonWindow(t, y0+2*dy+blubberThreat, col=colThreat[3], floor=y0+2*dy)
-        polygonWindow(t, y0+2*dy+ifelse(blubberThreat<1, blubberThreat, 1), col=colThreat[2], floor=y0+2*dy)
-        polygonWindow(t, y0+2*dy+ifelse(blubberThreat<0.5, blubberThreat, 0.5), col=colThreat[1], floor=y0+2*dy)
-        lines(t, blubberThreat + y0 + 2 * dy, lwd=thicker*lwd, col="white")
-        lines(t, blubberThreat + y0 + 2 * dy, lwd=thinner*lwd)
-        ## Skin at bottom
-        polygonWindow(t, y0+3*dy+skinThreat, col=colThreat[3], floor=y0+3*dy)
-        polygonWindow(t, y0+3*dy+ifelse(skinThreat<1, skinThreat, 1), col=colThreat[2], floor=y0+3*dy)
-        polygonWindow(t, y0+3*dy+ifelse(skinThreat<0.5, skinThreat, 0.5), col=colThreat[1], floor=y0+3*dy)
-        lines(t, skinThreat + y0 + 3 * dy, lwd=thicker*lwd, col="white")
-        lines(t, skinThreat + y0 + 3 * dy, lwd=thinner*lwd)
-
-        ## Axes
-        axis(4,y0+0*dy+c(0,0.5,1,1.5),labels=c("L", "M", "H", "E"))
-        axis(4,y0+1*dy+c(0,0.5,1,1.5),labels=c("L", "M", "H", "E"))
-        axis(4,y0+2*dy+c(0,0.5,1,1.5),labels=c("L", "M", "H", "E"))
-        axis(4,y0+3*dy+c(0,0.5,1,1.5),labels=c("L", "M", "H", "E"))
-
         showEvents(xs, xw)
     }
     if (all || "whale acceleration" %in% which) {
