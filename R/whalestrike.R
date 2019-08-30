@@ -1662,7 +1662,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         }
         dy <- round(0.5 + worst)
         ylim <- c(0, 3*dy+worst)
-        plot(range(t), ylim, type="n", xlab="Time [s]", ylab="", axes=FALSE, xaxs="i")
+        plot(range(t), ylim, type="n", xlab="Time [s]", ylab="", axes=FALSE, xaxs="i", yaxs="i")
         axis(1)
         box()
         yTicks <- pretty(c(0, worst))
