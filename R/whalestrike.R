@@ -14,9 +14,9 @@ library(xtable)
 #'
 #' @author Dan Kelley
 #'
-#' @export
+#' @family functions dealing with units
 #'
-#' @md
+#' @export
 knot2mps <- function(knot)
 {
     knot * 1.852e3 / 3600 # exact definition according to https://en.wikipedia.org/wiki/Knot_(unit)
@@ -34,8 +34,9 @@ knot2mps <- function(knot)
 #'
 #' @author Dan Kelley
 #'
+#' @family functions dealing with units
+#'
 #' @export
-#' @md
 mps2knot <- function(mps)
 {
     mps / (1.852e3 / 3600)
@@ -56,8 +57,6 @@ mps2knot <- function(mps)
 #' @author Dan Kelley
 #'
 #' @export
-#'
-#' @md
 pin <- function(x, lower=NULL, upper=NULL)
 {
     ## Protect the ifelse() operation from getting riled by NAs
@@ -112,8 +111,6 @@ pin <- function(x, lower=NULL, upper=NULL)
 #' @export
 #'
 #' @importFrom graphics polygon
-#'
-#' @md
 fillplot <- function(x, lower, upper, ...)
 {
     n <- length(x)
@@ -177,8 +174,6 @@ fillplot4 <- function(x, y, yOffset=0, breaks, col, ...)
 #' @name raymond2007
 #'
 #' @docType data
-#'
-#' @md
 NULL
 
 #' Whale side-view shape
@@ -206,8 +201,6 @@ NULL
 #' @name whaleshape
 #'
 #' @docType data
-#'
-#' @md
 NULL
 
 
@@ -316,8 +309,6 @@ NULL
 #' @docType package
 #'
 #' @name whalestrike
-#'
-#' @md
 NULL
 
 #' Create a function for stress in laminated layers
@@ -379,8 +370,6 @@ NULL
 #' @export
 #'
 #' @importFrom stats approxfun uniroot
-#'
-#' @md
 stressFromStrainFunction <- function(l, a, b, N=1000)
 {
     fcn <- function(sigma) {
@@ -563,8 +552,6 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' @export
 #'
 #' @importFrom utils read.csv
-#'
-#' @md
 parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
                        species="N. Atl. Right Whale",
                        lw=13.7, mw, Sw,
@@ -794,8 +781,6 @@ parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
 #' @author Dan Kelley
 #'
 #' @export
-#'
-#' @md
 whaleMassFromLength <- function(L, species="N. Atl. Right Whale", model="fortune2012")
 {
     n <- length(L)
@@ -875,8 +860,6 @@ whaleMassFromLength <- function(L, species="N. Atl. Right Whale", model="fortune
 #' @importFrom stats uniroot
 #'
 #' @seealso [whaleMassFromLength()] is the reverse of this.
-#'
-#' @md
 whaleLengthFromMass <- function(M, species="N. Atl. Right Whale", model="fortune2012")
 {
     n <- length(M)
@@ -932,8 +915,6 @@ whaleLengthFromMass <- function(M, species="N. Atl. Right Whale", model="fortune
 #' @author Dan Kelley
 #'
 #' @export
-#'
-#' @md
 whaleAreaFromLength <- function(L, species="N. Atl. Right Whale", type="wetted")
 {
     speciesAllowed <- c("N. Atl. Right Whale")
@@ -991,8 +972,6 @@ whaleAreaFromLength <- function(L, species="N. Atl. Right Whale", type="wetted")
 #' @author Dan Kelley
 #'
 #' @export
-#'
-#' @md
 whaleCompressionForce <- function(xs, xw, parms)
 {
     touching <- xs < xw & xs > (xw - parms$lsum)
@@ -1036,8 +1015,6 @@ whaleCompressionForce <- function(xs, xw, parms)
 #' @author Dan Kelley
 #'
 #' @export
-#'
-#' @md
 whaleSkinForce <- function(xs, xw, parms)
 {
     touching <- xs < xw & xs > (xw - parms$lsum)
@@ -1080,8 +1057,6 @@ whaleSkinForce <- function(xs, xw, parms)
 #' @author Dan Kelley
 #'
 #' @export
-#'
-#' @md
 shipAreaFromMass <- function(ms)
 {
     length <- 11.73                        # m
@@ -1109,8 +1084,6 @@ shipAreaFromMass <- function(ms)
 #' @author Dan Kelley
 #'
 #' @export
-#'
-#' @md
 shipWaterForce <- function(vs, parms)
 {
     - (1/2) * 1024 * parms$Cs * parms$Ss * vs * abs(vs)
@@ -1133,8 +1106,6 @@ shipWaterForce <- function(vs, parms)
 #' @author Dan Kelley
 #'
 #' @export
-#'
-#' @md
 whaleWaterForce <- function(vw, parms)
 {
     - (1/2) * 1024 * parms$Cw * parms$Sw * vw * abs(vw)
@@ -1156,8 +1127,6 @@ whaleWaterForce <- function(vw, parms)
 #' @author Dan Kelley
 #'
 #' @export
-#'
-#' @md
 dynamics <- function(t, y, parms)
 {
     xs <- y[1]                         # ship position
@@ -1191,8 +1160,6 @@ dynamics <- function(t, y, parms)
 #' @export
 #'
 #' @importFrom utils tail
-#'
-#' @md
 derivative <- function(var, t)
 {
     res <- diff(var) / diff(t)
@@ -1291,8 +1258,6 @@ derivative <- function(var, t)
 #' @export
 #'
 #' @importFrom deSolve lsoda
-#'
-#' @md
 strike <- function(t, state, parms, debug=0)
 {
     if (missing(t))
@@ -1527,8 +1492,6 @@ strike <- function(t, state, parms, debug=0)
 #' @importFrom graphics abline axis box lines legend mtext par plot text
 #' @importFrom grDevices hcl
 #' @importFrom stats runmed
-#'
-#' @md
 plot.strike <- function(x, which="default", drawEvents=TRUE,
                         colwcenter="black", #Slate Gray",
                         colwinterface="black", #colwinterface="Firebrick",
@@ -1791,8 +1754,6 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
 #' @export
 #'
 #' @importFrom xtable xtable
-#'
-#' @md
 summarize <- function(object, style="text")
 {
     parm <- object$parm
@@ -1905,5 +1866,49 @@ summarize <- function(object, style="text")
         colnames(parm) <- c("Item", "Meaning", "Value")
         print(parm, include.rownames=FALSE)
     }
+}
+
+
+
+#' Compute threat of injury from stress, based on logistic model
+#'
+#' @param tau numerical value or vector, giving whale compression stress in Pascals.
+#'
+#' @return threat of injury (in range 0 to 1)
+#'
+#' @examples
+#' expect_equal(threatFromStress(parameters()$logistic$tau50), 0.5, tolerance=0.01)
+#'
+#' @author Dan Kelley
+#'
+#' @family functions dealing with threat index
+#'
+#' @importFrom testthat expect_equal
+#'
+#' @export
+threatFromStress <- function(tau) {
+    logistic <- parameters()$logistic
+    1 / (1 + exp(-(log10(tau) - logistic$logStressCenter) / logistic$logStressWidth))
+}
+
+#' Compute stress, based on threat of injury, based on logistic model
+#'
+#' @param injury numerical value or vector, giving threat of injury (in range 0 to 1).
+#'
+#' @return tau whale compression stress in Pascals.
+#'
+#' @examples
+#' expect_equal(stressFromThreat(0.5), parameters()$logistic$tau50, tolerance=0.01)
+#'
+#' @author Dan Kelley
+#'
+#' @family functions dealing with threat index
+#'
+#' @importFrom testthat expect_equal
+#'
+#' @export
+stressFromThreat <- function(injury) {
+    logistic <- parameters()$logistic
+    10^(logistic$logStressCenter - logistic$logStressWidth * log(1 / injury - 1)) # note natural log
 }
 
