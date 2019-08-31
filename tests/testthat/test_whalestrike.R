@@ -13,3 +13,8 @@ test_that("whaleMassFromLength and whaleLengthFromMass are inverses", {
           }
 })
 
+test_that("whale lethality index", {
+          expect_equal(stressFromLethalityIndex(0.5), parameters()$logistic$tau50, tolerance=0.01)
+          expect_equal(lethalityIndexFromStress(parameters()$logistic$tau50), 0.5, tolerance=0.01)
+})
+

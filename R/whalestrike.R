@@ -1870,44 +1870,48 @@ summarize <- function(object, style="text")
 
 
 
-#' Compute threat of injury from stress, based on logistic model
+#' Compute lethality index, based on compression stress
 #'
-#' @param tau numerical value or vector, giving whale compression stress in Pascals.
+#' The model used for this is the logistic model, fitting observed injury/lethality
+#' statistics to the base-10 logarithm of the maximum compression stress during
+#' a simulated impact event.
+#'
+#' @param stress numerical value or vector, giving whale compression stress in Pascals.
 #'
 #' @return threat of injury (in range 0 to 1)
 #'
 #' @examples
-#' expect_equal(threatFromStress(parameters()$logistic$tau50), 0.5, tolerance=0.01)
+#' lethalityIndexFromStress(parameters()$logistic$tau50) # approx. 0.5
 #'
 #' @author Dan Kelley
 #'
-#' @family functions dealing with threat index
-#'
-#' @importFrom testthat expect_equal
+#' @family functions dealing with Whale Lethality index
 #'
 #' @export
-threatFromStress <- function(tau) {
+lethalityIndexFromStress <- function(stress) {
     logistic <- parameters()$logistic
-    1 / (1 + exp(-(log10(tau) - logistic$logStressCenter) / logistic$logStressWidth))
+    1 / (1 + exp(-(log10(stress) - logistic$logStressCenter) / logistic$logStressWidth))
 }
 
-#' Compute stress, based on threat of injury, based on logistic model
+#' Compute stress, based on lethality index
+#'
+#' The model used for this is the logistic model, fitting observed injury/lethality
+#' statistics to the base-10 logarithm of the maximum compression stress during
+#' a simulated impact event.
 #'
 #' @param injury numerical value or vector, giving threat of injury (in range 0 to 1).
 #'
-#' @return tau whale compression stress in Pascals.
+#' @return whale compression stress, in Pascals.
 #'
 #' @examples
-#' expect_equal(stressFromThreat(0.5), parameters()$logistic$tau50, tolerance=0.01)
+#' stressFromLethalityIndex(0.5) # approx. 254000 Pa, i.e. parameters()$logistic$tau50
 #'
 #' @author Dan Kelley
 #'
-#' @family functions dealing with threat index
-#'
-#' @importFrom testthat expect_equal
+#' @family functions dealing with Whale Lethality index
 #'
 #' @export
-stressFromThreat <- function(injury) {
+stressFromLethalityIndex <- function(injury) {
     logistic <- parameters()$logistic
     10^(logistic$logStressCenter - logistic$logStressWidth * log(1 / injury - 1)) # note natural log
 }
