@@ -41,7 +41,7 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
                                 checkboxGroupInput("plot_panels", "",
                                                    choices=c("location", "section", "threat", "whale acceleration",
                                                              "whale water force", "reactive forces", "skin stress",
-                                                             "compression stress", "values"),
+                                                             "compression stress", "lethality index", "values"),
                                                    selected=c("location", "section", "threat")))),
                 fluidRow(plotOutput("plot")))
 
