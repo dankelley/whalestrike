@@ -1,3 +1,5 @@
+## vim:textwidth=128:expandtab:shiftwidth=4:softtabstop=4
+
 ## app for simulating the effect of a vessel strike on a whale
 ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; margin-left:1ex}")),
                 fluidRow(radioButtons("instructions", "Instructions", choices=c("Hide", "Show"), selected="Show", inline=TRUE)),
@@ -24,9 +26,8 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
                                             min=5, max=40, value=16, step=1)),
                          column(2,
                                 selectInput("species", "",
-                                            choices= c("N. Atl. Right", "Bryde", "Fin",
-                                              "Gray", "Humpback", "Minke",
-                                              "Pac. Right", "Sei", "Sperm"),
+                                            choices= c("N. Atl. Right", "Blue", "Bryde", "Fin", "Gray", "Humpback", "Minke",
+                                                       "Pac. Right", "Sei", "Sperm"),
                                             selected="N. Atl. Right"),
                                 sliderInput("l3", h6(tags$i("Sublayer thickness [cm]")), ticks=FALSE,
                                             min=5, max=200, value=112, step=1),
@@ -39,9 +40,9 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
                                 actionButton("quit", "Quit")),
                          column(2,
                                 checkboxGroupInput("plot_panels", "",
-                                                   choices=c("location", "section", "threat", "whale acceleration",
-                                                             "whale water force", "reactive forces", "skin stress",
-                                                             "compression stress", "lethality index", "values"),
+                                                   choices=c("location", "section", "threat", "whale acceleration", "whale water
+                                                             force", "reactive forces", "skin stress", "compression stress",
+                                                             "lethality index", "values"),
                                                    selected=c("location", "section", "threat")))),
                 fluidRow(plotOutput("plot")))
 
@@ -97,6 +98,8 @@ server <- function(input, output, session)
         ##cat(file=stderr(), "input$a23=", input$a23, "\n")
         mw <- if (input$species == "N. Atl. Right") {
             whaleMassFromLength(input$lw, species="N. Atl. Right Whale", model="fortune2012")
+        } else if (input$species == "Blue") {
+            whaleMassFromLength(input$lw, species="Blue Whale", model="lockyer1976")
         } else if (input$species == "Bryde") {
             whaleMassFromLength(input$lw, species="Bryde Whale", model="lockyer1976")
         } else if (input$species == "Fin") {

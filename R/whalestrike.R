@@ -1,3 +1,5 @@
+## vim:textwidth=128:expandtab:shiftwidth=4:softtabstop=4
+
 library(deSolve)
 library(xtable)
 
@@ -687,8 +689,9 @@ parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
 #' (The error, an exchange of slope and intercept, was confirmed by
 #' S. Fortune in an email to D. Kelley dated June 22, 2018.)
 #'
-#' * `"lockyer1976"` uses formulae from table 1 of Lockyer (1976). The
-#' permitted `species` and the formulae used are as follows.
+#' * `"lockyer1976"` uses formulae from Table 1 of Lockyer (1976). The
+#' permitted `species` and the formulae used are as follows (note that
+#' the `"Gray Whale"` formula is in the table's caption, not in the table itself).
 #'     * `"Blue Whale"`:       \eqn{2.899 * L^3.25}{2.899 * L^3.25}
 #'     * `"Bryde Whale"`:      \eqn{12.965 * L^2.74}{12.965 * L^2.74}
 #'     * `"Fin Whale"`:        \eqn{7.996 * L^2.90}{7.996 * L^2.90}

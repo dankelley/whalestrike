@@ -47,8 +47,9 @@ for North Pacific right whales, according to corrected version of the
 erroneous formula given in the caption of Figure 4 in Fortune et al (2012).
 (The error, an exchange of slope and intercept, was confirmed by
 S. Fortune in an email to D. Kelley dated June 22, 2018.)
-\item \code{"lockyer1976"} uses formulae from table 1 of Lockyer (1976). The
-permitted \code{species} and the formulae used are as follows.
+\item \code{"lockyer1976"} uses formulae from Table 1 of Lockyer (1976). The
+permitted \code{species} and the formulae used are as follows (note that
+the \code{"Gray Whale"} formula is in the table's caption, not in the table itself).
 \itemize{
 \item \code{"Blue Whale"}:       \eqn{2.899 * L^3.25}{2.899 * L^3.25}
 \item \code{"Bryde Whale"}:      \eqn{12.965 * L^2.74}{12.965 * L^2.74}
