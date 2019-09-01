@@ -1533,7 +1533,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
     allowed <- c("all", "location", "section", "threat", "whale acceleration",
                  "blubber thickness", "sublayer thickness",
                  "whale water force", "reactive forces", "skin stress",
-                 "compression stress", "values")
+                 "compression stress", "lethality index", "values")
     for (w in which) {
         if (!(w %in% allowed) && !length(grep("NEW", w)))
             stop("which value \"", w, "\" is not allowed; try one of: \"",
@@ -1715,6 +1715,12 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         force <- x$WCF$force
         stress <- force / (x$parms$Lz*x$parms$Ly)
         plot(t, stress/1e6, type="l", xlab="Time [s]", ylab="Compress. Stress [MPa]", lwd=lwd, xaxs="i")
+        showEvents(xs, xw)
+    }
+    if (all || "lethality index" %in% which) {
+        stress <- x$WCF$stress
+        lethalityIndex <- lethalityIndexFromStress(stress)
+        plot(t, lethalityIndex, type="l", xlab="Time [s]", ylab="Lethality Index", lwd=lwd, xaxs="i")
         showEvents(xs, xw)
     }
     if (all || "values" %in% which) {
