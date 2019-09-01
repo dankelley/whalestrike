@@ -1421,6 +1421,9 @@ strike <- function(t, state, parms, debug=0)
 #'
 #' \item `"skin stress"` for a time-series of skin stress in the along-skin y and z directions.
 #'
+#' \item `"lethality index"` for a time-series of Lethality Index, computed from compression stress
+#' using [lethalityIndexFromStress()].
+#'
 #' \item `"values"` for a listing of `param` values.
 #'
 #' \item `"all"` for all of the above.

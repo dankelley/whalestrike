@@ -63,6 +63,9 @@ and the layer to its interior. (These stresses are equal, under an equilibrium a
 
 \item \code{"skin stress"} for a time-series of skin stress in the along-skin y and z directions.
 
+\item \code{"lethality index"} for a time-series of Lethality Index, computed from compression stress
+using \code{\link[=lethalityIndexFromStress]{lethalityIndexFromStress()}}.
+
 \item \code{"values"} for a listing of \code{param} values.
 
 \item \code{"all"} for all of the above.
