@@ -1183,13 +1183,16 @@ derivative <- function(var, t)
 #' This is only a suggestion, however, because `strike` is set up to detect high
 #' accelerations caused by bone compression, and may set a finer reporting interval,
 #' if such accelerations are detected. The detection is based on thickness of
-#' compressed blubber and sublayer; if either gets to zero thickness, then
-#' a new time grid is constructed, with 10 points during the timescale for
-#' bone compression, which is assumed to be
-#' \eqn{2*sqrt(Ly*Lz*a[4]*b[4]/(l[4]*mw)}, with terms as discussed in
-#' the documentation for [parameters()]. If this grid is finer
-#' than the grid in the stated `t`, then the simulatoin is redone
-#' using the new grid.
+#' compressed blubber and sublayer; if either gets below 1 percent
+#' of the initial(uncompressed) value, then
+#' a trial time grid is computed, with 20 points during the timescale for
+#' bone compression, calculated as
+#' \eqn{0.5*sqrt(Ly*Lz*a[4]*b[4]/(l[4]*mw)}, with terms as discussed in
+#' the documentation for [parameters()]. If this trial grid is finer
+#' than the grid in the `t` parameter, then the simulation is redone
+#' using the new grid. Note that this means that the output will
+#' be finer, so code should not rely on the output time grid being
+#' the same as that supplied in the `t` argument.
 #'
 #' @param state A list or named vector holding the initial state of the model:
 #' ship position `xs` (m),
@@ -1325,7 +1328,7 @@ strike <- function(t, state, parms, debug=0)
     WWF <- whaleWaterForce(vw=vw, parms=parms)
     refinedGrid <- min(WCF$compressed[,2])/WCF$compressed[1,2] < 0.01 || min(WCF$compressed[,3])/WCF$compressed[1,3] < 0.01
     if (refinedGrid) {
-        NEED <- 10                     # desired number of points in peak
+        NEED <- 20                     # desired number of points in peak
         dt <- (1/NEED) * 0.5 * sqrt(parms$l[4] * parms$mw / (parms$Ly*parms$Lz*parms$a[4]*parms$b[4]))
         tstart <- t[1]
         tend <- tail(t, 1)
