@@ -43,7 +43,7 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
                                                    choices=c("location", "section", "threat", "whale acceleration", "whale water
                                                              force", "reactive forces", "skin stress", "compression stress",
                                                              "lethality index", "values"),
-                                                   selected=c("location", "section", "threat")))),
+                                                   selected=c("location", "section", "lethality index")))),
                 fluidRow(plotOutput("plot")))
 
 

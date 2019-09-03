@@ -1192,8 +1192,6 @@ derivative <- function(var, t)
 #' than the grid in the `t` parameter, then the simulation is redone
 #' using the new grid. Note that this means that the output will
 #' be finer, so code should not rely on the output time grid being
-#' the same as that supplied in the `t` argument.
-#'
 #' @param state A list or named vector holding the initial state of the model:
 #' ship position `xs` (m),
 #' ship speed `vs` (m/s),
@@ -1729,7 +1727,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
     if (all || "lethality index" %in% which) {
         stress <- x$WCF$stress
         lethalityIndex <- lethalityIndexFromStress(stress)
-        plot(t, lethalityIndex, type="l", xlab="Time [s]", ylab="Lethality Index", lwd=lwd, xaxs="i")
+        plot(t, lethalityIndex, type="l", xlab="Time [s]", ylab="Lethality Index", lwd=lwd, xaxs="i", ylim=c(0,1), yaxs="i")
         showEvents(xs, xw)
     }
     if (all || "values" %in% which) {
