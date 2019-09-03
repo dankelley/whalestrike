@@ -1426,7 +1426,8 @@ strike <- function(t, state, parms, debug=0)
 #' \item `"skin stress"` for a time-series of skin stress in the along-skin y and z directions.
 #'
 #' \item `"lethality index"` for a time-series of Lethality Index, computed from compression stress
-#' using [lethalityIndexFromStress()].
+#' using [lethalityIndexFromStress()]. Values of Lethality Index that exceed 0.5 are highlighted,
+#' and a dotted line is drawn at that value.
 #'
 #' \item `"values"` for a listing of `param` values.
 #'
@@ -1729,16 +1730,16 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         LI <- lethalityIndexFromStress(stress)
         plot(t, LI, type="l", xlab="Time [s]", ylab="Lethality Index", lwd=lwd, xaxs="i", ylim=c(0,1), yaxs="i")
         nt <- length(t)
-        ## Redraw the supercritical in a 3X thicker line. But, first, refine the grid if it's coarse.
+        ## Redraw the supercritical in a thicker line. But, first, refine the grid if it's coarse.
         if (nt < 2000) {
             t2 <- seq(t[1], t[nt], length.out=2000)
             LI2 <- approx(t, LI, t2)$y
             LI2[LI2 < 0.5] <- NA
-            lines(t2, LI2, lwd=3*lwd)
+            lines(t2, LI2, lwd=2*lwd)
         } else {
             highlight <- LI >= 0.5
             LI[LI < 0.5] <- NA
-            lines(t, LI, lwd=3*lwd)
+            lines(t, LI, lwd=2*lwd)
         }
         abline(h=0.5, lty="dotted")
         ## Highlight for LI exceeding 0.5, using polygon intersection so the thickened
