@@ -1533,7 +1533,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
     }
     all <- "all" %in% which
     if (length(which) == 1 && which == "default") {
-        which <- c("location", "section", "threat")
+        which <- c("location", "section", "lethality index")
     }
 
     ## Ensure that the plot type is known.
