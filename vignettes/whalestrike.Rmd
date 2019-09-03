@@ -77,13 +77,16 @@ The middle shows a cross section of whale skin, blubber and sub-layer. Note the
 thinning of the bottom two layers, indicative of high compressive stress
 associated with the impact of the boat.
 
-The right panel shows an ad-hoc estimate of the threat to injury of whale skin,
-blubber, and sub-layer.  This is calculated as the ratio of stress to relevant
-material strength.  The axis on the right of the sub-layer panel has labels to
-indicate potentially low, medium, high, and extreme threat levels, where this
-ratio is 0, 1/2, 1, and 3/2, respectively.  Increasingly dark colour is also
-used to indicate these boundaries. Given the parameters used for this
-simulation, the sub-layer is in high threat of damage.
+The right panel shows the Lethality Index (LI), a quantity that was devised by
+examination of the published reports of whale strikes.  In the analysis,
+reports of "No Injury" and "Minor Injury" were assessed as having a lethality
+of 0, while reports of "Severe Injury" or "Mortality" were assigned as having a
+lethality of 1.  These observed lethalities were then fitted with a logistic
+model as a function of the base-10 logarithm of the maximum compressive stress
+during a simulation of the event using [strike()], using published or inferred
+whale and ship characteristics. Simulations in which the peak LI exceeds 0.5,
+as in the case shown below, are indicative of serious risk to the life of the
+whale.
 
 ```{r results="hide", fig.width=7, fig.height=3}
 library(whalestrike)
@@ -96,13 +99,13 @@ plot(sol)
 ```
 
 **Exercises.** Rerun the simulation with different parameters, e.g. (1) lower
-the speed until the blubber threat level decrease to below 1.0, (2) vary whale
-length to consider the effects of strikes on immature animals, and (3) model
-strikes near the mandible, by altering the thickness, modulus, and strength of
-the sublayer. (See the documentation for [parameters](../help/parameters) to
-learn how to set the relevant parameters of the ship and whale, and use that
-for [strike](../help/strike) to learn about setting vessel speed and the
-simulation time interval.)
+the speed until the peak LI is below 0.5, (2) vary whale length to consider the
+effects of strikes on immature animals, and (3) model strikes near the
+mandible, by altering the thickness, modulus, and strength of the sublayer.
+(See the documentation for [parameters](../help/parameters) to learn how to set
+the relevant parameters of the ship and whale, and use that for
+[strike](../help/strike) to learn about setting vessel speed and the simulation
+time interval.)
 
 
 ## Threat dependence on impact area
