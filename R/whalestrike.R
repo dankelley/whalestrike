@@ -1498,7 +1498,7 @@ strike <- function(t, state, parms, debug=0)
 #'
 #' @importFrom graphics abline axis box lines legend mtext par plot text
 #' @importFrom grDevices hcl
-#' @importFrom stats runmed
+#' @importFrom stats approx runmed
 plot.strike <- function(x, which="default", drawEvents=TRUE,
                         colwcenter="black", #Slate Gray",
                         colwinterface="black", #colwinterface="Firebrick",
@@ -1726,8 +1726,42 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
     }
     if (all || "lethality index" %in% which) {
         stress <- x$WCF$stress
-        lethalityIndex <- lethalityIndexFromStress(stress)
-        plot(t, lethalityIndex, type="l", xlab="Time [s]", ylab="Lethality Index", lwd=lwd, xaxs="i", ylim=c(0,1), yaxs="i")
+        LI <- lethalityIndexFromStress(stress)
+        plot(t, LI, type="l", xlab="Time [s]", ylab="Lethality Index", lwd=lwd, xaxs="i", ylim=c(0,1), yaxs="i")
+        nt <- length(t)
+        ## Redraw the supercritical in a 3X thicker line. But, first, refine the grid if it's coarse.
+        if (nt < 2000) {
+            t2 <- seq(t[1], t[nt], length.out=2000)
+            LI2 <- approx(t, LI, t2)$y
+            LI2[LI2 < 0.5] <- NA
+            lines(t2, LI2, lwd=3*lwd)
+        } else {
+            highlight <- LI >= 0.5
+            LI[LI < 0.5] <- NA
+            lines(t, LI, lwd=3*lwd)
+        }
+        abline(h=0.5, lty="dotted")
+        ## Highlight for LI exceeding 0.5, using polygon intersection so the thickened
+        ## line comes right down to the 0.5 line.
+        ## NOT-WORKING highlight <- lethalityIndex >= 0.5
+        ## NOT-WORKING lines(t[highlight], lethalityIndex[highlight], lwd=2*lwd)
+        ## NOT-WORKING abline(h=0.5, lty="dotted")
+        ## NOT-WORKING usr <- par("usr")
+        ## NOT-WORKING highlightRegion <- as(raster::extent(usr[1], usr[2], 0.5, usr[4]), "SpatialPolygons")
+        ## NOT-WORKING A <- sp::Polygon(cbind(t, lethalityIndex))
+        ## NOT-WORKING B <- sp::Polygons(list(A), "A")
+        ## NOT-WORKING C <- sp::SpatialPolygons(list(B))
+        ## NOT-WORKING set_RGEOS_CheckValidity(2L)
+        ## NOT-WORKING browser()
+        ## NOT-WORKING i <- raster::intersect(highlightRegion, C)
+        ## NOT-WORKING if (!is.null(i)) {
+        ## NOT-WORKING     for (j in seq_along(i@polygons)) {
+        ## NOT-WORKING         for (k in seq_along(i@polygons[[1]]@Polygons)) {
+        ## NOT-WORKING             xy <- i@polygons[[j]]@Polygons[[k]]@coords
+        ## NOT-WORKING             lines(xy[,1], xy[,2], lwd=2*lwd, col=2)
+        ## NOT-WORKING         }
+        ## NOT-WORKING     }
+        ## NOT-WORKING }
         showEvents(xs, xw)
     }
     if (all || "values" %in% which) {
