@@ -1637,7 +1637,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         axis(1)
         box()
         yTicks <- pretty(c(0, worst))
-        mtext(paste("Threat",
+        mtext(paste("Threat, Stress/Strength",
                     if (trimmed) paste(" trimmed to", trimThreat) else ""),
               side=2, line=2, cex=par("cex"))
         ## Skin

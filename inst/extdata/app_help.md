@@ -11,9 +11,10 @@ typing `help("parameters","whalestrike")` and `help("strike","whalestrike")` in
 an R console.
 
 To the right of the sliders is a column of checkboxes that control the plotted
-output. At startup, three of these boxes are ticked, yielding a display with
-three panels showing the time history of the simulation.  The left-hand plot
-panel shows whale and boat location, the former with an indication of the
+output. (For the details of the plots, type `help("plot.strike","plot")` in an
+R console.) At startup, three of these boxes are ticked, yielding a display
+with three panels showing the time history of the simulation.  The left-hand
+plot panel shows whale and boat location, the former with an indication of the
 interfaces between skin, blubber, sublayer, and bone. Peak ship and whale
 accelerations are indicated with labels inside this panel.  The middle panel
 shows the same information as the one to its left, but with a whale-centred
@@ -21,10 +22,8 @@ coordinate system, and with labels for the components. The right panel is an
 indication of the estimated threat to the four layers of the whale, with curves
 that are filled with colours that darken with the degree of threat. The
 dividing lines are the quantiles of a logistic fit of published reports of
-whale injury (with 0 meaning no injury or minor injury and 1 meaning severe
-or fatal injury) to the base-10 logarithm of compressive stress.
-For details of these and other plot varieties, type
-`help("plot.strike","whalestrike")` in an R console.
+whale injury (with 0 meaning no injury or minor injury and 1 meaning severe or
+fatal injury) to the base-10 logarithm of compressive stress.
 
 Much can be learned by adjusting the sliders and examining the plotted output.
 As an exercise, try setting to a particular ship mass of interest, and then to
