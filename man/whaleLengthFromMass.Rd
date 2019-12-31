@@ -4,8 +4,7 @@
 \alias{whaleLengthFromMass}
 \title{Compute whale length from mass}
 \usage{
-whaleLengthFromMass(M, species = "N. Atl. Right Whale",
-  model = "fortune2012")
+whaleLengthFromMass(M, species = "N. Atl. Right Whale", model = "fortune2012")
 }
 \arguments{
 \item{M}{Whale mass (kg).}

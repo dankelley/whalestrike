@@ -22,7 +22,8 @@ lethalityIndexFromStress(parameters()$logistic$tau50) # approx. 0.5
 
 }
 \seealso{
-Other functions dealing with Whale Lethality index: \code{\link{stressFromLethalityIndex}}
+Other functions dealing with Whale Lethality index: 
+\code{\link{stressFromLethalityIndex}()}
 }
 \author{
 Dan Kelley

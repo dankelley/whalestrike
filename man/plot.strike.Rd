@@ -4,10 +4,20 @@
 \alias{plot.strike}
 \title{Plot a strike object}
 \usage{
-\method{plot}{strike}(x, which = "default", drawEvents = TRUE,
-  colwcenter = "black", colwinterface = "black", colwskin = "black",
-  cols = "black", colThreat = c("white", "lightgray", "darkgray",
-  "black"), lwd = 1, D = 3, debug = 0, ...)
+\method{plot}{strike}(
+  x,
+  which = "default",
+  drawEvents = TRUE,
+  colwcenter = "black",
+  colwinterface = "black",
+  colwskin = "black",
+  cols = "black",
+  colThreat = c("white", "lightgray", "darkgray", "black"),
+  lwd = 1,
+  D = 3,
+  debug = 0,
+  ...
+)
 }
 \arguments{
 \item{x}{An object created by \code{\link[=strike]{strike()}}.}

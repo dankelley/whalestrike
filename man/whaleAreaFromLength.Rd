@@ -4,8 +4,7 @@
 \alias{whaleAreaFromLength}
 \title{Whale projected area, as function of length}
 \usage{
-whaleAreaFromLength(L, species = "N. Atl. Right Whale",
-  type = "wetted")
+whaleAreaFromLength(L, species = "N. Atl. Right Whale", type = "wetted")
 }
 \arguments{
 \item{L}{length in m.}
@@ -36,9 +35,9 @@ agreed to under 0.7 percent percent between these digitizations.
 }
 \references{
 \enumerate{
-\item Dan Kelley's internal document \code{dek/20180623_whale_area.Rmd}, available
+\item Dan Kelley's internal document \verb{dek/20180623_whale_area.Rmd}, available
 upon request.
-\item Dan Kelley's internal document \code{dek/20180707_whale_mass.Rmd}, available
+\item Dan Kelley's internal document \verb{dek/20180707_whale_mass.Rmd}, available
 upon request.
 }
 }

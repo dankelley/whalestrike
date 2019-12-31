@@ -4,11 +4,26 @@
 \alias{parameters}
 \title{Control parameters for whale strike simulation}
 \usage{
-parameters(ms = 45000, Ss, Ly = 1.15, Lz = 1.15,
-  species = "N. Atl. Right Whale", lw = 13.7, mw, Sw, l, a, b, s,
-  theta = 55, Cs = 0.01, Cw = 0.0025,
-  logistic = list(logStressCenter = 5.4057, logStressWidth = 0.2929,
-  tau25 = 121000, tau50 = 254000, tau75 = 534000), file)
+parameters(
+  ms = 45000,
+  Ss,
+  Ly = 1.15,
+  Lz = 1.15,
+  species = "N. Atl. Right Whale",
+  lw = 13.7,
+  mw,
+  Sw,
+  l,
+  a,
+  b,
+  s,
+  theta = 55,
+  Cs = 0.01,
+  Cw = 0.0025,
+  logistic = list(logStressCenter = 5.4057, logStressWidth = 0.2929, tau25 = 121000,
+    tau50 = 254000, tau75 = 534000),
+  file
+)
 }
 \arguments{
 \item{ms}{Ship mass (kg).}

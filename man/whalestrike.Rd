@@ -3,7 +3,6 @@
 \docType{package}
 \name{whalestrike}
 \alias{whalestrike}
-\alias{whalestrike-package}
 \title{whalestrike: A Package to Simulate Ship-Whale Collisions}
 \description{
 This package solves Newton's second law for a simple model of

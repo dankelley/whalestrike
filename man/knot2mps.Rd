@@ -18,7 +18,8 @@ according to https://en.wikipedia.org/wiki/Knot_(unit).
 See also \code{\link[=mps2knot]{mps2knot()}}, which is the inverse of this function.
 }
 \seealso{
-Other functions dealing with units: \code{\link{mps2knot}}
+Other functions dealing with units: 
+\code{\link{mps2knot}()}
 }
 \author{
 Dan Kelley
