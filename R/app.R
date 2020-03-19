@@ -94,7 +94,7 @@ server <- function(input, output, session)
                 })
     output$plot <- renderPlot({
         ##message("species: ", input$species)
-        aDefault <- whalestrike::parameters()$a
+        ## aDefault <- whalestrike::parameters()$a
         ##cat(file=stderr(), "input$a23=", input$a23, "\n")
         mw <- if (input$species == "N. Atl. Right") {
             whaleMassFromLength(input$lw, species="N. Atl. Right Whale", model="fortune2012")

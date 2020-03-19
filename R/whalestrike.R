@@ -374,6 +374,9 @@ NULL
 #' @importFrom stats approxfun uniroot
 stressFromStrainFunction <- function(l, a, b, N=1000)
 {
+    DL <- NULL # prevent diagnostic in fcn call; the value doesn't matter (see the uniroot)
+    aa <- NULL # prevent diagnostic in fcn call; the value doesn't matter (see the uniroot)
+    bb <- NULL # prevent diagnostic in fcn call; the value doesn't matter (see the uniroot)
     fcn <- function(sigma) {
         DL - sum((l/bb) * log(1 + sigma / aa))
     }
@@ -554,17 +557,17 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' @export
 #'
 #' @importFrom utils read.csv
-parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
+parameters <- function(ms=45e3, Ss=NULL, Ly=1.15, Lz=1.15,
                        species="N. Atl. Right Whale",
-                       lw=13.7, mw, Sw,
-                       l, a, b, s,
+                       lw=13.7, mw=NULL, Sw=NULL,
+                       l=NULL, a=NULL, b=NULL, s=NULL,
                        theta=55,
                        Cs=0.01, Cw=0.0025,
-                       logistic=list(logStressCenter=5.4057, logStressWidth=0.2929,
-                                     tau25=0.121e6, tau50=0.254e6, tau75=0.534e6),
-                       file)
+                       logistic=list(logStressCenter=5.38, logStressWidth=0.349,
+                                     tau25=0.100e6, tau50=0.241e6, tau75=0.581e6),
+                       file=NULL)
 {
-    if (!missing(file)) {
+    if (!is.null(file)) {
         rval <- as.list(read.csv(file))
         rval$Ss <- shipAreaFromMass(rval$ms)
         rval$mw <- whaleMassFromLength(rval$lw, species=species)
@@ -588,7 +591,7 @@ parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
         if (length(ms) != 1) stop("cannot handle more than one 'ms' at a time")
         if (ms <= 0)
             stop("ship mass (ms) must be a positive number, but it is ", ms)
-        if (missing(Ss))
+        if (is.null(Ss))
             Ss <- shipAreaFromMass(ms)
         if (length(Ss) != 1) stop("cannot handle more than one 'Ss' at a time")
         if (Ss <= 0)
@@ -602,25 +605,25 @@ parameters <- function(ms=45e3, Ss, Ly=1.15, Lz=1.15,
         if (length(lw) != 1) stop("cannot handle more than one 'lw' at a time")
         if (lw <= 0)
             stop("Whale length (lw) must be a positive number")
-        if (missing(mw))
+        if (is.null(mw))
             mw <- whaleMassFromLength(lw, species=species)
         if (length(mw) != 1) stop("cannot handle more than one 'mw' at a time")
-        if (missing(Sw))
+        if (is.null(Sw))
             Sw <- whaleAreaFromLength(lw, species=species, type="wetted")
         if (length(Sw) != 1) stop("cannot handle more than one 'Sw' at a time")
-        if (missing(l))
+        if (is.null(l))
             l <- c(0.025, 0.16, 1.12, 0.1)
         if (length(l) != 4) stop("'l' must be a vector of length 4")
         ## NOTE: keep in synch with 'AAAA' above!
-        if (missing(a))
+        if (is.null(a))
             a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
         if (length(a) != 4) stop("'a' must be a vector of length 4")
         ## NOTE: keep in synch with above!
-        if (missing(b))
+        if (is.null(b))
             b <- c(0.1, 2.54, 2.54, 0.1)
         if (length(b) != 4) stop("'b' must be a vector of length 4")
         ## NOTE: keep in synch with above!
-        if (missing(s)) {
+        if (is.null(s)) {
             ## OLD s <- c(19.6e6, 0.437e6, 0.437e6, 22.9e6)
             ## NEW. Note that we round to the newly-added s[2] and s[3] to
             ## three digits because that is what we say in the manuscript.
@@ -1614,7 +1617,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         text(x0, 0.5*(ylim[1] - x$parms$lsum), "", pos=4)
     }
     if (all || "threat" %in% which) {
-        tcol <- rep(1, 4)
+        ## tcol <- rep(1, 4)
         skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
         skinyThreat <- x$WSF$sigmay / x$parms$s[1]
         skinThreat <- ifelse(skinyThreat > skinzThreat, skinyThreat, skinzThreat)
@@ -1737,7 +1740,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
             LI2[LI2 < 0.5] <- NA
             lines(t2, LI2, lwd=2*lwd)
         } else {
-            highlight <- LI >= 0.5
+            ##NOT-WORKING highlight <- LI >= 0.5
             LI[LI < 0.5] <- NA
             lines(t, LI, lwd=2*lwd)
         }

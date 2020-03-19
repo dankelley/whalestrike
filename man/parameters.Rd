@@ -6,23 +6,23 @@
 \usage{
 parameters(
   ms = 45000,
-  Ss,
+  Ss = NULL,
   Ly = 1.15,
   Lz = 1.15,
   species = "N. Atl. Right Whale",
   lw = 13.7,
-  mw,
-  Sw,
-  l,
-  a,
-  b,
-  s,
+  mw = NULL,
+  Sw = NULL,
+  l = NULL,
+  a = NULL,
+  b = NULL,
+  s = NULL,
   theta = 55,
   Cs = 0.01,
   Cw = 0.0025,
-  logistic = list(logStressCenter = 5.4057, logStressWidth = 0.2929, tau25 = 121000,
-    tau50 = 254000, tau75 = 534000),
-  file
+  logistic = list(logStressCenter = 5.38, logStressWidth = 0.349, tau25 = 1e+05, tau50 =
+    241000, tau75 = 581000),
+  file = NULL
 )
 }
 \arguments{
