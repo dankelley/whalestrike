@@ -17,6 +17,12 @@ This is done by multiplying by the factor 1.852e3/3600,
 according to https://en.wikipedia.org/wiki/Knot_(unit).
 See also \code{\link[=mps2knot]{mps2knot()}}, which is the inverse of this function.
 }
+\examples{
+library(whalestrike)
+knots <- seq(0, 20)
+plot(knots, knot2mps(knots), type="l")
+
+}
 \seealso{
 Other functions dealing with units: 
 \code{\link{mps2knot}()}

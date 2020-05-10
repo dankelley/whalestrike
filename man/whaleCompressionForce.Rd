@@ -26,7 +26,7 @@ for bone compression.
 \description{
 Calculate the total compression stress and force, along
 with the thicknesses of skin, blubber, sublayer, and bone.
-The stess is computed with the \code{\link[=stressFromStrainFunction]{stressFromStrainFunction()}} function that
+The stress is computed with the \code{\link[=stressFromStrainFunction]{stressFromStrainFunction()}} function that
 is created by \code{\link[=parameters]{parameters()}} and stored in \code{para}.
 the force is computed by multiplying stess by area
 computed as the product of \code{parms$Ly} and \code{parms$Lz}.

@@ -20,8 +20,8 @@ parameters(
   theta = 55,
   Cs = 0.01,
   Cw = 0.0025,
-  logistic = list(logStressCenter = 5.38, logStressWidth = 0.349, tau25 = 1e+05, tau50 =
-    241000, tau75 = 581000),
+  logistic = list(logStressCenter = 5.38, logStressWidth = 0.349, tau25 = 1e+05, tau50
+    = 241000, tau75 = 581000),
   file = NULL
 )
 }
@@ -57,14 +57,14 @@ from whale length using \code{\link[=whaleAreaFromLength]{whaleAreaFromLength()}
 \item{l}{Numerical vector of length 4, giving thickness (m) of skin, blubber,
 sublayer, and bone. If not provided, this is set to
 \code{c(0.025, 0.16, 1.12, 0.1)}.
-The skin thicknes default of 0.025 m represents the 0.9-1.0 inch value
+The skin thickness default of 0.025 m represents the 0.9-1.0 inch value
 stated in Section 2.2.3 of Raymond (2007).
 The blubber default of 0.16 m is a rounded average of the values inferred
 by whale necropsy, reported in Appendix 2 of Daoust et al., 2018.
 The sublayer default of 1.12 m may be reasonable at some spots on the whale body.
 The bone default of 0.1 m may be reasonable at some spots on the whale body.
 The sum of these default values, 1.40 m, is a whale radius that
-is consistent with a half-circumferance of 4.4 m, reported in Table 2.2
+is consistent with a half-circumference of 4.4 m, reported in Table 2.2
 of Raymond (2007).}
 
 \item{a, b}{Numerical vectors of length 4, giving values to use in the
@@ -166,6 +166,7 @@ parms <- parameters()
 epsilon <- seq(0, 1, length.out=100) # strain
 sigma <- parms$stressFromStrain(epsilon) # stress
 plot(epsilon, log10(sigma), xlab="Strain", ylab="log10(Stress [MPa])", type="l")
+mtext("Note sudden increase in stress, when bone compression starts")
 
 }
 \author{

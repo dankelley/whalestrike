@@ -23,10 +23,12 @@ necropsy side-view presented in Daoust et al. (2018).}
 This depends on calculations based on the digitized shape of
 a whale necropsy, which is provided as \link{whaleshape}.
 The results are
-\preformatted{0.143 * L^2} for the projected area (see reference 1)
+\eqn{0.143 * L^2}{0.143 * L^2}
+for the projected area (see reference 1)
 and
-\preformatted{0.448 * (0.877 * L)^2} for the wetted area,
-where the latter uses a correction related to whale mass (see reference 2).
+\eqn{0.448 * (0.877 * L)^2}{0.448 * (0.877 * L)^2}
+for the wetted area
+(see reference 2, but note that we use a correction related to whale mass).
 }
 \details{
 Note that multiple digitizations were done,

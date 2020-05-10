@@ -1,6 +1,6 @@
 ---
 title: "Using the whalestrike package"
-author: "Dan Kelley"
+author: "Dan Kelley (https://orcid.org/0000-0001-7808-5911)"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
@@ -14,7 +14,7 @@ output:
 vignette: >
   %\VignetteIndexEntry{Using the whalestrike package}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+  %\VignetteEncoding[utf-8]{inputenc}
 ---
 
 <!-- HOW TO BUILD THE VIGNETTE. -->
@@ -46,7 +46,7 @@ advantage of the simple formulation is that it makes it easy to modify various
 dynamical and biomechanical parameters, to add new forces, and to explore a
 range of criteria for whale damage.
 
-The documentation for [strike](../help/strike) provides an example of using the
+The documentation for `strike()` provides an example of using the
 main functions of this package, and so it is a good place to start. A companion
 manuscript is intended to provide more detail about the analysis and the
 context.

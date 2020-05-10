@@ -17,7 +17,28 @@ and whale speed \code{vw} (m/s).}
 \code{\link{parameters}}.}
 }
 \description{
-Dynamical law
+This function handles Newton's second law, which is the dynamical
+law that relates the accelerations of whale and ship to the forces
+upon each.  It is used by \code{\link[=strike]{strike()}}, as the latter integrates
+the acceleration equations to step forward in time through
+the simulation of a whale-strike event. Thus, \code{\link[=dynamics]{dynamics()}}
+is a core function of this package.  The code is very simple,
+because the forces are determined by other functions, as
+described in the \dQuote{Details} section.
+}
+\details{
+Given a present state (defined by the positions and
+velocities of ship and whale) at the present time,
+apply Newton's second law to find the time derivatives
+of that state.  Forces are determined with
+\code{\link[=whaleCompressionForce]{whaleCompressionForce()}},
+\code{\link[=whaleExtensionForce]{whaleExtensionForce()}},
+\code{\link[=shipWaterForce]{shipWaterForce()}},
+\code{\link[=whaleWaterForce]{whaleWaterForce()}}, while engine force
+(assumed constant over the course of a collision) is
+computed from initial \code{\link[=shipWaterForce]{shipWaterForce()}}.  Whale and
+ship masses are set by \code{\link[=parameters]{parameters()}}, which also sets up
+areas, drag coefficients, etc.
 }
 \references{
 See \code{\link[=whalestrike]{whalestrike()}} for a list of references.

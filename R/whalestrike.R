@@ -16,12 +16,17 @@ library(xtable)
 #'
 #' @author Dan Kelley
 #'
+#' @examples
+#' library(whalestrike)
+#' knots <- seq(0, 20)
+#' plot(knots, knot2mps(knots), type="l")
+#'
 #' @family functions dealing with units
 #'
 #' @export
 knot2mps <- function(knot)
 {
-    knot * 1.852e3 / 3600 # exact definition according to https://en.wikipedia.org/wiki/Knot_(unit)
+    knot * 1.852e3 / 3600
 }
 
 #' Convert a speed in m/s to a speed in knots
@@ -35,6 +40,11 @@ knot2mps <- function(knot)
 #' @return Speed in knots.
 #'
 #' @author Dan Kelley
+#'
+#' @examples
+#' library(whalestrike)
+#' mps <- seq(0, 10)
+#' plot(mps, mps2knot(mps), type="l")
 #'
 #' @family functions dealing with units
 #'
@@ -244,7 +254,7 @@ NULL
 #' Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
 #' “Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
 #' Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
-#' Socieity, and Fisheries and Oceans Canada, 2018.
+#' Society, and Fisheries and Oceans Canada, 2018.
 #' \url{http://publications.gc.ca/site/eng/9.850838/publication.html}.
 #'
 #' \item
@@ -306,6 +316,12 @@ NULL
 #' Hampshire, 2007.
 #' \url{https://scholars.unh.edu/thesis/309}.
 #'
+#' \item
+#' Soetaert, Karline, Thomas Petzoldt, and R. Woodrow Setzer.
+#' “Solving Differential Equations in R: Package DeSolve.”
+#' Journal of Statistical Software; Vol 1, Issue 9, 2010.
+#' \url{https://doi.org/10.18637/jss.v033.i09}.
+#'
 #'}
 #'
 #' @docType package
@@ -337,10 +353,10 @@ NULL
 #'
 #' This is done for a sequence of `N` values of strain \eqn{\epsilon}
 #' that range from 0 to 1. Then [approxfun()] is used to create
-#' a piecewise-linear represention of the relationship between \eqn{\sigma} and \eqn{\Delta L},
+#' a piecewise-linear representation of the relationship between \eqn{\sigma} and \eqn{\Delta L},
 #' which becomes the return value of the present function.
-#' (The purpose of using a the piecewise-linear representation os to shorten
-#' computation times.)
+#' (The purpose of using a piecewise-linear representation to reduce
+#' computation time.)
 #'
 #' @param l vector of layer thicknesses
 #'
@@ -446,7 +462,7 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' @param l Numerical vector of length 4, giving thickness (m) of skin, blubber,
 #' sublayer, and bone. If not provided, this is set to
 #' `c(0.025, 0.16, 1.12, 0.1)`.
-#' The skin thicknes default of 0.025 m represents the 0.9-1.0 inch value
+#' The skin thickness default of 0.025 m represents the 0.9-1.0 inch value
 #' stated in Section 2.2.3 of Raymond (2007).
 #' The blubber default of 0.16 m is a rounded average of the values inferred
 #' by whale necropsy, reported in Appendix 2 of Daoust et al., 2018.
@@ -455,7 +471,7 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' The sublayer default of 1.12 m may be reasonable at some spots on the whale body.
 #' The bone default of 0.1 m may be reasonable at some spots on the whale body.
 #' The sum of these default values, 1.40 m, is a whale radius that
-#' is consistent with a half-circumferance of 4.4 m, reported in Table 2.2
+#' is consistent with a half-circumference of 4.4 m, reported in Table 2.2
 #' of Raymond (2007).
 #'
 #' @param a,b Numerical vectors of length 4, giving values to use in the
@@ -551,6 +567,7 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' epsilon <- seq(0, 1, length.out=100) # strain
 #' sigma <- parms$stressFromStrain(epsilon) # stress
 #' plot(epsilon, log10(sigma), xlab="Strain", ylab="log10(Stress [MPa])", type="l")
+#' mtext("Note sudden increase in stress, when bone compression starts")
 #'
 #' @author Dan Kelley
 #'
@@ -890,10 +907,12 @@ whaleLengthFromMass <- function(M, species="N. Atl. Right Whale", model="fortune
 #' This depends on calculations based on the digitized shape of
 #' a whale necropsy, which is provided as [whaleshape].
 #' The results are
-#' \preformatted{0.143 * L^2} for the projected area (see reference 1)
+#' \eqn{0.143 * L^2}{0.143 * L^2}
+#' for the projected area (see reference 1)
 #' and
-#' \preformatted{0.448 * (0.877 * L)^2} for the wetted area,
-#' where the latter uses a correction related to whale mass (see reference 2).
+#' \eqn{0.448 * (0.877 * L)^2}{0.448 * (0.877 * L)^2}
+#' for the wetted area
+#' (see reference 2, but note that we use a correction related to whale mass).
 #'
 #' Note that multiple digitizations were done,
 #' and that the coefficients used in the formulae
@@ -950,7 +969,7 @@ whaleAreaFromLength <- function(L, species="N. Atl. Right Whale", type="wetted")
 #'
 #' Calculate the total compression stress and force, along
 #' with the thicknesses of skin, blubber, sublayer, and bone.
-#' The stess is computed with the [stressFromStrainFunction()] function that
+#' The stress is computed with the [stressFromStrainFunction()] function that
 #' is created by [parameters()] and stored in `para`.
 #' the force is computed by multiplying stess by area
 #' computed as the product of `parms$Ly` and `parms$Lz`.
@@ -1119,6 +1138,28 @@ whaleWaterForce <- function(vw, parms)
 
 #' Dynamical law
 #'
+#' This function handles Newton's second law, which is the dynamical
+#' law that relates the accelerations of whale and ship to the forces
+#' upon each.  It is used by [strike()], as the latter integrates
+#' the acceleration equations to step forward in time through
+#' the simulation of a whale-strike event. Thus, [dynamics()]
+#' is a core function of this package.  The code is very simple,
+#' because the forces are determined by other functions, as
+#' described in the \dQuote{Details} section.
+#'
+#' Given a present state (defined by the positions and
+#' velocities of ship and whale) at the present time,
+#' apply Newton's second law to find the time derivatives
+#' of that state.  Forces are determined with
+#' [whaleCompressionForce()],
+#' [whaleExtensionForce()],
+#' [shipWaterForce()],
+#' [whaleWaterForce()], while engine force
+#' (assumed constant over the course of a collision) is
+#' computed from initial [shipWaterForce()].  Whale and
+#' ship masses are set by [parameters()], which also sets up
+#' areas, drag coefficients, etc.
+#'
 #' @param t time (s).
 #'
 #' @param y model state, a vector containing ship position `xs` (m),
@@ -1153,13 +1194,17 @@ dynamics <- function(t, y, parms)
 
 #' Calculate derivative using first difference
 #'
+#' The derivative is estimated as the ratio of the first-difference of `var`
+#' divided by the first-difference of `time`.  To make the results
+#' have the same length as `time`, the final result is appended at
+#' the end.
+#'
 #' @param var variable.
 #'
 #' @param t time in seconds.
 #'
-#' @return Derivative estimated by using [diff()] on both `x`
-#' and `t`. In order to return a value of the same length as `x` and
-#' `t`, the last value is repeated.
+#' @return Derivative estimated by using [diff()] on both `var`
+#' and `time`.
 #'
 #' @author Dan Kelley
 #'
@@ -1174,13 +1219,14 @@ derivative <- function(var, t)
 
 #' Simulate the collision of a ship and a whale
 #'
-#' Newtonian mechanics are used, taking the ship as undeformable,
+#' Newtonian mechanics are used, taking the ship as non-deformable,
 #' and the whale as being cushioned by a skin layer and a blubber layer.
 #' The forces are calculated by
 #' [shipWaterForce()],
 #' [whaleSkinForce()],
 #' [whaleCompressionForce()], and
-#' [whaleWaterForce()].
+#' [whaleWaterForce()] and the integration is carried out with
+#' [deSolve::lsoda()].
 #'
 #' @param t a suggested vector of times (s) at which the simulated state will be reported.
 #' This is only a suggestion, however, because `strike` is set up to detect high
@@ -1190,7 +1236,8 @@ derivative <- function(var, t)
 #' of the initial(uncompressed) value, then
 #' a trial time grid is computed, with 20 points during the timescale for
 #' bone compression, calculated as
-#' \eqn{0.5*sqrt(Ly*Lz*a[4]*b[4]/(l[4]*mw)}, with terms as discussed in
+#' \eqn{0.5*sqrt(Ly*Lz*a[4]*b[4]/(l[4]*mw)}{0.5*sqrt(Ly*Lz*a[4]*b[4]/(l[4]*mw)},
+#' with terms as discussed in
 #' the documentation for [parameters()]. If this trial grid is finer
 #' than the grid in the `t` parameter, then the simulation is redone
 #' using the new grid. Note that this means that the output will

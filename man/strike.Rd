@@ -15,7 +15,8 @@ compressed blubber and sublayer; if either gets below 1 percent
 of the initial(uncompressed) value, then
 a trial time grid is computed, with 20 points during the timescale for
 bone compression, calculated as
-\eqn{0.5*sqrt(Ly*Lz*a[4]*b[4]/(l[4]*mw)}, with terms as discussed in
+\eqn{0.5*sqrt(Ly*Lz*a[4]*b[4]/(l[4]*mw)}{0.5*sqrt(Ly*Lz*a[4]*b[4]/(l[4]*mw)},
+with terms as discussed in
 the documentation for \code{\link[=parameters]{parameters()}}. If this trial grid is finer
 than the grid in the \code{t} parameter, then the simulation is redone
 using the new grid. Note that this means that the output will
@@ -43,13 +44,14 @@ the skin force calculation (\code{SWF}), a list with the results of the compress
 force calculations (\code{WCF}), and a vector of whale water force (\code{WWF}).
 }
 \description{
-Newtonian mechanics are used, taking the ship as undeformable,
+Newtonian mechanics are used, taking the ship as non-deformable,
 and the whale as being cushioned by a skin layer and a blubber layer.
 The forces are calculated by
 \code{\link[=shipWaterForce]{shipWaterForce()}},
 \code{\link[=whaleSkinForce]{whaleSkinForce()}},
 \code{\link[=whaleCompressionForce]{whaleCompressionForce()}}, and
-\code{\link[=whaleWaterForce]{whaleWaterForce()}}.
+\code{\link[=whaleWaterForce]{whaleWaterForce()}} and the integration is carried out with
+\code{\link[deSolve:lsoda]{deSolve::lsoda()}}.
 }
 \examples{
 library(whalestrike)

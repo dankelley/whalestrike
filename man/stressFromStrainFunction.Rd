@@ -46,10 +46,10 @@ easily for particular numerical values, using \code{\link[=uniroot]{uniroot()}}.
 
 This is done for a sequence of \code{N} values of strain \eqn{\epsilon}
 that range from 0 to 1. Then \code{\link[=approxfun]{approxfun()}} is used to create
-a piecewise-linear represention of the relationship between \eqn{\sigma} and \eqn{\Delta L},
+a piecewise-linear representation of the relationship between \eqn{\sigma} and \eqn{\Delta L},
 which becomes the return value of the present function.
-(The purpose of using a the piecewise-linear representation os to shorten
-computation times.)
+(The purpose of using a piecewise-linear representation to reduce
+computation time.)
 }
 \examples{
 library(whalestrike)

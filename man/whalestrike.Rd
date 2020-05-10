@@ -43,7 +43,7 @@ strikes on whales.
 Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
 “Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
 Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
-Socieity, and Fisheries and Oceans Canada, 2018.
+Society, and Fisheries and Oceans Canada, 2018.
 \url{http://publications.gc.ca/site/eng/9.850838/publication.html}.
 
 \item
@@ -104,6 +104,12 @@ Raymond, J. J. “Development of a Numerical Model to Predict Impact Forces on a
 North Atlantic Right Whale during Collision with a Vessel.” University of New
 Hampshire, 2007.
 \url{https://scholars.unh.edu/thesis/309}.
+
+\item
+Soetaert, Karline, Thomas Petzoldt, and R. Woodrow Setzer.
+“Solving Differential Equations in R: Package DeSolve.”
+Journal of Statistical Software; Vol 1, Issue 9, 2010.
+\url{https://doi.org/10.18637/jss.v033.i09}.
 
 }
 }

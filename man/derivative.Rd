@@ -12,12 +12,14 @@ derivative(var, t)
 \item{t}{time in seconds.}
 }
 \value{
-Derivative estimated by using \code{\link[=diff]{diff()}} on both \code{x}
-and \code{t}. In order to return a value of the same length as \code{x} and
-\code{t}, the last value is repeated.
+Derivative estimated by using \code{\link[=diff]{diff()}} on both \code{var}
+and \code{time}.
 }
 \description{
-Calculate derivative using first difference
+The derivative is estimated as the ratio of the first-difference of \code{var}
+divided by the first-difference of \code{time}.  To make the results
+have the same length as \code{time}, the final result is appended at
+the end.
 }
 \author{
 Dan Kelley

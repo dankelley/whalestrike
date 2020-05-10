@@ -5,3 +5,6 @@ sandbox
 ^\.Rproj\.user$
 .build.timestamp
 Rplot.pdf
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
