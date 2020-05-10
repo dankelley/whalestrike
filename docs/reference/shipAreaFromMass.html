@@ -40,16 +40,8 @@
 
 
 <meta property="og:title" content="Compute ship wetted area from mass — shipAreaFromMass" />
-<meta property="og:description" content="The method is based on scaling up the results for a single Cape
-Islander ship, of displacement 20.46 tonnes, length 11.73m,
-beam 4.63m, and draft 1.58m, on the assumption that the wetted area
-is length*(2*draft+beam). This reference area is scaled to
-the specified mass, ms, by multiplying by the 2/3
-power of mass ratio.
-This is a crude calculation meant as a stop-gap measure, for
-estimates values of the Ss argument to parameters().
-It would be much preferable, for a particular simulation, to use the
-wetted area for a particular ship." />
+<meta property="og:description" content="Estimate the wetted area of a Cape Islander boat,
+given the vessel mass." />
 
 
 
@@ -99,6 +91,9 @@ wetted area for a particular ship." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -121,16 +116,8 @@ wetted area for a particular ship." />
     </div>
 
     <div class="ref-description">
-    <p>The method is based on scaling up the results for a single Cape
-Islander ship, of displacement 20.46 tonnes, length 11.73m,
-beam 4.63m, and draft 1.58m, on the assumption that the wetted area
-is length*(2*draft+beam). This reference area is scaled to
-the specified mass, <code>ms</code>, by multiplying by the 2/3
-power of mass ratio.
-This is a crude calculation meant as a stop-gap measure, for
-estimates values of the <code>Ss</code> argument to <code><a href='parameters.html'>parameters()</a></code>.
-It would be much preferable, for a particular simulation, to use the
-wetted area for a particular ship.</p>
+    <p>Estimate the wetted area of a Cape Islander boat,
+given the vessel mass.</p>
     </div>
 
     <pre class="usage"><span class='fu'>shipAreaFromMass</span>(<span class='no'>ms</span>)</pre>
@@ -147,6 +134,20 @@ wetted area for a particular ship.</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Estimated area (m^2).</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The method is based on scaling up the results for a single Cape
+Islander ship, of displacement 20.46 tonnes, length 11.73m,
+beam 4.63m, and draft 1.58m, on the assumption that the wetted area
+is proportional to
+\(length*(2*draft+beam)\).
+This reference area is scaled to
+the specified mass, <code>ms</code>, by multiplying by the 2/3
+power of the mass ratio.</p>
+<p>Note that this is a crude calculation meant as a stop-gap measure, for
+estimates values of the <code>Ss</code> argument to <code><a href='parameters.html'>parameters()</a></code>.
+It should not be used in preference to inferences
+made from architectural drawings of a given ship under study.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

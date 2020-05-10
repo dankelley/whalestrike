@@ -2,9 +2,10 @@
 
 `whalestrike` is an R package for simulating the collisions of ships with
 whales, using simplified dynamics of point masses separated by compressible
-materials. It can be used in two different ways. This README file provides only
-a sketch of the package and how to use it.  For the scientific details, see a
-manuscript by Dan Kelley, James Vlasic, and Sean Brillant.
+materials. It can be used in two different ways. The present file provides
+only a sketch of the package and how to use it.  Much more about the context
+and scientific details will be provided in a paper (under review) by Dan
+Kelley, James Vlasic, and Sean Brillant.
 
 ## Using function calls
 

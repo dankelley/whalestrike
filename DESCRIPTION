@@ -2,7 +2,10 @@ Package: whalestrike
 Type: Package
 Title: Simulate Whale Ship Strikes
 Version: 0.4.0
-Authors@R: c(person(given="Dan", family="Kelley", email="Dan.Kelley@Dal.Ca", role=c("aut", "cre"), comment=c(ORCID="https://orcid.org/0000-0001-7808-5911")))
+Authors@R: c(
+    person(given="Dan", family="Kelley", email="dan.kelley@dal.ca", role=c("aut", "cre"), comment=c(ORCID="0000-0001-7808-5911")),
+    person(given="James", family="Vlasic", email="jvlasic@dal.ca", role="rtm", comment=c(ORCID="0000-0002-3846-4391")),
+    person(given="Sean", family="Brilliant", email="seanb@cwf-fcf.org", role="rtm", comment=c(ORCID="0000-0001-5494-3475")))
 Maintainer: Dan Kelley <Dan.Kelley@Dal.Ca>
 Description: Simple simulation of the mechanics of a boat striking a whale.
 Depends: deSolve, shiny, xtable

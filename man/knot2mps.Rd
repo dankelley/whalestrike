@@ -20,7 +20,7 @@ See also \code{\link[=mps2knot]{mps2knot()}}, which is the inverse of this funct
 \examples{
 library(whalestrike)
 knots <- seq(0, 20)
-plot(knots, knot2mps(knots), type="l")
+plot(knots, knot2mps(knots), xlab="Speed [knots]", ylab="Speed [m/s]", type="l")
 
 }
 \seealso{

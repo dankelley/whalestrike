@@ -32,7 +32,7 @@ velocities of ship and whale) at the present time,
 apply Newton's second law to find the time derivatives
 of that state.  Forces are determined with
 \code{\link[=whaleCompressionForce]{whaleCompressionForce()}},
-\code{\link[=whaleExtensionForce]{whaleExtensionForce()}},
+\code{\link[=whaleSkinForce]{whaleSkinForce()}},
 \code{\link[=shipWaterForce]{shipWaterForce()}},
 \code{\link[=whaleWaterForce]{whaleWaterForce()}}, while engine force
 (assumed constant over the course of a collision) is

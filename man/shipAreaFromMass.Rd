@@ -13,16 +13,23 @@ shipAreaFromMass(ms)
 Estimated area (m^2).
 }
 \description{
+Estimate the wetted area of a Cape Islander boat,
+given the vessel mass.
+}
+\details{
 The method is based on scaling up the results for a single Cape
 Islander ship, of displacement 20.46 tonnes, length 11.73m,
 beam 4.63m, and draft 1.58m, on the assumption that the wetted area
-is length*(2*draft+beam). This reference area is scaled to
+is proportional to
+\eqn{length*(2*draft+beam)}{length*(2*draft+beam)}.
+This reference area is scaled to
 the specified mass, \code{ms}, by multiplying by the 2/3
-power of mass ratio.
-This is a crude calculation meant as a stop-gap measure, for
+power of the mass ratio.
+
+Note that this is a crude calculation meant as a stop-gap measure, for
 estimates values of the \code{Ss} argument to \code{\link[=parameters]{parameters()}}.
-It would be much preferable, for a particular simulation, to use the
-wetted area for a particular ship.
+It should not be used in preference to inferences
+made from architectural drawings of a given ship under study.
 }
 \author{
 Dan Kelley

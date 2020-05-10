@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Ship water force — shipWaterForce • whalestrike</title>
+<title>Changelog • whalestrike</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,7 @@
 
 
 
-<meta property="og:title" content="Ship water force — shipWaterForce" />
-<meta property="og:description" content="Compute the retarding force of water on the ship, based on a drag law
-\((1/2)*rho*Cs*A*vs^2\)
-where rho is 1024 (kg/m^3), Cs is parms$Cs and
-A is parms$Ss." />
+<meta property="og:title" content="Changelog" />
 
 
 
@@ -62,7 +58,7 @@ A is parms$Ss." />
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-topic">
+    <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -112,44 +108,60 @@ A is parms$Ss." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Ship water force</h1>
-    
-    <div class="hidden name"><code>shipWaterForce.Rd</code></div>
+      <h1 data-toc-skip>Changelog <small></small></h1>
+      
     </div>
 
-    <div class="ref-description">
-    <p>Compute the retarding force of water on the ship, based on a drag law
-\((1/2)*rho*Cs*A*vs^2\)
-where <code>rho</code> is 1024 (kg/m^3), <code>Cs</code> is <code>parms$Cs</code> and
-<code>A</code> is <code>parms$Ss</code>.</p>
-    </div>
-
-    <pre class="usage"><span class='fu'>shipWaterForce</span>(<span class='no'>vs</span>, <span class='no'>parms</span>)</pre>
-
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>vs</th>
-      <td><p>ship velocity (m/s).</p></td>
-    </tr>
-    <tr>
-      <th>parms</th>
-      <td><p>A named list holding model parameters, created by
-<code><a href='parameters.html'>parameters</a></code>.</p></td>
-    </tr>
-    </table>
-
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>Water drag force (N).</p>
-
+    <div id="whalestrike-development-version" class="section level1">
+<h1 class="page-header" data-toc-text="development version">
+<a href="#whalestrike-development-version" class="anchor"></a>whalestrike (development version)</h1>
+<div id="040" class="section level2">
+<h2 class="hasAnchor">
+<a href="#040" class="anchor"></a>0.4.0</h2>
+<ul>
+<li>Improve website using the pkgdown package</li>
+<li>Improve documentation, including switching</li>
+</ul>
+</div>
+<div id="031" class="section level2">
+<h2 class="hasAnchor">
+<a href="#031" class="anchor"></a>0.3.1</h2>
+<ul>
+<li>documentation improvements</li>
+</ul>
+</div>
+<div id="030" class="section level2">
+<h2 class="hasAnchor">
+<a href="#030" class="anchor"></a>0.3.0</h2>
+<ul>
+<li>app improvements</li>
+</ul>
+</div>
+<div id="020" class="section level2">
+<h2 class="hasAnchor">
+<a href="#020" class="anchor"></a>0.2.0</h2>
+<ul>
+<li>skin, blubber, sub-layer, bone</li>
+<li>individual layers have exponential stress-strain</li>
+</ul>
+</div>
+<div id="010" class="section level2">
+<h2 class="hasAnchor">
+<a href="#010" class="anchor"></a>0.1.0</h2>
+<ul>
+<li>first version, with skin, blubber, and a ‘sub-layer’</li>
+<li>linear stress-strain relationship</li>
+</ul>
+</div>
+</div>
   </div>
+
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
     </nav>
   </div>
+
 </div>
 
 
