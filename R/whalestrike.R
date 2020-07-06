@@ -645,7 +645,7 @@ parameters <- function(ms=45e3, Ss=NULL, Ly=1.15, Lz=1.15,
             b <- c(0.1, 2.54, 2.54, 0.1)
         if (is.null(s))
             s <- 1e6 * c(19.600, 0.255, 0.255, 22.900)
-        if (any(s) <= 0 || length(s) != 4)
+        if (any(s <= 0) || length(s) != 4)
             stop("'s' must be a vector of 4 positive numbers")
         ## Value checks
         if (any(l <= 0) || length(l) != 4)
