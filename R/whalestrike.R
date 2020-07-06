@@ -420,11 +420,13 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 }
 
 
-#' Control parameters for whale strike simulation
+#' Set parameters for a whale strike simulation
 #'
 #' Assembles control parameters into a list suitable for passing to [strike()]
 #' and the functions that it calls. If `file` is provided, then all the other
-#' arguments are read from that source.
+#' arguments are read from that source. Note that [updateParameters()] may
+#' be used to modify the results of `parameters`, e.g. for use in sensitivity
+#' tests.
 #' Below are some sources cited in the discussion of the function arguments.
 #' @template ref_campbell_malone
 #' @template ref_daoust
@@ -435,7 +437,7 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #'
 #' @param Ss Ship wetted area (m^2). This, together with `Cs`, is used by
 #' used by [shipWaterForce()] to estimate ship drag force. If `Ss`
-#' is not given, then an esimate is made by calling [shipAreaFromMass()] with
+#' is not given, then an estimate is made by calling [shipAreaFromMass()] with
 #' the provided value of `ms`.
 #'
 #' @param Ly Ship impact horizontal extent (m); defaults to 1.23m if not specified,
@@ -560,7 +562,7 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' @return
 #' A named list holding the parameters, with defaults and alternatives reconciled
 #' according to the system described above, along with a function that computes
-#' compression force, which created by [stressFromStrainFunction()].
+#' compression force, which is created by [stressFromStrainFunction()].
 #'
 #' @examples
 #' parms <- parameters()
@@ -605,64 +607,63 @@ parameters <- function(ms=45e3, Ss=NULL, Ly=1.15, Lz=1.15,
         o <- sort(names(rval))
         rval <- rval[o]
     } else {
-        if (length(ms) != 1) stop("cannot handle more than one 'ms' at a time")
+        if (length(ms) != 1)
+            stop("ms must be a single numeric value")
         if (ms <= 0)
-            stop("ship mass (ms) must be a positive number, but it is ", ms)
+            stop("ms must be positive, but it is ", ms)
         if (is.null(Ss))
             Ss <- shipAreaFromMass(ms)
-        if (length(Ss) != 1) stop("cannot handle more than one 'Ss' at a time")
+        if (length(Ss) != 1)
+            stop("Ss must be a single numeric value")
         if (Ss <= 0)
-            stop("ship wetted area (Ss) must be a positive number, but it is ", Ss)
-        if (length(Ly) != 1) stop("cannot handle more than one 'Ly' at a time")
+            stop("Ss must be positive, but it is ", Ss)
+        if (length(Ly) != 1)
+            stop("Ly must be a single numeric value")
         if (Ly <= 0)
-            stop("impact width (Ly) must be a positive number, but it is ", Ly)
-        if (length(Lz) != 1) stop("cannot handle more than one 'Lz' at a time")
+            stop("Ly must be positive, but it is ", Ly)
+        if (length(Lz) != 1)
+            stop("Lz must be a single numeric value")
         if (Lz <= 0)
-            stop("impact height (Lz) must be a positive number, but it is ", Lz)
-        if (length(lw) != 1) stop("cannot handle more than one 'lw' at a time")
+            stop("Lz must be positive, but it is ", Lz)
+        if (length(lw) != 1)
+            stop("lw must be a single numeric value")
         if (lw <= 0)
-            stop("Whale length (lw) must be a positive number")
+            stop("lw must be positive, but it is ", lw)
         if (is.null(mw))
             mw <- whaleMassFromLength(lw, species=species)
-        if (length(mw) != 1) stop("cannot handle more than one 'mw' at a time")
+        if (length(mw) != 1)
+            stop("cannot handle more than one 'mw' at a time")
         if (is.null(Sw))
             Sw <- whaleAreaFromLength(lw, species=species, type="wetted")
-        if (length(Sw) != 1) stop("cannot handle more than one 'Sw' at a time")
+        if (length(Sw) != 1)
+            stop("cannot handle more than one 'Sw' at a time")
         if (is.null(l))
             l <- c(0.025, 0.16, 1.12, 0.1)
-        if (length(l) != 4) stop("'l' must be a vector of length 4")
-        ## NOTE: keep in synch with 'AAAA' above!
         if (is.null(a))
             a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
-        if (length(a) != 4) stop("'a' must be a vector of length 4")
-        ## NOTE: keep in synch with above!
         if (is.null(b))
             b <- c(0.1, 2.54, 2.54, 0.1)
-        if (length(b) != 4) stop("'b' must be a vector of length 4")
-        ## NOTE: keep in synch with above!
-        if (is.null(s)) {
-            ## OLD s <- c(19.6e6, 0.437e6, 0.437e6, 22.9e6)
-            ## NEW. Note that we round to the newly-added s[2] and s[3] to
-            ## three digits because that is what we say in the manuscript.
-            ## > round(c(19.6e6, 10^5.4057, 10^5.4057, 22.9e6)/1e6,3)
-            ## [1] 19.600  0.255  0.255 22.900
+        if (is.null(s))
             s <- 1e6 * c(19.600, 0.255, 0.255, 22.900)
-        }
-        if (length(s) != 4) stop("'s' must be a vector of length 4")
+        if (any(s) <= 0 || length(s) != 4)
+            stop("'s' must be a vector of 4 positive numbers")
         ## Value checks
         if (any(l <= 0) || length(l) != 4)
-            stop("'l' must be 4 positive numbers")
+            stop("'l' must be a vector with 4 positive numbers")
         if (any(a <= 0) || length(a) != 4)
-            stop("'a' must be 4 positive numbers")
+            stop("'a' must be a vector with 4 positive numbers")
         if (any(b <= 0) || length(b) != 4)
-            stop("'b' must be 4 positive numbers")
-        if (length(theta) != 1) stop("cannot handle more than one 'theta' at a time")
+            stop("'b' must be a vector with 4 positive numbers")
+        if (length(theta) != 1)
+            stop("cannot handle more than one 'theta' at a time")
         if (theta < 0 || theta > 89)
             stop("whale skin deformation angle (theta) must be between 0 and 89 deg, but it is ", theta)
-        if (length(Cs) != 1) stop("cannot handle more than one 'Cs' at a time")
+        if (length(Cs) != 1)
+            stop("cannot handle more than one 'Cs' at a time")
         if (Cs <= 0)
             stop("ship resistance parameter (Cs) must be positive, but it is ", Cs)
-        if (length(Cw) != 1) stop("cannot handle more than one 'Cw' at a time")
+        if (length(Cw) != 1)
+            stop("cannot handle more than one 'Cw' at a time")
         if (Cw <= 0)
             stop("ship resistance parameter (Cw) must be positive, but it is ", Cw)
         rval <- list(ms=ms, Ss=Ss,
@@ -679,6 +680,81 @@ parameters <- function(ms=45e3, Ss=NULL, Ly=1.15, Lz=1.15,
     rval
 }
 
+
+#' Update parameters
+#'
+#' [`updateParameters`] is used to alter one or more components of an existing
+#' object of type `"parameters"` that was created by [parameters()]. This
+#' can be useful for e.g. sensitivity tests.
+#'
+#' The following points must be kept in mind.
+#'
+#' 1. Unlike [parameters()], `updateParameters` does not check its arguments
+#' for feasible values.  This can lead to bad results when using
+#' [strike()], which is e.g. expecting four layer thicknesses to
+#' be specified, and also that each thickness is positive.
+#'
+#' 2. Unlike [parameters()], `updateParameters` does not any ancillary
+#' actions with the supplied values.  For example, [parameters()]
+#' will infer whale mass `mw` from whale length `lw`, if only
+#' the latter is supplied. The only ancillary actions taken by
+#' `updateParameters` is to update an internal variable named
+#' `lsum` (as the sum of the components of `l`), and also to
+#' store the return value from a call to [stressFromStrainFunction()]
+#' using the values of `l`, `a` and `b`.
+#'
+#' @param original An object of class `"parameters"`, as created by [parameters()]
+#' and perhaps later altered by previous calls to `updateParameters()`.
+#'
+#' @inheritParams parameters
+#'
+#' @inherit parameters return
+#'
+#' @author Dan Kelley
+#'
+#' @export
+updateParameters <- function(original,
+                             ms,
+                             Ss,
+                             Ly,
+                             Lz,
+                             species,
+                             lw,
+                             mw,
+                             Sw,
+                             l,
+                             a,
+                             b,
+                             s,
+                             theta,
+                             Cs,
+                             Cw,
+                             logistic)
+{
+    rval <- original
+    if (!missing(ms)) rval$ms <- ms
+    if (!missing(Ss)) rval$Ss <- Ss
+    if (!missing(Ly)) rval$Ly <- Ly
+    if (!missing(Lz)) rval$Lz <- Lz
+    if (!missing(species)) rval$species <- species
+    if (!missing(lw)) rval$lw <- lw
+    if (!missing(mw)) rval$mw <- mw
+    if (!missing(Sw)) rval$Sw <- Sw
+    if (!missing(l)) {
+        rval$l <- l
+        rval$lsum <- sum(l)
+    }
+    if (!missing(a)) rval$a <- a
+    if (!missing(b)) rval$b <- b
+    if (!missing(s)) rval$s <- s
+    if (!missing(theta)) rval$theta <- theta
+    if (!missing(Cs)) rval$Cs <- Cs
+    if (!missing(Cw)) rval$Cw <- Cw
+    if (!missing(logistic)) rval$logistic <- logistic
+    rval$stressFromStrain <- stressFromStrainFunction(rval$l, rval$a, rval$b)
+    class(rval) <- "parameters"
+    rval
+}
 
 #' Whale mass inferred from length
 #'
