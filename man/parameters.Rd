@@ -152,8 +152,10 @@ The file should be saved \code{\link[=write.csv]{write.csv()}} with
 }
 \value{
 A named list holding the parameters, with defaults and alternatives reconciled
-according to the system described above, along with a function that computes
-compression force, which is created by \code{\link[=stressFromStrainFunction]{stressFromStrainFunction()}}.
+according to the system described above, along with some items used internally,
+including \code{lsum}, which is the sum of the values in \code{l}, and \code{stressFromStrain()},
+a function created by \code{\link[=stressFromStrainFunction]{stressFromStrainFunction()}} that computes compression
+force from engineering strain.
 }
 \description{
 Assembles control parameters into a list suitable for passing to \code{\link[=strike]{strike()}}

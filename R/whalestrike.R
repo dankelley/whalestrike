@@ -390,11 +390,10 @@ NULL
 #' @importFrom stats approxfun uniroot
 stressFromStrainFunction <- function(l, a, b, N=1000)
 {
-    DL <- NULL # prevent diagnostic in fcn call; the value doesn't matter (see the uniroot)
-    aa <- NULL # prevent diagnostic in fcn call; the value doesn't matter (see the uniroot)
-    bb <- NULL # prevent diagnostic in fcn call; the value doesn't matter (see the uniroot)
+    use <- rep(TRUE, length(l))
     fcn <- function(sigma) {
-        DL - sum((l/bb) * log(1 + sigma / aa))
+        ##> cat("fcn(): l=", paste(l,collapse=" "), ", a=", paste(a,collapse=" "), ", b=", paste(b,collapse=" "), "\n")
+        DL - sum((l[use] / b[use]) * log(1 + sigma / a[use]))
     }
     L <- sum(l)
     sigma <- rep(NA, N)
@@ -402,16 +401,17 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
     ## We will limit the epsilon in any given layer to 1, i.e. we don't
     ## permit layers to be compressed to negative thickness. This is expressed
     ## by setting layer-by-layer conditions on maximum stress.
-    sigmaMax <- a * (exp(b) - 1)
-    ##debug cat("sigmaMax=", paste(sprintf("%.3g", sigmaMax), collapse=" "), "\n")
-    use <- rep(TRUE, length(a))
+    sigmaMax <- max(a * (exp(b) - 1))
+    ##> cat("sigmaMax=", paste(sprintf("%.3g", sigmaMax), collapse=" "), "\n")
+    sigmaLowerLimit <- 0
+    sigmaUpperLimit <- 2 * sigmaMax
     for (i in seq_along(epsilon)) {
-        aa <- a[use]
-        bb <- b[use]
         ##debug cat(sprintf("i=%3d, epsilon=%10.5f, ", i, epsilon[i]), ", use=", paste(use, collapse=" "), "\n")
         DL <- epsilon[i] * L
-        sigma[i] <- uniroot(fcn, interval=c(0, 1e9))$root
-        ##debug cat("  sigma[i]=", sprintf("%.3g", sigma[i]), "\n")
+        ##> cat("LINE 414. i=", i, ", about to call uniroot(fcn,...); use=", paste(use, collapse=" "), "fcn(sigmaLowerLimit)=", fcn(sigmaLowerLimit), ", fcn(big)=", fcn(sigmaUpperLimit), ", fcn(10*big)=", fcn(10*sigmaUpperLimit), ", sigmaMax=", sigmaMax, "\n")
+        trial <- try(uniroot(fcn, interval=c(sigmaLowerLimit, sigmaUpperLimit)), silent=TRUE)
+        sigma[i] <- if (inherits(trial, "try-error")) 2*sigmaMax else trial$root
+        ##> cat("  sigma[i]=", sigma[i], "\n")
         use <- sigma[i] < sigmaMax
         if (!any(use))
             sigma[i] <- sigma[i-1] # probably good enough; this occurs only at sigma=1, I think
@@ -561,8 +561,10 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #'
 #' @return
 #' A named list holding the parameters, with defaults and alternatives reconciled
-#' according to the system described above, along with a function that computes
-#' compression force, which is created by [stressFromStrainFunction()].
+#' according to the system described above, along with some items used internally,
+#' including `lsum`, which is the sum of the values in `l`, and `stressFromStrain()`,
+#' a function created by [stressFromStrainFunction()] that computes compression
+#' force from engineering strain.
 #'
 #' @examples
 #' parms <- parameters()
@@ -687,28 +689,50 @@ parameters <- function(ms=45e3, Ss=NULL, Ly=1.15, Lz=1.15,
 #' object of type `"parameters"` that was created by [parameters()]. This
 #' can be useful for e.g. sensitivity tests.
 #'
-#' The following points must be kept in mind.
+#' Two important differences between argument handling in `updateParameters()`
+#' and [parameters()] are worth bearing in mind.
 #'
-#' 1. Unlike [parameters()], `updateParameters` does not check its arguments
+#' First, `updateParameters()` does not check its arguments
 #' for feasible values.  This can lead to bad results when using
 #' [strike()], which is e.g. expecting four layer thicknesses to
 #' be specified, and also that each thickness is positive.
 #'
-#' 2. Unlike [parameters()], `updateParameters` does not any ancillary
-#' actions with the supplied values.  For example, [parameters()]
-#' will infer whale mass `mw` from whale length `lw`, if only
-#' the latter is supplied. The only ancillary actions taken by
-#' `updateParameters` is to update an internal variable named
-#' `lsum` (as the sum of the components of `l`), and also to
-#' store the return value from a call to [stressFromStrainFunction()]
-#' using the values of `l`, `a` and `b`.
+#' Second, `updateParameters()` does not perform as many ancillary
+#' actions as [parameters()] with respect to interlinked arguments.
+#' For example, in [parameters()], setting `lw` (whale length)
+#' will cause an internal calculation of `mw` (whale mass), *unless*
+#' the latter is supplied as an argument. This makes sense because all
+#' arguments are supplied in the same call.  However, this is not the case with
+#' `updateParameters`, which simply obeys the arguments it's supplied with.
+#' This comes up in two ways: the determination of ship surface area from
+#' ship mass, and the determination of whale mass and surface area from length.
+#' The necessary actions are as follows (with code taken from a sensitivity
+#' test of the model):
+#'```
+#' # Case 1. Increase ship mass by 1% (and also update ship surface area).
+#' parms <- updateParameters(parms0, ms=1.01*parms0$ms)
+#' parms <- updateParameters(parms, Ss=shipAreaFromMass(parms$ms))
+#'```
+#' and
+#'```
+#' # Case 1. Increase ship mass by 1% (and also update ship surface area).
+#' parms <- updateParameters(parms0, lw=1.01*parms0$lw))
+#' parms$mw <- whaleMassFromLength(parms$lw, species="N. Atl. Right Whale", model="fortune2012")
+#' parms$Sw <- whaleAreaFromLength(parms$lw, species="N. Atl. Right Whale", "wetted")
+#'```
+#' where, in both cases, `parms0` is the result of a call to [parameters()] using
+#' base conditions for all parameters.
 #'
 #' @param original An object of class `"parameters"`, as created by [parameters()]
 #' and perhaps later altered by previous calls to `updateParameters()`.
 #'
 #' @inheritParams parameters
 #'
-#' @inherit parameters return
+#' @return A named list holding the items of the same name as those in the list
+#' returned by [parameters()].
+#'
+#' @param debug Integer indicating debugging level, 0 for quiet operation and higher values
+#' for more verbose monitoring of progress through the function.
 #'
 #' @author Dan Kelley
 #'
@@ -729,7 +753,8 @@ updateParameters <- function(original,
                              theta,
                              Cs,
                              Cw,
-                             logistic)
+                             logistic,
+                             debug=0)
 {
     rval <- original
     if (!missing(ms)) rval$ms <- ms
@@ -751,6 +776,11 @@ updateParameters <- function(original,
     if (!missing(Cs)) rval$Cs <- Cs
     if (!missing(Cw)) rval$Cw <- Cw
     if (!missing(logistic)) rval$logistic <- logistic
+    if (debug > 0) {
+        cat("at end of updateParameters(): a=", paste(rval$a, collapse=" "), "\n")
+        cat("at end of updateParameters(): b=", paste(rval$b, collapse=" "), "\n")
+        cat("at end of updateParameters(): l=", paste(rval$l, collapse=" "), "\n")
+    }
     rval$stressFromStrain <- stressFromStrainFunction(rval$l, rval$a, rval$b)
     class(rval) <- "parameters"
     rval

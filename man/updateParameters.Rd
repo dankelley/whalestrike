@@ -21,7 +21,8 @@ updateParameters(
   theta,
   Cs,
   Cw,
-  logistic
+  logistic,
+  debug = 0
 )
 }
 \arguments{
@@ -170,11 +171,13 @@ stress, as well as \code{tau25}, \code{tau50} and \code{tau75}, which are the st
 in that fit that yield index values of 0.25, 0.50 and 0.75, respectively;
 these values set colour boundaries in \code{\link[=plot.strike]{plot.strike()}} plots that have
 \code{which="threat"}.}
+
+\item{debug}{Integer indicating debugging level, 0 for quiet operation and higher values
+for more verbose monitoring of progress through the function.}
 }
 \value{
-A named list holding the parameters, with defaults and alternatives reconciled
-according to the system described above, along with a function that computes
-compression force, which is created by \code{\link[=stressFromStrainFunction]{stressFromStrainFunction()}}.
+A named list holding the items of the same name as those in the list
+returned by \code{\link[=parameters]{parameters()}}.
 }
 \description{
 \code{\link{updateParameters}} is used to alter one or more components of an existing
@@ -182,21 +185,37 @@ object of type \code{"parameters"} that was created by \code{\link[=parameters]{
 can be useful for e.g. sensitivity tests.
 }
 \details{
-The following points must be kept in mind.
-\enumerate{
-\item Unlike \code{\link[=parameters]{parameters()}}, \code{updateParameters} does not check its arguments
+Two important differences between argument handling in \code{updateParameters()}
+and \code{\link[=parameters]{parameters()}} are worth bearing in mind.
+
+First, \code{updateParameters()} does not check its arguments
 for feasible values.  This can lead to bad results when using
 \code{\link[=strike]{strike()}}, which is e.g. expecting four layer thicknesses to
 be specified, and also that each thickness is positive.
-\item Unlike \code{\link[=parameters]{parameters()}}, \code{updateParameters} does not any ancillary
-actions with the supplied values.  For example, \code{\link[=parameters]{parameters()}}
-will infer whale mass \code{mw} from whale length \code{lw}, if only
-the latter is supplied. The only ancillary actions taken by
-\code{updateParameters} is to update an internal variable named
-\code{lsum} (as the sum of the components of \code{l}), and also to
-store the return value from a call to \code{\link[=stressFromStrainFunction]{stressFromStrainFunction()}}
-using the values of \code{l}, \code{a} and \code{b}.
+
+Second, \code{updateParameters()} does not perform as many ancillary
+actions as \code{\link[=parameters]{parameters()}} with respect to interlinked arguments.
+For example, in \code{\link[=parameters]{parameters()}}, setting \code{lw} (whale length)
+will cause an internal calculation of \code{mw} (whale mass), \emph{unless}
+the latter is supplied as an argument. This makes sense because all
+arguments are supplied in the same call.  However, this is not the case with
+\code{updateParameters}, which simply obeys the arguments it's supplied with.
+This comes up in two ways: the determination of ship surface area from
+ship mass, and the determination of whale mass and surface area from length.
+The necessary actions are as follows (with code taken from a sensitivity
+test of the model):\preformatted{# Case 1. Increase ship mass by 1\% (and also update ship surface area).
+parms <- updateParameters(parms0, ms=1.01*parms0$ms)
+parms <- updateParameters(parms, Ss=shipAreaFromMass(parms$ms))
 }
+
+and\preformatted{# Case 1. Increase ship mass by 1\% (and also update ship surface area).
+parms <- updateParameters(parms0, lw=1.01*parms0$lw))
+parms$mw <- whaleMassFromLength(parms$lw, species="N. Atl. Right Whale", model="fortune2012")
+parms$Sw <- whaleAreaFromLength(parms$lw, species="N. Atl. Right Whale", "wetted")
+}
+
+where, in both cases, \code{parms0} is the result of a call to \code{\link[=parameters]{parameters()}} using
+base conditions for all parameters.
 }
 \author{
 Dan Kelley
