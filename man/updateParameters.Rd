@@ -180,42 +180,47 @@ A named list holding the items of the same name as those in the list
 returned by \code{\link[=parameters]{parameters()}}.
 }
 \description{
-\code{\link{updateParameters}} is used to alter one or more components of an existing
+\code{updateParameters()} is used to alter one or more components of an existing
 object of type \code{"parameters"} that was created by \code{\link[=parameters]{parameters()}}. This
-can be useful for e.g. sensitivity tests.
+can be useful for e.g. sensitivity tests (see \dQuote{Details}).
 }
 \details{
 Two important differences between argument handling in \code{updateParameters()}
-and \code{\link[=parameters]{parameters()}} are worth bearing in mind.
+and \code{\link[=parameters]{parameters()}} should be kept in mind.
 
 First, \code{updateParameters()} does not check its arguments
 for feasible values.  This can lead to bad results when using
 \code{\link[=strike]{strike()}}, which is e.g. expecting four layer thicknesses to
 be specified, and also that each thickness is positive.
 
-Second, \code{updateParameters()} does not perform as many ancillary
-actions as \code{\link[=parameters]{parameters()}} with respect to interlinked arguments.
-For example, in \code{\link[=parameters]{parameters()}}, setting \code{lw} (whale length)
-will cause an internal calculation of \code{mw} (whale mass), \emph{unless}
-the latter is supplied as an argument. This makes sense because all
-arguments are supplied in the same call.  However, this is not the case with
-\code{updateParameters}, which simply obeys the arguments it's supplied with.
-This comes up in two ways: the determination of ship surface area from
-ship mass, and the determination of whale mass and surface area from length.
-The necessary actions are as follows (with code taken from a sensitivity
-test of the model):\preformatted{# Case 1. Increase ship mass by 1\% (and also update ship surface area).
-parms <- updateParameters(parms0, ms=1.01*parms0$ms)
+Second, \code{updateParameters()} does not perform ancillary
+actions that \code{\link[=parameters]{parameters()}} performs, with regard to certain interlinking
+argument values.  Such actions are set up for
+whale length and ship mass, which are easily-observed
+quantities from other quantities can be estimated
+using \code{whalestrike} functions.  If \code{lw} (whale length) is
+supplied to \code{\link[=parameters]{parameters()}} without also supplying \code{mw}
+(whale mass), then \code{\link[=parameters]{parameters()}} uses \code{\link[=whaleMassFromLength]{whaleMassFromLength()}}
+to infer \code{mw} from \code{lw}. The same procedure is used to infer
+\code{Sw} if it is not given, using \code{\link[=whaleAreaFromLength]{whaleAreaFromLength()}}.
+Similarly, \code{\link[=parameters]{parameters()}} uses \code{\link[=shipAreaFromMass]{shipAreaFromMass()}} to
+compute \code{Ss} (ship area) from \code{ms} (ship mass), if the \code{Ss}
+argument is not given.  Importantly, these three inferences
+are \emph{not} made by \code{updateParameters()}, which alters only
+those values that are supplied explicitly. It is easy
+to supply those values, however; for example,\preformatted{parms <- updateParameters(PARMS, lw=1.01 * PARMS$lw))
+parms <- updateParameters(parms, mw=whaleMassFromLength(parms$lw))
+parms <- updateParameters(parms, Sw=whaleAreaFromLength(parms$lw))
+}
+
+modifies a base state stored in \code{PARMS}, increasing whale length
+by 1\% and then increasing whale mass and area accordingly.  This
+code block is excerpted from a sensitivity test of the model, in
+which\preformatted{parms <- updateParameters(PARMS, ms=1.01 * PARMS$ms)
 parms <- updateParameters(parms, Ss=shipAreaFromMass(parms$ms))
 }
 
-and\preformatted{# Case 1. Increase ship mass by 1\% (and also update ship surface area).
-parms <- updateParameters(parms0, lw=1.01*parms0$lw))
-parms$mw <- whaleMassFromLength(parms$lw, species="N. Atl. Right Whale", model="fortune2012")
-parms$Sw <- whaleAreaFromLength(parms$lw, species="N. Atl. Right Whale", "wetted")
-}
-
-where, in both cases, \code{parms0} is the result of a call to \code{\link[=parameters]{parameters()}} using
-base conditions for all parameters.
+was also used to perturb ship mass (and inferred area).
 }
 \author{
 Dan Kelley

@@ -685,43 +685,48 @@ parameters <- function(ms=45e3, Ss=NULL, Ly=1.15, Lz=1.15,
 
 #' Update parameters
 #'
-#' [`updateParameters`] is used to alter one or more components of an existing
+#' `updateParameters()` is used to alter one or more components of an existing
 #' object of type `"parameters"` that was created by [parameters()]. This
-#' can be useful for e.g. sensitivity tests.
+#' can be useful for e.g. sensitivity tests (see \dQuote{Details}).
 #'
 #' Two important differences between argument handling in `updateParameters()`
-#' and [parameters()] are worth bearing in mind.
+#' and [parameters()] should be kept in mind.
 #'
 #' First, `updateParameters()` does not check its arguments
 #' for feasible values.  This can lead to bad results when using
 #' [strike()], which is e.g. expecting four layer thicknesses to
 #' be specified, and also that each thickness is positive.
 #'
-#' Second, `updateParameters()` does not perform as many ancillary
-#' actions as [parameters()] with respect to interlinked arguments.
-#' For example, in [parameters()], setting `lw` (whale length)
-#' will cause an internal calculation of `mw` (whale mass), *unless*
-#' the latter is supplied as an argument. This makes sense because all
-#' arguments are supplied in the same call.  However, this is not the case with
-#' `updateParameters`, which simply obeys the arguments it's supplied with.
-#' This comes up in two ways: the determination of ship surface area from
-#' ship mass, and the determination of whale mass and surface area from length.
-#' The necessary actions are as follows (with code taken from a sensitivity
-#' test of the model):
+#' Second, `updateParameters()` does not perform ancillary
+#' actions that [parameters()] performs, with regard to certain interlinking
+#' argument values.  Such actions are set up for
+#' whale length and ship mass, which are easily-observed
+#' quantities from other quantities can be estimated
+#' using `whalestrike` functions.  If `lw` (whale length) is
+#' supplied to [parameters()] without also supplying `mw`
+#' (whale mass), then [parameters()] uses [whaleMassFromLength()]
+#' to infer `mw` from `lw`. The same procedure is used to infer
+#' `Sw` if it is not given, using [whaleAreaFromLength()].
+#' Similarly, [parameters()] uses [shipAreaFromMass()] to
+#' compute `Ss` (ship area) from `ms` (ship mass), if the `Ss`
+#' argument is not given.  Importantly, these three inferences
+#' are *not* made by `updateParameters()`, which alters only
+#' those values that are supplied explicitly. It is easy
+#' to supply those values, however; for example,
 #'```
-#' # Case 1. Increase ship mass by 1% (and also update ship surface area).
-#' parms <- updateParameters(parms0, ms=1.01*parms0$ms)
+#' parms <- updateParameters(PARMS, lw=1.01 * PARMS$lw))
+#' parms <- updateParameters(parms, mw=whaleMassFromLength(parms$lw))
+#' parms <- updateParameters(parms, Sw=whaleAreaFromLength(parms$lw))
+#'```
+#' modifies a base state stored in `PARMS`, increasing whale length
+#' by 1% and then increasing whale mass and area accordingly.  This
+#' code block is excerpted from a sensitivity test of the model, in
+#' which
+#'```
+#' parms <- updateParameters(PARMS, ms=1.01 * PARMS$ms)
 #' parms <- updateParameters(parms, Ss=shipAreaFromMass(parms$ms))
 #'```
-#' and
-#'```
-#' # Case 1. Increase ship mass by 1% (and also update ship surface area).
-#' parms <- updateParameters(parms0, lw=1.01*parms0$lw))
-#' parms$mw <- whaleMassFromLength(parms$lw, species="N. Atl. Right Whale", model="fortune2012")
-#' parms$Sw <- whaleAreaFromLength(parms$lw, species="N. Atl. Right Whale", "wetted")
-#'```
-#' where, in both cases, `parms0` is the result of a call to [parameters()] using
-#' base conditions for all parameters.
+#' was also used to perturb ship mass (and inferred area).
 #'
 #' @param original An object of class `"parameters"`, as created by [parameters()]
 #' and perhaps later altered by previous calls to `updateParameters()`.
