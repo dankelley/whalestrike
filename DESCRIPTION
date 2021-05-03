@@ -9,7 +9,7 @@ Authors@R: c(
 Maintainer: Dan Kelley <dan.kelley@dal.ca>
 Description: Simple simulation of the mechanics of a boat striking a whale.
 Depends: deSolve, shiny, xtable
-Suggests: knitr, testthat
+Suggests: knitr, rmarkdown, testthat
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
