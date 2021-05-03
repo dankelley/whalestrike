@@ -1842,6 +1842,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
     if (all || "whale acceleration" %in% which) {
         a <- derivative(vw, t)
         plot(t, a, xlab="Time [s]", ylab="Whale accel. [m/s^2]", type="l", lwd=lwd, xaxs="i")
+        mtext(sprintf("Max. %.3g m/s^2", max(a, na.rm=TRUE)), side=3, line=0, cex=0.8*par("cex"))
         showEvents(xs, xw)
     }
     if (all || "blubber thickness" %in% which) {
@@ -1859,7 +1860,9 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         showEvents(xs, xw)
     }
     if (all || "whale water force" %in% which) {
-        plot(t, whaleWaterForce(vw, x$parms) / 1e6 , xlab="Time [s]", ylab="Water force [MN]", type="l", lwd=lwd, xaxs="i")
+        y <- whaleWaterForce(vw, x$parms) / 1e6
+        plot(t, y, xlab="Time [s]", ylab="Water force [MN]", type="l", lwd=lwd, xaxs="i")
+        mtext(sprintf("Max. %.3g MN", max(y, na.rm=TRUE)), side=3, line=0, cex=0.8*par("cex"))
         showEvents(xs, xw)
     }
     if (all || "reactive forces" %in% which) {
@@ -1873,6 +1876,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         mtext(" (solid)", side=3, line=-2.2, adj=0, cex=par("cex"))
         mtext(expression(F[C]*" "), side=3, line=-1.2, adj=1, cex=par("cex"))
         mtext(" (dotted) ", side=3, line=-2.2, adj=1, cex=par("cex"))
+        mtext(sprintf("Max. %.3g MN", max(c(SF,CF,WWF)/1e6, na.rm=TRUE)), side=3, line=0, cex=0.8*par("cex"))
         showEvents(xs, xw)
     }
     if (all || "skin stress" %in% which) {
@@ -1884,12 +1888,14 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         mtext(" (solid)", side=3, line=-2.2, adj=0, cex=par("cex"))
         mtext("vert. ", side=3, line=-1.2, adj=1, cex=par("cex"))
         mtext("(dotted) ", side=3, line=-2.2, adj=1, cex=par("cex"))
+        mtext(sprintf("Max. %.3g MPa", max(c(Fs$sigmay, Fs$sigmaz)/1e6, na.rm=TRUE)), side=3, line=0, cex=0.8*par("cex"))
         showEvents(xs, xw)
     }
     if (all || "compression stress" %in% which) {
         force <- x$WCF$force
         stress <- force / (x$parms$Lz*x$parms$Ly)
         plot(t, stress/1e6, type="l", xlab="Time [s]", ylab="Compress. Stress [MPa]", lwd=lwd, xaxs="i")
+        mtext(sprintf("Max. %.3g MPa", max(stress/1e6, na.rm=TRUE)), side=3, line=0, cex=0.8*par("cex"))
         showEvents(xs, xw)
     }
     if (all || "lethality index" %in% which) {
@@ -1909,6 +1915,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
             lines(t, LI, lwd=2*lwd)
         }
         abline(h=0.5, lty="dotted")
+        mtext(sprintf("Max. %.3g", max(LI, na.rm=TRUE)), side=3, line=0, cex=0.8*par("cex"))
         ## Highlight for LI exceeding 0.5, using polygon intersection so the thickened
         ## line comes right down to the 0.5 line.
         ## NOT-WORKING highlight <- lethalityIndex >= 0.5
