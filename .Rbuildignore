@@ -1,3 +1,4 @@
+^.github$
 create_data
 man-roxygen
 sandbox
