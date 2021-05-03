@@ -1739,23 +1739,22 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         asmaxs <- max(abs(runmed(as, k))) # smoothed
         if (asmax > 2 * asmaxs) {
             peakTime <- sum(abs(as) > 0.5*(asmax+asmaxs)) * (t[2] - t[1])
-            label <- sprintf("ship accel: %.1fg (%.1fms spike to %.0fg)",
+            labelShip <- sprintf("%.1fg w/ spike to %.0fg for %.1fms (ship)",
                              asmaxs/g, peakTime*1e3, asmax/g)
         } else {
-            label <- sprintf("ship accel: %.1fg", asmax/g)
+            labelShip <- sprintf("%.1fg (ship)", asmax/g)
         }
-        mtext(label, side=1, line=-1.25, cex=par("cex"), adj=0.5)
         aw <- derivative(vw, t)
         awmax <- max(abs(aw))
         awmaxs <- max(abs(runmed(aw, k)))
         if (awmax > 2 * awmaxs) {
             peakTime <- sum(abs(aw) > 0.5*(awmax+awmaxs)) * (t[2] - t[1])
-            label <- sprintf("whale accel: %.1fg (%.1fms spike to %.0fg)",
-                             awmaxs/g, peakTime*1e3, awmax/g)
+            labelWhale <- sprintf("%.1fg w/ spike to %.0fg for %.1fms (whale)",
+                                  awmaxs/g, peakTime*1e3, awmax/g)
         } else {
-            label <- sprintf("whale accel: %.1fg", awmax/g)
+            labelWhale <- sprintf("%.1fg (whale)", awmax/g)
         }
-        mtext(label, side=3, line=-1.25, cex=par("cex"), adj=0.5)
+        mtext(paste("Peak Accel. ", labelWhale, "and", labelShip), side=3, line=0, cex=0.8*par("cex"))
         showEvents(xs, xw)
     }
     if (all || "section" %in% which) {
