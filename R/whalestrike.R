@@ -391,7 +391,8 @@ NULL
 stressFromStrainFunction <- function(l, a, b, N=1000)
 {
     use <- rep(TRUE, length(l))
-    fcn <- function(sigma) {
+    fcn <- function(sigma)
+    {
         ##> cat("fcn(): l=", paste(l,collapse=" "), ", a=", paste(a,collapse=" "), ", b=", paste(b,collapse=" "), "\n")
         DL - sum((l[use] / b[use]) * log(1 + sigma / a[use]))
     }
@@ -579,14 +580,14 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #'
 #' @importFrom utils read.csv
 parameters <- function(ms=45e3, Ss=NULL, Ly=1.15, Lz=1.15,
-                       species="N. Atl. Right Whale",
-                       lw=13.7, mw=NULL, Sw=NULL,
-                       l=NULL, a=NULL, b=NULL, s=NULL,
-                       theta=55,
-                       Cs=0.01, Cw=0.0025,
-                       logistic=list(logStressCenter=5.38, logStressWidth=0.349,
-                                     tau25=0.100e6, tau50=0.241e6, tau75=0.581e6),
-                       file=NULL)
+    species="N. Atl. Right Whale",
+    lw=13.7, mw=NULL, Sw=NULL,
+    l=NULL, a=NULL, b=NULL, s=NULL,
+    theta=55,
+    Cs=0.01, Cw=0.0025,
+    logistic=list(logStressCenter=5.38, logStressWidth=0.349,
+        tau25=0.100e6, tau50=0.241e6, tau75=0.581e6),
+    file=NULL)
 {
     if (!is.null(file)) {
         rval <- as.list(read.csv(file))
@@ -669,11 +670,11 @@ parameters <- function(ms=45e3, Ss=NULL, Ly=1.15, Lz=1.15,
         if (Cw <= 0)
             stop("ship resistance parameter (Cw) must be positive, but it is ", Cw)
         rval <- list(ms=ms, Ss=Ss,
-                     Ly=Ly, Lz=Lz,
-                     mw=mw, Sw=Sw, lw=lw,
-                     l=l, lsum=sum(l), a=a, b=b, s=s,
-                     theta=theta,
-                     Cs=Cs, Cw=Cw)
+            Ly=Ly, Lz=Lz,
+            mw=mw, Sw=Sw, lw=lw,
+            l=l, lsum=sum(l), a=a, b=b, s=s,
+            theta=theta,
+            Cs=Cs, Cw=Cw)
     }
     ## For efficiency, create and store an overall stress-strain function
     rval$stressFromStrain <- stressFromStrainFunction(rval$l, rval$a, rval$b)
@@ -743,23 +744,13 @@ parameters <- function(ms=45e3, Ss=NULL, Ly=1.15, Lz=1.15,
 #'
 #' @export
 updateParameters <- function(original,
-                             ms,
-                             Ss,
-                             Ly,
-                             Lz,
-                             species,
-                             lw,
-                             mw,
-                             Sw,
-                             l,
-                             a,
-                             b,
-                             s,
-                             theta,
-                             Cs,
-                             Cw,
-                             logistic,
-                             debug=0)
+    ms, Ss,
+    Ly, Lz,
+    species, lw, mw, Sw,
+    l, a, b, s, theta,
+    Cs, Cw,
+    logistic,
+    debug=0)
 {
     rval <- original
     if (!missing(ms)) rval$ms <- ms
@@ -1008,8 +999,8 @@ whaleLengthFromMass <- function(M, species="N. Atl. Right Whale", model="fortune
     rval <- rep(NA, n)
     for (i in seq_along(M))
         rval[i] <- uniroot(function(x)
-                           M[i] - whaleMassFromLength(x, species=species[i], model=model[i]),
-                           c(0.1, 100))$root
+            M[i] - whaleMassFromLength(x, species=species[i], model=model[i]),
+            c(0.1, 100))$root
     rval
 }
 
@@ -1119,10 +1110,11 @@ whaleCompressionForce <- function(xs, xw, parms)
     stress <- parms$stressFromStrain(strain)
     force <- stress * parms$Ly * parms$Lz
     stress <- ifelse(stress < 0, 0, stress) # just in case; we don't want log(negative number)
-    compressed <- cbind(parms$l[1]*(1-log(1 + stress / parms$a[1]) / parms$b[1]),
-                        parms$l[2]*(1-log(1 + stress / parms$a[2]) / parms$b[2]),
-                        parms$l[3]*(1-log(1 + stress / parms$a[3]) / parms$b[3]),
-                        parms$l[4]*(1-log(1 + stress / parms$a[4]) / parms$b[4]))
+    compressed <- cbind(
+        parms$l[1]*(1-log(1 + stress / parms$a[1]) / parms$b[1]),
+        parms$l[2]*(1-log(1 + stress / parms$a[2]) / parms$b[2]),
+        parms$l[3]*(1-log(1 + stress / parms$a[3]) / parms$b[3]),
+        parms$l[4]*(1-log(1 + stress / parms$a[4]) / parms$b[4]))
     compressed <- pin(compressed, lower=0)
     list(force=force, stress=stress, strain=strain, compressed=compressed)
 }
@@ -1447,8 +1439,8 @@ strike <- function(t, state, parms, debug=0)
         stop("parms must be the output of parameters()")
     ## Check parameters
     parmsRequired <- c("a", "b", "Cs", "Cw", "l", "lsum", "lw", "Ly", "Lz",
-                       "ms", "mw", "s", "Ss", "stressFromStrain", "Sw",
-                       "theta")
+        "ms", "mw", "s", "Ss", "stressFromStrain", "Sw",
+        "theta")
     if (!all(parmsRequired %in% names(parms)))
         stop('parms must hold: "', paste(parmsRequired, collapse='", "'), '"')
     ## All required elements are present, but it's prudent to check some values that
@@ -1518,10 +1510,10 @@ strike <- function(t, state, parms, debug=0)
         }
     }
     res <- list(t=t, xs=xs, vs=vs, xw=xw, vw=vw,
-                dvsdt=dvsdt, dvwdt=dvwdt,
-                SWF=SWF, WSF=WSF, WCF=WCF, WWF=WWF,
-                parms=parms,
-                refinedGrid=refinedGrid)
+        dvsdt=dvsdt, dvwdt=dvwdt,
+        SWF=SWF, WSF=WSF, WCF=WCF, WWF=WWF,
+        parms=parms,
+        refinedGrid=refinedGrid)
     class(res) <- "strike"
     res
 }
@@ -1668,12 +1660,12 @@ strike <- function(t, state, parms, debug=0)
 #' @importFrom grDevices hcl
 #' @importFrom stats approx runmed
 plot.strike <- function(x, which="default", drawEvents=TRUE,
-                        colwcenter="black", #Slate Gray",
-                        colwinterface="black", #colwinterface="Firebrick",
-                        colwskin="black", #colwskin="Dodger Blue 4",
-                        cols="black",
-                        colThreat=c("white", "lightgray", "darkgray", "black"),
-                        lwd=1, D=3, debug=0, ...)
+    colwcenter="black", #Slate Gray",
+    colwinterface="black", #colwinterface="Firebrick",
+    colwskin="black", #colwskin="Dodger Blue 4",
+    cols="black",
+    colThreat=c("white", "lightgray", "darkgray", "black"),
+    lwd=1, D=3, debug=0, ...)
 {
     g <- 9.8 # gravity
     t <- x$t
@@ -1689,7 +1681,8 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         x$WCF$compressed[dead,1] <- 0
         x$WCF$compressed[dead,2] <- 0
     }
-    showEvents <- function(xs, xw) {
+    showEvents <- function(xs, xw)
+    {
         if (drawEvents) {
             death <- which(xs >= xw)[1]
             tdeath <- if (is.finite(death)) t[death] else NA
@@ -1706,9 +1699,9 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
 
     ## Ensure that the plot type is known.
     allowed <- c("all", "location", "section", "threat", "whale acceleration",
-                 "blubber thickness", "sublayer thickness",
-                 "whale water force", "reactive forces", "skin stress",
-                 "compression stress", "lethality index", "values")
+        "blubber thickness", "sublayer thickness",
+        "whale water force", "reactive forces", "skin stress",
+        "compression stress", "lethality index", "values")
     for (w in which) {
         if (!(w %in% allowed) && !length(grep("NEW", w)))
             stop("which value \"", w, "\" is not allowed; try one of: \"",
@@ -1740,7 +1733,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         if (asmax > 2 * asmaxs) {
             peakTime <- sum(abs(as) > 0.5*(asmax+asmaxs)) * (t[2] - t[1])
             labelShip <- sprintf("%.1fg w/ spike to %.0fg for %.1fms (ship)",
-                             asmaxs/g, peakTime*1e3, asmax/g)
+                asmaxs/g, peakTime*1e3, asmax/g)
         } else {
             labelShip <- sprintf("%.1fg (ship)", asmax/g)
         }
@@ -1750,7 +1743,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         if (awmax > 2 * awmaxs) {
             peakTime <- sum(abs(aw) > 0.5*(awmax+awmaxs)) * (t[2] - t[1])
             labelWhale <- sprintf("%.1fg w/ spike to %.0fg for %.1fms (whale)",
-                                  awmaxs/g, peakTime*1e3, awmax/g)
+                awmaxs/g, peakTime*1e3, awmax/g)
         } else {
             labelWhale <- sprintf("%.1fg (whale)", awmax/g)
         }
@@ -1765,7 +1758,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         maxy <- max(c(skin+blubber+sublayer+bone))
         ylim <- c(-maxy*1.2, 0)
         plot(t, -(skin+blubber+sublayer+bone), xlab="Time [s]", ylab="Whale-centred location [m]",
-             type="l", lwd=lwd, ylim=ylim, xaxs="i", yaxs="i", col=colwskin)# outside skin margin
+            type="l", lwd=lwd, ylim=ylim, xaxs="i", yaxs="i", col=colwskin)# outside skin margin
         lines(t, -(blubber+sublayer+bone), lwd=lwd, col=colwskin)
         lines(t, -(sublayer+bone), lwd=lwd, col=colwinterface)# , lty="42")
         lines(t, -bone, lwd=lwd, col=colwinterface)# , lty="42")
@@ -1902,6 +1895,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         LI <- lethalityIndexFromStress(stress)
         plot(t, LI, type="l", xlab="Time [s]", ylab="Lethality Index", lwd=lwd, xaxs="i", ylim=c(0,1), yaxs="i")
         nt <- length(t)
+        maxLI <- max(LI, na.rm=TRUE)
         ## Redraw the supercritical in a thicker line. But, first, refine the grid if it's coarse.
         if (nt < 2000) {
             t2 <- seq(t[1], t[nt], length.out=2000)
@@ -1914,7 +1908,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
             lines(t, LI, lwd=2*lwd)
         }
         abline(h=0.5, lty="dotted")
-        mtext(sprintf("Max. %.3g", max(LI, na.rm=TRUE)), side=3, line=0, cex=0.8*par("cex"))
+        mtext(sprintf("Max. %.3g", maxLI), side=3, line=0, cex=0.8*par("cex"))
         ## Highlight for LI exceeding 0.5, using polygon intersection so the thickened
         ## line comes right down to the 0.5 line.
         ## NOT-WORKING highlight <- lethalityIndex >= 0.5
@@ -2072,16 +2066,16 @@ summarize <- function(object, style="text")
         names[which(names == "s3")] <- "$s_3$"
         names[which(names == "s4")] <- "$s_4$"
         parm <- data.frame(Symbol=names,
-                           Meaning=meaning,
-                           Value=as.matrix(unname(unclass(parm))),
-                           Reference="")
+            Meaning=meaning,
+            Value=as.matrix(unname(unclass(parm))),
+            Reference="")
         colnames(parm) <- c("Item", "Meaning", "Value", "Source")
         print(xtable(parm, label="table:model_parameters",
-                     caption="Model parameters.",
-                     display=c("d", "s", "s", "G", "s")),
-              math.style.exponents=TRUE,
-              sanitize.text.function=function(x) x,
-              include.rownames=FALSE)
+                caption="Model parameters.",
+                display=c("d", "s", "s", "G", "s")),
+            math.style.exponents=TRUE,
+            sanitize.text.function=function(x) x,
+            include.rownames=FALSE)
     } else if (style == "text") {
         parm <- data.frame(Name=names, Meaning=meaning, Value=as.matrix(unname(unclass(parm))))
         colnames(parm) <- c("Item", "Meaning", "Value")
@@ -2109,7 +2103,8 @@ summarize <- function(object, style="text")
 #' @family functions dealing with Whale Lethality index
 #'
 #' @export
-lethalityIndexFromStress <- function(stress) {
+lethalityIndexFromStress <- function(stress)
+{
     logistic <- parameters()$logistic
     1 / (1 + exp(-(log10(stress) - logistic$logStressCenter) / logistic$logStressWidth))
 }
@@ -2132,7 +2127,8 @@ lethalityIndexFromStress <- function(stress) {
 #' @family functions dealing with Whale Lethality index
 #'
 #' @export
-stressFromLethalityIndex <- function(injury) {
+stressFromLethalityIndex <- function(injury)
+{
     logistic <- parameters()$logistic
     10^(logistic$logStressCenter - logistic$logStressWidth * log(1 / injury - 1)) # note natural log
 }

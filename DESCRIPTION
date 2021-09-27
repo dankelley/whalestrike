@@ -1,7 +1,7 @@
 Package: whalestrike
 Type: Package
 Title: Simulate Whale Ship Strikes
-Version: 0.4.0
+Version: 0.4.1
 Authors@R: c(
     person(given="Dan", family="Kelley", email="dan.kelley@dal.ca", role=c("aut", "cre"), comment=c(ORCID="0000-0001-7808-5911")),
     person(given="James", family="Vlasic", email="jvlasic@dal.ca", role="rtm", comment=c(ORCID="0000-0002-3846-4391")),
@@ -13,7 +13,7 @@ Suggests: knitr, markdown, rmarkdown, testthat
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
 BuildVignettes: true
 VignetteBuilder: knitr
