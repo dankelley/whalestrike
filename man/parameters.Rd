@@ -33,11 +33,11 @@ used by \code{\link[=shipWaterForce]{shipWaterForce()}} to estimate ship drag fo
 is not given, then an estimate is made by calling \code{\link[=shipAreaFromMass]{shipAreaFromMass()}} with
 the provided value of \code{ms}.}
 
-\item{Ly}{Ship impact horizontal extent (m); defaults to 1.23m if not specified,
+\item{Ly}{Ship impact horizontal extent (m); defaults to 1.15m if not specified,
 based on an analysis of the shape of the bow of typical coastal fishing boats
 of the Cape Islander variety.}
 
-\item{Lz}{Ship impact vertical extent (m); defaults to 1.23m if not specified,
+\item{Lz}{Ship impact vertical extent (m); defaults to 1.15m if not specified,
 based on the same analysis as for Ly.}
 
 \item{species}{A string indicating the whale species. For the permitted values,

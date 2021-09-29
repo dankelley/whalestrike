@@ -441,11 +441,11 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' is not given, then an estimate is made by calling [shipAreaFromMass()] with
 #' the provided value of `ms`.
 #'
-#' @param Ly Ship impact horizontal extent (m); defaults to 1.23m if not specified,
+#' @param Ly Ship impact horizontal extent (m); defaults to 1.15m if not specified,
 #' based on an analysis of the shape of the bow of typical coastal fishing boats
 #' of the Cape Islander variety.
 #'
-#' @param Lz Ship impact vertical extent (m); defaults to 1.23m if not specified,
+#' @param Lz Ship impact vertical extent (m); defaults to 1.15m if not specified,
 #' based on the same analysis as for Ly.
 #'
 #' @param lw Whale length (m). This is used by [whaleAreaFromLength()] to
