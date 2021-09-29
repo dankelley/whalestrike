@@ -683,6 +683,50 @@ parameters <- function(ms=45e3, Ss=NULL, Ly=1.15, Lz=1.15,
     rval
 }
 
+#' Summarize a parameters object
+#'
+#' This provides an overview of the contents of an object
+#' created with [parameters()].
+#'
+#' @param object an object created with [parameters()].
+#'
+#' @param \dots ignored
+#'
+#' @examples
+#' summary(parameters())
+#'
+#' @export
+#'
+#' @author Dan Kelley
+summary.parameters <- function(object, ...)
+{
+    cat("An object created by parameters(), containing:\n")
+    cat("Ship properties:\n")
+    cat(sprintf("  ms: %10g kg  -- ship mass\n", object$ms))
+    cat(sprintf("  Ss: %10g m^2 -- ship wetted area\n", object$Ss))
+    cat(sprintf("  Ly: %10g m   -- width of impact area\n", object$Ly))
+    cat(sprintf("  Lz: %10g m   -- height of impact area\n", object$Lz))
+    cat(sprintf("  Cs: %10g     -- drag coefficient\n", object$Cs))
+    cat("Whale properties:\n")
+    cat(sprintf("  mw: %10g kg  -- mass\n", object$mw))
+    cat(sprintf("  Sw: %10g m^2 -- wetted area\n", object$Sw))
+    cat(sprintf("  lw: %10g m   -- length\n", object$Lw))
+    cat(sprintf("  l:  %4g %4g %4g %4g m  -- thickness of skin, blubber, sublayer, halfwidth of bone\n",
+            object$l[1], object$l[2], object$l[3], object$l[4]))
+    cat(sprintf("  lsum: %8g m   -- sum of above thicknesses\n", object$lsum))
+    cat(sprintf("  a: %5g %5g %5g %5g Pa -- 'a' part of stress-strain formulation for layers\n",
+            object$a[1], object$a[2], object$a[3], object$a[4]))
+    cat(sprintf("  b: %5g %5g %5g %5g    -- 'b' part of stress-strain formulation for layers\n",
+            object$b[1], object$b[2], object$b[3], object$b[4]))
+    cat(sprintf("  s: %g %g %g %g Pa  -- strength of layers\n",
+            object$s[1], object$s[2], object$s[3], object$s[4]))
+    cat(sprintf("  theta: %7g deg -- impact dimple angle\n", object$theta))
+    cat(sprintf("  Cw: %10g     -- drag coefficient\n", object$Cw))
+    cat("Functions:\n")
+    cat("  stressFromStrain() -- computes stress, given strain\n")
+    cat("  logistic()         -- computes lethality index\n")
+}
+
 
 #' Update parameters
 #'
