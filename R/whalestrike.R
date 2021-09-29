@@ -255,7 +255,7 @@ NULL
 #' “Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
 #' Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
 #' Society, and Fisheries and Oceans Canada, 2018.
-#' \url{http://publications.gc.ca/site/eng/9.850838/publication.html}.
+#' \url{https://publications.gc.ca/site/eng/9.850838/publication.html}.
 #'
 #' \item
 #' Fortune, Sarah M. E., Andrew W. Trites, Wayne L. Perryman, Michael J. Moore,
@@ -283,12 +283,12 @@ NULL
 #'
 #' \item
 #' MAN Diesel & Turbo. “Basic Principles of Propulsion.” MAN Diesel & Turbo, 2011.
-#' \url{https://spain.mandieselturbo.com/docs/librariesprovider10/sistemas-propulsivos-marinos/basic-principles-of-ship-propulsion.pdf?sfvrsn=2}
+#' \code{https://spain.mandieselturbo.com/docs/librariesprovider10/sistemas-propulsivos-marinos/basic-principles-of-ship-propulsion.pdf?sfvrsn=2}
 #'
 #' \item
 #' Manen, J. D. van, and P. van Oossanen. “Resistance.” In Principles of Naval
 #' Architecture (Second Revision), Volume II - Resistance, Propulsion and
-#' Vibration, edited by Edward V Lewis, 2nd ed., 1–125. Jersey City, NJ: Society
+#' Vibration, edited by Edward V Lewis, Second Edition, 1–125. Jersey City, NJ: Society
 #' of Naval Architects and Marine Engineers (U.S.), 1988.
 #'
 #' \item
@@ -314,7 +314,7 @@ NULL
 #' Raymond, J. J. “Development of a Numerical Model to Predict Impact Forces on a
 #' North Atlantic Right Whale during Collision with a Vessel.” University of New
 #' Hampshire, 2007.
-#' \url{https://scholars.unh.edu/thesis/309}.
+#' \url{https://scholars.unh.edu/thesis/309/}.
 #'
 #' \item
 #' Soetaert, Karline, Thomas Petzoldt, and R. Woodrow Setzer.
