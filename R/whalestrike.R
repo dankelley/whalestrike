@@ -731,8 +731,8 @@ summary.parameters <- function(object, ...)
     cat(sprintf("    theta: %11g deg -- impact dimple angle\n", object$theta))
     cat(sprintf("    Cw: %12g       -- drag coefficient\n", object$Cw))
     cat("  Functions:\n")
-    cat("    stressFromStrain()     -- function that computes stress\n")
-    cat("    logistic()             -- function that computes lethality index\n")
+    cat("    stressFromStrain()     -- function to compute stress\n")
+    cat("    logistic()             -- function to compute lethality index\n")
 }
 
 
@@ -2009,130 +2009,24 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
 #'
 #' @param object An object created by [strike()].
 #'
-#' @param style Character value indicating the representation to be used.
-#' If `style` is `"text"`, then the output is in a textual format. If it
-#' is `"latex"`, then the output is in latex format.
-#'
 #' @references
 #' See [whalestrike()] for a list of references.
 #'
 #' @author Dan Kelley
 #'
 #' @export
-#'
-#' @importFrom xtable xtable
-summarize <- function(object, style="text")
+summary.strike <- function(object)
 {
     parm <- object$parm
-    parm$a1 <- parm$a[1]
-    parm$a2 <- parm$a[2]
-    parm$a3 <- parm$a[3]
-    parm$a4 <- parm$a[4]
-    parm$a <- NULL
-    parm$b1 <- parm$b[1]
-    parm$b2 <- parm$b[2]
-    parm$b3 <- parm$b[3]
-    parm$b4 <- parm$b[4]
-    parm$b <- NULL
-    parm$l1 <- parm$l[1]
-    parm$l2 <- parm$l[2]
-    parm$l3 <- parm$l[3]
-    parm$l4 <- parm$l[4]
-    parm$l <- NULL
-    parm$s1 <- parm$s[1]
-    parm$s2 <- parm$s[2]
-    parm$s3 <- parm$s[3]
-    parm$s4 <- parm$s[4]
-    parm$s <- NULL
-
-    names <- names(parm)
-    ## Remove some calculated things.
-    parm <- parm[!(names %in% c("engineForce", "stressFromStrain", "lsum"))]
-    names <- names(parm)
-    parm <- unname(parm)
-    meaning <- rep("", length(parm))
-    o <- order(names)
-    parm <- parm[o]
-    names <- as.character(names[o])
-    ## FIXME: update to l, a, b, and s.
-    meaning[names=="alpha"] <- "Whale skin thickness [m]."
-    meaning[names=="beta"] <- "Blubber thickness [m]."
-    meaning[names=="gamma"] <- "Sub-layer thickness [m]."
-    meaning[names=="Ealpha"] <- "Whale skin extension modulus [MPa]."
-    meaning[names=="Ebeta"] <- "Blubber compression modulus [MPa]."
-    meaning[names=="Egamma"] <- "Sub-layer compression modulus [MPa]."
-    meaning[names=="UTSalpha"] <- "Whale skin ultimate tension strength [MPa]."
-    meaning[names=="UTSbeta"] <- "Blubber ultimate compression strength [MPa]."
-    meaning[names=="UTSgamma"] <- "Sub-layer ultimate compression strength [MPa]."
-    meaning[names=="Ly"] <- "Width of impact zone [m]."
-    meaning[names=="Lz"] <- "Height of impact zone [m]."
-    meaning[names=="lw"] <- "Whale length [m]."
-    meaning[names=="mw"] <- "Whale mass [m]."
-    meaning[names=="Sw"] <- "Whale surface area [sq. m]."
-    meaning[names=="mw"] <- "Whale mass [m]."
-    meaning[names=="ms"] <- "Ship mass [m]."
-    meaning[names=="Ss"] <- "Ship wetted surface area [sq. m]."
-    meaning[names=="theta"] <- "Angle of skin-compression bevel [deg]."
-    meaning[names=="Cw"] <- "Whale drag coefficient [unitless]."
-    meaning[names=="Cs"] <- "Ship drag coefficient [unitless]."
-    meaning[names=="a1"] <- "Skin stress factor [Pa]."
-    meaning[names=="a2"] <- "Blubber stress factor [Pa]."
-    meaning[names=="a3"] <- "Sublayer stress factor [Pa]."
-    meaning[names=="a4"] <- "Bone stress factor [Pa]."
-    meaning[names=="b1"] <- "Skin stress nonlinearity [unitless]."
-    meaning[names=="b2"] <- "Blubber stress nonlinearity [unitless]."
-    meaning[names=="b3"] <- "Sublayer stress nonlinearity [unitless]."
-    meaning[names=="b4"] <- "Bone stress nonlinearity [unitless]."
-    meaning[names=="l1"] <- "Skin thickness [m]."
-    meaning[names=="l2"] <- "Blubber thickness [m]."
-    meaning[names=="l3"] <- "Sublayer thickness [m]."
-    meaning[names=="l4"] <- "Bone thickness [m]."
-    meaning[names=="s1"] <- "Skin strength [Pa]."
-    meaning[names=="s2"] <- "Blubber strength [Pa]."
-    meaning[names=="s3"] <- "Sublayer strength [Pa]."
-    meaning[names=="s4"] <- "Bone strength [Pa]."
-    if (style == "latex") {
-        names[which(names == "Cs")] <- "$C_s$"
-        names[which(names == "Cw")] <- "$C_w$"
-        names[which(names == "lw")] <- "$l_w$"
-        names[which(names == "Ly")] <- "$L_y$"
-        names[which(names == "Lz")] <- "$L_z$"
-        names[which(names == "Ss")] <- "$S_s$"
-        names[which(names == "Sw")] <- "$S_w$"
-        names[which(names == "ms")] <- "$M_s$"
-        names[which(names == "mw")] <- "$M_w$"
-        names[which(names == "a1")] <- "$a_1$"
-        names[which(names == "a2")] <- "$a_2$"
-        names[which(names == "a3")] <- "$a_3$"
-        names[which(names == "a4")] <- "$a_4$"
-        names[which(names == "b1")] <- "$b_1$"
-        names[which(names == "b2")] <- "$b_2$"
-        names[which(names == "b3")] <- "$b_3$"
-        names[which(names == "b4")] <- "$b_4$"
-        names[which(names == "l1")] <- "$l_1$"
-        names[which(names == "l2")] <- "$l_2$"
-        names[which(names == "l3")] <- "$l_3$"
-        names[which(names == "l4")] <- "$l_4$"
-        names[which(names == "s1")] <- "$s_1$"
-        names[which(names == "s2")] <- "$s_2$"
-        names[which(names == "s3")] <- "$s_3$"
-        names[which(names == "s4")] <- "$s_4$"
-        parm <- data.frame(Symbol=names,
-            Meaning=meaning,
-            Value=as.matrix(unname(unclass(parm))),
-            Reference="")
-        colnames(parm) <- c("Item", "Meaning", "Value", "Source")
-        print(xtable(parm, label="table:model_parameters",
-                caption="Model parameters.",
-                display=c("d", "s", "s", "G", "s")),
-            math.style.exponents=TRUE,
-            sanitize.text.function=function(x) x,
-            include.rownames=FALSE)
-    } else if (style == "text") {
-        parm <- data.frame(Name=names, Meaning=meaning, Value=as.matrix(unname(unclass(parm))))
-        colnames(parm) <- c("Item", "Meaning", "Value")
-        print(parm, include.rownames=FALSE)
-    }
+    summary(parm)
+    LI <- lethalityIndexFromStress(object$WCF$stress)
+    peakLI <- which.max(LI)
+    cat("\nSimulation results returned by strike()\n")
+    cat(sprintf("  simulated time range: 0 to %g s\n", max(object$t)))
+    cat(sprintf("  xs: %12g m        -- ship position at t=0 s\n", object$xs[1]))
+    cat(sprintf("  vs: %12g m/s      -- ship speed at t=0 s\n", object$vs[1]))
+    cat(sprintf("      %12g knot     -- above, in a nautical unit\n", mps2knot(object$vs[1])))
+    cat(sprintf("  peak Lethality Index=%.4g at t=%g s\n", LI[peakLI], t[peakLI]))
 }
 
 
