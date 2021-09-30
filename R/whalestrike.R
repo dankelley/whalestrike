@@ -2026,7 +2026,7 @@ summary.strike <- function(object)
     cat(sprintf("  xs: %12g m        -- ship position at t=0 s\n", object$xs[1]))
     cat(sprintf("  vs: %12g m/s      -- ship speed at t=0 s\n", object$vs[1]))
     cat(sprintf("      %12g knot     -- above, in a nautical unit\n", mps2knot(object$vs[1])))
-    cat(sprintf("  peak Lethality Index=%.4g at t=%g s\n", LI[peakLI], t[peakLI]))
+    cat(sprintf("  peak Lethality Index=%.4g at t=%g s\n", LI[peakLI], object$t[peakLI]))
 }
 
 
