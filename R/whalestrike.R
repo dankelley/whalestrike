@@ -1,4 +1,4 @@
-## vim:textwidth=128:expandtab:shiftwidth=4:softtabstop=4
+# vim:textwidth=128:expandtab:shiftwidth=4:softtabstop=4
 
 library(deSolve)
 
@@ -2031,11 +2031,11 @@ summary.strike <- function(object, ...)
     cat("\nSimulation results returned by strike()\n")
     cat(sprintf("  simulated time range: 0 to %g s\n", max(object$t)))
     cat(sprintf("  xs: %12g m        -- ship position at t=0 s\n", object$xs[1]))
-    cat(sprintf("  vs: %12g m/s      -- ship speed at t=0 s\n", object$vs[1]))
-    cat(sprintf("      %12g knot     -- above, in a nautical unit\n", mps2knot(object$vs[1])))
-    cat(sprintf("  Lethality Index had maximum value %.4g, at t=%.4g s\n", LI[peakLI], object$t[peakLI]))
+    cat(sprintf("  vs: %12.3g m/s      -- ship speed at t=0 s\n", object$vs[1]))
+    cat(sprintf("      %12.3g knot     -- above, in a nautical unit\n", mps2knot(object$vs[1])))
+    cat(sprintf("  lethality index had maximum value %.4g, at time %.4g s\n", LI[peakLI], object$t[peakLI]))
     timeOfDanger <- diff(range(object$t[LI>0.5]))
-    cat(sprintf("  Lethality Index exceeded 0.5 for %.4g s\n", timeOfDanger))
+    cat(sprintf("  lethality index exceeded 0.5 for %.4g s\n", timeOfDanger))
 }
 
 
