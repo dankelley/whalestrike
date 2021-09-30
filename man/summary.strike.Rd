@@ -4,16 +4,25 @@
 \alias{summary.strike}
 \title{Summarize the parameters of a simulation, and its results}
 \usage{
-\method{summary}{strike}(object)
+\method{summary}{strike}(object, ...)
 }
 \arguments{
-\item{object}{An object created by \code{\link[=strike]{strike()}}.}
+\item{object}{an object of class \code{"strike"}, as created by \code{\link[=strike]{strike()}}.}
+
+\item{\dots}{ignored}
 }
 \description{
 Summarize the parameters of a simulation, and its results
 }
-\references{
-See \code{\link[=whalestrike]{whalestrike()}} for a list of references.
+\examples{
+library(whalestrike)
+# Example 1: graphs, as in the shiny app
+t <- seq(0, 0.7, length.out=200)
+state <- list(xs=-2, vs=knot2mps(10), xw=0, vw=0) # ship speed 10 knots
+parms <- parameters()
+sol <- strike(t, state, parms)
+summary(sol)
+
 }
 \author{
 Dan Kelley

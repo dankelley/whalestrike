@@ -7,7 +7,7 @@
 \method{summary}{parameters}(object, ...)
 }
 \arguments{
-\item{object}{an object created with \code{\link[=parameters]{parameters()}}.}
+\item{object}{an object of class \code{"parameters"}, as created with \code{\link[=parameters]{parameters()}}.}
 
 \item{\dots}{ignored}
 }

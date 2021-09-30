@@ -1,7 +1,6 @@
 ## vim:textwidth=128:expandtab:shiftwidth=4:softtabstop=4
 
 library(deSolve)
-library(xtable)
 
 
 #' Convert a speed in knots to a speed in m/s
@@ -688,16 +687,16 @@ parameters <- function(ms=45e3, Ss=NULL, Ly=1.15, Lz=1.15,
 #' This provides an overview of the contents of an object
 #' created with [parameters()].
 #'
-#' @param object an object created with [parameters()].
+#' @param object an object of class `"parameters"`, as created with [parameters()].
 #'
 #' @param \dots ignored
 #'
 #' @examples
 #' summary(parameters())
 #'
-#' @export
-#'
 #' @author Dan Kelley
+#'
+#' @export
 summary.parameters <- function(object, ...)
 {
     cat("Whale and ship properties, as created by parameters():\n")
@@ -2007,15 +2006,23 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
 
 #' Summarize the parameters of a simulation, and its results
 #'
-#' @param object An object created by [strike()].
+#' @param object an object of class `"strike"`, as created by [strike()].
 #'
-#' @references
-#' See [whalestrike()] for a list of references.
+#' @param \dots ignored
+#'
+#' @examples
+#' library(whalestrike)
+#' # Example 1: graphs, as in the shiny app
+#' t <- seq(0, 0.7, length.out=200)
+#' state <- list(xs=-2, vs=knot2mps(10), xw=0, vw=0) # ship speed 10 knots
+#' parms <- parameters()
+#' sol <- strike(t, state, parms)
+#' summary(sol)
 #'
 #' @author Dan Kelley
 #'
 #' @export
-summary.strike <- function(object)
+summary.strike <- function(object, ...)
 {
     parm <- object$parm
     summary(parm)
