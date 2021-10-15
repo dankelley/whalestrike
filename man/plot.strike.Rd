@@ -126,14 +126,14 @@ Creates displays of various results of a simulation performed
 with \code{\link[=strike]{strike()}}.
 }
 \examples{
-## 1. default 3-panel plot
+# 1. default 3-panel plot
 t <- seq(0, 0.7, length.out=200)
 state <- c(xs=-2, vs=knot2mps(12), xw=0, vw=0) # 12 knot ship
 parms <- parameters() # default values
 sol <- strike(t, state, parms)
 par(mar=c(3,3,1,1), mgp=c(2,0.7,0), mfrow=c(1, 3))
 plot(sol)
-## 2. all 12 plot types
+# 2. all 12 plot types
 par(mar=c(3,3,1,1) ,mgp=c(2,0.7,0), mfrow=c(4,3))
 plot(sol, "all")
 

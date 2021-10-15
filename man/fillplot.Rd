@@ -28,11 +28,11 @@ to use \code{xaxs="i"} in the preceding plot call, so that the
 polygon reaches to the edge of the plot area.
 }
 \examples{
-## 1. CO2 record
+# 1. CO2 record
 plot(co2, xaxs="i", yaxs="i")
 fillplot(time(co2), min(co2), co2, col="pink")
 
-## 2. stack (summed y) plot
+# 2. stack (summed y) plot
 x <- seq(0, 1, 0.01)
 lower <- x
 upper <- 0.5 * (1 + sin(2 * pi * x / 0.2))

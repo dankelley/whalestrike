@@ -1,6 +1,6 @@
-## vim:textwidth=128:expandtab:shiftwidth=4:softtabstop=4
+# vim:textwidth=128:expandtab:shiftwidth=4:softtabstop=4
 
-## app for simulating the effect of a vessel strike on a whale
+# app for simulating the effect of a vessel strike on a whale
 ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; margin-left:1ex}")),
   fluidRow(radioButtons("instructions", "Instructions", choices=c("Hide", "Show"), selected="Show", inline=TRUE)),
   conditionalPanel(condition="input.instructions=='Show'",
@@ -69,18 +69,18 @@ server <- function(input, output, session)
 
     observeEvent(input$saveFile, {
         file <- "boat_whale.csv"
-        ## Remove the load and save file items from the list of input items to save
+        # Remove the load and save file items from the list of input items to save
         home <- normalizePath("~")
         fullfile <- paste0(home, .Platform$file.sep, file)
         config <- reactiveValuesToList(input)
         configNames <- names(config)
         w <- which("loadFile" == configNames | "saveFile" == configNames | "plot_panels" == configNames)
         config <- config[-w]
-        ## Convert ship speed from to m/s, from knots in the GUI
+        # Convert ship speed from to m/s, from knots in the GUI
         config$vs <- whalestrike::knot2mps(config$vs)
-        ## Convert ship mass to kg, from tonne in the GUI
+        # Convert ship mass to kg, from tonne in the GUI
         config$ms <- 1e3 * config$ms
-        ## save in alphabetical order
+        # save in alphabetical order
         o <- order(names(config))
         write.csv(config[o], row.names=FALSE, file=fullfile)
         showNotification(paste0('Saved configuration to "', fullfile, '"'), type="message")
@@ -88,25 +88,25 @@ server <- function(input, output, session)
 
     observeEvent(input$loadFile, {
         config <- read.csv(input$loadFile$datapath)
-        ## Convert ship speed from m/s in the file, to knots in the GUI
+        # Convert ship speed from m/s in the file, to knots in the GUI
         config$vs <- mps2knot(config$vs)
-        ## Convert ship mass from kg in file, to tonne in the GUI
+        # Convert ship mass from kg in file, to tonne in the GUI
         config$ms <- 1e-3 * config$ms
-        ## Insert individual thickness entries (one slider each)
+        # Insert individual thickness entries (one slider each)
         config$l1 <- config$l[1]
         config$l2 <- config$l[2]
         config$l3 <- config$l[3]
         config$l4 <- config$l[4]
-        ## FIXME: l1, l2 etc
+        # FIXME: l1, l2 etc
         for (s in c("tmax", "ms", "lw", "vs", "Ly", "Lz",
                 "l1", "l2", "l3", "l4"))
             updateSliderInput(session, s, value=config[[s]])
   })
 
     output$plot <- renderPlot({
-        ##message("species: ", input$species)
-        ## aDefault <- whalestrike::parameters()$a
-        ##cat(file=stderr(), "input$a23=", input$a23, "\n")
+        #message("species: ", input$species)
+        # aDefault <- whalestrike::parameters()$a
+        #cat(file=stderr(), "input$a23=", input$a23, "\n")
         mw <- if (input$species == "N. Atl. Right") {
             whaleMassFromLength(input$lw, species="N. Atl. Right Whale", model="fortune2012")
         } else if (input$species == "Blue") {

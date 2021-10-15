@@ -70,7 +70,7 @@ mps2knot <- function(mps)
 #' @export
 pin <- function(x, lower=NULL, upper=NULL)
 {
-    ## Protect the ifelse() operation from getting riled by NAs
+    # Protect the ifelse() operation from getting riled by NAs
     na <- is.na(x)
     x[na] <- 0 # value is arbitrary because changed back to NA later
     if (!is.null(lower))
@@ -103,11 +103,11 @@ pin <- function(x, lower=NULL, upper=NULL)
 #' and `angle` is also a good choice.
 #'
 #' @examples
-#' ## 1. CO2 record
+#' # 1. CO2 record
 #' plot(co2, xaxs="i", yaxs="i")
 #' fillplot(time(co2), min(co2), co2, col="pink")
 #'
-#' ## 2. stack (summed y) plot
+#' # 2. stack (summed y) plot
 #' x <- seq(0, 1, 0.01)
 #' lower <- x
 #' upper <- 0.5 * (1 + sin(2 * pi * x / 0.2))
@@ -152,13 +152,13 @@ fillplot4 <- function(x, y, yOffset=0, breaks, col, ...)
     yy <- c(y, rep(0,nx), y[1])
     polygon(xx, yy+yOffset, col=col[4], border=col[4])
     yy <- ifelse(yy < breaks[3], yy, breaks[3])
-    ## message("breaks[3]=", breaks[3], "; max(y)=", max(y), "; max(yy) after trim=", max(yy), "; col=", col[3])
+    # message("breaks[3]=", breaks[3], "; max(y)=", max(y), "; max(yy) after trim=", max(yy), "; col=", col[3])
     polygon(xx, yy+yOffset, col=col[3], border=col[3])
     yy <- ifelse(yy < breaks[2], yy, breaks[2])
-    ## message("breaks[2]=", breaks[3], "; max(y)=", max(y), "; max(yy) after trim=", max(yy), "; col=", col[2])
+    # message("breaks[2]=", breaks[3], "; max(y)=", max(y), "; max(yy) after trim=", max(yy), "; col=", col[2])
     polygon(xx, yy+yOffset, col=col[2], border=col[2])
     yy <- ifelse(yy < breaks[1], yy, breaks[1])
-    ## message("breaks[1]=", breaks[3], "; max(y)=", max(y), "; max(yy) after trim=", max(yy), "; col=", col[1])
+    # message("breaks[1]=", breaks[3], "; max(y)=", max(y), "; max(yy) after trim=", max(yy), "; col=", col[1])
     polygon(xx, yy+yOffset, col=col[1], border=col[1])
     lines(x, y+yOffset)
 }
@@ -176,7 +176,7 @@ fillplot4 <- function(x, y, yOffset=0, breaks, col, ...)
 #' @examples
 #' data(raymond2007)
 #' attach(raymond2007)
-#' ## Next yields \code{a=1.64e5} Pa and \code{b=2.47}.
+#' # Next yields \code{a=1.64e5} Pa and \code{b=2.47}.
 #' m <- nls(stress~a*(exp(b*strain)-1), start=list(a=1e5, b=1))
 #' plot(strain, stress, xaxs="i", yaxs="i")
 #' x <- seq(0, max(strain), length.out=100)
@@ -373,8 +373,8 @@ NULL
 #'
 #' @examples
 #' library(whalestrike)
-#' ## Set blubber parameters for each layer, to see if
-#' ## we recover the raymond2007 data.
+#' # Set blubber parameters for each layer, to see if
+#' # we recover the raymond2007 data.
 #' param <- parameters(a=rep(1.64e5,4), b=rep(2.47,4))
 #' x <- seq(0, 0.5, length.out=100)
 #' y <- param$stressFromStrain(x)
@@ -392,26 +392,26 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
     use <- rep(TRUE, length(l))
     fcn <- function(sigma)
     {
-        ##> cat("fcn(): l=", paste(l,collapse=" "), ", a=", paste(a,collapse=" "), ", b=", paste(b,collapse=" "), "\n")
+        #> cat("fcn(): l=", paste(l,collapse=" "), ", a=", paste(a,collapse=" "), ", b=", paste(b,collapse=" "), "\n")
         DL - sum((l[use] / b[use]) * log(1 + sigma / a[use]))
     }
     L <- sum(l)
     sigma <- rep(NA, N)
     epsilon <- seq(0, 1, length.out=N)
-    ## We will limit the epsilon in any given layer to 1, i.e. we don't
-    ## permit layers to be compressed to negative thickness. This is expressed
-    ## by setting layer-by-layer conditions on maximum stress.
+    # We will limit the epsilon in any given layer to 1, i.e. we don't
+    # permit layers to be compressed to negative thickness. This is expressed
+    # by setting layer-by-layer conditions on maximum stress.
     sigmaMax <- max(a * (exp(b) - 1))
-    ##> cat("sigmaMax=", paste(sprintf("%.3g", sigmaMax), collapse=" "), "\n")
+    #> cat("sigmaMax=", paste(sprintf("%.3g", sigmaMax), collapse=" "), "\n")
     sigmaLowerLimit <- 0
     sigmaUpperLimit <- 2 * sigmaMax
     for (i in seq_along(epsilon)) {
-        ##debug cat(sprintf("i=%3d, epsilon=%10.5f, ", i, epsilon[i]), ", use=", paste(use, collapse=" "), "\n")
+        #debug cat(sprintf("i=%3d, epsilon=%10.5f, ", i, epsilon[i]), ", use=", paste(use, collapse=" "), "\n")
         DL <- epsilon[i] * L
-        ##> cat("LINE 414. i=", i, ", about to call uniroot(fcn,...); use=", paste(use, collapse=" "), "fcn(sigmaLowerLimit)=", fcn(sigmaLowerLimit), ", fcn(big)=", fcn(sigmaUpperLimit), ", fcn(10*big)=", fcn(10*sigmaUpperLimit), ", sigmaMax=", sigmaMax, "\n")
+        #> cat("LINE 414. i=", i, ", about to call uniroot(fcn,...); use=", paste(use, collapse=" "), "fcn(sigmaLowerLimit)=", fcn(sigmaLowerLimit), ", fcn(big)=", fcn(sigmaUpperLimit), ", fcn(10*big)=", fcn(10*sigmaUpperLimit), ", sigmaMax=", sigmaMax, "\n")
         trial <- try(uniroot(fcn, interval=c(sigmaLowerLimit, sigmaUpperLimit)), silent=TRUE)
         sigma[i] <- if (inherits(trial, "try-error")) 2*sigmaMax else trial$root
-        ##> cat("  sigma[i]=", sigma[i], "\n")
+        #> cat("  sigma[i]=", sigma[i], "\n")
         use <- sigma[i] < sigmaMax
         if (!any(use))
             sigma[i] <- sigma[i-1] # probably good enough; this occurs only at sigma=1, I think
@@ -468,8 +468,8 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' stated in Section 2.2.3 of Raymond (2007).
 #' The blubber default of 0.16 m is a rounded average of the values inferred
 #' by whale necropsy, reported in Appendix 2 of Daoust et al., 2018.
-## > round(mean(c(17,14,18.13,18,21.25,16.75,13.33,7)/100),2)
-## [1] 0.16
+# > round(mean(c(17,14,18.13,18,21.25,16.75,13.33,7)/100),2)
+# [1] 0.16
 #' The sublayer default of 1.12 m may be reasonable at some spots on the whale body.
 #' The bone default of 0.1 m may be reasonable at some spots on the whale body.
 #' The sum of these default values, 1.40 m, is a whale radius that
@@ -600,9 +600,9 @@ parameters <- function(ms=45e3, Ss=NULL, Ly=1.15, Lz=1.15,
         rval$l <- c(rval$l1, rval$l2, rval$l3, rval$l4)
         rval$l1 <- rval$l2 <- rval$l3 <- rval$l4 <- NULL
         rval$lsum <- sum(rval$l)
-        ## the next are copied from below. The app doesn't let the user
-        ## set these things, so we know their values.
-        ## NOTE: keep in synch with 'BBBB' below!
+        # the next are copied from below. The app doesn't let the user
+        # set these things, so we know their values.
+        # NOTE: keep in synch with 'BBBB' below!
         rval$a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
         rval$b <- c(0.1, 2.54, 2.54, 0.1)
         rval$s <- c(19.6e6, 0.437e6, 0.437e6, 22.9e6)
@@ -649,7 +649,7 @@ parameters <- function(ms=45e3, Ss=NULL, Ly=1.15, Lz=1.15,
             s <- 1e6 * c(19.600, 0.255, 0.255, 22.900)
         if (any(s <= 0) || length(s) != 4)
             stop("'s' must be a vector of 4 positive numbers")
-        ## Value checks
+        # Value checks
         if (any(l <= 0) || length(l) != 4)
             stop("'l' must be a vector with 4 positive numbers")
         if (any(a <= 0) || length(a) != 4)
@@ -675,7 +675,7 @@ parameters <- function(ms=45e3, Ss=NULL, Ly=1.15, Lz=1.15,
             theta=theta,
             Cs=Cs, Cw=Cw)
     }
-    ## For efficiency, create and store an overall stress-strain function
+    # For efficiency, create and store an overall stress-strain function
     rval$stressFromStrain <- stressFromStrainFunction(rval$l, rval$a, rval$b)
     rval$logistic <- logistic
     class(rval) <- "parameters"
@@ -1099,18 +1099,18 @@ whaleAreaFromLength <- function(L, species="N. Atl. Right Whale", type="wetted")
     if (!(species %in% speciesAllowed))
         stop("unknown species \"", species, "\"; use one of the following: \"",
              paste(speciesAllowed, collapse="\", \""), "\"")
-    ## below from dek/20180623_whale_area.Rmd, updated 20180802 and inserted with
-    ## cut/paste (changing bullet to asterisk, and using ^ for exponentiation).
-    ##
-    ## * Projected area, with fins: 0.1466 ∗ L^2 where L is body length in metres.
-    ## * Projected area, without fins: 0.1391 ∗ L^2 where L is body length in metres.
-    ## * Wetted area, with fins: 0.4631 ∗ L^2 where L is body length in metres.
-    ## * Wetted area, without fins: 0.4336 ∗ L^2 where L is body length in metres.
-    ##
-    ## The relevant case (with or without fins) being dependent on the application,
-    ## there may be merit in averaging the two estimates, yielding:
-    ## * Projected area: 0.1429 ∗ L^2 where L is body length in metres.
-    ## * Wetted area: 0.4484 ∗ L^2 where L is body length in metres.
+    # below from dek/20180623_whale_area.Rmd, updated 20180802 and inserted with
+    # cut/paste (changing bullet to asterisk, and using ^ for exponentiation).
+    #
+    # * Projected area, with fins: 0.1466 ∗ L^2 where L is body length in metres.
+    # * Projected area, without fins: 0.1391 ∗ L^2 where L is body length in metres.
+    # * Wetted area, with fins: 0.4631 ∗ L^2 where L is body length in metres.
+    # * Wetted area, without fins: 0.4336 ∗ L^2 where L is body length in metres.
+    #
+    # The relevant case (with or without fins) being dependent on the application,
+    # there may be merit in averaging the two estimates, yielding:
+    # * Projected area: 0.1429 ∗ L^2 where L is body length in metres.
+    # * Wetted area: 0.4484 ∗ L^2 where L is body length in metres.
     if (type == "projected")
         0.143 * L^2
     else if (type == "wetted")
@@ -1154,9 +1154,9 @@ whaleCompressionForce <- function(xs, xw, parms)
 {
     touching <- xs < xw & xs > (xw - parms$lsum)
     dx <- ifelse(touching, xs - (xw - parms$lsum), 0) # penetration distance
-    ## Note that the denominator of the strain expression vanishes in the stress calculation,
-    ## so the next three lines could be simplified. However, retaining it might be clearer,
-    ## if a nonlinear stress-strain relationship becomes desirable in the future.
+    # Note that the denominator of the strain expression vanishes in the stress calculation,
+    # so the next three lines could be simplified. However, retaining it might be clearer,
+    # if a nonlinear stress-strain relationship becomes desirable in the future.
     strain <- dx / parms$lsum
     stress <- parms$stressFromStrain(strain)
     force <- stress * parms$Ly * parms$Lz
@@ -1202,15 +1202,15 @@ whaleSkinForce <- function(xs, xw, parms)
     S <- sin(parms$theta * pi / 180) # NB: theta is in deg
     lambda <- dx * S / C               # dek20180622_skin_strain eq 1; called l until 20180725
     Lambda <- dx / C                   # dek20180622_skin_strain eq 2; called s until 20180725
-    ## Strains in y and z
+    # Strains in y and z
     epsilony <- 2 * (Lambda - lambda) / (parms$Ly + 2 * lambda) # dek20180622_skin_strain  eq 3
     epsilonz <- 2 * (Lambda - lambda) / (parms$Lz + 2 * lambda) # analogous to dek20180622 eq 3
-    ## Stresses in y and z
+    # Stresses in y and z
     sigmay <- parms$a[1] * (exp(parms$b[1] * epsilony) - 1)
     sigmaz <- parms$a[1] * (exp(parms$b[1] * epsilonz) - 1)
-    ## Net normal force in x; note the cosine, to resolve the force to the normal
-    ## direction, and the 2, to account for two sides of length
-    ## Ly and two of length Lz
+    # Net normal force in x; note the cosine, to resolve the force to the normal
+    # direction, and the 2, to account for two sides of length
+    # Ly and two of length Lz
     F <- 2*parms$l[1]*(parms$Lz*sigmaz + parms$Ly*sigmay)*C # dek20180622_skin_strain eq 8
     list(force=F, sigmay=sigmay, sigmaz=sigmaz)
 }
@@ -1476,8 +1476,8 @@ strike <- function(t, state, parms, debug=0)
 {
     if (missing(t))
         stop("must supply t")
-    ## Ensure that the state is well-configured, because the error messages
-    ## otherwise will be too cryptic for many users to fathom.
+    # Ensure that the state is well-configured, because the error messages
+    # otherwise will be too cryptic for many users to fathom.
     if (missing(state))
         stop("must supply state")
     if (4 != sum(c("xs", "vs", "xw", "vw") %in% names(state)))
@@ -1488,14 +1488,14 @@ strike <- function(t, state, parms, debug=0)
         stop("must supply parms")
     if (!inherits(parms, "parameters"))
         stop("parms must be the output of parameters()")
-    ## Check parameters
+    # Check parameters
     parmsRequired <- c("a", "b", "Cs", "Cw", "l", "lsum", "lw", "Ly", "Lz",
         "ms", "mw", "s", "Ss", "stressFromStrain", "Sw",
         "theta")
     if (!all(parmsRequired %in% names(parms)))
         stop('parms must hold: "', paste(parmsRequired, collapse='", "'), '"')
-    ## All required elements are present, but it's prudent to check some values that
-    ## a user might be setting.
+    # All required elements are present, but it's prudent to check some values that
+    # a user might be setting.
     if (!is.finite(parms$ms) || parms$ms <= 0)
         stop("parms$ms (ship mass, in kg) must be a positive number, not ", parms$ms)
     if (!is.finite(parms$mw) || parms$mw <= 0)
@@ -1522,7 +1522,7 @@ strike <- function(t, state, parms, debug=0)
     }
     parms["engineForce"] <- -shipWaterForce(state["vs"], parms) # assumed constant over time
     sol <- lsoda(state, t, dynamics, parms)
-    ## Add extra things for plotting convenience.
+    # Add extra things for plotting convenience.
     t <- sol[, 1]
     xs <- sol[, 2]
     vs <- sol[, 3]
@@ -1546,7 +1546,7 @@ strike <- function(t, state, parms, debug=0)
             warning("increasing from ", nold, " to ", n, " time steps, to capture acceleration peak\n")
             t <- seq(tstart, tend, length.out=n)
             sol <- lsoda(state, t, dynamics, parms)
-            ## Add extra things for plotting convenience.
+            # Add extra things for plotting convenience.
             t <- sol[, 1]
             xs <- sol[, 2]
             vs <- sol[, 3]
@@ -1596,13 +1596,13 @@ strike <- function(t, state, parms, debug=0)
 #' \item `"section"` to plot skin thickness, blubber thickness and sublayer thickness
 #' in one panel, creating a cross-section diagram.
 #'
-## \item \code{"injury"} a stacked plot showing time-series traces of health
-## indicators for skin extension, blubber compression, and sublayer compression.
-## These take the form of dotted horizontal lines, with labels above and at the
-## left side of the panel.  During times when an injury criterion is halfway met,
-## e.g. that blubber stress 1/2 the value of blubber strength, then the dotted
-## line is overdrawn with a thick gray line. During times when the criterion
-## is exceeded, the colour shifts to black.
+# \item \code{"injury"} a stacked plot showing time-series traces of health
+# indicators for skin extension, blubber compression, and sublayer compression.
+# These take the form of dotted horizontal lines, with labels above and at the
+# left side of the panel.  During times when an injury criterion is halfway met,
+# e.g. that blubber stress 1/2 the value of blubber strength, then the dotted
+# line is overdrawn with a thick gray line. During times when the criterion
+# is exceeded, the colour shifts to black.
 #'
 #' \item `"threat"` a stacked plot showing time-series traces of an
 #' ad-hoc measure of the possible threat to skin, blubber and sublayer.
@@ -1660,10 +1660,10 @@ strike <- function(t, state, parms, debug=0)
 #' @param cols As `colw`, but the colour to be used for the ship bow location,
 #' which is drawn with a dashed line.
 #'
-## @param colInjury Two-element colour specification used in `"injury"`
-## panels. The first colour is used to indicate values that are halfway to the
-## injury crition, and the second is used to indicate values that exceed the
-## criterion.
+# @param colInjury Two-element colour specification used in `"injury"`
+# panels. The first colour is used to indicate values that are halfway to the
+# injury crition, and the second is used to indicate values that exceed the
+# criterion.
 #'
 #' @param colThreat a 4-element colour specification used in `"threat"` plots.
 #' The colour transitions depend on the layer being plotted.
@@ -1692,14 +1692,14 @@ strike <- function(t, state, parms, debug=0)
 #' See [whalestrike()] for a list of references.
 #'
 #' @examples
-#' ## 1. default 3-panel plot
+#' # 1. default 3-panel plot
 #' t <- seq(0, 0.7, length.out=200)
 #' state <- c(xs=-2, vs=knot2mps(12), xw=0, vw=0) # 12 knot ship
 #' parms <- parameters() # default values
 #' sol <- strike(t, state, parms)
 #' par(mar=c(3,3,1,1), mgp=c(2,0.7,0), mfrow=c(1, 3))
 #' plot(sol)
-#' ## 2. all 12 plot types
+#' # 2. all 12 plot types
 #' par(mar=c(3,3,1,1) ,mgp=c(2,0.7,0), mfrow=c(4,3))
 #' plot(sol, "all")
 #'
@@ -1748,7 +1748,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         which <- c("location", "section", "lethality index")
     }
 
-    ## Ensure that the plot type is known.
+    # Ensure that the plot type is known.
     allowed <- c("all", "location", "section", "threat", "whale acceleration",
         "blubber thickness", "sublayer thickness",
         "whale water force", "reactive forces", "skin stress",
@@ -1759,7 +1759,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
                  paste(allowed, collapse="\" \""), "\"")
     }
 
-    ## x(t) and xw(t)
+    # x(t) and xw(t)
     if (all || "location" %in% which) {
         ylim <- range(c(xs, xw), na.rm=TRUE)
         plot(t, xs, type="l", xlab="Time [s]", ylab="Location [m]", col=cols, ylim=ylim, lwd=lwd, lty="84", xaxs="i")
@@ -1773,7 +1773,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         lines(t, y, col=colwskin, lwd=lwd)
         y <- y - compressed[, 1]
         lines(t, y, col=colwskin, lwd=lwd)
-        ## Accelerations (quite complicated; possibly too confusing to viewer)
+        # Accelerations (quite complicated; possibly too confusing to viewer)
         k <- round(0.005 / (t[2] - t[1]))
         k <- max(k, 11L)
         if (!(k %% 2))
@@ -1824,7 +1824,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         text(x0, 0.5*(ylim[1] - x$parms$lsum), "", pos=4)
     }
     if (all || "threat" %in% which) {
-        ## tcol <- rep(1, 4)
+        # tcol <- rep(1, 4)
         skinzThreat <- x$WSF$sigmaz / x$parms$s[1]
         skinyThreat <- x$WSF$sigmay / x$parms$s[1]
         skinThreat <- ifelse(skinyThreat > skinzThreat, skinyThreat, skinzThreat)
@@ -1850,14 +1850,14 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         mtext(paste("Threat, Stress/Strength",
                     if (trimmed) paste(" trimmed to", trimThreat) else ""),
               side=2, line=2, cex=par("cex"))
-        ## Skin
+        # Skin
         mtext("Skin", side=4, at=0, cex=0.8*par("cex"))
         y0 <- 0 # if (log) -1 else 0
         Y <- skinThreat
         fillplot4(t, skinThreat, yOffset=dy, breaks=c(1/4, 1/2, 3/4), col=colThreat)
         abline(h=0)
         axis(2, at=y0+yTicks, labels=yTicks)
-        ## Blubber
+        # Blubber
         mtext("Blubber", side=4, at=dy, cex=0.8*par("cex"))
         Y <- x$WCF$stress / x$parms$s[2]
         tau25scaled <- x$parms$logistic$tau25/x$parms$s[2]
@@ -1866,7 +1866,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         fillplot4(t, Y, yOffset=dy, breaks=c(tau25scaled, tau50scaled, tau75scaled), col=colThreat)
         abline(h=dy)
         axis(2, at=y0+dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
-        ## Sublayer
+        # Sublayer
         Y <- x$WCF$stress / x$parms$s[3]
         tau25scaled <- x$parms$logistic$tau25/x$parms$s[3]
         tau50scaled <- x$parms$logistic$tau50/x$parms$s[3]
@@ -1875,7 +1875,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         fillplot4(t, Y, yOffset=2*dy, breaks=c(tau25scaled, tau50scaled, tau75scaled), col=colThreat)
         abline(h=2*dy)
         axis(2, at=y0+2*dy+yTicks, labels=yTicks)
-        ## Bone
+        # Bone
         mtext("Bone", side=4, at=3*dy, cex=0.8*par("cex"))
         fillplot4(t, boneThreat, yOffset=dy, breaks=c(1/4, 1/2, 3/4), col=colThreat)
         axis(2, at=y0+3*dy+yTicks, labels=rep("", length(yTicks)), tcl=0.5)
@@ -1947,40 +1947,44 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         plot(t, LI, type="l", xlab="Time [s]", ylab="Lethality Index", lwd=lwd, xaxs="i", ylim=c(0,1), yaxs="i")
         nt <- length(t)
         maxLI <- max(LI, na.rm=TRUE)
-        ## Redraw the supercritical in a thicker line. But, first, refine the grid if it's coarse.
+        # Redraw the supercritical in a thicker line. But, first, refine the grid if it's coarse.
+        dangerTime <- diff(range(t[LI > 0.5]))
         if (nt < 2000) {
             t2 <- seq(t[1], t[nt], length.out=2000)
             LI2 <- approx(t, LI, t2)$y
             LI2[LI2 < 0.5] <- NA
             lines(t2, LI2, lwd=2*lwd)
         } else {
-            ##NOT-WORKING highlight <- LI >= 0.5
             LI[LI < 0.5] <- NA
             lines(t, LI, lwd=2*lwd)
         }
         abline(h=0.5, lty="dotted")
-        mtext(sprintf("Max. %.3g", maxLI), side=3, line=0, cex=0.8*par("cex"))
-        ## Highlight for LI exceeding 0.5, using polygon intersection so the thickened
-        ## line comes right down to the 0.5 line.
-        ## NOT-WORKING highlight <- lethalityIndex >= 0.5
-        ## NOT-WORKING lines(t[highlight], lethalityIndex[highlight], lwd=2*lwd)
-        ## NOT-WORKING abline(h=0.5, lty="dotted")
-        ## NOT-WORKING usr <- par("usr")
-        ## NOT-WORKING highlightRegion <- as(raster::extent(usr[1], usr[2], 0.5, usr[4]), "SpatialPolygons")
-        ## NOT-WORKING A <- sp::Polygon(cbind(t, lethalityIndex))
-        ## NOT-WORKING B <- sp::Polygons(list(A), "A")
-        ## NOT-WORKING C <- sp::SpatialPolygons(list(B))
-        ## NOT-WORKING set_RGEOS_CheckValidity(2L)
-        ## NOT-WORKING browser()
-        ## NOT-WORKING i <- raster::intersect(highlightRegion, C)
-        ## NOT-WORKING if (!is.null(i)) {
-        ## NOT-WORKING     for (j in seq_along(i@polygons)) {
-        ## NOT-WORKING         for (k in seq_along(i@polygons[[1]]@Polygons)) {
-        ## NOT-WORKING             xy <- i@polygons[[j]]@Polygons[[k]]@coords
-        ## NOT-WORKING             lines(xy[,1], xy[,2], lwd=2*lwd, col=2)
-        ## NOT-WORKING         }
-        ## NOT-WORKING     }
-        ## NOT-WORKING }
+        if (maxLI < 0.5) {
+            mtext(sprintf("Max. %.3g", maxLI), side=3, line=0, cex=0.8*par("cex"))
+        } else {
+            mtext(sprintf("Max. %.3g (exceeds 0.5 for %.2gs)", maxLI, dangerTime), side=3, line=0, cex=0.8*par("cex"))
+        }
+        # Highlight for LI exceeding 0.5, using polygon intersection so the thickened
+        # line comes right down to the 0.5 line.
+        # NOT-WORKING highlight <- lethalityIndex >= 0.5
+        # NOT-WORKING lines(t[highlight], lethalityIndex[highlight], lwd=2*lwd)
+        # NOT-WORKING abline(h=0.5, lty="dotted")
+        # NOT-WORKING usr <- par("usr")
+        # NOT-WORKING highlightRegion <- as(raster::extent(usr[1], usr[2], 0.5, usr[4]), "SpatialPolygons")
+        # NOT-WORKING A <- sp::Polygon(cbind(t, lethalityIndex))
+        # NOT-WORKING B <- sp::Polygons(list(A), "A")
+        # NOT-WORKING C <- sp::SpatialPolygons(list(B))
+        # NOT-WORKING set_RGEOS_CheckValidity(2L)
+        # NOT-WORKING browser()
+        # NOT-WORKING i <- raster::intersect(highlightRegion, C)
+        # NOT-WORKING if (!is.null(i)) {
+        # NOT-WORKING     for (j in seq_along(i@polygons)) {
+        # NOT-WORKING         for (k in seq_along(i@polygons[[1]]@Polygons)) {
+        # NOT-WORKING             xy <- i@polygons[[j]]@Polygons[[k]]@coords
+        # NOT-WORKING             lines(xy[,1], xy[,2], lwd=2*lwd, col=2)
+        # NOT-WORKING         }
+        # NOT-WORKING     }
+        # NOT-WORKING }
         showEvents(xs, xw)
     }
     if (all || "values" %in% which) {

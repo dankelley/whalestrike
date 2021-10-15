@@ -53,8 +53,8 @@ computation time.)
 }
 \examples{
 library(whalestrike)
-## Set blubber parameters for each layer, to see if
-## we recover the raymond2007 data.
+# Set blubber parameters for each layer, to see if
+# we recover the raymond2007 data.
 param <- parameters(a=rep(1.64e5,4), b=rep(2.47,4))
 x <- seq(0, 0.5, length.out=100)
 y <- param$stressFromStrain(x)

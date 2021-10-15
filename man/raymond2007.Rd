@@ -13,7 +13,7 @@ by \code{\link[=parameters]{parameters()}}, as shown in \dQuote{Examples}.
 \examples{
 data(raymond2007)
 attach(raymond2007)
-## Next yields \code{a=1.64e5} Pa and \code{b=2.47}.
+# Next yields \code{a=1.64e5} Pa and \code{b=2.47}.
 m <- nls(stress~a*(exp(b*strain)-1), start=list(a=1e5, b=1))
 plot(strain, stress, xaxs="i", yaxs="i")
 x <- seq(0, max(strain), length.out=100)
