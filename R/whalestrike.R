@@ -526,22 +526,22 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' @param theta Whale skin deformation angle (deg); defaults to 55 degrees,
 #' if not supplied, because that angle produces a good match to Raymond's (2007)
 #' Figure 6.1 for the total force as a function of vessel speed, for large
-#' vessels. (Note that the match works almost as well in the range 50 deg
-#' to 70 deg.)
+#' vessels. Note that the match works almost as well in the range 50 deg
+#' to 70 deg.
 #'
 #' @param Cs Drag coefficient for ship (dimensionless),
 #' used by [shipWaterForce()] to estimate ship drag force. Defaults
 #' to 1e-2, which is 4 times the frictional coefficient of 2.5e-3
 #' inferred from Figure 4 of Manen and van Oossanen (1988), assuming
 #' a Reynolds number of 5e7, computed from speed 5m/s, lengthscale 10m
-#' and viscosity 1e-6 m^2/s. (The factor of 4 is under the assumption
-#' that frictional drag is about a quarter of total drag.)
+#' and viscosity 1e-6 m^2/s. The factor of 4 is under the assumption
+#' that frictional drag is about a quarter of total drag.
 #' The drag force is computed with [shipWaterForce()].
 #'
 #' @param Cw Drag coefficient for whale (dimensionless),
 #' used by [whaleWaterForce()] to estimate whale drag force.
 #' Defaults to 2.5e-3, for Reynolds number 2e7, computed from speed
-#' 2 m/s, lengthscale 5m (between radius and length) and
+#' 2 m/s, lengthscale 5m which is chosen to be between radius and length, and
 #' viscosity 1e-6 m^2/s.  The drag force is computed with
 #' [whaleWaterForce()].
 #'
@@ -556,7 +556,7 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #'
 #' @param file Optional name a comma-separated file that holds all of the
 #' previous values, except `Cs` and `Cw`. If provided,
-#' then other parameters (except `Cs` and `Cw`) are
+#' then other parameters except `Cs` and `Cw` are
 #' ignored, because values are sought from the file. The purpose of
 #' this is in shiny apps that want to save a simulation framework.
 #' The file should be saved [write.csv()] with
@@ -612,45 +612,93 @@ parameters <- function(ms=45e3, Ss=NULL, Ly=1.15, Lz=1.15, species="N. Atl. Righ
         rval <- rval[o]
     } else {
         # Check some elements, and set some defaults
-        if (length(ms) != 1) stop("ms must be a single numeric value")
-        if (ms <= 0)         stop("ms must be positive, but it is ", ms)
-        if (is.null(Ss))     Ss <- shipAreaFromMass(ms)
-        if (length(Ss) != 1) stop("Ss must be a single numeric value")
-        if (Ss <= 0)         stop("Ss must be positive, but it is ", Ss)
-        if (length(Ly) != 1) stop("Ly must be a single numeric value")
-        if (Ly <= 0)         stop("Ly must be positive, but it is ", Ly)
-        if (length(Lz) != 1) stop("Lz must be a single numeric value")
-        if (Lz <= 0)         stop("Lz must be positive, but it is ", Lz)
-        if (length(lw) != 1) stop("lw must be a single numeric value")
-        if (lw <= 0)         stop("lw must be positive, but it is ", lw)
-        if (is.null(mw))     mw <- whaleMassFromLength(lw, species=species)
-        if (length(mw) != 1) stop("cannot handle more than one 'mw' at a time")
-        if (is.null(Sw))     Sw <- whaleAreaFromLength(lw, species=species, type="wetted")
-        if (length(Sw) != 1) stop("cannot handle more than one 'Sw' at a time")
-        if (is.null(l))      l <- c(0.025, 0.16, 1.12, 0.1)
-        if (is.null(a))      a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
-        if (is.null(b))      b <- c(0.1, 2.54, 2.54, 0.1)
-        if (is.null(s))      s <- 1e6 * c(19.600, 0.255, 0.255, 22.900)
-        if (any(s <= 0) || length(s) != 4)
+        if (length(ms) != 1) {
+            stop("ms must be a single numeric value")
+        }
+        if (ms <= 0) {
+            stop("ms must be positive, but it is ", ms)
+        }
+        if (is.null(Ss)) {
+            Ss <- shipAreaFromMass(ms)
+        }
+        if (length(Ss) != 1) {
+            stop("Ss must be a single numeric value")
+        }
+        if (Ss <= 0) {
+            stop("Ss must be positive, but it is ", Ss)
+        }
+        if (length(Ly) != 1) {
+            stop("Ly must be a single numeric value")
+        }
+        if (Ly <= 0) {
+            stop("Ly must be positive, but it is ", Ly)
+        }
+        if (length(Lz) != 1) {
+            stop("Lz must be a single numeric value")
+        }
+        if (Lz <= 0) {
+            stop("Lz must be positive, but it is ", Lz)
+        }
+        if (length(lw) != 1) {
+            stop("lw must be a single numeric value")
+        }
+        if (lw <= 0) {
+            stop("lw must be positive, but it is ", lw)
+        }
+        if (is.null(mw)) {
+            mw <- whaleMassFromLength(lw, species=species)
+        }
+        if (length(mw) != 1) {
+            stop("cannot handle more than one 'mw' at a time")
+        }
+        if (is.null(Sw)) {
+            Sw <- whaleAreaFromLength(lw, species=species, type="wetted")
+        }
+        if (length(Sw) != 1) {
+            stop("cannot handle more than one 'Sw' at a time")
+        }
+        if (is.null(l))  {
+            l <- c(0.025, 0.16, 1.12, 0.1)
+        }
+        if (is.null(a)) {
+            a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
+        }
+        if (is.null(b)) {
+            b <- c(0.1, 2.54, 2.54, 0.1)
+        }
+        if (is.null(s))  {
+            s <- 1e6 * c(19.600, 0.255, 0.255, 22.900)
+        }
+        if (any(s <= 0) || length(s) != 4) {
             stop("'s' must be a vector with 4 positive numbers")
-        if (any(l <= 0) || length(l) != 4)
+        }
+        if (any(l <= 0) || length(l) != 4) {
             stop("'l' must be a vector with 4 positive numbers")
-        if (any(a <= 0) || length(a) != 4)
+        }
+        if (any(a <= 0) || length(a) != 4) {
             stop("'a' must be a vector with 4 positive numbers")
-        if (any(b <= 0) || length(b) != 4)
+        }
+        if (any(b <= 0) || length(b) != 4) {
             stop("'b' must be a vector with 4 positive numbers")
-        if (length(theta) != 1)
+        }
+        if (length(theta) != 1) {
             stop("cannot handle more than one 'theta' at a time")
-        if (theta < 0 || theta > 89)
+        }
+        if (theta < 0 || theta > 89) {
             stop("whale skin deformation angle (theta) must be between 0 and 89 deg, but it is ", theta)
-        if (length(Cs) != 1)
+        }
+        if (length(Cs) != 1) {
             stop("cannot handle more than one 'Cs' at a time")
-        if (Cs <= 0)
+        }
+        if (Cs <= 0) {
             stop("ship resistance parameter (Cs) must be positive, but it is ", Cs)
-        if (length(Cw) != 1)
+        }
+        if (length(Cw) != 1) {
             stop("cannot handle more than one 'Cw' at a time")
-        if (Cw <= 0)
+        }
+        if (Cw <= 0) {
             stop("ship resistance parameter (Cw) must be positive, but it is ", Cw)
+        }
         rval <- list(ms=ms, Ss=Ss,
             Ly=Ly, Lz=Lz,
             mw=mw, Sw=Sw, lw=lw,
@@ -1045,7 +1093,9 @@ whaleLengthFromMass <- function(M, species="N. Atl. Right Whale", model="fortune
     rval <- rep(NA, n)
     for (i in seq_along(M)) {
         rval[i] <- uniroot(function(x)
-            M[i] - whaleMassFromLength(x, species=species[i], model=model[i]),
+            {
+                M[i] - whaleMassFromLength(x, species=species[i], model=model[i])
+            },
             c(0.1, 100))$root
     }
     rval
@@ -1094,7 +1144,7 @@ whaleAreaFromLength <- function(L, species="N. Atl. Right Whale", type="wetted")
     speciesAllowed <- c("N. Atl. Right Whale")
     if (!(species %in% speciesAllowed)) {
         stop("unknown species \"", species, "\"; use one of the following: \"",
-             paste(speciesAllowed, collapse="\", \""), "\"")
+            paste(speciesAllowed, collapse="\", \""), "\"")
     }
     # below from dek/20180623_whale_area.Rmd, updated 20180802 and inserted with
     # cut/paste (changing bullet to asterisk, and using ^ for exponentiation).
@@ -1552,7 +1602,7 @@ strike <- function(t, state, parms, debug=0)
     WCF <- whaleCompressionForce(xs=xs, xw=xw, parms=parms)
     WWF <- whaleWaterForce(vw=vw, parms=parms)
     # nolint start line_length_linter
-    refinedGrid <- (min(WCF$compressed[, 2])/WCF$compressed[1, 2] < 0.01) || (min(WCF$compressed[, 3])/WCF$compressed[1, 3] < 0.01)
+    refinedGrid <- (min(WCF$compressed[, 2], na.rm=TRUE)/WCF$compressed[1, 2] < 0.01) || (min(WCF$compressed[, 3], na.rm=TRUE)/WCF$compressed[1, 3] < 0.01)
     # nolint end line_length_linter
     if (refinedGrid) {
         NEED <- 20                     # desired number of points in peak
@@ -1911,14 +1961,14 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
     if (all || "blubber thickness" %in% which) {
         WCF <- x$WCF
         y <- WCF$compressed[, 2]
-        ylim <- c(min(0, min(y)), max(y)) # include 0 if not there by autoscale
+        ylim <- c(min(0, min(y, na.rm=TRUE), na.rm=TRUE), max(y, na.rm=TRUE)) # include 0 if not there by autoscale
         plot(t, y, xlab="Time [s]", ylab="Blubber thickness [m]", type="l", lwd=lwd, ylim=ylim, xaxs="i")
         showEvents(xs, xw)
     }
     if (all || "sublayer thickness" %in% which) {
         WCF <- x$WCF
         y <- WCF$compressed[, 3]
-        ylim <- c(min(0, min(y)), max(y)) # include 0 if not there by autoscale
+        ylim <- c(min(0, min(y, na.rm=TRUE), na.rm=TRUE), max(y, na.rm=TRUE)) # include 0 if not there by autoscale
         plot(t, y, xlab="Time [s]", ylab="Sublayer thickness [m]", type="l", lwd=lwd, ylim=ylim, xaxs="i")
         showEvents(xs, xw)
     }
@@ -1973,21 +2023,29 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         nt <- length(t)
         maxLI <- max(LI, na.rm=TRUE)
         # Redraw the supercritical in a thicker line. But, first, refine the grid if it's coarse.
-        dangerTime <- diff(range(t[LI > 0.5]))
-        if (nt < 2000) {
-            t2 <- seq(t[1], t[nt], length.out=2000)
-            LI2 <- approx(t, LI, t2)$y
-            LI2[LI2 < 0.5] <- NA
-            lines(t2, LI2, lwd=2*lwd)
-        } else {
-            LI[LI < 0.5] <- NA
-            lines(t, LI, lwd=2*lwd)
+        dangerTime <- t[LI > 0.5]
+        dangerTimeInterval <- 0.0
+        if (length(dangerTime) > 0L) {
+            dangerTimeInterval <- diff(range(dangerTime, na.rm=TRUE))
+            if (nt < 2000) {
+                t2 <- seq(t[1], t[nt], length.out=2000)
+                LI2 <- approx(t, LI, t2)$y
+                LI2[LI2 < 0.5] <- NA
+                if (any(is.finite(LI2))) {
+                    lines(t2, LI2, lwd=2*lwd)
+                }
+            } else {
+                LI[LI < 0.5] <- NA
+                if (any(is.finite(LI))) {
+                    lines(t, LI, lwd=2*lwd)
+                }
+            }
         }
         abline(h=0.5, lty="dotted")
-        if (maxLI < 0.5) {
+        if (dangerTimeInterval == 0.0) {
             mtext(sprintf("Max. %.3g", maxLI), side=3, line=0, cex=0.8*par("cex"))
         } else {
-            mtext(sprintf("Max. %.3g (exceeds 0.5 for %.2gs)", maxLI, dangerTime), side=3, line=0, cex=0.8*par("cex"))
+            mtext(sprintf("Max. %.3g (exceeds 0.5 for %.2gs)", maxLI, dangerTimeInterval), side=3, line=0, cex=0.8*par("cex"))
         }
         showEvents(xs, xw)
     }

@@ -1,3 +1,4 @@
+^.lintr$
 ^.github$
 create_data
 man-roxygen

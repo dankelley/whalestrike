@@ -114,22 +114,22 @@ Table 4.5 of Campbell-Malone (2007).}
 \item{theta}{Whale skin deformation angle (deg); defaults to 55 degrees,
 if not supplied, because that angle produces a good match to Raymond's (2007)
 Figure 6.1 for the total force as a function of vessel speed, for large
-vessels. (Note that the match works almost as well in the range 50 deg
-to 70 deg.)}
+vessels. Note that the match works almost as well in the range 50 deg
+to 70 deg.}
 
 \item{Cs}{Drag coefficient for ship (dimensionless),
 used by \code{\link[=shipWaterForce]{shipWaterForce()}} to estimate ship drag force. Defaults
 to 1e-2, which is 4 times the frictional coefficient of 2.5e-3
 inferred from Figure 4 of Manen and van Oossanen (1988), assuming
 a Reynolds number of 5e7, computed from speed 5m/s, lengthscale 10m
-and viscosity 1e-6 m^2/s. (The factor of 4 is under the assumption
-that frictional drag is about a quarter of total drag.)
+and viscosity 1e-6 m^2/s. The factor of 4 is under the assumption
+that frictional drag is about a quarter of total drag.
 The drag force is computed with \code{\link[=shipWaterForce]{shipWaterForce()}}.}
 
 \item{Cw}{Drag coefficient for whale (dimensionless),
 used by \code{\link[=whaleWaterForce]{whaleWaterForce()}} to estimate whale drag force.
 Defaults to 2.5e-3, for Reynolds number 2e7, computed from speed
-2 m/s, lengthscale 5m (between radius and length) and
+2 m/s, lengthscale 5m which is chosen to be between radius and length, and
 viscosity 1e-6 m^2/s.  The drag force is computed with
 \code{\link[=whaleWaterForce]{whaleWaterForce()}}.}
 
@@ -144,7 +144,7 @@ these values set colour boundaries in \code{\link[=plot.strike]{plot.strike()}} 
 
 \item{file}{Optional name a comma-separated file that holds all of the
 previous values, except \code{Cs} and \code{Cw}. If provided,
-then other parameters (except \code{Cs} and \code{Cw}) are
+then other parameters except \code{Cs} and \code{Cw} are
 ignored, because values are sought from the file. The purpose of
 this is in shiny apps that want to save a simulation framework.
 The file should be saved \code{\link[=write.csv]{write.csv()}} with
