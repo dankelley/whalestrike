@@ -1,45 +1,92 @@
 # vim:textwidth=128:expandtab:shiftwidth=4:softtabstop=4
 
+
+help <- "
+<p>
+When this app starts, the sliders and tick-boxes are set up to model a small
+fishing boat, of mass 45 tonnes, moving at 10 knots towards a whale of
+length 13.7m. (The whale length is used to compute its mass, using a formula
+that is described by the output of typing
+<tt>help(\"whaleMassFromLength\",\"whalestrike\")</tt>
+in an R console).
+</p>
+
+<p>
+Sliders are provided for setting certain key properties of the ship and the
+whale, with italic labels used for properties likely to be adjusted during
+simulations.  The details of these and the other parameters are revealed by
+typing <tt>help(\"parameters\",\"whalestrike\")</tt>
+and
+<tt>help(\"strike\",\"whalestrike\")</tt>
+in an R console.
+</p>
+
+To the right of the sliders is a column of checkboxes that control the plotted
+output. (For the details of the plots, type
+<tt>help(\"plot.strike\",\"plot\")</tt>
+in an
+R console.) At startup, three of these boxes are ticked, yielding a display
+with three panels showing the time history of the simulation.  The left-hand
+plot panel shows whale and boat location, the former with an indication of the
+interfaces between skin, blubber, sublayer, and bone. Peak ship and whale
+accelerations are indicated with labels inside this panel.  The middle panel
+shows the same information as the one to its left, but with a whale-centred
+coordinate system, and with labels for the components. The right panel is an
+indication of the estimated threat to the four layers of the whale, with curves
+that are filled with colours that darken with the degree of threat. The
+dividing lines are the quantiles of a logistic fit of published reports of
+whale injury (with 0 meaning no injury or minor injury and 1 meaning severe or
+fatal injury) to the base-10 logarithm of compressive stress.
+
+Much can be learned by adjusting the sliders and examining the plotted output.
+As an exercise, try setting to a particular ship mass of interest, and then to
+slide the ship speed to higher and lower values, whilst monitoring the \"threat\"
+panel. Next, try altering the blubber and sublayer thicknesses, e.g. using
+smaller values to represent a strike at the whale mandible.  Having built some
+intuition with these experiments, move on to altering the properties of the
+ship, exploring the effect of changing ship speed, ship mass, and the width and
+height of the impact zone."
+
 # app for simulating the effect of a vessel strike on a whale
-ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; margin-left:1ex}")),
-    fluidRow(radioButtons("instructions", "Instructions", choices=c("Hide", "Show"), selected="Show", inline=TRUE)),
-    conditionalPanel(condition="input.instructions=='Show'",
-        fluidRow(includeMarkdown(system.file("extdata", "app_help.md", package="whalestrike")))),
-    fluidRow(column(2,
-        sliderInput("tmax",  h6("Max time [s]"), ticks=FALSE,
+ui <- shiny::fluidPage(shiny::tags$style(shiny::HTML("body {font-family: 'Arial'; font-size: 12px; margin-left:1ex}")),
+    shiny::fluidRow(shiny::radioButtons("instructions", "Instructions", choices=c("Hide", "Show"), selected="Show", inline=TRUE)),
+    shiny::conditionalPanel(condition="input.instructions=='Show'",
+        shiny::fluidRow(shiny::HTML(help))),
+    shiny::fluidRow(shiny::column(2,
+        shiny::sliderInput("tmax",  h6("Max time [s]"), ticks=FALSE,
             min=0.1,  max=5, value=1, step=0.05),
-        sliderInput("ms",  h6(tags$i("Ship mass [tonne]")), ticks=FALSE,
+        shiny::sliderInput("ms",  h6(tags$i("Ship mass [tonne]")), ticks=FALSE,
             min=10, max=500,  value=45, step=1),
-        sliderInput("vs", h6(tags$i("Ship speed [knot]")), ticks=FALSE,
+        shiny::sliderInput("vs", h6(tags$i("Ship speed [knot]")), ticks=FALSE,
             min=1,  max=30,  value=10, step=0.1)),
-        column(2,
-            sliderInput("Ly",  h6("Impact width [m]"), ticks=FALSE,
+        shiny::column(2,
+            shiny::sliderInput("Ly",  h6("Impact width [m]"), ticks=FALSE,
                 min=0.1, max=2,  value=1.15, step=0.05),
-            sliderInput("Lz",  h6("Impact height [m]"), ticks=FALSE,
+            shiny::sliderInput("Lz",  h6("Impact height [m]"), ticks=FALSE,
                 min=0.1, max=2,  value=1.15, step=0.05)),
-        column(2,
-            sliderInput("lw",  h6("Whale length [m]"), ticks=FALSE,
+        shiny::column(2,
+            shiny::sliderInput("lw",  h6("Whale length [m]"), ticks=FALSE,
                 min=5,  max=20, value=13.7, step=0.1),
-            sliderInput("l1", h6("Skin thickness [cm]"), ticks=FALSE,
+            shiny::sliderInput("l1", h6("Skin thickness [cm]"), ticks=FALSE,
                 min=1, max=3, value=2.5, step=0.1),
-            sliderInput("l2", h6(tags$i("Blubber thickness [cm]")), ticks=FALSE,
+            shiny::sliderInput("l2", h6(tags$i("Blubber thickness [cm]")), ticks=FALSE,
                 min=5, max=40, value=16, step=1)),
-        column(2,
-            selectInput("species", "",
+        shiny::column(2,
+            shiny::selectInput("species", "",
                 choices= c("N. Atl. Right", "Blue", "Bryde", "Fin", "Gray", "Humpback", "Minke",
                     "Pac. Right", "Sei", "Sperm"),
                 selected="N. Atl. Right"),
-            sliderInput("l3", h6(tags$i("Sublayer thickness [cm]")), ticks=FALSE,
+            shiny::sliderInput("l3", h6(tags$i("Sublayer thickness [cm]")), ticks=FALSE,
                 min=5, max=200, value=112, step=1),
-            sliderInput("l4", h6("Bone thickness [cm]"), ticks=FALSE,
+            shiny::sliderInput("l4", h6("Bone thickness [cm]"), ticks=FALSE,
                 min=5, max=30, value=10, step=1)),
-        column(2,
-            fileInput("loadFile", "Configuration", multiple=FALSE, accept=c("text/csv", ".csv")),
-            actionButton("saveFile", "Save"),
-            hr(),
-            actionButton("quit", "Quit")),
-        column(2,
-            checkboxGroupInput("plot_panels", "",
+        shiny::column(2,
+            shiny::fileInput("loadFile", "Configuration", multiple=FALSE, accept=c("text/csv", ".csv")),
+            shiny::actionButton("saveFile", "Save"),
+            shiny::hr(),
+            shiny::actionButton("quit", "Quit")),
+        shiny::column(2,
+            shiny::checkboxGroupInput("plot_panels", "",
                 choices=c("location",
                     "section",
                     "lethality index",
@@ -51,7 +98,7 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
                     "compression stress",
                     "values"),
                 selected=c("location", "section", "lethality index")))),
-    fluidRow(plotOutput("plot")))
+    shiny::fluidRow(shiny::plotOutput("plot")))
 
 
 #' Server for app, with standard arguments.

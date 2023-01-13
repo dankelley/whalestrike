@@ -152,8 +152,8 @@ t <- seq(0, 1, length.out=200)
 ## Hint: the following creates x and y of different lengths,
 ## so that mismatches between row/col and i/j values will
 ## yield errors.
-l2 <- seq(0.1, 0.25, length.out=9) # blubber thickness
-speedK <- seq(4, 15, length.out=10) # in knots
+l2 <- seq(0.1, 0.25, length.out=5) # blubber thickness
+speedK <- seq(4, 15, length.out=5) # in knots
 speed <- knot2mps(speedK)
 ## stress = peak stress during each simulation, in MPa
 stress <- matrix(NA, nrow=length(speed), ncol=length(l2))
