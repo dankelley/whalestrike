@@ -70,34 +70,7 @@ The sum of these default values, 1.40 m, is a whale radius that
 is consistent with a half-circumference of 4.4 m, reported in Table 2.2
 of Raymond (2007).}
 
-\item{a}{Numerical vectors of length 4, giving values to use in the
-stress-strain law \code{stress=a*(exp(b*strain)-1)}, where \code{a} is in Pa
-and \code{b} is unitless. By construction, \code{a*b} is the local modulus at
-low strain (i.e. at low \code{b*strain} values), and that \code{b} is the
-efolding scale for nonlinear increase in stress with strain.
-This exponential relationship has been mapped out
-for whale blubber, using a curve fit to Figure 2.13 of Raymond (2007), and
-these values are used for the second layer (blubber); see
-the documentation for the \link{raymond2007} dataset, to see
-for how that fit was done.
-If not provided, \code{a} defaults to
-\code{c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)}
-and \code{b} defaults to
-\code{c(0.1, 2.54, 2.54, 0.1)}.
-The skin defaults are set up to give a linear shape (since \code{b} is small)
-with the \code{a*b} product
-being 17.8e6 Pa, which is the adult-seal value
-given in Table 3 of Grear et al. (2017).
-The blubber defaults are from a regression of the stress-strain
-relationship shown in Figure 2.13 of Raymond (2007).
-The sublayer defaults are set to match those of blubber, lacking
-any other information.
-The bone default for \code{b} is small, to set up a linear function,
-and \code{a*b} is set to equal 8.54e8 Pa,
-given in Table 2.3 of Raymond (2007) and Table 4.5 of
-Campbell-Malone (2007).}
-
-\item{b}{Numerical vectors of length 4, giving values to use in the
+\item{a, b}{Numerical vectors of length 4, giving values to use in the
 stress-strain law \code{stress=a*(exp(b*strain)-1)}, where \code{a} is in Pa
 and \code{b} is unitless. By construction, \code{a*b} is the local modulus at
 low strain (i.e. at low \code{b*strain} values), and that \code{b} is the
@@ -208,17 +181,21 @@ compute \code{Ss} (ship area) from \code{ms} (ship mass), if the \code{Ss}
 argument is not given.  Importantly, these three inferences
 are \emph{not} made by \code{updateParameters()}, which alters only
 those values that are supplied explicitly. It is easy
-to supply those values, however; for example,\preformatted{parms <- updateParameters(PARMS, lw=1.01 * PARMS$lw))
+to supply those values, however; for example,
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{parms <- updateParameters(PARMS, lw=1.01 * PARMS$lw))
 parms <- updateParameters(parms, mw=whaleMassFromLength(parms$lw))
 parms <- updateParameters(parms, Sw=whaleAreaFromLength(parms$lw))
-}
+}\if{html}{\out{</div>}}
 
 modifies a base state stored in \code{PARMS}, increasing whale length
 by 1\% and then increasing whale mass and area accordingly.  This
 code block is excerpted from a sensitivity test of the model, in
-which\preformatted{parms <- updateParameters(PARMS, ms=1.01 * PARMS$ms)
+which
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{parms <- updateParameters(PARMS, ms=1.01 * PARMS$ms)
 parms <- updateParameters(parms, Ss=shipAreaFromMass(parms$ms))
-}
+}\if{html}{\out{</div>}}
 
 was also used to perturb ship mass (and inferred area).
 }

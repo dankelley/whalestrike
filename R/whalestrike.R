@@ -1,7 +1,5 @@
 # vim:textwidth=128:expandtab:shiftwidth=4:softtabstop=4
-
 library(deSolve)
-
 
 #' Convert a speed in knots to a speed in m/s
 #'
@@ -73,10 +71,12 @@ pin <- function(x, lower=NULL, upper=NULL)
     # Protect the ifelse() operation from getting riled by NAs
     na <- is.na(x)
     x[na] <- 0 # value is arbitrary because changed back to NA later
-    if (!is.null(lower))
+    if (!is.null(lower)) {
         x <- ifelse(x > lower, x, lower)
-    if (!is.null(upper))
+    }
+    if (!is.null(upper)) {
         x <- ifelse(x < upper, x, upper)
+    }
     x[na] <- NA
     x
 }
@@ -125,10 +125,8 @@ pin <- function(x, lower=NULL, upper=NULL)
 fillplot <- function(x, lower, upper, ...)
 {
     n <- length(x)
-    if (length(lower) == 1)
-        lower <- rep(lower, n)
-    if (length(upper) == 1)
-        upper <- rep(upper, n)
+    if (length(lower) == 1L) lower <- rep(lower, n)
+    if (length(upper) == 1L) upper <- rep(upper, n)
     if (n != length(lower)) stop("lengths of x and lower must match")
     if (n != length(upper)) stop("lengths of x and upper must match")
     xx <- c(x, rev(x), x[1])
@@ -141,15 +139,14 @@ fillplot4 <- function(x, y, yOffset=0, breaks, col, ...)
     if (missing(x)) stop("must give x")
     if (missing(y)) stop("must give y")
     nx <- length(x)
-    if (length(y) != nx)
-        stop("x and must be of equal length")
+    if (length(y) != nx) stop("x and must be of equal length")
     if (missing(breaks)) stop("must give breaks")
     if (missing(col)) stop("must give col")
     nbreaks <- length(breaks)
     if (nbreaks != 3) stop("invalid use of non-exported function (programmr error)")
     if (length(col) != nbreaks + 1) stop("must have 1 more col than break")
     xx <- c(x, rev(x), x[1])
-    yy <- c(y, rep(0,nx), y[1])
+    yy <- c(y, rep(0, nx), y[1])
     polygon(xx, yy+yOffset, col=col[4], border=col[4])
     yy <- ifelse(yy < breaks[3], yy, breaks[3])
     # message("breaks[3]=", breaks[3], "; max(y)=", max(y), "; max(yy) after trim=", max(yy), "; col=", col[3])
@@ -282,7 +279,9 @@ NULL
 #'
 #' \item
 #' MAN Diesel & Turbo. “Basic Principles of Propulsion.” MAN Diesel & Turbo, 2011.
+# nolint start line_length_linter
 #' \code{https://spain.mandieselturbo.com/docs/librariesprovider10/sistemas-propulsivos-marinos/basic-principles-of-ship-propulsion.pdf?sfvrsn=2}
+# nolint end line_length_linter
 #'
 #' \item
 #' Manen, J. D. van, and P. van Oossanen. “Resistance.” In Principles of Naval
@@ -408,13 +407,17 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
     for (i in seq_along(epsilon)) {
         #debug cat(sprintf("i=%3d, epsilon=%10.5f, ", i, epsilon[i]), ", use=", paste(use, collapse=" "), "\n")
         DL <- epsilon[i] * L
-        #> cat("LINE 414. i=", i, ", about to call uniroot(fcn,...); use=", paste(use, collapse=" "), "fcn(sigmaLowerLimit)=", fcn(sigmaLowerLimit), ", fcn(big)=", fcn(sigmaUpperLimit), ", fcn(10*big)=", fcn(10*sigmaUpperLimit), ", sigmaMax=", sigmaMax, "\n")
+        #> cat("LINE 414. i=", i, ", about to call uniroot(fcn,...); use=",
+        #paste(use, collapse=" "), "fcn(sigmaLowerLimit)=", fcn(sigmaLowerLimit),
+        #", fcn(big)=", fcn(sigmaUpperLimit), ", fcn(10*big)=", fcn(10*sigmaUpperLimit),
+        #", sigmaMax=", sigmaMax, "\n")
         trial <- try(uniroot(fcn, interval=c(sigmaLowerLimit, sigmaUpperLimit)), silent=TRUE)
         sigma[i] <- if (inherits(trial, "try-error")) 2*sigmaMax else trial$root
         #> cat("  sigma[i]=", sigma[i], "\n")
         use <- sigma[i] < sigmaMax
-        if (!any(use))
+        if (!any(use)) {
             sigma[i] <- sigma[i-1] # probably good enough; this occurs only at sigma=1, I think
+        }
     }
     approxfun(epsilon, sigma)
 }
@@ -578,15 +581,14 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' @export
 #'
 #' @importFrom utils read.csv
-parameters <- function(ms=45e3, Ss=NULL, Ly=1.15, Lz=1.15,
-    species="N. Atl. Right Whale",
-    lw=13.7, mw=NULL, Sw=NULL,
-    l=NULL, a=NULL, b=NULL, s=NULL,
-    theta=55,
-    Cs=0.01, Cw=0.0025,
-    logistic=list(logStressCenter=5.38, logStressWidth=0.349,
-        tau25=0.100e6, tau50=0.241e6, tau75=0.581e6),
-    file=NULL)
+parameters <- function(ms=45e3, Ss=NULL, Ly=1.15, Lz=1.15, species="N. Atl. Right Whale",
+                       lw=13.7, mw=NULL, Sw=NULL,
+                       l=NULL, a=NULL, b=NULL, s=NULL,
+                       theta=55,
+                       Cs=0.01, Cw=0.0025,
+                       logistic=list(logStressCenter=5.38, logStressWidth=0.349,
+                           tau25=0.100e6, tau50=0.241e6, tau75=0.581e6),
+                       file=NULL)
 {
     if (!is.null(file)) {
         rval <- as.list(read.csv(file))
@@ -609,47 +611,28 @@ parameters <- function(ms=45e3, Ss=NULL, Ly=1.15, Lz=1.15,
         o <- sort(names(rval))
         rval <- rval[o]
     } else {
-        if (length(ms) != 1)
-            stop("ms must be a single numeric value")
-        if (ms <= 0)
-            stop("ms must be positive, but it is ", ms)
-        if (is.null(Ss))
-            Ss <- shipAreaFromMass(ms)
-        if (length(Ss) != 1)
-            stop("Ss must be a single numeric value")
-        if (Ss <= 0)
-            stop("Ss must be positive, but it is ", Ss)
-        if (length(Ly) != 1)
-            stop("Ly must be a single numeric value")
-        if (Ly <= 0)
-            stop("Ly must be positive, but it is ", Ly)
-        if (length(Lz) != 1)
-            stop("Lz must be a single numeric value")
-        if (Lz <= 0)
-            stop("Lz must be positive, but it is ", Lz)
-        if (length(lw) != 1)
-            stop("lw must be a single numeric value")
-        if (lw <= 0)
-            stop("lw must be positive, but it is ", lw)
-        if (is.null(mw))
-            mw <- whaleMassFromLength(lw, species=species)
-        if (length(mw) != 1)
-            stop("cannot handle more than one 'mw' at a time")
-        if (is.null(Sw))
-            Sw <- whaleAreaFromLength(lw, species=species, type="wetted")
-        if (length(Sw) != 1)
-            stop("cannot handle more than one 'Sw' at a time")
-        if (is.null(l))
-            l <- c(0.025, 0.16, 1.12, 0.1)
-        if (is.null(a))
-            a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
-        if (is.null(b))
-            b <- c(0.1, 2.54, 2.54, 0.1)
-        if (is.null(s))
-            s <- 1e6 * c(19.600, 0.255, 0.255, 22.900)
+        # Check some elements, and set some defaults
+        if (length(ms) != 1) stop("ms must be a single numeric value")
+        if (ms <= 0)         stop("ms must be positive, but it is ", ms)
+        if (is.null(Ss))     Ss <- shipAreaFromMass(ms)
+        if (length(Ss) != 1) stop("Ss must be a single numeric value")
+        if (Ss <= 0)         stop("Ss must be positive, but it is ", Ss)
+        if (length(Ly) != 1) stop("Ly must be a single numeric value")
+        if (Ly <= 0)         stop("Ly must be positive, but it is ", Ly)
+        if (length(Lz) != 1) stop("Lz must be a single numeric value")
+        if (Lz <= 0)         stop("Lz must be positive, but it is ", Lz)
+        if (length(lw) != 1) stop("lw must be a single numeric value")
+        if (lw <= 0)         stop("lw must be positive, but it is ", lw)
+        if (is.null(mw))     mw <- whaleMassFromLength(lw, species=species)
+        if (length(mw) != 1) stop("cannot handle more than one 'mw' at a time")
+        if (is.null(Sw))     Sw <- whaleAreaFromLength(lw, species=species, type="wetted")
+        if (length(Sw) != 1) stop("cannot handle more than one 'Sw' at a time")
+        if (is.null(l))      l <- c(0.025, 0.16, 1.12, 0.1)
+        if (is.null(a))      a <- c(17.8e6/0.1, 1.58e5, 1.58e5, 8.54e8/0.1)
+        if (is.null(b))      b <- c(0.1, 2.54, 2.54, 0.1)
+        if (is.null(s))      s <- 1e6 * c(19.600, 0.255, 0.255, 22.900)
         if (any(s <= 0) || length(s) != 4)
-            stop("'s' must be a vector of 4 positive numbers")
-        # Value checks
+            stop("'s' must be a vector with 4 positive numbers")
         if (any(l <= 0) || length(l) != 4)
             stop("'l' must be a vector with 4 positive numbers")
         if (any(a <= 0) || length(a) != 4)
@@ -795,13 +778,13 @@ summary.parameters <- function(object, ...)
 #'
 #' @export
 updateParameters <- function(original,
-    ms, Ss,
-    Ly, Lz,
-    species, lw, mw, Sw,
-    l, a, b, s, theta,
-    Cs, Cw,
-    logistic,
-    debug=0)
+                             ms, Ss,
+                             Ly, Lz,
+                             species, lw, mw, Sw,
+                             l, a, b, s, theta,
+                             Cs, Cw,
+                             logistic,
+                             debug=0)
 {
     rval <- original
     if (!missing(ms)) rval$ms <- ms
@@ -960,53 +943,61 @@ updateParameters <- function(original,
 whaleMassFromLength <- function(L, species="N. Atl. Right Whale", model="fortune2012")
 {
     n <- length(L)
-    if (length(model) == 1)
+    if (length(model) == 1) {
         model <- rep(model, n)
-    if (length(species) == 1)
+    }
+    if (length(species) == 1) {
         species <- rep(species, n)
-    if (n != length(model))
+    }
+    if (n != length(model)) {
         stop("length of species (", n, ") does not equal length of model (", length(model), ")")
-    if (n != length(L))
+    }
+    if (n != length(L)) {
         stop("length of species (", n, ") does not equal length of L (", length(L), ")")
+    }
     rval <- rep(NA, n)
     for (i in 1:n) {
         if (model[i] == "moore2005") {
-            if (species[i] == "N. Atl. Right Whale")
+            if (species[i] == "N. Atl. Right Whale") {
                 rval[i] <- 242.988 * exp(0.4 * L[i])
-            else
+            } else {
                 stop("The 'moore2005' model only works if species is 'N. Atl. Right Whale'")
+            }
         } else if (model[i] == "fortune2012") {
-            if (species[i] == "N. Atl. Right Whale")
+            if (species[i] == "N. Atl. Right Whale") {
                 rval[i] <- exp(-10.095 + 2.825*log(100*L[i]))
-            else if (species[i] == "N. Pac. Right Whale")
+            } else if (species[i] == "N. Pac. Right Whale") {
                 rval[i] <- exp(-12.286 + 3.158*log(100*L[i]))
-            else
+            } else {
                 stop("The 'fortune2012' model only works if species is 'N. Atl. Right Whale' or 'N. Pac. Right Whale'")
+            }
         } else if (model[i] == "lockyer1976") {
-            if (species[i] == "Blue Whale")
+            if (species[i] == "Blue Whale") {
                 rval[i] <- 2.899 * L[i]^3.25
-            else if (species[i] == "Bryde Whale")
+            } else if (species[i] == "Bryde Whale") {
                 rval[i] <- 12.965 * L[i]^2.74
-            else if (species[i] == "Fin Whale")
+            } else if (species[i] == "Fin Whale") {
                 rval[i] <- 7.996 * L[i]^2.90
-            else if (species[i] == "Gray Whale")
+            } else if (species[i] == "Gray Whale") {
                 rval[i] <- 5.4 * L[i]^3.28
-            else if (species[i] == "Humpback Whale")
+            } else if (species[i] == "Humpback Whale") {
                 rval[i] <- 16.473 * L[i]^2.95
-            else if (species[i] == "Minke Whale")
+            } else if (species[i] == "Minke Whale") {
                 rval[i] <- 49.574 * L[i]^2.31
-            else if (species[i] == "Pac. Right Whale")
+            } else if (species[i] == "Pac. Right Whale") {
                 rval[i] <- 13.200 * L[i]^3.06
-            else if (species[i] == "Sei Whale")
+            } else if (species[i] == "Sei Whale") {
                 rval[i] <- 25.763 * L[i]^2.43
-            else if (species[i] == "Sperm Whale")
+            } else if (species[i] == "Sperm Whale") {
                 rval[i] <- 6.648 * L[i]^3.18
-            else
-                stop('species[', i, ']="', species[i], '" must be one of the following:
-                     "Blue Whale", "Bryde Whale", "Fin Whale", "Gray Whale", "Humpback Whale",
-                     "Minke Whale", "Pac. Right Whale", "Sei Whale", or "Sperm Whale"')
+            } else {
+                stop("species[", i, "]=\"", species[i], "\" must be one of the following:",
+                "\"Blue Whale\", \"Bryde Whale\", \"Fin Whale\", \"Gray Whale\", \"Humpback Whale\"",
+                "\"Minke Whale\", \"Pac. Right Whale\", \"Sei Whale\", or \"Sperm Whale\"")
+            }
         } else {
-            stop('model[', i, ']=', model[i], '" is unknown. This must be one of: "moore2005", "fortune2012", or "lockyer1976"')
+            stop("model[", i, "]=", model[i], "\" is unknown. This must be one of: ",
+                "\"moore2005\", \"fortune2012\", or \"lockyer1976]\"")
         }
     }
     rval
@@ -1039,19 +1030,24 @@ whaleMassFromLength <- function(L, species="N. Atl. Right Whale", model="fortune
 whaleLengthFromMass <- function(M, species="N. Atl. Right Whale", model="fortune2012")
 {
     n <- length(M)
-    if (length(species) == 1)
+    if (length(species) == 1) {
         species <- rep(species, n)
-    if (length(model) == 1)
+    }
+    if (length(model) == 1) {
         model <- rep(model, n)
-    if (n != length(model))
+    }
+    if (n != length(model)) {
         stop("length of M (", n, ") does not equal length of model (", length(model), ")")
-    if (n != length(species))
+    }
+    if (n != length(species)) {
         stop("length of M (", n, ") does not equal length of species (", length(species), ")")
+    }
     rval <- rep(NA, n)
-    for (i in seq_along(M))
+    for (i in seq_along(M)) {
         rval[i] <- uniroot(function(x)
             M[i] - whaleMassFromLength(x, species=species[i], model=model[i]),
             c(0.1, 100))$root
+    }
     rval
 }
 
@@ -1096,9 +1092,10 @@ whaleLengthFromMass <- function(M, species="N. Atl. Right Whale", model="fortune
 whaleAreaFromLength <- function(L, species="N. Atl. Right Whale", type="wetted")
 {
     speciesAllowed <- c("N. Atl. Right Whale")
-    if (!(species %in% speciesAllowed))
+    if (!(species %in% speciesAllowed)) {
         stop("unknown species \"", species, "\"; use one of the following: \"",
              paste(speciesAllowed, collapse="\", \""), "\"")
+    }
     # below from dek/20180623_whale_area.Rmd, updated 20180802 and inserted with
     # cut/paste (changing bullet to asterisk, and using ^ for exponentiation).
     #
@@ -1111,11 +1108,13 @@ whaleAreaFromLength <- function(L, species="N. Atl. Right Whale", type="wetted")
     # there may be merit in averaging the two estimates, yielding:
     # * Projected area: 0.1429 ∗ L^2 where L is body length in metres.
     # * Wetted area: 0.4484 ∗ L^2 where L is body length in metres.
-    if (type == "projected")
+    if (type == "projected") {
         0.143 * L^2
-    else if (type == "wetted")
+    } else if (type == "wetted") {
         0.448 * (0.877 * L)^2
-    else stop("'type' must be 'projected' or 'wetted', but it is '", type, "'")
+    } else {
+        stop("'type' must be 'projected' or 'wetted', but it is '", type, "'")
+    }
 }
 
 #' Whale compression force
@@ -1162,10 +1161,10 @@ whaleCompressionForce <- function(xs, xw, parms)
     force <- stress * parms$Ly * parms$Lz
     stress <- ifelse(stress < 0, 0, stress) # just in case; we don't want log(negative number)
     compressed <- cbind(
-        parms$l[1]*(1-log(1 + stress / parms$a[1]) / parms$b[1]),
-        parms$l[2]*(1-log(1 + stress / parms$a[2]) / parms$b[2]),
-        parms$l[3]*(1-log(1 + stress / parms$a[3]) / parms$b[3]),
-        parms$l[4]*(1-log(1 + stress / parms$a[4]) / parms$b[4]))
+        parms$l[1] * (1 - log(1 + stress / parms$a[1]) / parms$b[1]),
+        parms$l[2] * (1 - log(1 + stress / parms$a[2]) / parms$b[2]),
+        parms$l[3] * (1 - log(1 + stress / parms$a[3]) / parms$b[3]),
+        parms$l[4] * (1 - log(1 + stress / parms$a[4]) / parms$b[4]))
     compressed <- pin(compressed, lower=0)
     list(force=force, stress=stress, strain=strain, compressed=compressed)
 }
@@ -1211,8 +1210,8 @@ whaleSkinForce <- function(xs, xw, parms)
     # Net normal force in x; note the cosine, to resolve the force to the normal
     # direction, and the 2, to account for two sides of length
     # Ly and two of length Lz
-    F <- 2*parms$l[1]*(parms$Lz*sigmaz + parms$Ly*sigmay)*C # dek20180622_skin_strain eq 8
-    list(force=F, sigmay=sigmay, sigmaz=sigmaz)
+    force <- 2*parms$l[1] * (parms$Lz*sigmaz + parms$Ly*sigmay) * C # dek20180622_skin_strain eq 8
+    list(force=force, sigmay=sigmay, sigmaz=sigmaz)
 }
 
 
@@ -1344,11 +1343,13 @@ dynamics <- function(t, y, parms)
     Fextension <- whaleSkinForce(xs, xw, parms)$force
     Freactive <- Fcompression + Fextension
     Fship <- parms$engineForce + shipWaterForce(vs, parms) - Freactive
-    if (is.na(Fship[1]))
+    if (is.na(Fship[1])) {
         stop("Fship[1] is NA, probably indicating a programming error.")
+    }
     Fwhale <- Freactive + whaleWaterForce(vw, parms)
-    if (is.na(Fwhale[1]))
+    if (is.na(Fwhale[1])) {
         stop("Fwhale[1] is NA, probably indicating a programming error.")
+    }
     list(c(dxsdt=vs, dvsdt=Fship/parms$ms, dxwdt=vw, dvwdt=Fwhale/parms$mw))
 }
 
@@ -1474,42 +1475,56 @@ derivative <- function(var, t)
 #' @importFrom deSolve lsoda
 strike <- function(t, state, parms, debug=0)
 {
-    if (missing(t))
+    if (missing(t)) {
         stop("must supply t")
+    }
     # Ensure that the state is well-configured, because the error messages
     # otherwise will be too cryptic for many users to fathom.
-    if (missing(state))
+    if (missing(state)) {
         stop("must supply state")
-    if (4 != sum(c("xs", "vs", "xw", "vw") %in% names(state)))
+    }
+    if (4 != sum(c("xs", "vs", "xw", "vw") %in% names(state))) {
         stop("state must hold \"xs\", \"vs\", \"xw\", and \"vw\"")
-    if (is.list(state))
+    }
+    if (is.list(state)) {
         state <- c(xs=state$xs, vs=state$vs, xw=state$xw, vw=state$vw)
-    if (missing(parms))
+    }
+    if (missing(parms)) {
         stop("must supply parms")
-    if (!inherits(parms, "parameters"))
+    }
+    if (!inherits(parms, "parameters")) {
         stop("parms must be the output of parameters()")
+    }
     # Check parameters
     parmsRequired <- c("a", "b", "Cs", "Cw", "l", "lsum", "lw", "Ly", "Lz",
         "ms", "mw", "s", "Ss", "stressFromStrain", "Sw",
         "theta")
-    if (!all(parmsRequired %in% names(parms)))
+    if (!all(parmsRequired %in% names(parms))) {
         stop('parms must hold: "', paste(parmsRequired, collapse='", "'), '"')
+    }
     # All required elements are present, but it's prudent to check some values that
     # a user might be setting.
-    if (!is.finite(parms$ms) || parms$ms <= 0)
+    if (!is.finite(parms$ms) || parms$ms <= 0) {
         stop("parms$ms (ship mass, in kg) must be a positive number, not ", parms$ms)
-    if (!is.finite(parms$mw) || parms$mw <= 0)
+    }
+    if (!is.finite(parms$mw) || parms$mw <= 0) {
         stop("parms$mw (whale mass, in kg) must be a positive number, not ", parms$mw)
-    if (!is.finite(parms$Ly) || parms$Ly <= 0)
+    }
+    if (!is.finite(parms$Ly) || parms$Ly <= 0) {
         stop("parms$Ly (impact width, in m) must be a positive number, not ", parms$Ly)
-    if (!is.finite(parms$Lz) || parms$Lz <= 0)
+    }
+    if (!is.finite(parms$Lz) || parms$Lz <= 0) {
         stop("parms$Lz (impact height, in m) must be a positive number, not ", parms$Lz)
-    if (!is.finite(parms$Cs) || parms$Cs <= 0)
+    }
+    if (!is.finite(parms$Cs) || parms$Cs <= 0) {
         stop("parms$Cs (drag coefficient of ship, dimensionless) must be a positive number, not ", parms$Cs)
-    if (!is.finite(parms$Cw) || parms$Cw <= 0)
+    }
+    if (!is.finite(parms$Cw) || parms$Cw <= 0) {
         stop("parms$Cw (drag coefficient of whale, dimensionless) must be a positive number, not ", parms$Cw)
-    if (!is.function(parms$stressFromStrain))
+    }
+    if (!is.function(parms$stressFromStrain)) {
         stop("parms$stressFromStrain must be a function")
+    }
     if (debug > 0) {
         print("state:")
         print(state)
@@ -1517,8 +1532,10 @@ strike <- function(t, state, parms, debug=0)
         print(parms)
     }
     for (need in c("xs", "vs", "xw", "vw")) {
-        if (!(need %in% names(state)))
-            stop("state must contain item named '", need, "'; the names you supplied were: ", paste(names(state), collapse=" "))
+        if (!(need %in% names(state))) {
+            stop("state must contain item named '", need, "'; the names you supplied were: ",
+                paste(names(state), collapse=" "))
+        }
     }
     parms["engineForce"] <- -shipWaterForce(state["vs"], parms) # assumed constant over time
     sol <- lsoda(state, t, dynamics, parms)
@@ -1534,7 +1551,9 @@ strike <- function(t, state, parms, debug=0)
     WSF <- whaleSkinForce(xs=xs, xw=xw, parms=parms)
     WCF <- whaleCompressionForce(xs=xs, xw=xw, parms=parms)
     WWF <- whaleWaterForce(vw=vw, parms=parms)
-    refinedGrid <- min(WCF$compressed[,2])/WCF$compressed[1,2] < 0.01 || min(WCF$compressed[,3])/WCF$compressed[1,3] < 0.01
+    # nolint start line_length_linter
+    refinedGrid <- (min(WCF$compressed[, 2])/WCF$compressed[1, 2] < 0.01) || (min(WCF$compressed[, 3])/WCF$compressed[1, 3] < 0.01)
+    # nolint end line_length_linter
     if (refinedGrid) {
         NEED <- 20                     # desired number of points in peak
         dt <- (1/NEED) * 0.5 * sqrt(parms$l[4] * parms$mw / (parms$Ly*parms$Lz*parms$a[4]*parms$b[4]))
@@ -1711,12 +1730,12 @@ strike <- function(t, state, parms, debug=0)
 #' @importFrom grDevices hcl
 #' @importFrom stats approx runmed
 plot.strike <- function(x, which="default", drawEvents=TRUE,
-    colwcenter="black", #Slate Gray",
-    colwinterface="black", #colwinterface="Firebrick",
-    colwskin="black", #colwskin="Dodger Blue 4",
-    cols="black",
-    colThreat=c("white", "lightgray", "darkgray", "black"),
-    lwd=1, D=3, debug=0, ...)
+                        colwcenter="black", #Slate Gray",
+                        colwinterface="black", #colwinterface="Firebrick",
+                        colwskin="black", #colwskin="Dodger Blue 4",
+                        cols="black",
+                        colThreat=c("white", "lightgray", "darkgray", "black"),
+                        lwd=1, D=3, debug=0, ...)
 {
     g <- 9.8 # gravity
     t <- x$t
@@ -1729,8 +1748,8 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         firstDead <- which(death)[1]
         dead <- firstDead:length(t)
         xw[dead] <- xw[firstDead]
-        x$WCF$compressed[dead,1] <- 0
-        x$WCF$compressed[dead,2] <- 0
+        x$WCF$compressed[dead, 1] <- 0
+        x$WCF$compressed[dead, 2] <- 0
     }
     showEvents <- function(xs, xw)
     {
@@ -1747,18 +1766,17 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
     if (length(which) == 1 && which == "default") {
         which <- c("location", "section", "lethality index")
     }
-
     # Ensure that the plot type is known.
     allowed <- c("all", "location", "section", "threat", "whale acceleration",
         "blubber thickness", "sublayer thickness",
         "whale water force", "reactive forces", "skin stress",
         "compression stress", "lethality index", "values")
     for (w in which) {
-        if (!(w %in% allowed) && !length(grep("NEW", w)))
+        if (!(w %in% allowed) && !length(grep("NEW", w))) {
             stop("which value \"", w, "\" is not allowed; try one of: \"",
-                 paste(allowed, collapse="\" \""), "\"")
+                paste(allowed, collapse="\" \""), "\"")
+        }
     }
-
     # x(t) and xw(t)
     if (all || "location" %in% which) {
         ylim <- range(c(xs, xw), na.rm=TRUE)
@@ -1776,13 +1794,14 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         # Accelerations (quite complicated; possibly too confusing to viewer)
         k <- round(0.005 / (t[2] - t[1]))
         k <- max(k, 11L)
-        if (!(k %% 2))
+        if (!(k %% 2)) {
             k <- k + 1
+        }
         as <- derivative(vs, t)
         asmax <- max(abs(as))
         asmaxs <- max(abs(runmed(as, k))) # smoothed
         if (asmax > 2 * asmaxs) {
-            peakTime <- sum(abs(as) > 0.5*(asmax+asmaxs)) * (t[2] - t[1])
+            peakTime <- sum(abs(as) > 0.5 * (asmax+asmaxs)) * (t[2] - t[1])
             labelShip <- sprintf("%.1fg w/ spike to %.0fg for %.1fms (ship)",
                 asmaxs/g, peakTime*1e3, asmax/g)
         } else {
@@ -1792,7 +1811,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         awmax <- max(abs(aw))
         awmaxs <- max(abs(runmed(aw, k)))
         if (awmax > 2 * awmaxs) {
-            peakTime <- sum(abs(aw) > 0.5*(awmax+awmaxs)) * (t[2] - t[1])
+            peakTime <- sum(abs(aw) > 0.5 * (awmax+awmaxs)) * (t[2] - t[1])
             labelWhale <- sprintf("%.1fg w/ spike to %.0fg for %.1fms (whale)",
                 awmaxs/g, peakTime*1e3, awmax/g)
         } else {
@@ -1802,10 +1821,10 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         showEvents(xs, xw)
     }
     if (all || "section" %in% which) {
-        skin <- x$WCF$compressed[,1]
-        blubber <- x$WCF$compressed[,2]
-        sublayer <- x$WCF$compressed[,3]
-        bone <- x$WCF$compressed[,4]
+        skin <- x$WCF$compressed[, 1]
+        blubber <- x$WCF$compressed[, 2]
+        sublayer <- x$WCF$compressed[, 3]
+        bone <- x$WCF$compressed[, 4]
         maxy <- max(c(skin+blubber+sublayer+bone))
         ylim <- c(-maxy*1.2, 0)
         plot(t, -(skin+blubber+sublayer+bone), xlab="Time [s]", ylab="Whale-centred location [m]",
@@ -1815,13 +1834,14 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         lines(t, -bone, lwd=lwd, col=colwinterface)# , lty="42")
         showEvents(xs, xw)
         xusr <- par("usr")[1:2]
-        x0 <- xusr[1] - 0.01*(xusr[2] - xusr[1]) # snuggle up to axis
+        x0 <- xusr[1] - 0.01 * (xusr[2] - xusr[1]) # snuggle up to axis
         text(x0, -0.5*x$parms$l[4], "bone", pos=4)
         text(x0, -x$parms$l[4]-0.5*x$parms$l[3], "sublayer", pos=4)
         text(x0, -x$parms$l[4]-x$parms$l[3]-0.5*x$parms$l[2], "blubber", pos=4)
-        if (x$parms$l[1] > 0.1 * sum(x$parms$l))
+        if (x$parms$l[1] > 0.1 * sum(x$parms$l)) {
             text(x0, -x$parms$l[4]-x$parms$l[3]-x$parms$l[2]-0.5*x$parms$l[1], "skin", pos=4)
-        text(x0, 0.5*(ylim[1] - x$parms$lsum), "", pos=4)
+        }
+        text(x0, 0.5 * (ylim[1] - x$parms$lsum), "", pos=4)
     }
     if (all || "threat" %in% which) {
         # tcol <- rep(1, 4)
@@ -1848,8 +1868,8 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         box()
         yTicks <- pretty(c(0, worst))
         mtext(paste("Threat, Stress/Strength",
-                    if (trimmed) paste(" trimmed to", trimThreat) else ""),
-              side=2, line=2, cex=par("cex"))
+            if (trimmed) paste(" trimmed to", trimThreat) else ""),
+            side=2, line=2, cex=par("cex"))
         # Skin
         mtext("Skin", side=4, at=0, cex=0.8*par("cex"))
         y0 <- 0 # if (log) -1 else 0
@@ -1915,11 +1935,15 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         ylim <- range(c(WWF, SF, CF), na.rm=TRUE)/1e6
         plot(t, SF/1e6, type="l", xlab="Time [s]", ylab="Forces [MN]", lwd=lwd, ylim=ylim, xaxs="i")
         lines(t, CF/1e6, lty="dotted", lwd=lwd)
+        # nolint start T_and_F_symbol_linter
         mtext(expression(" "*F[E]), side=3, line=-1.2, adj=0, cex=par("cex"))
+        # nolint end T_and_F_symbol_linter
         mtext(" (solid)", side=3, line=-2.2, adj=0, cex=par("cex"))
+        # nolint start T_and_F_symbol_linter
         mtext(expression(F[C]*" "), side=3, line=-1.2, adj=1, cex=par("cex"))
+        # nolint end T_and_F_symbol_linter
         mtext(" (dotted) ", side=3, line=-2.2, adj=1, cex=par("cex"))
-        mtext(sprintf("Max. %.3g MN", max(c(SF,CF,WWF)/1e6, na.rm=TRUE)), side=3, line=0, cex=0.8*par("cex"))
+        mtext(sprintf("Max. %.3g MN", max(c(SF, CF, WWF)/1e6, na.rm=TRUE)), side=3, line=0, cex=0.8*par("cex"))
         showEvents(xs, xw)
     }
     if (all || "skin stress" %in% which) {
@@ -1931,7 +1955,8 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         mtext(" (solid)", side=3, line=-2.2, adj=0, cex=par("cex"))
         mtext("vert. ", side=3, line=-1.2, adj=1, cex=par("cex"))
         mtext("(dotted) ", side=3, line=-2.2, adj=1, cex=par("cex"))
-        mtext(sprintf("Max. %.3g MPa", max(c(Fs$sigmay, Fs$sigmaz)/1e6, na.rm=TRUE)), side=3, line=0, cex=0.8*par("cex"))
+        mtext(sprintf("Max. %.3g MPa", max(c(Fs$sigmay, Fs$sigmaz)/1e6, na.rm=TRUE)),
+            side=3, line=0, cex=0.8*par("cex"))
         showEvents(xs, xw)
     }
     if (all || "compression stress" %in% which) {
@@ -1944,7 +1969,7 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
     if (all || "lethality index" %in% which) {
         stress <- x$WCF$stress
         LI <- lethalityIndexFromStress(stress)
-        plot(t, LI, type="l", xlab="Time [s]", ylab="Lethality Index", lwd=lwd, xaxs="i", ylim=c(0,1), yaxs="i")
+        plot(t, LI, type="l", xlab="Time [s]", ylab="Lethality Index", lwd=lwd, xaxs="i", ylim=c(0, 1), yaxs="i")
         nt <- length(t)
         maxLI <- max(LI, na.rm=TRUE)
         # Redraw the supercritical in a thicker line. But, first, refine the grid if it's coarse.
@@ -1964,27 +1989,6 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         } else {
             mtext(sprintf("Max. %.3g (exceeds 0.5 for %.2gs)", maxLI, dangerTime), side=3, line=0, cex=0.8*par("cex"))
         }
-        # Highlight for LI exceeding 0.5, using polygon intersection so the thickened
-        # line comes right down to the 0.5 line.
-        # NOT-WORKING highlight <- lethalityIndex >= 0.5
-        # NOT-WORKING lines(t[highlight], lethalityIndex[highlight], lwd=2*lwd)
-        # NOT-WORKING abline(h=0.5, lty="dotted")
-        # NOT-WORKING usr <- par("usr")
-        # NOT-WORKING highlightRegion <- as(raster::extent(usr[1], usr[2], 0.5, usr[4]), "SpatialPolygons")
-        # NOT-WORKING A <- sp::Polygon(cbind(t, lethalityIndex))
-        # NOT-WORKING B <- sp::Polygons(list(A), "A")
-        # NOT-WORKING C <- sp::SpatialPolygons(list(B))
-        # NOT-WORKING set_RGEOS_CheckValidity(2L)
-        # NOT-WORKING browser()
-        # NOT-WORKING i <- raster::intersect(highlightRegion, C)
-        # NOT-WORKING if (!is.null(i)) {
-        # NOT-WORKING     for (j in seq_along(i@polygons)) {
-        # NOT-WORKING         for (k in seq_along(i@polygons[[1]]@Polygons)) {
-        # NOT-WORKING             xy <- i@polygons[[j]]@Polygons[[k]]@coords
-        # NOT-WORKING             lines(xy[,1], xy[,2], lwd=2*lwd, col=2)
-        # NOT-WORKING         }
-        # NOT-WORKING     }
-        # NOT-WORKING }
         showEvents(xs, xw)
     }
     if (all || "values" %in% which) {
@@ -2002,8 +2006,9 @@ plot.strike <- function(x, which="default", drawEvents=TRUE,
         n <- 1 + length(values)
         plot(1:n, 1:n, type="n", xlab="", ylab="", axes=FALSE)
         o <- order(names(parms), decreasing=TRUE)
-        for (i in seq_along(values))
+        for (i in seq_along(values)) {
             text(1, i+0.5, paste(names[o[i]], "=", values[o[i]]), pos=4, cex=1)
+        }
         par(mar=omar)
     }
 }
@@ -2091,4 +2096,3 @@ stressFromLethalityIndex <- function(injury)
     logistic <- parameters()$logistic
     10^(logistic$logStressCenter - logistic$logStressWidth * log(1 / injury - 1)) # note natural log
 }
-

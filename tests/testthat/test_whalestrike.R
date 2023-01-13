@@ -22,4 +22,3 @@ test_that("whale lethality index is unchanged (prevents ill-considered changes)"
           expect_equal(stressFromLethalityIndex(0.5), 239883.3, scale=1, tolerance=0.1)
           expect_equal(lethalityIndexFromStress(239883.3), 0.5, scale=1, tolerance=0.000001)
 })
-

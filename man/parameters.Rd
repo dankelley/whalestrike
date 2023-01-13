@@ -20,8 +20,8 @@ parameters(
   theta = 55,
   Cs = 0.01,
   Cw = 0.0025,
-  logistic = list(logStressCenter = 5.38, logStressWidth = 0.349, tau25 = 1e+05, tau50
-    = 241000, tau75 = 581000),
+  logistic = list(logStressCenter = 5.38, logStressWidth = 0.349, tau25 = 1e+05, tau50 =
+    241000, tau75 = 581000),
   file = NULL
 )
 }
