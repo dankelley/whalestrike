@@ -60,7 +60,6 @@ ui <- fluidPage(tags$style(HTML("body {font-family: 'Arial'; font-size: 12px; ma
 #' @param session A list used for various purposes.
 #' @importFrom utils write.csv
 #' @importFrom shiny observeEvent reactiveValuesToList renderPlot showNotification updateSliderInput
-#' @md
 server <- function(input, output, session)
 {
     observeEvent(input$quit, {
@@ -154,14 +153,14 @@ server <- function(input, output, session)
     }, pointsize=12)#, height=500)
 }
 
-#' Run a GUI app for interactive simulations
+#' GUI app for interactive whale-strike simulations
 #'
-#' @param mode Character string specifying the style to use.  Only
+#' @param mode character value specifying the style to use.  Only
 #' the value \code{"simple"} is permitted at present. This yields a
 #' 3-panel plot, constructed by \code{\link{plot.strike}},
 #' called with default arguments.
 #'
-#' @param options List containing options that are provided
+#' @param options list containing options that are provided
 #' to \code{\link[shiny]{shinyApp}}, which creates the GUI app.
 #'
 #' @author Dan Kelley
@@ -169,7 +168,6 @@ server <- function(input, output, session)
 #' @export
 #'
 #' @importFrom shiny shinyApp
-#' @md
 app <- function(mode="simple", options=list(height=500)) # NOTE: height has no effect
 {
     if (mode == "simple") {

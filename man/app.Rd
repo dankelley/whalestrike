@@ -2,21 +2,21 @@
 % Please edit documentation in R/app.R
 \name{app}
 \alias{app}
-\title{Run a GUI app for interactive simulations}
+\title{GUI app for interactive whale-strike simulations}
 \usage{
 app(mode = "simple", options = list(height = 500))
 }
 \arguments{
-\item{mode}{Character string specifying the style to use.  Only
+\item{mode}{character value specifying the style to use.  Only
 the value \code{"simple"} is permitted at present. This yields a
 3-panel plot, constructed by \code{\link{plot.strike}},
 called with default arguments.}
 
-\item{options}{List containing options that are provided
+\item{options}{list containing options that are provided
 to \code{\link[shiny]{shinyApp}}, which creates the GUI app.}
 }
 \description{
-Run a GUI app for interactive simulations
+GUI app for interactive whale-strike simulations
 }
 \author{
 Dan Kelley

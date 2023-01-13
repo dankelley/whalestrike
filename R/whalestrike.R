@@ -257,13 +257,13 @@ NULL
 #' Fortune, Sarah M. E., Andrew W. Trites, Wayne L. Perryman, Michael J. Moore,
 #' Heather M. Pettis, and Morgan S. Lynn. “Growth and Rapid Early Development of
 #' North Atlantic Right Whales (Eubalaena Glacialis).” Journal of Mammalogy 93,
-#' no. 5 (2012): 1342–54. \url{https://doi.org/10.1644/11-MAMM-A-297.1}.
+#' no. 5 (2012): 1342–54. \doi{10.1644/11-MAMM-A-297.1}.
 #'
 #' \item
 #' Grear, Molly E., Michael R. Motley, Stephanie B. Crofts, Amanda E. Witt, Adam
 #' P. Summers, and Petra Ditsche. “Mechanical Properties of Harbor Seal Skin and
 #' Blubber--a Test of Anisotropy.” Zoology 126 (2018): 137–44.
-#' \url{https://doi.org/10.1016/j.zool.2017.11.002}.
+#' \doi{10.1016/j.zool.2017.11.002}.
 #'
 #' \item
 #' Kelley, Dan E. “Composite Spring,” May 28, 2018. 20180528_composite_string. Dan Kelley’s working notes.
@@ -306,7 +306,7 @@ NULL
 #' Cui, Darrell J. Swenson, and James H. Stuhmiller. “A Mechanistic End-to-End
 #' Concussion Model That Translates Head Kinematics to Neurologic Injury.”
 #' Frontiers in Neurology 8, no. JUN (2017): 1–18.
-#' \url{https://doi.org/10.3389/fneur.2017.00269}
+#' \doi{/10.3389/fneur.2017.00269}
 #'
 #' \item
 #' Raymond, J. J. “Development of a Numerical Model to Predict Impact Forces on a
@@ -318,7 +318,7 @@ NULL
 #' Soetaert, Karline, Thomas Petzoldt, and R. Woodrow Setzer.
 #' “Solving Differential Equations in R: Package DeSolve.”
 #' Journal of Statistical Software; Vol 1, Issue 9, 2010.
-#' \url{https://doi.org/10.18637/jss.v033.i09}.
+#' \doi{/10.18637/jss.v033.i09}.
 #'
 #'}
 #'
@@ -981,7 +981,7 @@ updateParameters <- function(original,
 #' * Fortune, Sarah M. E., Andrew W. Trites, Wayne L. Perryman, Michael J. Moore,
 #' Heather M. Pettis, and Morgan S. Lynn. “Growth and Rapid Early Development of
 #' North Atlantic Right Whales (Eubalaena Glacialis).” Journal of Mammalogy 93,
-#' no. 5 (2012): 1342–54. https://doi.org/10.1644/11-MAMM-A-297.1.
+#' no. 5 (2012): 1342–54. \doi{/10.1644/11-MAMM-A-297.1}.
 #'
 #' @seealso [whaleLengthFromMass()] is the reverse of this.
 #'
