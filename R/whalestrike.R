@@ -160,6 +160,28 @@ fillplot4 <- function(x, y, yOffset=0, breaks, col, ...)
     lines(x, y+yOffset)
 }
 
+#' Reference strike() solution
+#'
+#' This was produced with the package as it existed on 2020-jul-8,
+#' prior to the publication of Kelley et al. (2020).  It is used
+#' in testing, to ensure that the package does not inadvertantly
+#' change in its predictions.
+#'
+#' @examples
+#' data(sol20200708)
+#' par(mfrow=c(1, 3))
+#' plot(sol20200708)
+#'
+#' @references
+#'
+#' Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. “Assessing the Lethality
+#' of Ship Strikes on Whales Using Simple Biophysical Models.” Marine Mammal
+#' Science, October 12, 2020, mms.12745. (https://doi.org/10.1111/mms.12745).
+#'
+#' @name sol20200708
+#'
+#' @docType data
+NULL
 
 #' Whale blubber stress-strain relationship
 #'
@@ -1392,7 +1414,11 @@ dynamics <- function(t, y, parms)
     Fcompression <- whaleCompressionForce(xs, xw, parms)$force
     Fextension <- whaleSkinForce(xs, xw, parms)$force
     Freactive <- Fcompression + Fextension
-    Fship <- parms$engineForce + shipWaterForce(vs, parms) - Freactive
+    Fship <- if (!is.null(parms$engineForce)) {
+        parms$engineForce + shipWaterForce(vs, parms) - Freactive
+    } else {
+        -Freactive
+    }
     if (is.na(Fship[1])) {
         stop("Fship[1] is NA, probably indicating a programming error.")
     }

@@ -16,4 +16,3 @@
 ## \item{beta}{Whale blubber thickness [m].}
 ## \item{blubbermodel}{Blubber model to use (passed to \code{\link{blubberForce}}).}
 ## }
-
