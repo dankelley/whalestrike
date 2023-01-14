@@ -71,6 +71,12 @@
 <p>Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. “Assessing the Lethality of Ship Strikes on Whales Using Simple Biophysical Models.” Marine Mammal Science, October 12, 2020, mms.12745. (<a href="https://doi.org/10.1111/mms.12745" class="external-link uri">https://doi.org/10.1111/mms.12745</a>).</p>
 </div>
 <div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>The package is not yet available on CRAN, and must be installed from source, e.g. by typing the following in an R session.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"dankelley/whalestrike"</span>, <span class="at">ref=</span><span class="st">"main"</span>)</span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="using-function-calls">Using function calls<a class="anchor" aria-label="anchor" href="#using-function-calls"></a>
 </h2>
 <p>Technical users will likely work by calling functions in the package; type <code><a href="reference/strike.html">?strike</a></code> for an entry to the documentation on key functions, and use <code>browseVignettes("whalestrike")</code> to see the vignette on the package, which provides a bit more context.</p>
@@ -79,7 +85,7 @@
 <h2 id="using-the-gui-system">Using the GUI system<a class="anchor" aria-label="anchor" href="#using-the-gui-system"></a>
 </h2>
 <p>To start the GUI application, type</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">whalestrike</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/app.html">app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>in an R console. A window will appear within a few moments. At the top of that is a textual introduction to the system, with a button to hide that information. Below is a user-interaction area, with buttons and sliders that control the simulation and the plotted output. Below that is a plotting area, the contents of which depend on the configuration of the simulation as well as the user’s selection of items to display.</p>

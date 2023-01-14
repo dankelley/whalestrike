@@ -15,6 +15,13 @@ Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. “Assessing the Lethalit
 of Ship Strikes on Whales Using Simple Biophysical Models.” Marine Mammal
 Science, October 12, 2020, mms.12745. (https://doi.org/10.1111/mms.12745).
 
+## Installation
+
+The package is not yet available on CRAN, and must be installed from source,
+e.g. by typing the following in an R session.
+
+    remotes::install_github("dankelley/whalestrike", ref="main")
+
 
 ## Using function calls
 
