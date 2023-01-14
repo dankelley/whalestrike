@@ -67,34 +67,31 @@
 <div class="section level2">
 <h2 id="purpose">Purpose<a class="anchor" aria-label="anchor" href="#purpose"></a>
 </h2>
-<p>This package provides tools for simulating the collisions of ships with whales, using a simplified dynamical structure involving point masses separated by compressible materials. As sketched in the next two sections, it contains functions for detailed calculations, along with a simple GUI tool. Extensive documentation is provided for all the functions of the package. To learn more about the scientific background, and to see the results some detailed computations placed in the context of a databased of observed strikes, see the following paper.</p>
+<p>This package provides tools for simulating the collisions of ships with whales, using a simplified dynamical structure involving point masses separated by compressible materials. Along with functions for computations of forces, deformations, accelerations, etc., the package provides a easy-to-use GUI tool that makes it easy to set up some common simulation scenarios, and to display the results in graphical form.</p>
+<p>To learn more about the scientific background, and to see the results of some detailed computations placed in the context of a database of observed strikes, please consult the following paper.</p>
 <p>Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. “Assessing the Lethality of Ship Strikes on Whales Using Simple Biophysical Models.” Marine Mammal Science, October 12, 2020, mms.12745. (<a href="https://doi.org/10.1111/mms.12745" class="external-link uri">https://doi.org/10.1111/mms.12745</a>).</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>The package is not yet available on CRAN, and must be installed from source, e.g. by typing the following in an R session.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"dankelley/whalestrike"</span>, <span class="at">ref=</span><span class="st">"main"</span>)</span></code></pre></div>
+<p>The package is not yet available on CRAN, and must be installed from source. This can be done either by downloading the source and building it locally, or by the simpler method of typing</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"dankelley/whalestrike"</span>, ref<span class="op">=</span><span class="st">"main"</span><span class="op">)</span></span></code></pre></div>
+<p>in an R session.</p>
 </div>
 <div class="section level2">
-<h2 id="using-function-calls">Using function calls<a class="anchor" aria-label="anchor" href="#using-function-calls"></a>
+<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<p>Technical users will likely work by calling functions in the package; type <code><a href="reference/strike.html">?strike</a></code> for an entry to the documentation on key functions, and use <code>browseVignettes("whalestrike")</code> to see the vignette on the package, which provides a bit more context.</p>
-</div>
-<div class="section level2">
-<h2 id="using-the-gui-system">Using the GUI system<a class="anchor" aria-label="anchor" href="#using-the-gui-system"></a>
-</h2>
-<p>To start the GUI application, type</p>
+<p>Most users will find that the GUI application is a good way to learn about the package. To start this, type</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">whalestrike</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/app.html">app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>in an R console. A window will appear within a few moments. At the top of that is a textual introduction to the system, with a button to hide that information. Below is a user-interaction area, with buttons and sliders that control the simulation and the plotted output. Below that is a plotting area, the contents of which depend on the configuration of the simulation as well as the user’s selection of items to display.</p>
-<p>The default setup, which is shown before the user alters any of the sliders, etc., is a simulation of a small fishing boat, of mass 45 tonnes, moving at speed 10 knots towards a whale of length 13.7m. (The whale length is used to compute its mass, using a formula that is described by the output of typing <code><a href="reference/whaleMassFromLength.html">help("whaleMassFromLength","whalestrike")</a></code> in an R console).</p>
-<p>Sliders are provided for setting certain key properties of the ship and the whale, with italic labels for those properties that are deemed most likely to be adjusted during simulations. The details of these and the other parameters are revealed by typing <code><a href="reference/parameters.html">help("parameters","whalestrike")</a></code> and <code><a href="reference/strike.html">help("strike","whalestrike")</a></code> in an R console.</p>
-<p>To the right of the sliders is a column of checkboxes that control the plotted output. At startup, three of these boxes are ticked, yielding a display with three panels showing the time history of the simulation (<code><a href="reference/plot.strike.html">help("plot.strike","whalestrike")</a></code> provides details of the plots): * The left-hand plot panel shows whale and boat location, the former with an indication of the interfaces between skin, blubber, sublayer, and bone. * The middle panel shows the same information as the left one, but with a whale-centred coordinate system, and with labels for the components. This makes it easier to see the degree to which the layers are compressed during the impact. * The right panel is an indication of the estimated threat to the four layers of the whale, with curves that are filled with grey for time intervals when the impact stress (force/area) is less than the strength of the material in the layer, and black for times when that threshold is exceeded.</p>
-<p>Much can be learned by adjusting the sliders and examining the plotted output. As an exercise, try setting to a particular ship mass of interest, and then to slide the ship speed to higher and lower values, whilst monitoring the “threat” panel for black regions. This will reveal a critical speed for conditions that threaten the whale. Next, try altering the sublayer thickness, which is a surrogate for location along the whale body, because e.g. the sublayer is thinner near the mandible.</p>
-<p>Advanced users are likely to want to alter the values of impact width and height. The default setting are intended to mimic a small fishing boat, such as a Cape Islander. Try lowering the width, to simulate a strike by a daggerboard or keel of a sailing boat.</p>
-<p>Note that the pulldown menu for setting the whale species affects <em>only</em> whale mass. It does not affect the thicknesses of blubber or sublayer, the values of which have been set up to represent a midsection strike on a North Atlantic Right Whale.</p>
+<p>in an R session. A window will open, which shows some information at the top. Below that several sliders, buttons, and pull-down menus provide ways to control the simulation and the graphical representation of the results. Use <code><a href="reference/app.html">?app</a></code> to learn more about the process.</p>
+<p>Users who want more control, and who want to deal with the results in numerical as opposed to graphical form, should then start exploring the <code><a href="reference/strike.html">strike()</a></code> function. To learn how it works, type</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">whalestrike</span><span class="op">)</span></span>
+<span><span class="op">?</span><span class="va">strike</span></span></code></pre></div>
+<p>in an R session.</p>
 </div>
 </div>
   </div>
