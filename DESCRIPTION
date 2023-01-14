@@ -1,5 +1,4 @@
 Package: whalestrike
-Type: Package
 Title: Simulate Whale Ship Strikes
 Version: 0.4.1
 Authors@R: c(
