@@ -193,11 +193,11 @@ server <- function(input, output, session)
         npanels <- length(input$plot_panels)
         nrows <- floor(sqrt(npanels))
         ncols <- ceiling(npanels / nrows)
-        par(mfrow=c(nrows, ncols), mar=c(3, 3, 2.5, 2), mgp=c(2, 0.7, 0), cex=1)
+        par(mfrow=c(nrows, ncols), mar=c(3.2, 3, 2.5, 2), mgp=c(1.7, 0.6, 0), cex=1)
         for (which in input$plot_panels) {
             plot(sol, which=which)
         }
-    }, pointsize=12)#, height=500)
+    }, pointsize=14)#, height=500)
 }
 
 #' GUI app for interactive whale-strike simulations
