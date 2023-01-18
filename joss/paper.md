@@ -23,10 +23,10 @@ bibliography: paper.bib
 
 The collision of ships with whales can result in serious injury or death of the
 animal.  This is particularly concerning for endangered species such as the
-North Atlantic right whale. Speed reduction policies have been developed, but
-simple considerations suggest that other factors, such as ship mass and contact
-area, should also be taken into account. An R package called `whalestrike` has
-been developed to address these issues. It has been used by
+North Atlantic right whale. Speed reduction policies have been developed and
+implemented, but simple considerations suggest that other factors, such as ship
+mass and prow shape should also be taken into account. An R package called
+`whalestrike` has been developed to address these issues. It has been used by
 @kelley_assessing_2020 in the development of a biomechanically based criterion
 for the lethality of ship strikes. However, this is just one purpose to which
 the package could be put. Accordingly, the goal of the present paper is to
@@ -67,29 +67,29 @@ suggest extensions or use it for new applications.
 
 # Model formulation
 
-A desire to produce a GUI-based tool permitting easy exploration of various
-model scenarios led to a decision to create a simplified model that yields
-results quickly, as opposed to a much more computationally-expensive finite
-element model that might account more accurately for the deformation of whale
-flesh [e.g. that of @raymond_development_2007].  The model ignored ship
-deformation upon impact, and considered whale deformation to occur only in a
-specified impact area dictated by the shape of the ship's prow.  A layered
-model was used for the whale, with skin covering blubber, which in turn covered
-what we called a sub-layer (representing a combination of muscle and organs),
-and with bone at the core. Thicknesses and material properties for each layer
-were taken from the literature, and adjusting these properties permits
-simulation of strikes on different species, or at different body locations.
-Forces associated with the skin deformation include both extension forces and
-compression forces, while the only compression was considered for the other
-layers. Lacking reliable information on failure limits for these biomaterials,
-critical values for stresses were inferred by reference to published results of
-the damage experienced in documented ship strikes. Readers seeking more
-information on the parameterizations employed in the model are directed to
-@kelley_assessing_2020.
+A desire to produce a GUI (graphical user interface) tool permitting easy
+exploration of various model scenarios led to a decision to create a simplified
+model that yields results quickly, as opposed to a much more
+computationally-expensive finite element model that might account more
+accurately for the deformation of whale flesh [e.g. that of
+@raymond_development_2007].  The model ignored ship deformation upon impact,
+and considered whale deformation to occur only in a specified impact area
+dictated by the shape of the ship's prow.  A layered model was used for the
+whale, with skin covering blubber, which in turn covered what we called
+a sub-layer (representing a combination of muscle and organs), and with bone at
+the core. Thicknesses and material properties for each layer were taken from
+the literature, and adjusting these properties permits simulation of strikes on
+different species, or at different body locations. Forces associated with the
+skin deformation include both extension forces and compression forces, while
+the only compression was considered for the other layers. Lacking reliable
+information on failure limits for these biomaterials, critical values for
+stresses were inferred by reference to published results of the damage
+experienced in documented ship strikes. Readers seeking more information on the
+parameterizations employed in the model are directed to @kelley_assessing_2020.
 
 The model mechanics are simple, with acceleration and forces being linked via
 Newton's second law. Numerical integration of acceleration is done with the
-`lsoda()` function of the `deTools` package.  A first integration yields
+`lsoda()` function of the `deSolve` package.  A first integration yields
 velocities, which are used in computing water drag.  A second integration
 yields the relative position ship and whale, from which extension and
 compression forces can be computed using a nonlinear stress-strain relationship
@@ -132,7 +132,7 @@ in an R console will run a sample simulation, and show a three-panel plot
 relative position of whale and ship, the compression of the whale's layers, and
 a lethality index developed by @kelley_assessing_2020.
 
-![Diagram produced by typing `example(strike,package="whalestrike")` in an R session. Three of the possible 12 plots are shown. **Left:** positions of 45-tonne vessel initially moving at 10 knots (dashed line) and the boundaries between the three layers on the shipward side of the whale. Contact occurs at about $0.2$ s, and continues to about $0.6$ s Note that a small fishing vessel is used in this simulation, and so its speed is significantly reduced by the collision.  **Middle:** As the left panel, but showing only the positions of the interfaces between the whale layers, relative to the whale's centre position. In this view, the thin skin can be seen at the bottom, with blubber, sublayer and then bone to the interior. **Right:** An index of lethality, with the line thickened for the interval during which stresses are predicted to exceed a threshold for lethal damage according to @kelley_assessing_2020.](figure1.png)
+![Diagram produced by typing `example(strike,package="whalestrike")` in an R session. Three of the possible 12 plots are shown. **Left:** positions of 45-tonne vessel initially moving at 10 knots (dashed line) and the boundaries between the three layers on the shipward side of the whale. Contact occurs at about $0.2$ s, and continues to about $0.6$ s. Note that a small fishing vessel is used in this simulation, and so its speed is significantly reduced by the collision.  **Middle:** As the left panel, but showing only the positions of the interfaces between the whale layers, relative to the whale's centre position. In this view, the thin skin can be seen at the bottom, with blubber, sublayer and then bone to the interior. **Right:** An index of lethality, with the line thickened for the interval during which stresses are predicted to exceed a threshold for lethal damage according to @kelley_assessing_2020.](figure1.png)
 
 Running the simulation and plotting the results as in Figure 1 takes a fraction
 of a second on a three-year old laptop, showing that the system is
@@ -156,6 +156,8 @@ altering the ship mass or prow geometry at a given speed casts some light on
 the issue of whether one speed restriction ought to be applied to all types of
 ship.
 
+![View of an interactive application for simulating ship-whale collisions. Normally some simple instructions appear at the top of this display, but these are trimmed for presentation here.  The labels on various GUI elements should give an indication of the properties that a user can vary with this tool.](figure2.png)
+
 
 # Conclusions
 
@@ -172,7 +174,6 @@ important for an application such as this, because each entry in a collision
 database represents the loss of one more member of a species that is already at
 high risk of extinction.
 
-![View of an interactive application for simulaating ship-whale collisions. Normally some simple instructions appear at the top of this display, but these are trimmed for presentation here.  The labels on various GUI elements should give an indication of the properties that a user can vary with this tool.](figure2.png)
 
 
 # Acknowledgements
@@ -180,9 +181,10 @@ high risk of extinction.
 I thank Sean W. Brillant for asking me to explain what I (then) knew about
 ship-whale collisions, and James P. Vlasic for finding and collating published
 records of such collisions and discussing representations of material
-properties with me.  I would not have considered writing the `whalestrike`
-package without the motivation of working with these two fine collaborators.
-I am also grateful to Christopher T. Taggart, for discussions about whales and
-other things that I never realized would interest me as much as they do.
+properties with me. Jaimie Harbin provided useful comments on this manuscript.
+I would not have considered writing the `whalestrike` package without the
+motivation of working with these two fine collaborators. I am also grateful to
+Christopher T. Taggart, for discussions about whales and other things that
+I never realized would interest me as much as they do.
 
 # References
