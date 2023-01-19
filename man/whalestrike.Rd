@@ -9,7 +9,13 @@ This package solves Newton's second law for a simple model of
 a ship colliding with a whale. This is a stripped-down model
 that does not attempt to simulate the biomechanical interactions
 that can be simulated in finite-element treatments such
-as that of Raymond (2007).  The goal is to establish a
+as that of Raymond (2007).  For an in-depth discussion
+of the reason for writing the model, of the principles involved
+in its framing, and its use in developing a criterion for
+strike lethality, please see Kelley et al. (2020).
+}
+\details{
+The goal of the model is to establish a
 convenient framework for rapid computation of impacts in a
 wide variety of conditions. The model runs
 quickly enough to keep up with mouse movements to select
@@ -23,8 +29,7 @@ simple formulation is that it makes it easy to
 modify various dynamical and biomechanical parameters,
 to add new forces, and to explore a range of
 criteria for whale damage.
-}
-\details{
+
 The documentation for \code{\link[=strike]{strike()}} provides
 a practical example of using the main functions of this package,
 while the package vignette provides a general overview.
@@ -57,6 +62,12 @@ Grear, Molly E., Michael R. Motley, Stephanie B. Crofts, Amanda E. Witt, Adam
 P. Summers, and Petra Ditsche. “Mechanical Properties of Harbor Seal Skin and
 Blubber--a Test of Anisotropy.” Zoology 126 (2018): 137–44.
 \doi{10.1016/j.zool.2017.11.002}.
+
+\item
+Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. “Assessing the
+Lethality of Ship Strikes on Whales Using Simple Biophysical Models.” Marine
+Mammal Science, October 12, 2020, mms.12745.
+\doi{10.1111/mms.12745}.
 
 \item
 Kelley, Dan E. “Composite Spring,” May 28, 2018. 20180528_composite_string. Dan Kelley’s working notes.
