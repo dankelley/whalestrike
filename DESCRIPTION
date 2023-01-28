@@ -9,7 +9,7 @@ Maintainer: Dan Kelley <dan.kelley@dal.ca>
 Description: Simple simulation of the mechanics of a boat striking a whale.
 Depends: deSolve, R (>= 3.5.0), shiny
 Suggests: knitr, rmarkdown, testthat
-License: GPL (>= 2)
+License: GPL (>= 3)
 Encoding: UTF-8
 BugReports: https://github.com/dankelley/whalestrike/issues
 URL: https://dankelley.github.io/whalestrike/
