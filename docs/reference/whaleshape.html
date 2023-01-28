@@ -38,7 +38,13 @@ designated as x=y=0."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-      </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
+      </ul><ul class="nav navbar-nav navbar-right"><li>
+  <a href="https://github.com/dankelley/whalestrike/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
@@ -48,7 +54,7 @@ designated as x=y=0."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Whale side-view shape</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/dankelley/whalestrike/blob/HEAD/R/whalestrike.R" class="external-link"><code>R/whalestrike.R</code></a></small>
     <div class="hidden name"><code>whaleshape.Rd</code></div>
     </div>
 
@@ -64,10 +70,18 @@ designated as x=y=0.</p>
     </div>
 
 
+    <div id="references">
+    <h2>References</h2>
+    <p>Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
+“Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
+Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
+Society, and Fisheries and Oceans Canada, 2018.
+<a href="http://publications.gc.ca/site/eng/9.850838/publication.html" class="external-link">http://publications.gc.ca/site/eng/9.850838/publication.html</a>.</p>
+    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">whalestrike</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/" class="external-link">whalestrike</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">whaleshape</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">whaleshape</span><span class="op">$</span><span class="va">x</span>, <span class="va">whaleshape</span><span class="op">$</span><span class="va">y</span>, asp<span class="op">=</span><span class="fl">1</span>, type<span class="op">=</span><span class="st">"l"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span><span class="va">whaleshape</span><span class="op">$</span><span class="va">x</span>, <span class="va">whaleshape</span><span class="op">$</span><span class="va">y</span>, col<span class="op">=</span><span class="st">"lightgray"</span><span class="op">)</span></span></span>

@@ -33,7 +33,13 @@ can be useful for e.g. sensitivity tests (see &amp;#8220;Details&amp;#8221;).'><
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-      </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
+      </ul><ul class="nav navbar-nav navbar-right"><li>
+  <a href="https://github.com/dankelley/whalestrike/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
@@ -43,7 +49,7 @@ can be useful for e.g. sensitivity tests (see &amp;#8220;Details&amp;#8221;).'><
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Update parameters</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/dankelley/whalestrike/blob/HEAD/R/whalestrike.R" class="external-link"><code>R/whalestrike.R</code></a></small>
     <div class="hidden name"><code>updateParameters.Rd</code></div>
     </div>
 
@@ -275,6 +281,14 @@ which</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>parms <span class="ot">&lt;-</span> <span class="fu">updateParameters</span>(PARMS, <span class="at">ms=</span><span class="fl">1.01</span> <span class="sc">*</span> PARMS<span class="sc">$</span>ms)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>parms <span class="ot">&lt;-</span> <span class="fu">updateParameters</span>(parms, <span class="at">Ss=</span><span class="fu">shipAreaFromMass</span>(parms<span class="sc">$</span>ms))</span></code></pre><p></p></div>
 <p>was also used to perturb ship mass (and inferred area).</p>
+    </div>
+    <div id="references">
+    <h2>References</h2>
+    <p>Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
+“Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
+Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
+Society, and Fisheries and Oceans Canada, 2018.
+<a href="http://publications.gc.ca/site/eng/9.850838/publication.html" class="external-link">http://publications.gc.ca/site/eng/9.850838/publication.html</a>.</p>
     </div>
     <div id="author">
     <h2>Author</h2>

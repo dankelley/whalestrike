@@ -49,7 +49,14 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/dankelley/whalestrike/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -65,9 +72,9 @@
       <h1 data-toc-skip>Using the whalestrike package</h1>
                         <h4 data-toc-skip class="author">Dan Kelley (<a href="https://orcid.org/0000-0001-7808-5911" class="external-link uri">https://orcid.org/0000-0001-7808-5911</a>)</h4>
             
-            <h4 data-toc-skip class="date">2023-01-14</h4>
+            <h4 data-toc-skip class="date">2023-01-28</h4>
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/dankelley/whalestrike/blob/HEAD/vignettes/whalestrike.Rmd" class="external-link"><code>vignettes/whalestrike.Rmd</code></a></small>
       <div class="hidden name"><code>whalestrike.Rmd</code></div>
 
     </div>
@@ -108,7 +115,7 @@ the analysis and the context.</p>
 </h2>
 <p>The following launches a GUI application that should be somewhat
 self-explanatory.</p>
-<pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">whalestrike</span><span class="op">)</span></span>
+<pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/" class="external-link">whalestrike</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/app.html">app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre>
 </div>
 <div class="section level2">
@@ -142,7 +149,7 @@ characteristics. Simulations in which the peak LI exceeds 0.5, as in the
 case shown below, are indicative of serious risk to the life of the
 whale.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">whalestrike</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/" class="external-link">whalestrike</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loading required package: deSolve</span></span>
 <span><span class="co">#&gt; Loading required package: shiny</span></span>
 <span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out<span class="op">=</span><span class="fl">200</span><span class="op">)</span></span>
@@ -169,7 +176,7 @@ simulations, to create a graphical display that is not part of the
 default list. For clarity, this is done with a loop rather than using
 e.g <code>lapply</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">whalestrike</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/" class="external-link">whalestrike</a></span><span class="op">)</span></span>
 <span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out<span class="op">=</span><span class="fl">200</span><span class="op">)</span></span>
 <span><span class="va">state</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>xs<span class="op">=</span><span class="op">-</span><span class="fl">1.5</span>, vs<span class="op">=</span><span class="fu"><a href="../reference/knot2mps.html">knot2mps</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>, xw<span class="op">=</span><span class="fl">0</span>, vw<span class="op">=</span><span class="fl">0</span><span class="op">)</span> <span class="co"># 10 knots</span></span>
 <span><span class="va">area</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">2</span>, length.out<span class="op">=</span><span class="fl">100</span><span class="op">)</span></span>
@@ -204,7 +211,7 @@ and blubber thickness. Note that the contour lines are thickened when
 the strain exceeds an estimate of the ratio of blubber ultimate tensile
 strength to blubber modulus.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">whalestrike</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/" class="external-link">whalestrike</a></span><span class="op">)</span></span>
 <span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out<span class="op">=</span><span class="fl">200</span><span class="op">)</span></span>
 <span><span class="co">## Hint: the following creates x and y of different lengths,</span></span>
 <span><span class="co">## so that mismatches between row/col and i/j values will</span></span>

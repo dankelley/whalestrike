@@ -17,11 +17,7 @@ the results in graphical form.
 
 To learn more about the scientific background, and to see the results of some
 detailed computations placed in the context of a database of observed strikes,
-please consult the following paper.
-
-Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. “Assessing the Lethality
-of Ship Strikes on Whales Using Simple Biophysical Models.” Marine Mammal
-Science, October 12, 2020, mms.12745. (https://doi.org/10.1111/mms.12745).
+see Kelley et al. (2020).
 
 ## Installation
 
@@ -54,3 +50,10 @@ library(whalestrike)
 ?strike
 ```
 in an R session.
+
+## References
+
+Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. “Assessing the Lethality of Ship
+Strikes on Whales Using Simple Biophysical Models.” Marine Mammal
+Science, October 12, 2020, mms.12745. (https://doi.org/10.1111/mms.12745).
+

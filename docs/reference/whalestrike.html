@@ -3,20 +3,10 @@
 a ship colliding with a whale. This is a stripped-down model
 that does not attempt to simulate the biomechanical interactions
 that can be simulated in finite-element treatments such
-as that of Raymond (2007).  The goal is to establish a
-convenient framework for rapid computation of impacts in a
-wide variety of conditions. The model runs
-quickly enough to keep up with mouse movements to select
-conditions, in a companion R shiny app. That app lets
-the user see the effects of changing contact
-area, ship speed, etc., as a way to build intuition
-for scenarios ranging from collision with a slow-moving
-fishing boat to collision with a thin dagger-board of a
-much swifter racing sailboat. Another advantage of the
-simple formulation is that it makes it easy to
-modify various dynamical and biomechanical parameters,
-to add new forces, and to explore a range of
-criteria for whale damage."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
+as that of Raymond (2007).  For an in-depth discussion
+of the reason for writing the model, of the principles involved
+in its framing, and its use in developing a criterion for
+strike lethality, please see Kelley et al. (2020)."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
@@ -48,7 +38,13 @@ criteria for whale damage."><!-- mathjax --><script src="https://cdnjs.cloudflar
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-      </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
+      </ul><ul class="nav navbar-nav navbar-right"><li>
+  <a href="https://github.com/dankelley/whalestrike/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
@@ -58,7 +54,7 @@ criteria for whale damage."><!-- mathjax --><script src="https://cdnjs.cloudflar
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>whalestrike: A Package to Simulate Ship-Whale Collisions</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/dankelley/whalestrike/blob/HEAD/R/whalestrike.R" class="external-link"><code>R/whalestrike.R</code></a></small>
     <div class="hidden name"><code>whalestrike.Rd</code></div>
     </div>
 
@@ -67,7 +63,16 @@ criteria for whale damage."><!-- mathjax --><script src="https://cdnjs.cloudflar
 a ship colliding with a whale. This is a stripped-down model
 that does not attempt to simulate the biomechanical interactions
 that can be simulated in finite-element treatments such
-as that of Raymond (2007).  The goal is to establish a
+as that of Raymond (2007).  For an in-depth discussion
+of the reason for writing the model, of the principles involved
+in its framing, and its use in developing a criterion for
+strike lethality, please see Kelley et al. (2020).</p>
+    </div>
+
+
+    <div id="details">
+    <h2>Details</h2>
+    <p>The goal of the model is to establish a
 convenient framework for rapid computation of impacts in a
 wide variety of conditions. The model runs
 quickly enough to keep up with mouse movements to select
@@ -81,16 +86,11 @@ simple formulation is that it makes it easy to
 modify various dynamical and biomechanical parameters,
 to add new forces, and to explore a range of
 criteria for whale damage.</p>
-    </div>
-
-
-    <div id="details">
-    <h2>Details</h2>
-    <p>The documentation for <code><a href="strike.html">strike()</a></code> provides
+<p>The documentation for <code><a href="strike.html">strike()</a></code> provides
 a practical example of using the main functions of this package,
 while the package vignette provides a general overview.
-A companion manuscript is intended to
-provide more detail about the mathematical
+Kelley et al (2020) provide more
+detail about the mathematical
 framework of the package, along with a discussion of its
 purpose and application to real-world problems of ship
 strikes on whales.</p>
@@ -114,6 +114,11 @@ no. 5 (2012): 1342–54. <a href="https://doi.org/10.1644/11-MAMM-A-297.1" class
 P. Summers, and Petra Ditsche. “Mechanical Properties of Harbor Seal Skin and
 Blubber--a Test of Anisotropy.” Zoology 126 (2018): 137–44.
 <a href="https://doi.org/10.1016/j.zool.2017.11.002" class="external-link">doi:10.1016/j.zool.2017.11.002</a>
+.</p></li>
+<li><p>Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. “Assessing the
+Lethality of Ship Strikes on Whales Using Simple Biophysical Models.” Marine
+Mammal Science, October 12, 2020, mms.12745.
+<a href="https://doi.org/10.1111/mms.12745" class="external-link">doi:10.1111/mms.12745</a>
 .</p></li>
 <li><p>Kelley, Dan E. “Composite Spring,” May 28, 2018. 20180528_composite_string. Dan Kelley’s working notes.</p></li>
 <li><p>Kelley, Dan. “Whale Area,” June 23, 2018. 20180623_whale_area. Dan Kelley’s working notes.</p></li>

@@ -163,7 +163,6 @@ and the functions that it calls. If \code{file} is provided, then all the other
 arguments are read from that source. Note that \code{\link[=updateParameters]{updateParameters()}} may
 be used to modify the results of \code{parameters}, e.g. for use in sensitivity
 tests.
-Below are some sources cited in the discussion of the function arguments.
 }
 \examples{
 parms <- parameters()
@@ -172,6 +171,27 @@ sigma <- parms$stressFromStrain(epsilon) # stress
 plot(epsilon, log10(sigma), xlab="Strain", ylab="log10(Stress [MPa])", type="l")
 mtext("Note sudden increase in stress, when bone compression starts")
 
+}
+\references{
+Campbell-Malone, Regina. “Biomechanics of North Atlantic Right Whale Bone :
+Mandibular Fracture as a Fatal Endpoint for Blunt Vessel-Whale Collision
+Modeling.” PhD Thesis, Massachusetts Institute of Technology and Woods Hole
+Oceanographic Institution, 2007. \doi{/10.1575/1912/1817}.
+
+Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
+“Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
+Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
+Society, and Fisheries and Oceans Canada, 2018.
+\url{http://publications.gc.ca/site/eng/9.850838/publication.html}.
+
+Grear, Molly E., Michael R. Motley, Stephanie B. Crofts, Amanda E. Witt, Adam
+P. Summers, and Petra Ditsche. “Mechanical Properties of Harbor Seal Skin and
+Blubber − a Test of Anisotropy.” Zoology 126 (2018): 137–44.
+\doi{10.1016/j.zool.2017.11.002}.
+
+Raymond, J. J. “Development of a Numerical Model to Predict Impact Forces on a
+North Atlantic Right Whale during Collision with a Vessel.” University of New
+Hampshire, 2007. \url{https://scholars.unh.edu/thesis/309}.
 }
 \author{
 Dan Kelley

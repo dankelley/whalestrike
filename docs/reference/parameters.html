@@ -3,8 +3,7 @@
 and the functions that it calls. If file is provided, then all the other
 arguments are read from that source. Note that updateParameters() may
 be used to modify the results of parameters, e.g. for use in sensitivity
-tests.
-Below are some sources cited in the discussion of the function arguments."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
+tests."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
@@ -36,7 +35,13 @@ Below are some sources cited in the discussion of the function arguments."><!-- 
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-      </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
+      </ul><ul class="nav navbar-nav navbar-right"><li>
+  <a href="https://github.com/dankelley/whalestrike/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
@@ -46,7 +51,7 @@ Below are some sources cited in the discussion of the function arguments."><!-- 
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Set parameters for a whale strike simulation</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/dankelley/whalestrike/blob/HEAD/R/whalestrike.R" class="external-link"><code>R/whalestrike.R</code></a></small>
     <div class="hidden name"><code>parameters.Rd</code></div>
     </div>
 
@@ -55,8 +60,7 @@ Below are some sources cited in the discussion of the function arguments."><!-- 
 and the functions that it calls. If <code>file</code> is provided, then all the other
 arguments are read from that source. Note that <code><a href="updateParameters.html">updateParameters()</a></code> may
 be used to modify the results of <code>parameters</code>, e.g. for use in sensitivity
-tests.
-Below are some sources cited in the discussion of the function arguments.</p>
+tests.</p>
     </div>
 
     <div id="ref-usage">
@@ -249,6 +253,27 @@ according to the system described above, along with some items used internally,
 including <code>lsum</code>, which is the sum of the values in <code>l</code>, and <code>stressFromStrain()</code>,
 a function created by <code><a href="stressFromStrainFunction.html">stressFromStrainFunction()</a></code> that computes compression
 force from engineering strain.</p>
+    </div>
+    <div id="references">
+    <h2>References</h2>
+    <p>Campbell-Malone, Regina. “Biomechanics of North Atlantic Right Whale Bone :
+Mandibular Fracture as a Fatal Endpoint for Blunt Vessel-Whale Collision
+Modeling.” PhD Thesis, Massachusetts Institute of Technology and Woods Hole
+Oceanographic Institution, 2007. <a href="https://doi.org//10.1575/1912/1817" class="external-link">doi:/10.1575/1912/1817</a>
+.</p>
+<p>Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
+“Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
+Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
+Society, and Fisheries and Oceans Canada, 2018.
+<a href="http://publications.gc.ca/site/eng/9.850838/publication.html" class="external-link">http://publications.gc.ca/site/eng/9.850838/publication.html</a>.</p>
+<p>Grear, Molly E., Michael R. Motley, Stephanie B. Crofts, Amanda E. Witt, Adam
+P. Summers, and Petra Ditsche. “Mechanical Properties of Harbor Seal Skin and
+Blubber − a Test of Anisotropy.” Zoology 126 (2018): 137–44.
+<a href="https://doi.org/10.1016/j.zool.2017.11.002" class="external-link">doi:10.1016/j.zool.2017.11.002</a>
+.</p>
+<p>Raymond, J. J. “Development of a Numerical Model to Predict Impact Forces on a
+North Atlantic Right Whale during Collision with a Vessel.” University of New
+Hampshire, 2007. <a href="https://scholars.unh.edu/thesis/309" class="external-link">https://scholars.unh.edu/thesis/309</a>.</p>
     </div>
     <div id="author">
     <h2>Author</h2>

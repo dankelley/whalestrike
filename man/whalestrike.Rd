@@ -33,8 +33,8 @@ criteria for whale damage.
 The documentation for \code{\link[=strike]{strike()}} provides
 a practical example of using the main functions of this package,
 while the package vignette provides a general overview.
-A companion manuscript is intended to
-provide more detail about the mathematical
+Kelley et al (2020) provide more
+detail about the mathematical
 framework of the package, along with a discussion of its
 purpose and application to real-world problems of ship
 strikes on whales.

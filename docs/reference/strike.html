@@ -38,7 +38,13 @@ deSolve::lsoda()."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aja
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-      </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
+      </ul><ul class="nav navbar-nav navbar-right"><li>
+  <a href="https://github.com/dankelley/whalestrike/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
@@ -48,7 +54,7 @@ deSolve::lsoda()."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aja
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Simulate the collision of a ship and a whale</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/dankelley/whalestrike/blob/HEAD/R/whalestrike.R" class="external-link"><code>R/whalestrike.R</code></a></small>
     <div class="hidden name"><code>strike.Rd</code></div>
     </div>
 
@@ -127,7 +133,7 @@ force calculations (<code>WCF</code>), and a vector of whale water force (<code>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">whalestrike</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/" class="external-link">whalestrike</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Example 1: graphs, as in the shiny app</span></span></span>
 <span class="r-in"><span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.7</span>, length.out<span class="op">=</span><span class="fl">200</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">state</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>xs<span class="op">=</span><span class="op">-</span><span class="fl">2</span>, vs<span class="op">=</span><span class="fu"><a href="knot2mps.html">knot2mps</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>, xw<span class="op">=</span><span class="fl">0</span>, vw<span class="op">=</span><span class="fl">0</span><span class="op">)</span> <span class="co"># ship speed 10 knots</span></span></span>

@@ -190,8 +190,6 @@ NULL
 #' of Raymond (2007). It is used to develop a stress-strain relationship used
 #' by [parameters()], as shown in \dQuote{Examples}.
 #'
-#' @template ref_raymond
-#'
 #' @examples
 #' data(raymond2007)
 #' attach(raymond2007)
@@ -202,6 +200,12 @@ NULL
 #' lines(x, predict(m, list(strain=x)))
 #'
 #' @name raymond2007
+#'
+#' @references
+#'
+#' Raymond, J. J. “Development of a Numerical Model to Predict Impact Forces on a
+#' North Atlantic Right Whale during Collision with a Vessel.” University of New
+#' Hampshire, 2007. \url{https://scholars.unh.edu/thesis/309}.
 #'
 #' @docType data
 NULL
@@ -217,7 +221,13 @@ NULL
 #' ranges from 0 to 1. The point at the front of the whale is
 #' designated as x=y=0.
 #'
-#' @template ref_daoust
+#' @references
+#'
+#' Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
+#' “Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
+#' Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
+#' Society, and Fisheries and Oceans Canada, 2018.
+#' \url{http://publications.gc.ca/site/eng/9.850838/publication.html}.
 #'
 #' @examples
 #' library(whalestrike)
@@ -263,8 +273,8 @@ NULL
 #' The documentation for [strike()] provides
 #' a practical example of using the main functions of this package,
 #' while the package vignette provides a general overview.
-#' A companion manuscript is intended to
-#' provide more detail about the mathematical
+#' Kelley et al (2020) provide more
+#' detail about the mathematical
 #' framework of the package, along with a discussion of its
 #' purpose and application to real-world problems of ship
 #' strikes on whales.
@@ -463,11 +473,6 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' arguments are read from that source. Note that [updateParameters()] may
 #' be used to modify the results of `parameters`, e.g. for use in sensitivity
 #' tests.
-#' Below are some sources cited in the discussion of the function arguments.
-#' @template ref_campbell_malone
-#' @template ref_daoust
-#' @template ref_grear
-#' @template ref_raymond
 #'
 #' @param ms Ship mass (kg).
 #'
@@ -610,6 +615,28 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' mtext("Note sudden increase in stress, when bone compression starts")
 #'
 #' @author Dan Kelley
+#'
+#' @references
+#'
+#' Campbell-Malone, Regina. “Biomechanics of North Atlantic Right Whale Bone :
+#' Mandibular Fracture as a Fatal Endpoint for Blunt Vessel-Whale Collision
+#' Modeling.” PhD Thesis, Massachusetts Institute of Technology and Woods Hole
+#' Oceanographic Institution, 2007. \doi{/10.1575/1912/1817}.
+#'
+#' Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
+#' “Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
+#' Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
+#' Society, and Fisheries and Oceans Canada, 2018.
+#' \url{http://publications.gc.ca/site/eng/9.850838/publication.html}.
+#'
+#' Grear, Molly E., Michael R. Motley, Stephanie B. Crofts, Amanda E. Witt, Adam
+#' P. Summers, and Petra Ditsche. “Mechanical Properties of Harbor Seal Skin and
+#' Blubber − a Test of Anisotropy.” Zoology 126 (2018): 137–44.
+#' \doi{10.1016/j.zool.2017.11.002}.
+#'
+#' Raymond, J. J. “Development of a Numerical Model to Predict Impact Forces on a
+#' North Atlantic Right Whale during Collision with a Vessel.” University of New
+#' Hampshire, 2007. \url{https://scholars.unh.edu/thesis/309}.
 #'
 #' @export
 #'
@@ -854,6 +881,14 @@ summary.parameters <- function(object, ...)
 #'
 #' @param debug Integer indicating debugging level, 0 for quiet operation and higher values
 #' for more verbose monitoring of progress through the function.
+#'
+#' @references
+#'
+#' Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
+#' “Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
+#' Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
+#' Society, and Fisheries and Oceans Canada, 2018.
+#' \url{http://publications.gc.ca/site/eng/9.850838/publication.html}.
 #'
 #' @author Dan Kelley
 #'
@@ -1169,6 +1204,11 @@ whaleLengthFromMass <- function(M, species="N. Atl. Right Whale", model="fortune
 #' 2. Dan Kelley's internal document `dek/20180707_whale_mass.Rmd`, available
 #' upon request.
 #'
+#' 3. Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
+#' “Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
+#' Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
+#' Society, and Fisheries and Oceans Canada, 2018.
+#' \url{http://publications.gc.ca/site/eng/9.850838/publication.html}.
 #' @author Dan Kelley
 #'
 #' @export
