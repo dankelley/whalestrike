@@ -10,7 +10,7 @@ if (FALSE) {
 }
 t <- devtools::spell_check()
 stopifnot(t == "No spelling errors found.")
-urlchecker::url_check()
+urlchecker::url_check()a
 devtools::check_win_release()
 devtools::check_win_devel()
 devtools::check_win_oldrelease()

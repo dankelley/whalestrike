@@ -205,7 +205,7 @@ NULL
 #'
 #' Raymond, J. J. “Development of a Numerical Model to Predict Impact Forces on a
 #' North Atlantic Right Whale during Collision with a Vessel.” University of New
-#' Hampshire, 2007. \url{https://scholars.unh.edu/thesis/309}.
+#' Hampshire, 2007. \url{https://scholars.unh.edu/thesis/309/}.
 #'
 #' @docType data
 NULL
@@ -627,7 +627,7 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #' “Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
 #' Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
 #' Society, and Fisheries and Oceans Canada, 2018.
-#' \url{http://publications.gc.ca/site/eng/9.850838/publication.html}.
+#' \url{https://publications.gc.ca/site/eng/9.850838/publication.html}.
 #'
 #' Grear, Molly E., Michael R. Motley, Stephanie B. Crofts, Amanda E. Witt, Adam
 #' P. Summers, and Petra Ditsche. “Mechanical Properties of Harbor Seal Skin and
@@ -636,7 +636,7 @@ stressFromStrainFunction <- function(l, a, b, N=1000)
 #'
 #' Raymond, J. J. “Development of a Numerical Model to Predict Impact Forces on a
 #' North Atlantic Right Whale during Collision with a Vessel.” University of New
-#' Hampshire, 2007. \url{https://scholars.unh.edu/thesis/309}.
+#' Hampshire, 2007. \url{https://scholars.unh.edu/thesis/309/}.
 #'
 #' @export
 #'
@@ -888,7 +888,7 @@ summary.parameters <- function(object, ...)
 #' “Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
 #' Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
 #' Society, and Fisheries and Oceans Canada, 2018.
-#' \url{http://publications.gc.ca/site/eng/9.850838/publication.html}.
+#' \url{https://publications.gc.ca/site/eng/9.850838/publication.html}.
 #'
 #' @author Dan Kelley
 #'
