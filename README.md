@@ -1,5 +1,11 @@
 # The whalestrike package
 
+<!-- badges: start -->
+
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/whalestrike)](https://cran.r-project.org/package=whalestrike)
+
+<!-- badges: end -->
+
 ## Purpose
 
 This package provides tools for simulating the collisions of ships with whales,

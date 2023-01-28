@@ -11,6 +11,8 @@ Depends: deSolve, R (>= 3.5.0), shiny
 Suggests: knitr, rmarkdown, testthat
 License: GPL (>= 2)
 Encoding: UTF-8
+BugReports: https://github.com/dankelley/whalestrike/issues
+URL: https://dankelley.github.io/whalestrike/
 LazyData: true
 RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)

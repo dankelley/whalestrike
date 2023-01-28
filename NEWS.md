@@ -1,6 +1,6 @@
 # whalestrike 0.4.1
 
-* De-lint code.
+* Delint code.
 * Fix warnings that would have appeared in a CRAN submission
 
 # whalestrike 0.4.0

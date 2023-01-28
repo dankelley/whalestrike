@@ -1,4 +1,4 @@
-^joss$
+fjoss$
 ^.lintr$
 ^.github$
 create_data
@@ -13,3 +13,5 @@ Rplot.pdf
 ^pkgdown$
 ^doc$
 ^Meta$
+check_package.R
+^codemeta\.json$

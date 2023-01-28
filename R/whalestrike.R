@@ -164,7 +164,7 @@ fillplot4 <- function(x, y, yOffset=0, breaks, col, ...)
 #'
 #' This was produced with the package as it existed on 2020-jul-8,
 #' prior to the publication of Kelley et al. (2020).  It is used
-#' in testing, to ensure that the package does not inadvertantly
+#' in testing, to ensure that the package does not inadvertently
 #' change in its predictions.
 #'
 #' @examples
