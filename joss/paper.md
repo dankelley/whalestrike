@@ -25,8 +25,8 @@ The collision of ships with whales can result in serious injury or death of the
 animal.  This is particularly concerning for endangered species such as the
 North Atlantic right whale. Speed reduction policies have been developed and
 implemented, but simple considerations suggest that other factors, such as ship
-mass and prow shape should also be taken into account. An R package called
-`whalestrike` has been developed to address these issues. It has been used by
+mass and prow shape, should also be taken into account. An R package called
+`whalestrike` has been developed to address such issues. It has been used by
 @kelley_assessing_2020 in the development of a biomechanically based criterion
 for the lethality of ship strikes. However, this is just one purpose to which
 the package could be put. Accordingly, the goal of the present paper is to
@@ -42,17 +42,18 @@ whale (*Eubalaena glacialis*), a "critically Endangered" species
 [@iucn_eubalaena_2020] with a world population estimated to be just $336\pm14$
 in 2021 [@pettis_north_2022], down from $483$ in 2010 [@pace_state-space_2017].
 Necropsies reveal that ship collisions account for more than half of right
-whale deaths [@campbell-malone_gross_2008-1]. Motivated by such studies,
-efforts have been made in recent years to mitigate collision risk by imposing
-speed restrictions on ships, and evidence of successful results [e.g.
-@conn_vessel_2013] has led to marine policy changes, including both static and
-dynamic zones of speed restriction [e.g. @transport_canada_protecting_2022].
+whale deaths [@campbell-malone_gross_2008-1].
 
-Still, it seems unwise to measure the success of speed restrictions by counting
-dead or injured whales, given the low numbers alive today. In addition, basic
-reasoning reveals that speed cannot be the only factor. Variations in ship
-mass, prow shape, etc. should also be considered, making for a multifactorial
-problem that requires even more data to achieve statistical reliability.
+Motivated by such studies, efforts have been made in recent years to mitigate
+collision risk by imposing speed restrictions on ships, and evidence of
+successful results [e.g. @conn_vessel_2013] has led to marine policy changes,
+including both static and dynamic zones of speed restriction [e.g.
+@transport_canada_protecting_2022]. Even so, it seems unwise to measure the
+success of speed restrictions by counting dead or injured whales, given the low
+numbers alive today. In addition, basic reasoning reveals that speed cannot be
+the only factor. Variations in ship mass, prow shape, etc. should also be
+considered, making for a multifactorial problem that requires even more data to
+achieve statistical reliability.
 
 With this in mind, a group of us undertook a study using a numerical model of
 the biophysical dynamics of collisions between vessels and whales, relying on
@@ -75,17 +76,17 @@ accurately for the deformation of whale flesh [e.g. that of
 @raymond_development_2007].  The model ignored ship deformation upon impact,
 and considered whale deformation to occur only in a specified impact area
 dictated by the shape of the ship's prow.  A layered model was used for the
-whale, with skin covering blubber, which in turn covered what we called
+whale, with skin covering blubber, with that blubber covering what we called
 a sub-layer (representing a combination of muscle and organs), and with bone at
 the core. Thicknesses and material properties for each layer were taken from
-the literature, and adjusting these properties permits simulation of strikes on
-different species, or at different body locations. Forces associated with the
-skin deformation include both extension forces and compression forces, while
-the only compression was considered for the other layers. Lacking reliable
-information on failure limits for these biomaterials, critical values for
-stresses were inferred by reference to published results of the damage
-experienced in documented ship strikes. Readers seeking more information on the
-parameterizations employed in the model are directed to @kelley_assessing_2020.
+the literature, with the hope being that adjusting these parameters will
+provide a way to simulate strikes on different species, or at different body
+locations. Skin deformation is modeled with both extension and compression
+forces, while only compression was considered for interior layers. Lacking
+reliable information on failure limits for these biomaterials, critical values
+for stresses were inferred by reference to published results of the damage
+experienced in documented ship strikes. More on these and other scientific
+aspects of the model are discussed by @kelley_assessing_2020.
 
 The model mechanics are simple, with acceleration and forces being linked via
 Newton's second law. Numerical integration of acceleration is done with the
@@ -181,10 +182,10 @@ high risk of extinction.
 I thank Sean W. Brillant for asking me to explain what I (then) knew about
 ship-whale collisions, and James P. Vlasic for finding and collating published
 records of such collisions and discussing representations of material
-properties with me. Jaimie Harbin provided useful comments on this manuscript.
-I would not have considered writing the `whalestrike` package without the
-motivation of working with these two fine collaborators. I am also grateful to
-Christopher T. Taggart, for discussions about whales and other things that
+properties with me. I would not have considered writing the `whalestrike`
+package without the motivation of working with these two fine collaborators.
+Jaimie Harbin provided useful comments on this manuscript.  I am also grateful
+to Christopher T. Taggart, for discussions about whales and other things that
 I never realized would interest me as much as they do.
 
 # References
