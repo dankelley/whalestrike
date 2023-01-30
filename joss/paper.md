@@ -28,21 +28,19 @@ implemented, but simple considerations suggest that other factors, such as ship
 mass and prow shape, should also be taken into account. An R package called
 `whalestrike` has been developed to address such issues. It has been used by
 @kelley_assessing_2020 in the development of a biomechanically based criterion
-for the lethality of ship strikes. However, this is just one purpose to which
-the package could be put. Accordingly, the goal of the present paper is to
-introduce readers to the `whalestrike` code, as a way to encourage its wider
-usage and development, by researchers and perhaps also by policy makers.
+for the lethality of ship strikes, but this is just a starting point. The goal
+here is to introduce readers to the model code, encouraging its wider use and
+development by researchers and policy makers.
 
 # Statement of need
 
-The collision of a ship with a whale can result in serious injury or death of
-the animal, posing significant threats for endangered species
+Ship collisions pose significant threats to endangered marine mammals
 [@laist_collisions_2001]. Of particular concern is the North Atlantic right
 whale (*Eubalaena glacialis*), a "critically Endangered" species
-[@iucn_eubalaena_2020] with a world population estimated to be just $336\pm14$
+[@iucn_eubalaena_2020] with a world population estimated to be only $336\pm14$
 in 2021 [@pettis_north_2022], down from $483$ in 2010 [@pace_state-space_2017].
-Necropsies reveal that ship collisions account for more than half of right
-whale deaths [@campbell-malone_gross_2008-1].
+Necropsies reveal that ship collisions account for over half of right whale
+deaths [@campbell-malone_gross_2008-1].
 
 Motivated by such studies, efforts have been made in recent years to mitigate
 the consequences of collision by imposing speed restrictions on ships, and evidence of
@@ -60,11 +58,10 @@ the biophysical dynamics of collisions between vessels and whales. This
 involved using published records of whale injury and death to calibrate
 a lethality criterion that depends not just on vessel speed, but also on other
 factors such as vessel mass, prow geometry, etc. The model was expressed in the
-R language, because it is familiar to many marine biologists and because
+R language, because it is familiar to many marine biologists and because it
 provides a wide scope of statistical tools for followup work. The purpose of
 the present paper is not to recapitulate the results of @kelley_assessing_2020,
-but rather to introduce readers to the model code, in the hopes that they might
-suggest ways to extend it, or to use it in new applications.
+but rather to introduce readers to the code.
 
 # Model formulation
 
@@ -80,7 +77,7 @@ represent the whale, with skin covering blubber, with that blubber covering
 a sub-layer representing a combination of muscle and organs, and with bone at
 the core. Thicknesses and material properties (including a nonlinear
 stress-strain relationship) for each layer are taken from the literature, with
-the hope being that adjusting these parameters will provide a way to simulate
+the idea being that adjusting these parameters will provide a way to simulate
 strikes on different species, or at different body locations. Skin deformation
 is modeled with both extension and compression forces, while only compression
 is considered for interior layers. Lacking reliable information on failure
@@ -119,9 +116,9 @@ a function that simulates a collision event and produces an object that can
 then be plotted (using the R generic function system) in multiple ways.
 
 Three arguments must be provided to `strike()`.  The first sets the times at
-which model output is desired, the second establishes the initial locations
-and speeds of both ship and whale, and the third describes the biological and
-physical properties of both ship and whale. The examples in the
+which model output is desired, the second establishes the initial locations and
+speeds of the ship and the whale, and the third describes the biological and
+physical properties of the ship and the whale. The examples in the
 documentation for `strike()` provide a good starting point for these three
 arguments.  For example, the first example produced by typing
 ```R
@@ -142,8 +139,8 @@ calling `strike()` with a wide suite of parameter values, such as the creation
 of the diagrams in @kelley_assessing_2020, some of which involved of order
 $10^5$ model runs to cover parameter space in detail.
 
-There also applications for which a few model runs may suffice. For such work,
-`whalestrike` provides an R-shiny application that is run by executing
+There are also applications for which a few model runs may suffice. For such
+work, `whalestrike` provides an R-shiny application that is run by executing
 ```R
 library(whalestrike)
 app()
@@ -165,7 +162,9 @@ ship.
 The `whalestrike` package is intended to provide guidance for the development of
 marine policies related to ship speeds.  It is written in R, a language that is
 familiar to many marine biologists, and one that also offers a vast array of
-statistical tools for analysing the results of model simulations.
+statistical tools for analysing the results of model simulations. In addition
+to tools for detailed control of simulations, the package also provides
+a GUI-based tool for basic exploration, which may be useful in making or explaining policy decisions.
 
 Being founded on physical principles, `whalestrike` complements the more
 statistical approaches of most studies in this field. An advantage of this
