@@ -45,7 +45,7 @@ Necropsies reveal that ship collisions account for more than half of right
 whale deaths [@campbell-malone_gross_2008-1].
 
 Motivated by such studies, efforts have been made in recent years to mitigate
-collision risk by imposing speed restrictions on ships, and evidence of
+the consequences of collision by imposing speed restrictions on ships, and evidence of
 successful results [e.g. @conn_vessel_2013] has led to marine policy changes,
 including both static and dynamic zones of speed restriction [e.g.
 @transport_canada_protecting_2022]. Even so, it seems unwise to measure the
@@ -55,16 +55,16 @@ the only factor. Variations in ship mass, prow shape, etc. should also be
 considered, making for a multifactorial problem that requires even more data to
 achieve statistical reliability.
 
-With this in mind, a group of us undertook a study using a numerical model of
-the biophysical dynamics of collisions between vessels and whales, relying on
-published records of whale injury and death to calibrate a lethality criterion
-as a function of vessel mass, prow geometry, etc., in addition to speed
-[@kelley_assessing_2020]. The model is expressed in the R language, which is
-familiar to many marine biologists and which provides a wide scope of
-statistical tools that might be employed for followup work. The purpose of the
-present paper is not to recapitulate the results of @kelley_assessing_2020,
+With this in mind, @kelley_assessing_2020 devised a simple numerical model of
+the biophysical dynamics of collisions between vessels and whales. This
+involved using published records of whale injury and death to calibrate
+a lethality criterion that depends not just on vessel speed, but also on other
+factors such as vessel mass, prow geometry, etc. The model was expressed in the
+R language, because it is familiar to many marine biologists and because
+provides a wide scope of statistical tools for followup work. The purpose of
+the present paper is not to recapitulate the results of @kelley_assessing_2020,
 but rather to introduce readers to the model code, in the hopes that they might
-suggest extensions or use it for new applications.
+suggest ways to extend it, or to use it in new applications.
 
 # Model formulation
 
@@ -73,30 +73,30 @@ exploration of various model scenarios led to a decision to create a simplified
 model that yields results quickly, as opposed to a much more
 computationally-expensive finite element model that might account more
 accurately for the deformation of whale flesh [e.g. that of
-@raymond_development_2007].  The model ignored ship deformation upon impact,
-and considered whale deformation to occur only in a specified impact area
-dictated by the shape of the ship's prow.  A layered model was used for the
-whale, with skin covering blubber, with that blubber covering what we called
-a sub-layer (representing a combination of muscle and organs), and with bone at
-the core. Thicknesses and material properties for each layer were taken from
-the literature, with the hope being that adjusting these parameters will
-provide a way to simulate strikes on different species, or at different body
-locations. Skin deformation is modeled with both extension and compression
-forces, while only compression was considered for interior layers. Lacking
-reliable information on failure limits for these biomaterials, critical values
-for stresses were inferred by reference to published results of the damage
-experienced in documented ship strikes. More on these and other scientific
-aspects of the model are discussed by @kelley_assessing_2020.
+@raymond_development_2007].  The new model ignores ship deformation upon
+impact, and considers whale deformation to occur only in a specified impact
+area dictated by the geometry of the ship's prow.  It uses a layered scheme to
+represent the whale, with skin covering blubber, with that blubber covering
+a sub-layer representing a combination of muscle and organs, and with bone at
+the core. Thicknesses and material properties (including a nonlinear
+stress-strain relationship) for each layer are taken from the literature, with
+the hope being that adjusting these parameters will provide a way to simulate
+strikes on different species, or at different body locations. Skin deformation
+is modeled with both extension and compression forces, while only compression
+is considered for interior layers. Lacking reliable information on failure
+limits for these biomaterials, critical values for stresses are posited in the
+context of published results of the damage experienced in documented ship
+strikes. For more on these and other scientific aspects of the model's context,
+readers are directed to @kelley_assessing_2020.
 
 The model mechanics are simple, with acceleration and forces being linked via
 Newton's second law. Numerical integration of acceleration is done with the
 `lsoda()` function of the `deSolve` package.  A first integration yields
 velocities, which are used in computing water drag.  A second integration
-yields the relative position ship and whale, from which extension and
-compression forces can be computed using a nonlinear stress-strain relationship
-along with the contact area.  Aspects of each dynamical element are distilled
-into the nearly 30 parameters of the model.  Although a great deal of effort
-has been put into formulating these parameters appropriately (mainly for
+yields the relative positions of ship and whale, from which extension and
+compression forces can be computed. Aspects of each dynamical element are
+distilled into the nearly 30 parameters of the model.  Although a great deal of
+effort has been put into formulating these parameters appropriately (mainly for
 application to right whales), `whalestrike` offers a simple way for users to
 adjust each of them, if needed for new applications.
 
@@ -139,8 +139,8 @@ Running the simulation and plotting the results as in Figure 1 takes a fraction
 of a second on a three-year old laptop, showing that the system is
 computationally inexpensive. This is helpful in detailed studies that involve
 calling `strike()` with a wide suite of parameter values, such as the creation
-of the diagrams in @kelley_assessing_2020, some of which involved tens of
-thousands of model runs to cover parameter space in detail.
+of the diagrams in @kelley_assessing_2020, some of which involved of order
+$10^5$ model runs to cover parameter space in detail.
 
 There also applications for which a few model runs may suffice. For such work,
 `whalestrike` provides an R-shiny application that is run by executing
@@ -157,7 +157,7 @@ altering the ship mass or prow geometry at a given speed casts some light on
 the issue of whether one speed restriction ought to be applied to all types of
 ship.
 
-![View of an interactive application for simulating ship-whale collisions. Normally some simple instructions appear at the top of this display, but these are trimmed for presentation here.  The labels on various GUI elements should give an indication of the properties that a user can vary with this tool.](figure2.png)
+![View of an interactive application for simulating ship-whale collisions. Normally some simple instructions appear at the top of this display, but these are trimmed for presentation here.  The labels on the GUI elements hint at the properties that a user can vary with this tool.](figure2.png)
 
 
 # Conclusions
