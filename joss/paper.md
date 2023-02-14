@@ -23,14 +23,15 @@ bibliography: paper.bib
 
 The collision of ships with whales can result in serious injury or death of the
 animal.  This is particularly concerning for endangered species such as the
-North Atlantic right whale. Speed reduction policies have been developed and
-implemented, but simple considerations suggest that other factors, such as ship
-mass and prow shape, should also be taken into account. An R package called
-`whalestrike` has been developed to address such issues. It has been used by
-@kelley_assessing_2020 in the development of a biomechanically based criterion
-for the lethality of ship strikes, but this is just a starting point. The goal
-here is to introduce readers to the model code, encouraging its wider use and
-development by researchers and policy makers.
+North Atlantic right whale. Although speed reduction policies have been
+developed and implemented, simple considerations suggest that other factors,
+such as ship mass and prow shape, should also be taken into account. An
+R package called `whalestrike` has been developed to address such issues. It
+has been used by @kelley_assessing_2020 in the development of a biomechanically
+based criterion for the lethality of ship strikes, but this is just a starting
+point. Indeed, the goal here is to introduce the model code to a wider
+community, in hopes of encouraging its wider use and development by researchers
+and policy makers.
 
 # Statement of need
 
@@ -69,7 +70,7 @@ A desire to produce a GUI (graphical user interface) tool permitting easy
 exploration of various model scenarios led to a decision to create a simplified
 model that yields results quickly, as opposed to a much more
 computationally-expensive finite element model that might account more
-accurately for the deformation of whale flesh [e.g. that of
+accurately for the deformation of whale flesh [see e.g.
 @raymond_development_2007].  The new model ignores ship deformation upon
 impact, and considers whale deformation to occur only in a specified impact
 area dictated by the geometry of the ship's prow.  It uses a layered scheme to
@@ -88,14 +89,14 @@ readers are directed to @kelley_assessing_2020.
 
 The model mechanics are simple, with acceleration and forces being linked via
 Newton's second law. Numerical integration of acceleration is done with the
-`lsoda()` function of the `deSolve` package.  A first integration yields
-velocities, which are used in computing water drag.  A second integration
-yields the relative positions of ship and whale, from which extension and
-compression forces can be computed. Aspects of each dynamical element are
-distilled into the nearly 30 parameters of the model.  Although a great deal of
-effort has been put into formulating these parameters appropriately (mainly for
-application to right whales), `whalestrike` offers a simple way for users to
-adjust each of them, if needed for new applications.
+`lsoda()` function of the `deSolve` package in R [@soetaert_solving_2010-2].
+A first integration yields velocities, which are used in computing water drag.
+A second integration yields the relative positions of ship and whale, from
+which extension and compression forces can be computed. Aspects of each
+dynamical element are distilled into the nearly 30 parameters of the model.
+Although a great deal of effort has been put into formulating these parameters
+appropriately (mainly for application to right whales), `whalestrike` offers
+a simple way for users to adjust each of them, if needed for new applications.
 
 # Package installation and use
 
