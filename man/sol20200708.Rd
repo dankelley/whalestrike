@@ -19,5 +19,5 @@ plot(sol20200708)
 \references{
 Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. "Assessing the Lethality
 of Ship Strikes on Whales Using Simple Biophysical Models." Marine Mammal
-Science, October 12, 2020, mms.12745. \url{https://doi.org/10.1111/mms.12745}.
+Science, October 12, 2020, mms.12745. \doi{10.1111/mms.12745}.
 }

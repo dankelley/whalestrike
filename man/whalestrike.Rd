@@ -109,7 +109,7 @@ Ng, Laurel J., Vladislav Volman, Melissa M. Gibbons, Pi Phohomsiri, Jianxia
 Cui, Darrell J. Swenson, and James H. Stuhmiller. "A Mechanistic End-to-End
 Concussion Model That Translates Head Kinematics to Neurologic Injury."
 Frontiers in Neurology 8, no. JUN (2017): 1-18.
-\doi{/10.3389/fneur.2017.00269}
+\doi{10.3389/fneur.2017.00269}
 
 \item
 Raymond, J. J. "Development of a Numerical Model to Predict Impact Forces on a
@@ -121,7 +121,7 @@ Hampshire, 2007.
 Soetaert, Karline, Thomas Petzoldt, and R. Woodrow Setzer.
 "Solving Differential Equations in R: Package DeSolve."
 Journal of Statistical Software; Vol 1, Issue 9, 2010.
-\doi{/10.18637/jss.v033.i09}.
+\doi{10.18637/jss.v033.i09}.
 
 }
 }

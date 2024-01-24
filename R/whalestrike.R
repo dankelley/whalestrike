@@ -18,7 +18,7 @@ library(deSolve)
 #'
 #' Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. "Assessing the Lethality
 #' of Ship Strikes on Whales Using Simple Biophysical Models." Marine Mammal
-#' Science, October 12, 2020, mms.12745. \url{https://doi.org/10.1111/mms.12745}.
+#' Science, October 12, 2020, mms.12745. \doi{10.1111/mms.12745}.
 #'
 #' @name sol20200708
 #'
@@ -42,7 +42,7 @@ NULL
 #' "Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
 #' Lawrence, 2017." Canadian Wildlife Health Cooperative, Marine Animal Response
 #' Society, and Fisheries and Oceans Canada, 2018.
-#' \url{http://publications.gc.ca/site/eng/9.850838/publication.html}.
+#' \url{https://publications.gc.ca/site/eng/9.850838/publication.html}.
 #'
 #' @examples
 #' library(whalestrike)
@@ -164,7 +164,7 @@ NULL
 #' Cui, Darrell J. Swenson, and James H. Stuhmiller. "A Mechanistic End-to-End
 #' Concussion Model That Translates Head Kinematics to Neurologic Injury."
 #' Frontiers in Neurology 8, no. JUN (2017): 1-18.
-#' \doi{/10.3389/fneur.2017.00269}
+#' \doi{10.3389/fneur.2017.00269}
 #'
 #' \item
 #' Raymond, J. J. "Development of a Numerical Model to Predict Impact Forces on a
@@ -176,7 +176,7 @@ NULL
 #' Soetaert, Karline, Thomas Petzoldt, and R. Woodrow Setzer.
 #' "Solving Differential Equations in R: Package DeSolve."
 #' Journal of Statistical Software; Vol 1, Issue 9, 2010.
-#' \doi{/10.18637/jss.v033.i09}.
+#' \doi{10.18637/jss.v033.i09}.
 #'
 #' }
 #'
@@ -225,7 +225,7 @@ NULL
 #' "Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
 #' Lawrence, 2017." Canadian Wildlife Health Cooperative, Marine Animal Response
 #' Society, and Fisheries and Oceans Canada, 2018.
-#' \url{http://publications.gc.ca/site/eng/9.850838/publication.html}.
+#' \url{https://publications.gc.ca/site/eng/9.850838/publication.html}.
 #' @author Dan Kelley
 #'
 #' @export
