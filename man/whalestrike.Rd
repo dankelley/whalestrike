@@ -2,6 +2,7 @@
 % Please edit documentation in R/whalestrike.R
 \docType{package}
 \name{whalestrike}
+\alias{whalestrike-package}
 \alias{whalestrike}
 \title{whalestrike: A Package to Simulate Ship-Whale Collisions}
 \description{
@@ -125,3 +126,22 @@ Journal of Statistical Software; Vol 1, Issue 9, 2010.
 }
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://dankelley.github.io/whalestrike/}
+  \item Report bugs at \url{https://github.com/dankelley/whalestrike/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Dan Kelley \email{dan.kelley@dal.ca} (\href{https://orcid.org/0000-0001-7808-5911}{ORCID})
+
+Other contributors:
+\itemize{
+  \item James Vlasic \email{jvlasic@dal.ca} (\href{https://orcid.org/0000-0002-3846-4391}{ORCID}) [research team member]
+  \item Sean Brilliant \email{seanb@cwf-fcf.org} (\href{https://orcid.org/0000-0001-5494-3475}{ORCID}) [research team member]
+}
+
+}
+\keyword{internal}

@@ -30,7 +30,7 @@ to avoid spurious forces."><!-- mathjax --><script src="https://cdnjs.cloudflare
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">whalestrike</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.2</span>
       </span>
     </div>
 
@@ -60,7 +60,7 @@ to avoid spurious forces."><!-- mathjax --><script src="https://cdnjs.cloudflare
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Create a function for stress in laminated layers</h1>
-    <small class="dont-index">Source: <a href="https://github.com/dankelley/whalestrike/blob/HEAD/R/whalestrike.R" class="external-link"><code>R/whalestrike.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/dankelley/whalestrike/blob/HEAD/R/forces.R" class="external-link"><code>R/forces.R</code></a></small>
     <div class="hidden name"><code>stressFromStrainFunction.Rd</code></div>
     </div>
 
@@ -136,12 +136,12 @@ computation time.)</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/" class="external-link">whalestrike</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Set blubber parameters for each layer, to see if</span></span></span>
 <span class="r-in"><span><span class="co"># we recover the raymond2007 data.</span></span></span>
-<span class="r-in"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="parameters.html">parameters</a></span><span class="op">(</span>a<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1.64e5</span>,<span class="fl">4</span><span class="op">)</span>, b<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2.47</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span>, length.out<span class="op">=</span><span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="parameters.html">parameters</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1.64e5</span>, <span class="fl">4</span><span class="op">)</span>, b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2.47</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">param</span><span class="op">$</span><span class="fu">stressFromStrain</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, type<span class="op">=</span><span class="st">'l'</span>, lwd<span class="op">=</span><span class="fl">4</span>, col<span class="op">=</span><span class="st">"gray"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, type <span class="op">=</span> <span class="st">"l"</span>, lwd <span class="op">=</span> <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"gray"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"raymond2007"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="va">raymond2007</span><span class="op">$</span><span class="va">strain</span>, <span class="va">raymond2007</span><span class="op">$</span><span class="va">stress</span>, col<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="va">raymond2007</span><span class="op">$</span><span class="va">strain</span>, <span class="va">raymond2007</span><span class="op">$</span><span class="va">stress</span>, col <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="stressFromStrainFunction-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
@@ -158,7 +158,7 @@ computation time.)</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.9000.</p>
 </div>
 
       </footer></div>

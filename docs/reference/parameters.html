@@ -21,7 +21,7 @@ tests."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/math
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">whalestrike</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.2</span>
       </span>
     </div>
 
@@ -51,7 +51,7 @@ tests."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/math
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Set parameters for a whale strike simulation</h1>
-    <small class="dont-index">Source: <a href="https://github.com/dankelley/whalestrike/blob/HEAD/R/whalestrike.R" class="external-link"><code>R/whalestrike.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/dankelley/whalestrike/blob/HEAD/R/parameters.R" class="external-link"><code>R/parameters.R</code></a></small>
     <div class="hidden name"><code>parameters.Rd</code></div>
     </div>
 
@@ -265,15 +265,15 @@ Oceanographic Institution, 2007. <a href="https://doi.org//10.1575/1912/1817" cl
 “Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
 Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
 Society, and Fisheries and Oceans Canada, 2018.
-<a href="http://publications.gc.ca/site/eng/9.850838/publication.html" class="external-link">http://publications.gc.ca/site/eng/9.850838/publication.html</a>.</p>
+<a href="https://publications.gc.ca/site/eng/9.850838/publication.html" class="external-link">https://publications.gc.ca/site/eng/9.850838/publication.html</a>.</p>
 <p>Grear, Molly E., Michael R. Motley, Stephanie B. Crofts, Amanda E. Witt, Adam
-P. Summers, and Petra Ditsche. “Mechanical Properties of Harbor Seal Skin and
-Blubber − a Test of Anisotropy.” Zoology 126 (2018): 137–44.
+P. Summers, and Petra Ditsche. "Mechanical Properties of Harbor Seal Skin and
+Blubber − a Test of Anisotropy." Zoology 126 (2018): 137–44.
 <a href="https://doi.org/10.1016/j.zool.2017.11.002" class="external-link">doi:10.1016/j.zool.2017.11.002</a>
 .</p>
-<p>Raymond, J. J. “Development of a Numerical Model to Predict Impact Forces on a
-North Atlantic Right Whale during Collision with a Vessel.” University of New
-Hampshire, 2007. <a href="https://scholars.unh.edu/thesis/309" class="external-link">https://scholars.unh.edu/thesis/309</a>.</p>
+<p>Raymond, J. J. "Development of a Numerical Model to Predict Impact Forces on a
+North Atlantic Right Whale during Collision with a Vessel." University of New
+Hampshire, 2007. <a href="https://scholars.unh.edu/thesis/309/" class="external-link">https://scholars.unh.edu/thesis/309/</a>.</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -283,9 +283,9 @@ Hampshire, 2007. <a href="https://scholars.unh.edu/thesis/309" class="external-l
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">parms</span> <span class="op">&lt;-</span> <span class="fu">parameters</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">epsilon</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out<span class="op">=</span><span class="fl">100</span><span class="op">)</span> <span class="co"># strain</span></span></span>
+<span class="r-in"><span><span class="va">epsilon</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="co"># strain</span></span></span>
 <span class="r-in"><span><span class="va">sigma</span> <span class="op">&lt;-</span> <span class="va">parms</span><span class="op">$</span><span class="fu">stressFromStrain</span><span class="op">(</span><span class="va">epsilon</span><span class="op">)</span> <span class="co"># stress</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">epsilon</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">sigma</span><span class="op">)</span>, xlab<span class="op">=</span><span class="st">"Strain"</span>, ylab<span class="op">=</span><span class="st">"log10(Stress [MPa])"</span>, type<span class="op">=</span><span class="st">"l"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">epsilon</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">sigma</span><span class="op">)</span>, xlab <span class="op">=</span> <span class="st">"Strain"</span>, ylab <span class="op">=</span> <span class="st">"log10(Stress [MPa])"</span>, type <span class="op">=</span> <span class="st">"l"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html" class="external-link">mtext</a></span><span class="op">(</span><span class="st">"Note sudden increase in stress, when bone compression starts"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="parameters-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
@@ -303,7 +303,7 @@ Hampshire, 2007. <a href="https://scholars.unh.edu/thesis/309" class="external-l
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.9000.</p>
 </div>
 
       </footer></div>

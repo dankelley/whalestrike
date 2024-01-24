@@ -24,7 +24,7 @@ designated as x=y=0."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">whalestrike</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.2</span>
       </span>
     </div>
 
@@ -83,11 +83,11 @@ Society, and Fisheries and Oceans Canada, 2018.
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/" class="external-link">whalestrike</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">whaleshape</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">whaleshape</span><span class="op">$</span><span class="va">x</span>, <span class="va">whaleshape</span><span class="op">$</span><span class="va">y</span>, asp<span class="op">=</span><span class="fl">1</span>, type<span class="op">=</span><span class="st">"l"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span><span class="va">whaleshape</span><span class="op">$</span><span class="va">x</span>, <span class="va">whaleshape</span><span class="op">$</span><span class="va">y</span>, col<span class="op">=</span><span class="st">"lightgray"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">whaleshape</span><span class="op">$</span><span class="va">x</span>, <span class="va">whaleshape</span><span class="op">$</span><span class="va">y</span>, asp <span class="op">=</span> <span class="fl">1</span>, type <span class="op">=</span> <span class="st">"l"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span><span class="va">whaleshape</span><span class="op">$</span><span class="va">x</span>, <span class="va">whaleshape</span><span class="op">$</span><span class="va">y</span>, col <span class="op">=</span> <span class="st">"lightgray"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">lw</span> <span class="op">&lt;-</span> <span class="fl">13.7</span></span></span>
 <span class="r-in"><span><span class="va">Rmax</span> <span class="op">&lt;-</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="va">lw</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">whaleshape</span><span class="op">$</span><span class="va">y</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html" class="external-link">mtext</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Max. radius %.2fm for %.1fm-long whale"</span>, <span class="va">Rmax</span>, <span class="va">lw</span><span class="op">)</span>, side<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html" class="external-link">mtext</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Max. radius %.2fm for %.1fm-long whale"</span>, <span class="va">Rmax</span>, <span class="va">lw</span><span class="op">)</span>, side <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="whaleshape-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
@@ -104,7 +104,7 @@ Society, and Fisheries and Oceans Canada, 2018.
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.9000.</p>
 </div>
 
       </footer></div>

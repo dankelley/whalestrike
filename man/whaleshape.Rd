@@ -17,11 +17,11 @@ designated as x=y=0.
 \examples{
 library(whalestrike)
 data(whaleshape)
-plot(whaleshape$x, whaleshape$y, asp=1, type="l")
-polygon(whaleshape$x, whaleshape$y, col="lightgray")
+plot(whaleshape$x, whaleshape$y, asp = 1, type = "l")
+polygon(whaleshape$x, whaleshape$y, col = "lightgray")
 lw <- 13.7
 Rmax <- 0.5 * lw * diff(range(whaleshape$y))
-mtext(sprintf("Max. radius \%.2fm for \%.1fm-long whale", Rmax, lw), side=3)
+mtext(sprintf("Max. radius \%.2fm for \%.1fm-long whale", Rmax, lw), side = 3)
 
 }
 \references{

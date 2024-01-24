@@ -48,46 +48,85 @@ ship, exploring the effect of changing ship speed, ship mass, and the width and
 height of the impact zone."
 
 # app for simulating the effect of a vessel strike on a whale
-ui <- shiny::fluidPage(shiny::tags$style(shiny::HTML("body {font-family: 'Arial'; font-size: 12px; margin-left:1ex}")),
-    shiny::fluidRow(shiny::radioButtons("instructions", "Instructions", choices=c("Hide", "Show"), selected="Show", inline=TRUE)),
-    shiny::conditionalPanel(condition="input.instructions=='Show'",
-        shiny::fluidRow(shiny::HTML(help))),
-    shiny::fluidRow(shiny::column(2,
-        shiny::sliderInput("tmax",  h6("Max time [s]"), ticks=FALSE,
-            min=0.1,  max=5, value=1, step=0.05),
-        shiny::sliderInput("ms",  h6(tags$i("Ship mass [tonne]")), ticks=FALSE,
-            min=10, max=500,  value=45, step=1),
-        shiny::sliderInput("vs", h6(tags$i("Ship speed [knot]")), ticks=FALSE,
-            min=1,  max=30,  value=10, step=0.1)),
-        shiny::column(2,
-            shiny::sliderInput("Ly",  h6("Impact width [m]"), ticks=FALSE,
-                min=0.1, max=2,  value=1.15, step=0.05),
-            shiny::sliderInput("Lz",  h6("Impact height [m]"), ticks=FALSE,
-                min=0.1, max=2,  value=1.15, step=0.05)),
-        shiny::column(2,
-            shiny::sliderInput("lw",  h6("Whale length [m]"), ticks=FALSE,
-                min=5,  max=20, value=13.7, step=0.1),
-            shiny::sliderInput("l1", h6("Skin thickness [cm]"), ticks=FALSE,
-                min=1, max=3, value=2.5, step=0.1),
-            shiny::sliderInput("l2", h6(tags$i("Blubber thickness [cm]")), ticks=FALSE,
-                min=5, max=40, value=16, step=1)),
-        shiny::column(2,
+ui <- shiny::fluidPage(
+    shiny::tags$style(shiny::HTML("body {font-family: 'Arial'; font-size: 12px; margin-left:1ex}")),
+    shiny::fluidRow(shiny::radioButtons("instructions", "Instructions", choices = c("Hide", "Show"), selected = "Show", inline = TRUE)),
+    shiny::conditionalPanel(
+        condition = "input.instructions=='Show'",
+        shiny::fluidRow(shiny::HTML(help))
+    ),
+    shiny::fluidRow(
+        shiny::column(
+            2,
+            shiny::sliderInput("tmax", h6("Max time [s]"),
+                ticks = FALSE,
+                min = 0.1, max = 5, value = 1, step = 0.05
+            ),
+            shiny::sliderInput("ms", h6(tags$i("Ship mass [tonne]")),
+                ticks = FALSE,
+                min = 10, max = 500, value = 45, step = 1
+            ),
+            shiny::sliderInput("vs", h6(tags$i("Ship speed [knot]")),
+                ticks = FALSE,
+                min = 1, max = 30, value = 10, step = 0.1
+            )
+        ),
+        shiny::column(
+            2,
+            shiny::sliderInput("Ly", h6("Impact width [m]"),
+                ticks = FALSE,
+                min = 0.1, max = 2, value = 1.15, step = 0.05
+            ),
+            shiny::sliderInput("Lz", h6("Impact height [m]"),
+                ticks = FALSE,
+                min = 0.1, max = 2, value = 1.15, step = 0.05
+            )
+        ),
+        shiny::column(
+            2,
+            shiny::sliderInput("lw", h6("Whale length [m]"),
+                ticks = FALSE,
+                min = 5, max = 20, value = 13.7, step = 0.1
+            ),
+            shiny::sliderInput("l1", h6("Skin thickness [cm]"),
+                ticks = FALSE,
+                min = 1, max = 3, value = 2.5, step = 0.1
+            ),
+            shiny::sliderInput("l2", h6(tags$i("Blubber thickness [cm]")),
+                ticks = FALSE,
+                min = 5, max = 40, value = 16, step = 1
+            )
+        ),
+        shiny::column(
+            2,
             shiny::selectInput("species", "",
-                choices= c("N. Atl. Right", "Blue", "Bryde", "Fin", "Gray", "Humpback", "Minke",
-                    "Pac. Right", "Sei", "Sperm"),
-                selected="N. Atl. Right"),
-            shiny::sliderInput("l3", h6(tags$i("Sublayer thickness [cm]")), ticks=FALSE,
-                min=5, max=200, value=112, step=1),
-            shiny::sliderInput("l4", h6("Bone thickness [cm]"), ticks=FALSE,
-                min=5, max=30, value=10, step=1)),
-        shiny::column(2,
-            shiny::fileInput("loadFile", "Configuration", multiple=FALSE, accept=c("text/csv", ".csv")),
+                choices = c(
+                    "N. Atl. Right", "Blue", "Bryde", "Fin", "Gray", "Humpback", "Minke",
+                    "Pac. Right", "Sei", "Sperm"
+                ),
+                selected = "N. Atl. Right"
+            ),
+            shiny::sliderInput("l3", h6(tags$i("Sublayer thickness [cm]")),
+                ticks = FALSE,
+                min = 5, max = 200, value = 112, step = 1
+            ),
+            shiny::sliderInput("l4", h6("Bone thickness [cm]"),
+                ticks = FALSE,
+                min = 5, max = 30, value = 10, step = 1
+            )
+        ),
+        shiny::column(
+            2,
+            shiny::fileInput("loadFile", "Configuration", multiple = FALSE, accept = c("text/csv", ".csv")),
             shiny::actionButton("saveFile", "Save"),
             shiny::hr(),
-            shiny::actionButton("quit", "Quit")),
-        shiny::column(2,
+            shiny::actionButton("quit", "Quit")
+        ),
+        shiny::column(
+            2,
             shiny::checkboxGroupInput("plot_panels", "",
-                choices=c("location",
+                choices = c(
+                    "location",
                     "section",
                     "lethality index",
                     "threat",
@@ -96,9 +135,14 @@ ui <- shiny::fluidPage(shiny::tags$style(shiny::HTML("body {font-family: 'Arial'
                     "reactive forces",
                     "skin stress",
                     "compression stress",
-                    "values"),
-                selected=c("location", "section", "lethality index")))),
-    shiny::fluidRow(shiny::plotOutput("plot")))
+                    "values"
+                ),
+                selected = c("location", "section", "lethality index")
+            )
+        )
+    ),
+    shiny::fluidRow(shiny::plotOutput("plot"))
+)
 
 
 #' Server for app, with standard arguments.
@@ -107,8 +151,7 @@ ui <- shiny::fluidPage(shiny::tags$style(shiny::HTML("body {font-family: 'Arial'
 #' @param session A list used for various purposes.
 #' @importFrom utils write.csv
 #' @importFrom shiny observeEvent reactiveValuesToList renderPlot showNotification updateSliderInput
-server <- function(input, output, session)
-{
+server <- function(input, output, session) {
     observeEvent(input$quit, {
         shiny::stopApp()
     })
@@ -128,8 +171,8 @@ server <- function(input, output, session)
         config$ms <- 1e3 * config$ms
         # save in alphabetical order
         o <- order(names(config))
-        write.csv(config[o], row.names=FALSE, file=fullfile)
-        showNotification(paste0('Saved configuration to "', fullfile, '"'), type="message")
+        write.csv(config[o], row.names = FALSE, file = fullfile)
+        showNotification(paste0('Saved configuration to "', fullfile, '"'), type = "message")
     })
 
     observeEvent(input$loadFile, {
@@ -145,59 +188,64 @@ server <- function(input, output, session)
         config$l4 <- config$l[4]
         # FIXME: l1, l2 etc
         for (s in c("tmax", "ms", "lw", "vs", "Ly", "Lz", "l1", "l2", "l3", "l4")) {
-            updateSliderInput(session, s, value=config[[s]])
+            updateSliderInput(session, s, value = config[[s]])
         }
     })
 
-    output$plot <- renderPlot({
-        #message("species: ", input$species)
-        # aDefault <- whalestrike::parameters()$a
-        #cat(file=stderr(), "input$a23=", input$a23, "\n")
-        mw <- if (input$species == "N. Atl. Right") {
-            whaleMassFromLength(input$lw, species="N. Atl. Right Whale", model="fortune2012")
-        } else if (input$species == "Blue") {
-            whaleMassFromLength(input$lw, species="Blue Whale", model="lockyer1976")
-        } else if (input$species == "Bryde") {
-            whaleMassFromLength(input$lw, species="Bryde Whale", model="lockyer1976")
-        } else if (input$species == "Fin") {
-            whaleMassFromLength(input$lw, species="Fin Whale", model="lockyer1976")
-        } else if (input$species == "Gray") {
-            whaleMassFromLength(input$lw, species="Gray Whale", model="lockyer1976")
-        } else if (input$species == "Humpback") {
-            whaleMassFromLength(input$lw, species="Humpback Whale", model="lockyer1976")
-        } else if (input$species == "Minke") {
-            whaleMassFromLength(input$lw, species="Minke Whale", model="lockyer1976")
-        } else if (input$species == "Pac. Right") {
-            whaleMassFromLength(input$lw, species="Pac. Right Whale", model="lockyer1976")
-        } else if (input$species == "Sei") {
-            whaleMassFromLength(input$lw, species="Sei Whale", model="lockyer1976")
-        } else if (input$species == "Sperm") {
-            whaleMassFromLength(input$lw, species="Sperm Whale", model="lockyer1976")
-        } else {
-            stop("programming error: cannot compute mass from length, for species '", input$species)
-        }
-        parms <- whalestrike::parameters(ms=1000*input$ms,
-            Ss=shipAreaFromMass(1000*input$ms),
-            Ly=input$Ly,
-            Lz=input$Lz,
-            lw=input$lw,
-            mw=mw,
-            Sw=whalestrike::whaleAreaFromLength(input$lw, species="N. Atl. Right Whale", "wetted"),
-            l=c(input$l1/100, input$l2/100, input$l3/100, input$l4/100))
-        state <- list(xs=-(1 + parms$lsum), vs=whalestrike::knot2mps(input$vs), xw=0, vw=0)
-        t <- seq(0, input$tmax, length.out=2000)
-        sol <- strike(t, state, parms)
-        if (sol$refinedGrid) {
-            showNotification("Auto-refined grid to capture acceleration peak")
-        }
-        npanels <- length(input$plot_panels)
-        nrows <- floor(sqrt(npanels))
-        ncols <- ceiling(npanels / nrows)
-        par(mfrow=c(nrows, ncols), mar=c(3.2, 3, 2.5, 2), mgp=c(1.7, 0.6, 0), cex=1)
-        for (which in input$plot_panels) {
-            plot(sol, which=which)
-        }
-    }, pointsize=14)#, height=500)
+    output$plot <- renderPlot(
+        {
+            # message("species: ", input$species)
+            # aDefault <- whalestrike::parameters()$a
+            # cat(file=stderr(), "input$a23=", input$a23, "\n")
+            mw <- if (input$species == "N. Atl. Right") {
+                whaleMassFromLength(input$lw, species = "N. Atl. Right Whale", model = "fortune2012")
+            } else if (input$species == "Blue") {
+                whaleMassFromLength(input$lw, species = "Blue Whale", model = "lockyer1976")
+            } else if (input$species == "Bryde") {
+                whaleMassFromLength(input$lw, species = "Bryde Whale", model = "lockyer1976")
+            } else if (input$species == "Fin") {
+                whaleMassFromLength(input$lw, species = "Fin Whale", model = "lockyer1976")
+            } else if (input$species == "Gray") {
+                whaleMassFromLength(input$lw, species = "Gray Whale", model = "lockyer1976")
+            } else if (input$species == "Humpback") {
+                whaleMassFromLength(input$lw, species = "Humpback Whale", model = "lockyer1976")
+            } else if (input$species == "Minke") {
+                whaleMassFromLength(input$lw, species = "Minke Whale", model = "lockyer1976")
+            } else if (input$species == "Pac. Right") {
+                whaleMassFromLength(input$lw, species = "Pac. Right Whale", model = "lockyer1976")
+            } else if (input$species == "Sei") {
+                whaleMassFromLength(input$lw, species = "Sei Whale", model = "lockyer1976")
+            } else if (input$species == "Sperm") {
+                whaleMassFromLength(input$lw, species = "Sperm Whale", model = "lockyer1976")
+            } else {
+                stop("programming error: cannot compute mass from length, for species '", input$species)
+            }
+            parms <- whalestrike::parameters(
+                ms = 1000 * input$ms,
+                Ss = shipAreaFromMass(1000 * input$ms),
+                Ly = input$Ly,
+                Lz = input$Lz,
+                lw = input$lw,
+                mw = mw,
+                Sw = whalestrike::whaleAreaFromLength(input$lw, species = "N. Atl. Right Whale", "wetted"),
+                l = c(input$l1 / 100, input$l2 / 100, input$l3 / 100, input$l4 / 100)
+            )
+            state <- list(xs = -(1 + parms$lsum), vs = whalestrike::knot2mps(input$vs), xw = 0, vw = 0)
+            t <- seq(0, input$tmax, length.out = 2000)
+            sol <- strike(t, state, parms)
+            if (sol$refinedGrid) {
+                showNotification("Auto-refined grid to capture acceleration peak")
+            }
+            npanels <- length(input$plot_panels)
+            nrows <- floor(sqrt(npanels))
+            ncols <- ceiling(npanels / nrows)
+            par(mfrow = c(nrows, ncols), mar = c(3.2, 3, 2.5, 2), mgp = c(1.7, 0.6, 0), cex = 1)
+            for (which in input$plot_panels) {
+                plot(sol, which = which)
+            }
+        },
+        pointsize = 14
+    ) # , height=500)
 }
 
 #' GUI app for interactive whale-strike simulations
@@ -273,10 +321,10 @@ server <- function(input, output, session)
 #' @export
 #'
 #' @importFrom shiny shinyApp
-app <- function(mode="simple", options=list(height=500)) # NOTE: height has no effect
+app <- function(mode = "simple", options = list(height = 500)) # NOTE: height has no effect
 {
     if (mode == "simple") {
-        shinyApp(ui=ui, server=server, options=options)
+        shinyApp(ui = ui, server = server, options = options)
     } else {
         stop("unknown mode; only \"simple\" is permitted")
     }

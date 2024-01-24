@@ -17,8 +17,8 @@ Summarize the parameters of a simulation, and its results
 \examples{
 library(whalestrike)
 # Example 1: graphs, as in the shiny app
-t <- seq(0, 0.7, length.out=200)
-state <- list(xs=-2, vs=knot2mps(10), xw=0, vw=0) # ship speed 10 knots
+t <- seq(0, 0.7, length.out = 200)
+state <- list(xs = -2, vs = knot2mps(10), xw = 0, vw = 0) # ship speed 10 knots
 parms <- parameters()
 sol <- strike(t, state, parms)
 summary(sol)

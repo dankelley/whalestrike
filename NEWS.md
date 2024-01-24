@@ -1,3 +1,8 @@
+# whalestrike 0.4.2
+
+* Subdivide code into smaller files; improve formatting.
+* Document overall package in the newly required way.
+
 # whalestrike 0.4.1
 
 * Delint code.
