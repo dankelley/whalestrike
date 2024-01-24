@@ -152,20 +152,20 @@
 #'
 #' @references
 #'
-#' Campbell-Malone, Regina. “Biomechanics of North Atlantic Right Whale Bone :
+#' Campbell-Malone, Regina. "Biomechanics of North Atlantic Right Whale Bone:
 #' Mandibular Fracture as a Fatal Endpoint for Blunt Vessel-Whale Collision
-#' Modeling.” PhD Thesis, Massachusetts Institute of Technology and Woods Hole
+#' Modeling." PhD Thesis, Massachusetts Institute of Technology and Woods Hole
 #' Oceanographic Institution, 2007. \doi{/10.1575/1912/1817}.
 #'
-#' Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
-#' “Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
-#' Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
+#' Daoust, Pierre-Yves, Emilie L. Couture, Tonya Wimmer, and Laura Bourque.
+#' "Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
+#' Lawrence, 2017." Canadian Wildlife Health Cooperative, Marine Animal Response
 #' Society, and Fisheries and Oceans Canada, 2018.
 #' \url{https://publications.gc.ca/site/eng/9.850838/publication.html}.
 #'
 #' Grear, Molly E., Michael R. Motley, Stephanie B. Crofts, Amanda E. Witt, Adam
 #' P. Summers, and Petra Ditsche. "Mechanical Properties of Harbor Seal Skin and
-#' Blubber − a Test of Anisotropy." Zoology 126 (2018): 137–44.
+#' Blubber - a Test of Anisotropy." Zoology 126 (2018): 137-44.
 #' \doi{10.1016/j.zool.2017.11.002}.
 #'
 #' Raymond, J. J. "Development of a Numerical Model to Predict Impact Forces on a
@@ -421,9 +421,9 @@ summary.parameters <- function(object, ...) {
 #'
 #' @references
 #'
-#' Daoust, Pierre-Yves, Émilie L. Couture, Tonya Wimmer, and Laura Bourque.
-#' “Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
-#' Lawrence, 2017.” Canadian Wildlife Health Cooperative, Marine Animal Response
+#' Daoust, Pierre-Yves, Emilie L. Couture, Tonya Wimmer, and Laura Bourque.
+#' "Incident Report. North Atlantic Right Whale Mortality Event in the Gulf of St.
+#' Lawrence, 2017." Canadian Wildlife Health Cooperative, Marine Animal Response
 #' Society, and Fisheries and Oceans Canada, 2018.
 #' \url{https://publications.gc.ca/site/eng/9.850838/publication.html}.
 #'

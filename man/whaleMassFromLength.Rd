@@ -128,16 +128,16 @@ legend("topleft",
 }
 \references{
 \itemize{
-\item Lockyer, C. “Body Weights of Some Species of Large Whales.” J. Cons. Int.
-Explor. Mer. 36, no. 3 (1976): 259–73.
+\item Lockyer, C. "Body Weights of Some Species of Large Whales." J. Cons. Int.
+Explor. Mer. 36, no. 3 (1976): 259-73.
 \item Moore, M.J., A.R. Knowlton, S.D. Kraus, W.A. McLellan, and R.K. Bonde.
-“Morphometry, Gross Morphology and Available Histopathology in North Atlantic
-Right Whale (Eubalaena Glacialis) Mortalities (1970 to 2002).” Journal of
-Cetacean Research and Management 6, no. 3 (2005): 199–214.
+"Morphometry, Gross Morphology and Available Histopathology in North Atlantic
+Right Whale (Eubalaena Glacialis) Mortalities (1970 to 2002)." Journal of
+Cetacean Research and Management 6, no. 3 (2005): 199-214.
 \item Fortune, Sarah M. E., Andrew W. Trites, Wayne L. Perryman, Michael J. Moore,
-Heather M. Pettis, and Morgan S. Lynn. “Growth and Rapid Early Development of
-North Atlantic Right Whales (Eubalaena Glacialis).” Journal of Mammalogy 93,
-no. 5 (2012): 1342–54. \doi{/10.1644/11-MAMM-A-297.1}.
+Heather M. Pettis, and Morgan S. Lynn. "Growth and Rapid Early Development of
+North Atlantic Right Whales (Eubalaena Glacialis)." Journal of Mammalogy 93,
+no. 5 (2012): 1342-54. \doi{/10.1644/11-MAMM-A-297.1}.
 }
 }
 \seealso{
