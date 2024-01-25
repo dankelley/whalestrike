@@ -6,7 +6,10 @@
 #' based on animal length, based on formulae as listed in
 #' \dQuote{Details}.
 #'
-#' The permitted values for `model` and `species` are as follows.
+#' The permitted values for `model` and `species` are as follows. Note
+#' that if `model` is not provided, then Fortune (2012) is used
+#' for `"N. Atl. Right Whale"`, and Lockyer (1976) is used for all
+#' other species.
 #'
 #' * `"moore2005"` (which only works if `species` is `"N. Atl. Right Whale"`) yields
 #' \eqn{242.988 * exp(0.4 * length)}{242.988 * exp(0.4 * L)},
@@ -42,13 +45,14 @@
 #'     * `"Sei Whale"`:        \eqn{25.763 * L^2.43}{25.763 * L^2.43}
 #'     * `"Sperm Whale"`:      \eqn{6.648 * L^3.18}{6.648 * L^3.18}
 #'
-#' @param L Whale length in m.
+#' @param L whale length in m.
 #'
 #' @param species character value specifying the species (see \dQuote{Details}).
 #' If  only one value is given, then it will repeated to have the same length
 #' as `L`. Otherwise, its length must match the length of `L`.
 #'
-#' @param model character value specifying the model (see \dQuote{Details}).
+#' @param model either NULL (the default), to choose a model based on the
+#' particular species, or a character value specifying the model (see \dQuote{Details}).
 #' If  only one value is given, then it will repeated to have the same length
 #' as `L`. Otherwise, its length must match the length of `L`.
 #'
@@ -136,8 +140,37 @@
 #' @author Dan Kelley
 #'
 #' @export
-whaleMassFromLength <- function(L, species = "N. Atl. Right Whale", model = "fortune2012") {
-    n <- length(L)
+whaleMassFromLength <- function(L, species = "N. Atl. Right Whale", model = NULL) {
+    n <- length(species)
+    if (length(L) < n) {
+        L <- rep(L, n)
+    }
+    if (length(species) < length(L)) {
+        species <- rep(species, length(L))
+    }
+    n <- length(species)
+    if (is.null(model)) {
+        model <- unlist(
+            sapply(
+                species,
+                function(s) {
+                    switch(s,
+                        "N. Atl. Right Whale" = "fortune2012",
+                        "Blue Whale" = "lockyer1976",
+                        "Bryde Whale" = "lockyer1976",
+                        "Fin Whale" = "lockyer1976",
+                        "Gray Whale" = "lockyer1976",
+                        "Humpback Whale" = "lockyer1976",
+                        "Minke Whale" = "lockyer1976",
+                        "Pac. Right Whale" = "lockyer1976",
+                        "Sei Whale" = "lockyer1976",
+                        "Sperm Whale" = "lockyer1976"
+                    )
+                }
+            )
+        )
+    }
+    #print(data.frame(species = species, model = model))
     if (length(model) == 1) {
         model <- rep(model, n)
     }
@@ -286,4 +319,3 @@ shipAreaFromMass <- function(ms) {
     factor <- (ms / displacement)^(1 / 3) # lengthscale factor
     length * (beam + 2 * draft) * factor^2
 }
-

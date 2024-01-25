@@ -4,16 +4,17 @@
 \alias{whaleMassFromLength}
 \title{Whale mass inferred from length}
 \usage{
-whaleMassFromLength(L, species = "N. Atl. Right Whale", model = "fortune2012")
+whaleMassFromLength(L, species = "N. Atl. Right Whale", model = NULL)
 }
 \arguments{
-\item{L}{Whale length in m.}
+\item{L}{whale length in m.}
 
 \item{species}{character value specifying the species (see \dQuote{Details}).
 If  only one value is given, then it will repeated to have the same length
 as \code{L}. Otherwise, its length must match the length of \code{L}.}
 
-\item{model}{character value specifying the model (see \dQuote{Details}).
+\item{model}{either NULL (the default), to choose a model based on the
+particular species, or a character value specifying the model (see \dQuote{Details}).
 If  only one value is given, then it will repeated to have the same length
 as \code{L}. Otherwise, its length must match the length of \code{L}.}
 }
@@ -26,7 +27,10 @@ based on animal length, based on formulae as listed in
 \dQuote{Details}.
 }
 \details{
-The permitted values for \code{model} and \code{species} are as follows.
+The permitted values for \code{model} and \code{species} are as follows. Note
+that if \code{model} is not provided, then Fortune (2012) is used
+for \code{"N. Atl. Right Whale"}, and Lockyer (1976) is used for all
+other species.
 \itemize{
 \item \code{"moore2005"} (which only works if \code{species} is \code{"N. Atl. Right Whale"}) yields
 \eqn{242.988 * exp(0.4 * length)}{242.988 * exp(0.4 * L)},

@@ -316,11 +316,13 @@ server <- function(input, output, session) {
 #' @param options list containing options that are provided
 #' to \code{\link[shiny]{shinyApp}}, which creates the GUI app.
 #'
-#' @author Dan Kelley
-#'
 #' @export
 #'
 #' @importFrom shiny shinyApp
+#'
+#' @family interactive apps
+#'
+#' @author Dan Kelley
 app <- function(mode = "simple", options = list(height = 500)) # NOTE: height has no effect
 {
     if (mode == "simple") {
