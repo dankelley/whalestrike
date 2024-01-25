@@ -7,7 +7,7 @@ Authors@R: c(
     person(given="Sean", family="Brilliant", email="seanb@cwf-fcf.org", role="rtm", comment=c(ORCID="0000-0001-5494-3475")))
 Maintainer: Dan Kelley <dan.kelley@dal.ca>
 Description: Simple simulation of the mechanics of a boat striking a whale.
-Depends: deSolve, R (>= 3.5.0), shiny
+Depends: bslib, deSolve, R (>= 3.5.0), shiny
 Suggests: knitr, rmarkdown, testthat
 License: GPL (>= 3)
 Encoding: UTF-8

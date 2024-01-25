@@ -77,6 +77,11 @@ mass. It does not affect the thicknesses of blubber or sublayer, the values of
 which have been set up to represent a midsection strike on a North Atlantic
 Right Whale.
 }
+\seealso{
+Other interactive apps: 
+\code{\link{app2}()}
+}
 \author{
 Dan Kelley
 }
+\concept{interactive apps}
