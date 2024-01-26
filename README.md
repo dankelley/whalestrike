@@ -35,15 +35,15 @@ package is not yet installed on your machine.)
 ## Usage
 
 Most users will find that the GUI application is a good way to learn about the
-package.  To start this, type
-```R
-library(whalestrike)
-app()
-```
-in an R session.  A window will open, which shows some information at the top.
-Below that several sliders, buttons, and pull-down menus provide ways to control
-the simulation and the graphical representation of the results. Use `?app` to
-learn more about the process.
+package.  To start this, type ```R library(whalestrike) app2() ``` in an R
+session.  A window will open in your browser.  On the left-hand side is a
+region with controllers.  Only one marked `Ship` will be open at first.  Try
+adjusting the ship speed, to see what happens to the plots.  Then try other
+elements of the `Ship` controller.  Then try closing that controller, opening
+the others and exploring.  The app has a `Help` button that give smore
+information.  The `Code` button is also handy: it presents a dialog box with
+the raw R code that could be used outside the app, to generate the plots shown.
+In other words, `app2()` acts as both a tool and a tutor.
 
 Users who want more control, and who want to deal with the results in numerical
 as opposed to graphical form, should then start exploring the `strike()`
