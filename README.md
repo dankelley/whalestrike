@@ -35,9 +35,15 @@ package is not yet installed on your machine.)
 ## Usage
 
 Most users will find that the GUI application is a good way to learn about the
-package.  To start this, type ```R library(whalestrike) app2() ``` in an R
-session.  A window will open in your browser.  On the left-hand side is a
-region with controllers.  Only one marked `Ship` will be open at first.  Try
+package.  To start this, type
+
+```R
+library(whalestrike)
+app2()
+```
+
+in an R session.  A window will open in your browser.  On the left-hand side is
+a region with controllers.  Only one marked `Ship` will be open at first.  Try
 adjusting the ship speed, to see what happens to the plots.  Then try other
 elements of the `Ship` controller.  Then try closing that controller, opening
 the others and exploring.  The app has a `Help` button that give smore
