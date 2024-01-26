@@ -2,7 +2,8 @@
 
 <!-- badges: start -->
 
-[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/whalestrike)](https://cran.r-project.org/package=whalestrike)
+[![GitHub last commit](https://img.shields.io/github/last-commit/dankelley/whalestrike)](https://img.shields.io/github/last-commit/dankelley/whalestrike)
+[![R-CMD-check](https://github.com/dankelley/whalestrike/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dankelley/whalestrike/actions/workflows/R-CMD-check.yaml)
 
 <!-- badges: end -->
 
