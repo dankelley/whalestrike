@@ -22,13 +22,15 @@ see Kelley et al. (2020).
 
 ## Installation
 
-The package is not yet available on CRAN, and must be
-installed from source. This can be done either by downloading the source and
-building it locally, or by the simpler method of typing
+The package is not yet available on CRAN, and must be installed from source.
+This can be done either by downloading the source and building it locally, or
+by the simpler method of typing
 ```R
+# install.package("remotes")
 remotes::install_github("dankelley/whalestrike", ref="main")
 ```
-in an R session.
+in an R session.  (Uncomment the first line, if the `remotes`
+package is not yet installed on your machine.)
 
 ## Usage
 
