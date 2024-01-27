@@ -21,7 +21,8 @@ documentation to learn more about these things.
 <p>
 
 More information on this app may be retrieved by typing <tt>?app2</tt>
-in the R console.
+in the R console, and a video demonstration is provided on
+[youtube](https://youtu.be/kTMl3nXa5A4).
 
 </p>
 
@@ -65,6 +66,9 @@ simulation under view at any given time.
 #' investigate practical applications.  For more about how the simulations
 #' are carried out, as well as comments on some applications that
 #' may be of interest, please consult Kelley et al. (2020).
+#'
+#' More information on [app2()] in video form on
+#' [youtube](https://youtu.be/kTMl3nXa5A4).
 #'
 #' @param debug logical value indicating whether to print output to
 #' the R console as the computation is done.

@@ -38,6 +38,9 @@ that a half hour of such exploration will let users start to
 investigate practical applications.  For more about how the simulations
 are carried out, as well as comments on some applications that
 may be of interest, please consult Kelley et al. (2020).
+
+More information on \code{\link[=app2]{app2()}} in video form on
+\href{https://youtu.be/kTMl3nXa5A4}{youtube}.
 }
 \references{
 Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. "Assessing the Lethality

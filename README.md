@@ -49,7 +49,9 @@ elements of the `Ship` controller.  Then try closing that controller, opening
 the others and exploring.  The app has a `Help` button that give smore
 information.  The `Code` button is also handy: it presents a dialog box with
 the raw R code that could be used outside the app, to generate the plots shown.
-In other words, `app2()` acts as both a tool and a tutor.
+In other words, `app2()` acts as both a tool and a tutor.  A video
+demonstrating `app2()` is at available on
+[youtube](https://youtu.be/kTMl3nXa5A4).
 
 Users who want more control, and who want to deal with the results in numerical
 as opposed to graphical form, should then start exploring the `strike()`
