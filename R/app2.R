@@ -101,21 +101,9 @@ app2 <- function(debug = FALSE) {
         sidebar = bslib::sidebar(
             # title = "Controls", # a waste of space (who could not figure this out?)
             width = 280, # default, 250, too narrow for one of the plot types
-            #shiny::actionButton("help", "Help", width = "33%"),
-            #shiny::actionButton("quit", "Quit", width = "33%"),
             bslib::accordion(
-                open = FALSE,#"ship",
+                open = FALSE,
                 multiple = TRUE,
-                #bslib::accordion_panel(
-                #    "inspect",
-                #    shiny::actionButton("help", "Help"),
-                #    shiny::actionButton("code", "Code"),
-                #    shiny::actionButton("quit", "Quit")
-                #    #shiny::sliderInput("tmax", shiny::h6("Max time [s]"),
-                #    #    ticks = FALSE,
-                #    #    min = 0.1, max = 5, value = 1, step = 0.05
-                #    #)
-                #),
                 accordion_panel(
                     "plot",
                     shiny::checkboxGroupInput("plot_panels", "",
