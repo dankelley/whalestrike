@@ -14,7 +14,9 @@ the R console as the computation is done.}
 This is similar to \code{\link[=app]{app()}}, except that it relies on the \code{bslib} package
 to provide a cleaner interface, in which sub-windows for controllers
 can be opened and closed by the user. Since \code{bslib} is still experimental,
-\code{\link[=app2]{app2()}} may not work in the future.
+\code{\link[=app2]{app2()}} may start failing in the future, and users are asked to
+report an issue on the package github page, so the author
+can make adjustments.
 }
 \details{
 Compared with \code{\link[=app]{app()}}, the present function lacks the ability to save settings
@@ -27,43 +29,20 @@ to reproduce the simulated state.  This may be of help to the those seeking
 to explore the simulator in programmatically, for precision and reproducibility.
 
 Sliders, buttons, and choosers are grouped into panes that appear on
-the left of the view. When \code{\link[=app2]{app2()}} first opens, the only pane that is
-open is the "ship" pane.  To start, try adjusting
-the "Ship Speed" slider in that pane, to see what happens with
-the plots.  In particular, notice how the "Lethality Index" plot indicates
-more threatening conditions, as ship speed is increased.  Then, at a fixed
-speed, try lowering the "Impact width" controller.  You will see that
-the lethality index. If that does not make sense, think of the difference
-about the penetration depth for a hammer hitting a piece of wood, versus
-a hammer hitting a nail held to that wood.  Proceed in this way, adjusting
-controllers and trying to build intuition.  As you explore the controllers
-in this way, you may find it helpful to examine the code produced by the
-"Code" button.  Note that the package provides documentation on all
-the functions that are used in that code.
-
-The default setup, which is shown before the user alters any of the sliders,
-etc., is a simulation of a small fishing boat, of mass 45 tonnes, moving at
-speed 10 knots towards a whale of length 13.7m. (The whale length is used to
-compute its mass, using a formula that is described by the output of typing
-\code{help("whaleMassFromLength","whalestrike")} in an R console).
-
-Much can be learned by adjusting the sliders and examining the plotted output.
-As an exercise, try setting to a particular ship mass of interest, and then to
-slide the ship speed to higher and lower values, whilst monitoring the "threat"
-panel for black regions. This will reveal a critical speed for conditions that
-threaten the whale.  Next, try altering the sublayer thickness, which is a
-surrogate for location along the whale body, because e.g. the sublayer is
-thinner near the mandible.
-
-Advanced users are likely to want to alter the values of impact width and
-height. The default setting are intended to mimic a small fishing boat, such as
-a Cape Islander. Try lowering the width, to simulate a strike by a daggerboard
-or keel of a sailing boat.
-
-Note that the pulldown menu for setting the whale species affects \emph{only} whale
-area and mass. It does not affect the thicknesses of blubber or sublayer, the values of
-which have been set up to represent a midsection strike on a North Atlantic
-Right Whale.
+the left of the view. When \code{\link[=app2]{app2()}} first opens, all of these panes
+are closed. To get acquainted with the app, try adjusting the controllers
+that \emph{are} visible on the initial view.  Then, open the "ship" pane and
+increase the ship mass.  Do you find that the results make qualitative
+sense?  Continue this process, exploring all the panes. It is hoped
+that a half hour of such exploration will let users start to
+investigate practical applications.  For more about how the simulations
+are carried out, as well as comments on some applications that
+may be of interest, please consult Kelley et al. (2020).
+}
+\references{
+Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. "Assessing the Lethality
+of Ship Strikes on Whales Using Simple Biophysical Models." Marine Mammal
+Science, October 12, 2020, mms.12745. \doi{10.1111/mms.12745}.
 }
 \seealso{
 Other interactive apps: 
