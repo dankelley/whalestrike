@@ -85,8 +85,9 @@
 </h2>
 <p>The package is not yet available on CRAN, and must be installed from source. This can be done either by downloading the source and building it locally, or by the simpler method of typing</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"dankelley/whalestrike"</span>, ref<span class="op">=</span><span class="st">"main"</span><span class="op">)</span></span></code></pre></div>
-<p>in an R session.</p>
+<code class="sourceCode R"><span><span class="co"># install.package("remotes")</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"dankelley/whalestrike"</span>, ref<span class="op">=</span><span class="st">"main"</span><span class="op">)</span></span></code></pre></div>
+<p>in an R session. (Uncomment the first line, if the <code>remotes</code> package is not yet installed on your machine.)</p>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
@@ -94,8 +95,8 @@
 <p>Most users will find that the GUI application is a good way to learn about the package. To start this, type</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/" class="external-link">whalestrike</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/app.html">app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>in an R session. A window will open, which shows some information at the top. Below that several sliders, buttons, and pull-down menus provide ways to control the simulation and the graphical representation of the results. Use <code><a href="reference/app.html">?app</a></code> to learn more about the process.</p>
+<span><span class="fu"><a href="reference/app2.html">app2</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>in an R session. A window will open in your browser. On the left-hand side is a region with controllers. Only one marked <code>Ship</code> will be open at first. Try adjusting the ship speed, to see what happens to the plots. Then try other elements of the <code>Ship</code> controller. Then try closing that controller, opening the others and exploring. The app has a <code>Help</code> button that gives more information. The <code>Code</code> button is also handy: it presents a dialog box with the raw R code that could be used outside the app, to generate the plots shown. In other words, <code><a href="reference/app2.html">app2()</a></code> acts as both a tool and a tutor. A video demonstrating <code><a href="reference/app2.html">app2()</a></code> is at available on <a href="https://youtu.be/kTMl3nXa5A4" class="external-link">youtube</a>.</p>
 <p>Users who want more control, and who want to deal with the results in numerical as opposed to graphical form, should then start exploring the <code><a href="reference/strike.html">strike()</a></code> function. To learn how it works, type</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/" class="external-link">whalestrike</a></span><span class="op">)</span></span>
@@ -146,7 +147,8 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://cran.r-project.org/package=whalestrike" class="external-link"><img src="https://www.r-pkg.org/badges/version/whalestrike" alt="CRAN_Status_Badge"></a></li>
+<li><a href="https://img.shields.io/github/last-commit/dankelley/whalestrike" class="external-link"><img src="https://img.shields.io/github/last-commit/dankelley/whalestrike" alt="GitHub last commit"></a></li>
+<li><a href="https://github.com/dankelley/whalestrike/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/dankelley/whalestrike/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
 

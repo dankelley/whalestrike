@@ -2,39 +2,50 @@
 
 help <- "
 <p>
-When this app starts, the sliders and tick-boxes are set up to model a small
-fishing boat, of mass 45 tonnes, moving at 10 knots towards a whale of
-length 13.7m. (The whale length is used to compute its mass, using a formula
-that is described by the output of typing
-<tt>help(\"whaleMassFromLength\",\"whalestrike\")</tt>
-in an R console).
+
+When this app starts, the sliders and tick-boxes are set up to model a
+small (45 tonne) fishing boat moving at 10 knots towards a whale of
+length 13.7m.
+
 </p>
 
 <p>
-Sliders are provided for setting certain key properties of the ship and the
-whale. The details of these and the other parameters are revealed by
-typing <tt>help(\"parameters\",\"whalestrike\")</tt>
-and
-<tt>help(\"strike\",\"whalestrike\")</tt>
-in an R console.
+
+Clicking on the down-arrow icons labelled <tt>plot</tt>,
+<tt>whale</tt> and <tt>ship</tt> opens up controllers for setting
+certain key properties of the simulation. See the package
+documentation to learn more about these things.
+
 </p>
 
-Checkboxes are provided to select the desired plot types.
-For the details of these type, type
-<tt>help(\"plot.strike\",\"plot\")</tt>
-in an
-R console.)
+<p>
 
-Typing
-<tt>\"?app2\"</tt>
-will yield some more information about this app."
+More information on this app may be retrieved by typing <tt>?app2</tt>
+in the R console, and a video demonstration is provided on
+[youtube](https://youtu.be/kTMl3nXa5A4).
+
+</p>
+
+<p>
+
+The simulation works by calling the <tt>strike()</tt> function within
+the package, so a good way to learn more about it is to type
+<tt>?strike</tt> in the R console. Also, please note that clicking the
+</ttCode</tt> button, which displays the code used to set up the
+simulation under view at any given time.
+
+</p>
+
+"
 
 #' GUI application for whale simulation (version 2)
 #'
 #' This is similar to [app()], except that it relies on the `bslib` package
 #' to provide a cleaner interface, in which sub-windows for controllers
 #' can be opened and closed by the user. Since `bslib` is still experimental,
-#' [app2()] may not work in the future.
+#' [app2()] may start failing in the future, and users are asked to
+#' report an issue on the package github page, so the author
+#' can make adjustments.
 #'
 #' Compared with [app()], the present function lacks the ability to save settings
 #' and reload them later. This is mainly because it only works with locally-run
@@ -43,46 +54,22 @@ will yield some more information about this app."
 #' which is beyond the present purpose.  However, there is an addition with
 #' [app2()] that might prove more useful: a button to display the code required
 #' to reproduce the simulated state.  This may be of help to the those seeking
-#' to explore the simulator in programmatically, for precision and reproducibility.
+#' to explore the results of simulations more precisely and with
+#' greater reproducibility.
 #'
 #' Sliders, buttons, and choosers are grouped into panes that appear on
-#' the left of the view. When [app2()] first opens, the only pane that is
-#' open is the "ship" pane.  To start, try adjusting
-#' the "Ship Speed" slider in that pane, to see what happens with
-#' the plots.  In particular, notice how the "Lethality Index" plot indicates
-#' more threatening conditions, as ship speed is increased.  Then, at a fixed
-#' speed, try lowering the "Impact width" controller.  You will see that
-#' the lethality index. If that does not make sense, think of the difference
-#' about the penetration depth for a hammer hitting a piece of wood, versus
-#' a hammer hitting a nail held to that wood.  Proceed in this way, adjusting
-#' controllers and trying to build intuition.  As you explore the controllers
-#' in this way, you may find it helpful to examine the code produced by the
-#' "Code" button.  Note that the package provides documentation on all
-#' the functions that are used in that code.
+#' the left of the view. When [app2()] first opens, all of these panes
+#' are closed. To get acquainted with the app, try adjusting the controllers
+#' that *are* visible on the initial view.  Then, open the "ship" pane and
+#' increase the ship mass.  Do you find that the results make qualitative
+#' sense?  Continue this process, exploring all the panes. It is hoped
+#' that a half hour of such exploration will let users start to
+#' investigate practical applications.  For more about how the simulations
+#' are carried out, as well as comments on some applications that
+#' may be of interest, please consult Kelley et al. (2020).
 #'
-#' The default setup, which is shown before the user alters any of the sliders,
-#' etc., is a simulation of a small fishing boat, of mass 45 tonnes, moving at
-#' speed 10 knots towards a whale of length 13.7m. (The whale length is used to
-#' compute its mass, using a formula that is described by the output of typing
-#' `help("whaleMassFromLength","whalestrike")` in an R console).
-#'
-#' Much can be learned by adjusting the sliders and examining the plotted output.
-#' As an exercise, try setting to a particular ship mass of interest, and then to
-#' slide the ship speed to higher and lower values, whilst monitoring the "threat"
-#' panel for black regions. This will reveal a critical speed for conditions that
-#' threaten the whale.  Next, try altering the sublayer thickness, which is a
-#' surrogate for location along the whale body, because e.g. the sublayer is
-#' thinner near the mandible.
-#'
-#' Advanced users are likely to want to alter the values of impact width and
-#' height. The default setting are intended to mimic a small fishing boat, such as
-#' a Cape Islander. Try lowering the width, to simulate a strike by a daggerboard
-#' or keel of a sailing boat.
-#'
-#' Note that the pulldown menu for setting the whale species affects *only* whale
-#' area and mass. It does not affect the thicknesses of blubber or sublayer, the values of
-#' which have been set up to represent a midsection strike on a North Atlantic
-#' Right Whale.
+#' More information on [app2()] in video form on
+#' [youtube](https://youtu.be/kTMl3nXa5A4).
 #'
 #' @param debug logical value indicating whether to print output to
 #' the R console as the computation is done.
@@ -93,6 +80,12 @@ will yield some more information about this app."
 #'
 #' @family interactive apps
 #'
+#' @references
+#'
+#' Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. "Assessing the Lethality
+#' of Ship Strikes on Whales Using Simple Biophysical Models." Marine Mammal
+#' Science, October 12, 2020, mms.12745. \doi{10.1111/mms.12745}.
+##'
 #' @author Dan Kelley
 app2 <- function(debug = FALSE) {
     dmsg <- function(...) {
@@ -106,22 +99,16 @@ app2 <- function(debug = FALSE) {
     }
     ui <- bslib::page_sidebar(
         # title = "app2", # a waste of space (the user launched this, and can do help)
+        shiny::tags$script(paste0("$(document).on(\"keypress\", function (e) {",
+            "Shiny.onInputChange(\"keypress\", e.which);",
+            "Shiny.onInputChange(\"keypressTrigger\", Math.random());",
+            "});")),
         sidebar = bslib::sidebar(
             # title = "Controls", # a waste of space (who could not figure this out?)
             width = 280, # default, 250, too narrow for one of the plot types
             bslib::accordion(
-                open = "ship",
+                open = FALSE,
                 multiple = TRUE,
-                bslib::accordion_panel(
-                    "inspect",
-                    shiny::actionButton("help", "Help"),
-                    shiny::actionButton("quit", "Quit"),
-                    shiny::actionButton("code", "Code"),
-                    shiny::sliderInput("tmax", shiny::h6("Max time [s]"),
-                        ticks = FALSE,
-                        min = 0.1, max = 5, value = 1, step = 0.05
-                    )
-                ),
                 accordion_panel(
                     "plot",
                     shiny::checkboxGroupInput("plot_panels", "",
@@ -183,13 +170,20 @@ app2 <- function(debug = FALSE) {
                     shiny::sliderInput("Lz", shiny::h6("Impact height [m]"),
                         ticks = FALSE,
                         min = 0.1, max = 2, value = 1.15, step = 0.05
-                    ),
-                    shiny::sliderInput("vs", shiny::h6("Speed [knot]"),
-                        ticks = FALSE,
-                        min = 1, max = 30, value = 10, step = 0.1
                     )
                 )
-            )
+            ),
+            shiny::sliderInput("tmax", shiny::h6("Max time [s]"),
+                ticks = FALSE,
+                min = 0.1, max = 5, value = 1, step = 0.05
+            ),
+            shiny::sliderInput("vs", shiny::h6("Ship Speed [knot]"),
+                ticks = FALSE,
+                min = 1, max = 30, value = 10, step = 0.1
+            ),
+            shiny::actionButton("help", "Help"),
+            shiny::actionButton("code", "Code"),
+            shiny::actionButton("quit", "Quit")
         ),
         bslib::card(
             shiny::plotOutput("plot")
@@ -223,6 +217,18 @@ app2 <- function(debug = FALSE) {
                 stop("programming error: species not handled: ", species)
             }
         }
+        shiny::observeEvent(input$keypressTrigger,
+            {
+                key <- intToUtf8(input$keypress)
+                # NOTE: this keystroke is not explained. I may delete
+                # it. And I might add other keystrokes. One that I
+                # think might be good would be to try small-ship and
+                # large-ship simulations.
+                if (key == "?") {
+                    shiny::showModal(shiny::modalDialog(shiny::HTML(help), title = "Using this application", size = "l"))
+                }
+            }
+        )
         shiny::observeEvent(input$help, {
             shiny::showModal(shiny::modalDialog(shiny::HTML(help), title = "Using this application", size = "l"))
         })
@@ -251,9 +257,8 @@ app2 <- function(debug = FALSE) {
                 "    Ly = ", input$Ly, ",<br>",
                 "    Lz = ", input$Lz, ",<br>",
                 "    lw = ", input$lw, ",<br>",
-                "    mw = whaleMassFromLength(length = ", input$lw, ", species = ", input$species, "),<br>",
-                "    Sw = whaleAreaFromLength(", input$lw, ",<br>",
-                "        species = \"", input$species, " Whale\")<br>",
+                "    mw = whaleMassFromLength(", input$lw, ", \"", input$species, " Whale\"),<br>",
+                "    Sw = whaleAreaFromLength(", input$lw, ", \"", input$species, " Whale\"),<br>",
                 "    l = c(", input$l1 / 100,
                 ", ", input$l2 / 100,
                 ", ", input$l3 / 100,
@@ -264,7 +269,13 @@ app2 <- function(debug = FALSE) {
             msg <- paste0(msg, "sol <- strike(t, state, parms)<br>")
             if (length(input$plot_panels)) {
                 msg <- paste0(msg,
-                    "# Plot results individually<br>")
+                    "# Plot results<br>")
+                npanels <- length(input$plot_panels)
+                nrows <- floor(sqrt(npanels))
+                ncols <- ceiling(npanels / nrows)
+                msg <- paste0(msg, "par(mfrow = c(", nrows, ", ", ncols, "))<br>")
+                msg <- paste0(msg, "par(mar = c(3.2, 3, 2.5, 2))<br>")
+                msg <- paste0(msg, "par(mgp = c(1.7, 0.6, 0))<br>")
                 for (which in input$plot_panels) {
                     msg <- paste0(msg, "plot(sol, which = \"", which, "\")<br>")
                 }

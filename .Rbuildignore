@@ -3,7 +3,7 @@
 ^.github$
 create_data
 man-roxygen
-sandbox
+^sandbox$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 .build.timestamp

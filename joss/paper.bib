@@ -1,68 +1,9 @@
-
 @mastersthesis{raymond_development_2007,
 	title = {Development of a numerical model to predict impact forces on a {North} {Atlantic} {Right} {Whale} during collision with a vessel},
 	url = {https://scholars.unh.edu/thesis/309},
-	abstract = {The North Atlantic right whale is under a great deal of public and private concern due to their endangere d status and shrinking numbers. Of the 40 animals examined post-mortem (1970-2006), 21 death s (52.5\%) were caused by vessel-whale collision injuries, such as skull fractures. Several methods have been proposed t o help reduce the number of fatalities. One such method is to place restrictions on ship speed within right wh ale critical habitats. However, no quantitative data exist regarding the e@ect of reduced vessel spee d on the likelihood of fatality. Be objective of this study is to develop a numerical model of the collision event t o determine forces acting on the whale during impact. Bis will provide data on the mechanics of a ship-wh ale collision needed to form a basis for informed decisions regarding regulation of shipping traAc . A representative three-dimensional Cnite element model of a whale has been developed using inputs fr om various sources. Be mechanical properties of bone material and soD tissue were assigned base d on experimental work and published data. Be external geometry was created based on data available fr om necropsy Cndings. A simpliCed skeleton containing the major components was estimated based on the siz e of the external whale geometry. A surface model of a very large crude carrier was created as the representativ e hull model for the simulations. Since mandible fracture is assumed to be a fatal endpoint of colli sion, the relative positions of the whale and ship were chosen such that direct impact occurs on the mandible . Numerical simulations were performed for vessel approach speeds of 5, 8, 10, 12, and 15 knots. Fr om the simulation results, the impact forces as a function of time and the overall collision dynamics ca n be determined. Be resultant transient load curves can be applied to a detailed mandible model to predict wha t impact velocities result in mandible fracture.},
-	school = {University of New Hampshire},
+    school = {University of New Hampshire},
 	author = {Raymond, J. J.},
 	year = {2007},
-	keywords = {whale, collision},
-	annote = {Blubber mechanical properties
-
-elastic modulus 0.636273 MPa (page 38, para 1)
-ultimate strength seems not to be given in the thesis
-},
-	annote = {Cortical bone mechanical properties
-Table 2.3 on page 26 (which says that the data were provided by R. Campbell-Malone of WHOI/MIT)
- 
-
-,Elastic Modulus (MPa), Ultimate Strength (MPa)
-maximum, 1360.4, 51.7
-minimum, 557.9, 12.9
-average, 854.2, 22.9
-},
-	annote = {Dan Kelley notes
-
- bibtex cite as raymond2007doan
- https://drive.google.com/drive/folders/14KDSuAj7wUtDhyjE9PQllKjoPyU3yVlz
-p18 table 2.1 whale length (m) 13.7m
-p19 table 2.2 whale radius (m) at different spots along length: 3.9 4.1 4.4 4.2 3.7 2.75 1.9 1.09
-p26 table 2.3 cortical bone elastic modulus (avg 854.2MPa) and ultimate strength (avg 22.9MPa)
-p27 epidermal tissue 0.9-1.0 inches thick
-p36 soft-tissue bulk modulus K 4.2e5 Pa (also parameters for 2-term Ogden model)
-p38 (from fig 37) Equivalent Linear Elastic Modulus 636273 Pa. NOTE: this calculation  uses the slope of a fit that includes an intercept. I did an exponential fit to digitized data from this graph in raymond2007doan\_fig2\_13.R; look at raymond2007doan\_fig2\_13.out for details and below is a cut/paste as of 2018-05-19
-
-
-Formula: stress {\textasciitilde} a * (1 - exp(strain/b))
-Parameters:Estimate Std. Error t value Pr({\textgreater}{\textbar}t{\textbar}) a -1.712e+05 7.862e+03 -21.78 1.29e-11 ***b 4.186e-01 1.389e-02 30.12 2.06e-13 ***---Signif. codes: 0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-Residual standard error: 1403 on 13 degrees of freedom
-NB: res std err 1403 is approx 0.1\%
-
-p41 fig 2.16 right whale length-weight relationship W=242.988*exp(0.004*L)with W in kg and L in cm (yes, cm; yes crazy digits). Data range from 4m to14m. Fig from Moore et al 2005
-},
-	annote = {Impact area
-In Table 5.1 on page 58, an inferred area is 0.0915 m{\textasciicircum}2 for 15knot, 0.106 m{\textasciicircum}2 for 10 knot, and 0.0911 m{\textasciicircum}2 for 5 knot. Taking 0.1m{\textasciicircum}2 as a representative value, this is about 1 foot by 1 foot, which seems difficult to reconcile with Figure 5.15 (and other diagrams showing the ship bulb intruding into the whale).
-From figure 5.15, the deformation of the ship is (as printed) 0.85cm, and the whale length is (as printed) 8.00cm. Assuming a 13.7m whale, this translates to a diameter of impact of 1.46m. Taking half this as radius yields presumed circular area A=1.66m{\textasciicircum}2. In the whalestrike notation, with rectangular area, we get L\_y = L\_z = 1.29m.},
-	annote = {Radius
-Table 2.2
- },
-	annote = {Ship model
-p82: mass 311189kg (311 tonne) for simulations that are to relate to Vanderlaan and Taggart (2006)},
-	annote = {Soft-tissue mechanical properties
-Table 2.6 on page 36 gives:
-
-bulk modulus 0.425294 MPa
-density 960.72 kg/m{\textasciicircum}3
-four other parameters of 2-term Ogden model
-},
-	annote = {Stress-Strain formulations
-Page 22-2x},
-	annote = {Whale-strike event durations
-Raymond Fig 5.2 has event times that I think are for the same 311-tonne vessel case as in some other spots in the text, but that's something I need to check by reading the nearby text, because here he is doing a specific comparison with vanderlaanVesselCollisionsWhales2006, so he may have altered some other things.
-v/knot duration/s15 0.38110 0.4175 0.504
- },
-	file = {Raymond - 2007 - Development of a numerical model to predict impact.pdf:/Users/kelley/Dropbox/literature/r/Raymond - 2007 - Development of a numerical model to predict impact.pdf:application/pdf},
 }
 
 @article{conn_vessel_2013,
@@ -71,31 +12,22 @@ v/knot duration/s15 0.38110 0.4175 0.504
 	issn = {2150-8925},
 	url = {https://doi.org/10.1890/ES13-00004.1},
 	doi = {10.1890/ES13-00004.1},
-	abstract = {Collisions with vessels are a serious threat to a number of endangered large whale species, the North Atlantic right whale (Eubalaena glacialis) in particular. In late 2008, the U.S. National Oceanic and Atmospheric Administration issued mandatory time?area vessel speed restrictions along the U.S. eastern seaboard in an effort to mediate collision?related mortality of right whales. All vessels 65 feet and greater in length are restricted to speeds of 10 knots or less during seasonally implemented regulatory periods. We modeled mortality risk of North Atlantic right whale when the vessel restrictions were and were not in effect, including (1) estimation of the probability of lethal injury given a ship strike as a function of vessel speed, (2) estimation of the effect of transit speed on the instantaneous rate of ship strikes, and (3) a consideration of total risk reduction. Logistic regression and Bayesian probit analyses indicated a significant positive relationship between ship speed and the probability of a lethal injury. We found that speeds of vessels that struck whales were consistently greater than typical vessel speeds for each vessel type and regulatory period studied; a use?availability model fit to these data provided strong evidence for a linear effect of transit speed on strike rates. Overall, we estimated that vessel speed restrictions reduced total ship strike mortality risk levels by 80?90\% with levels that were closer to 90\% in the latter two of the four active vessel speed restriction periods studied. To our knowledge, this is the most comprehensive assessment to date of the utility of vessel speed restrictions in reducing the threat of vessel collisions to large whales. Our findings indicate that vessel speed limits are a powerful tool for reducing anthropogenic mortality risk for North Atlantic right whales.},
 	number = {4},
 	urldate = {2018-06-18},
 	journal = {Ecosphere},
 	author = {Conn, P. B. and Silber, G. K.},
 	year = {2013},
-	note = {April 3, 2013},
-	keywords = {whale, collision},
 	pages = {art43},
-	annote = {doi: 10.1890/ES13-00004.1},
-	annote = {Figure 3 shows p(lethal) vs speed, and the results are a lot less encouraging than the Vanderlaan and Taggart 2007 results (also shown).},
-	file = {Conn and Silber - 2013 - Vessel speed restrictions reduce risk of collision.pdf:/Users/kelley/Dropbox/literature/c/Conn and Silber - 2013 - Vessel speed restrictions reduce risk of collision.pdf:application/pdf;Conn_et_al-2013-Ecosphere.pdf:/Users/kelley/Dropbox/literature/c/Conn_et_al-2013-Ecosphere.pdf:application/pdf},
 }
 
 @article{vanderlaan_reducing_2008,
 	title = {Reducing the risk of lethal encounters: vessels and right whales in the {Bay} of {Fundy} and on the {Scotian} {Shelf}},
 	volume = {4},
 	shorttitle = {Reducing the risk of lethal encounters: vessels and right whales in the {Bay} of {Fundy} and on the {Scotian} {Shelf}},
-	abstract = {The North Atlantic right whale Eubalaena glacialis is endangered, in part, due to vesselstrike mortality. We use vessel traffic and right whale survey data ({\textasciitilde}3 nautical miles [n miles], {\textasciitilde}5.6 km resolution) for the Bay of Fundy and on the Scotian Shelf (northwest Atlantic) to determine the relative risk of lethal vessel encounters by using 2 estimates: (1) the event�the relative probability of a vessel encountering a right whale, and (2) the consequence�the probability of a lethal injury arising from an encounter. For the Bay of Fundy region our estimates demonstrate that the relative risk of lethal collision could be reduced by 62\% by means of an amendment to the traffic separation scheme (TSS) that intersects a Right Whale Conservation Area. In the Roseway Basin region of the Scotian Shelf, the majority of vessels navigate outside of a Right Whale Conservation Area, although the highest relative risk is concentrated within the Conservation Area where fewer vessels navigate at greater speed. Here, our estimates demonstrate that a seasonal recommendatory area to be avoided (ATBA) could be designed to reduce the risk imposed by vessels upon right whales in the region. Our estimates contributed to the International Maritime Organisation (IMO) adoption of a TSS amendment in the Bay of Fundy and an ATBA on the Scotian Shelf. Thus, the goal of achieving the greatest reduction in the risk of lethal vessel-encounters with whales, balanced by some minimal disruption to vessel operations while maintaining safe navigation, can be achieved.},
 	journal = {Endangered Species Research},
 	author = {Vanderlaan, A. S. M. and Taggart, C. T. and Serdynska, A. and Kenney, R. D. and Brown, M. W.},
 	year = {2008},
-	keywords = {whale},
 	pages = {283--297},
-	file = {Vanderlaan et al. - 2008 - Reducing the risk of lethal encounters vessels an.pdf:/Users/kelley/Dropbox/literature/v/Vanderlaan et al. - 2008 - Reducing the risk of lethal encounters vessels an.pdf:application/pdf},
 }
 
 @misc{transport_canada_protecting_2018,
@@ -106,39 +38,35 @@ v/knot duration/s15 0.38110 0.4175 0.504
 	author = {{Transport Canada}},
 	month = aug,
 	year = {2018},
-	keywords = {whale},
 }
 
-@article{campbell-malone_gross_2008-1,
+@article{campbell-malone_gross_2008,
 	title = {Gross and histologic evidence of sharp and blunt trauma in {North} {Atlantic} {Right} {Whales} (\textit{{Eubalaena} glacialis}) killed by vessels},
 	volume = {39},
 	issn = {1042-7260},
 	url = {http://www.jstor.org/stable/20460430},
-	abstract = {Vessel-whale collision events represented the ultimate cause of death for 21 (52.5\%) of the 40 North Atlantic right whales (Eubalaena glacialis) necropsied between 1970 and December 2006. Injuries seen in vessel-struck whales fall into two distinct categories: 1) sharp trauma, often resulting from contact with the propeller, and 2) blunt trauma, presumably resulting from contact with a vessel's hull. This study analyzes four trauma cases that resulted from vessel-whale collisions, which together provide a framework for a more critical understanding of lethal blunt and sharp trauma resulting from vessel collisions with right whales. In case no. 1, contact with a propeller resulted in three deep lacerations. The animal survived acute trauma only to succumb nearly 14 years later when the lesions reopened and became infected. In case no. 2, anecdotal reports linked the laceration of large arteries of the peduncle and histologic evidence of perimortem trauma at a bone fracture site to vessel-whale collision trauma. Case no. 3 had a laceration of the oral rete and a fracture of the rostrum. Both of the areas displayed histologic evidence of perimortem blunt trauma. Finally, in case no. 4, an antemortem mandibular fracture, two additional skull fractures, and widespread hemorrhage were consistent with severe blunt trauma. Evidence from each case, including the timing of trauma relative to the time of death and identifying characteristics of both trauma types, are presented. Before this study, no detailed comparative analysis of trauma pathology that resulted from lethal interactions between vessels and right whales had been conducted. This study demonstrates the importance of detailed gross and histologic examination in determining the significance and timing of traumatic events. This work represents a new paradigm for the differential diagnosis of lethal sharp and blunt trauma in right whales hit by ships and will enhance the present understanding of the impact of anthropogenic mortality on this critically endangered species.},
 	number = {1},
 	urldate = {2018-07-09},
 	journal = {Journal of Zoo and Wildlife Medicine},
 	author = {Campbell-Malone, Regina and Barco, Susan G. and Daoust, Pierre-Yves and Knowlton, Amy R. and McLellan, William A. and Rotstein, David S. and Moore, Michael J.},
 	year = {2008},
-	keywords = {whale},
 	pages = {37--55},
-	annote = {
-collisions responsible for 21 of 40 NARW necropsied from 1980 to Dec 2006
-this paper studies both sharp- and blunt-trauma cases
- 
-},
-	annote = {TY - JOUR doi: 10.1638/2006-0057.1 DO - 10.1638/2006-0057.1 Y2 - 2018/08/16},
-	annote = {TY - JOUR doi: 10.1638/2006-0057.1 DO - 10.1638/2006-0057.1 Y2 - 2018/08/16},
-	file = {Campbell-Malone et al. - 2008 - Gross and Histologic Evidence of Sharp and Blunt T 2.pdf:/Users/kelley/Dropbox/literature/c/Campbell-Malone et al. - 2008 - Gross and Histologic Evidence of Sharp and Blunt T 2.pdf:application/pdf},
+}
+
+@article{soetaert_solving_2010,
+	title = {Solving differential equations in {R}: package {deSolve}},
+	url = {https://www.jstatsoft.org/v033/i09},
+	doi = {10.18637/jss.v033.i09},
+	journal = {Journal of Statistical Software; Vol 1, Issue 9 (2010)},
+	author = {Soetaert, Karline and Petzoldt, Thomas and Setzer, R. Woodrow},
+	year = {2010},
 }
 
 @techreport{kite-powell_modeling_2007,
 	title = {Modeling the effect of vessel speed on {Right} {Whale} ship strike risk},
 	shorttitle = {Modeling the effect of vessel speed on {Right} {Whale} ship strike risk},
-	abstract = {Vessel speed restrictions have three potentially beneficial effects on the risk of right whale ship strikes: a better chance for the whale to avoid the ship, a better chance for the crew to spot and avoid the whale, and less energy imparted to the whale in the event of a collision. We have developed a model of the first of these effects, using data from observed encounters of right whales with vessels and from whale diving activity. Using a probabilistic description of right whale response based on these observed behaviors, we estimate the likelihood of a strike given that the ship is initially on a collision course with the whale. Model results suggest that more than half of right whales located in or swimming into the path of an oncoming ship traveling at 15 knots or more are likely to be struck even when they do take evasive action. The model also suggests that the strike risk posed by a conventional ship moving at 20 to 25 knots can be reduced by 30 percent by slowing to 12 or 13 knots, and by 40 percent at 10 knots. Whales are likely to be largely safe from ship strike if they detect and react to an oncoming vessel at a distance of 250 m or more. Strike risk is considerable if the detection distance drops below 100 m.},
 	author = {Kite-Powell, H. K. and Knowlton, A. and Brown, M. W.},
 	year = {2007},
-	keywords = {whale},
 }
 
 @article{laist_collisions_2001,
@@ -146,54 +74,44 @@ this paper studies both sharp- and blunt-trauma cases
 	volume = {17},
 	issn = {0824-0469},
 	doi = {10.1111/j.1748-7692.2001.tb00980.x},
-	abstract = {Although collisions with motorized ships are a recognized source of whale mortality, little has been done to compile information on the frequency of their occurrence or contributing factors. We searched historical records and computerized stranding databases for evidence of ship strikes involving great whales (i.e., baleen whales and the sperm whale). Historical records suggest that ship strikes fatal to whales first occurred late in the 1800s as ships began to reach speeds of 13–15 kn, remained infrequent until about 1950, and then increased during the 1950s–1970s as the number and speed of ships in- creased. Of 11 species known to be hit by ships, fin whales (Balaenoptera physalus) are struck most frequently; right whales (Eubalaena glacialis and E. australis), humpback whales (Megaptera novaeangliae), sperm whales (Physeter catodon), and gray whales (Eschrichtius robustus) are hit commonly. In some areas, one-third of all fin whale and right whale strandings appear to involve ship strikes. To assess contributing factors, we compiled descriptions of 58 collisions. They indicate that all sizes and types of vessels can hit whales; most lethal or severe injuries are caused by ships 80 m or longer; whales usually are not seen beforehand or are seen too late to be avoided; and most lethal or severe injuries involve ships travelling 14 kn or faster. Ship strikes can significantly affect small populations of whales, such as northern right whales in the western North Atlantic. In areas where special caution is needed to avoid such events, measures to reduce the vessel speed below 14 kn may be beneficial.},
 	number = {1},
 	journal = {Marine Mammal Science},
 	author = {Laist, David W. and Knowlton, Amy R. and Mead, James G. and Collet, Anne S. and Podesta, Michela},
 	year = {2001},
-	keywords = {whale, collision, conservation, eubalaena-glacialis, mortality strandings, north-atlantic, right, ship collisions, species conservation},
 	pages = {35--75},
-	file = {Laist et al. - 2001 - Collisions between ships and whales.pdf:/Users/kelley/Dropbox/literature/l/Laist et al. - 2001 - Collisions between ships and whales.pdf:application/pdf},
 }
 
-@article{kelley_assessing_2020,
-	title = {Assessing the lethality of ship strikes on whales using simple biophysical models},
-	issn = {0824-0469, 1748-7692},
-	url = {https://onlinelibrary.wiley.com/doi/10.1111/mms.12745},
-	doi = {10.1111/mms.12745},
-	language = {en},
-	urldate = {2021-01-10},
-	journal = {Marine Mammal Science},
-	author = {Kelley, Dan E. and Vlasic, James P. and Brillant, Sean W.},
-	month = oct,
-	year = {2020},
-	note = {tex.ids: kelley\_assessing\_2020},
-	keywords = {whale, DanKelley, dek},
-	pages = {mms.12745},
-	file = {Kelley et al. - 2020 - Assessing the lethality of ship strikes on whales  2.pdf:/Users/kelley/Dropbox/literature/k/Kelley et al. - 2020 - Assessing the lethality of ship strikes on whales  2.pdf:application/pdf},
+@article{gregg_mixing_2018,
+	title = {Mixing {Efficiency} in the {Ocean}},
+	volume = {10},
+	url = {https://doi.org/10.1146/annurev-marine-121916-063643},
+	doi = {10.1146/annurev-marine-121916-063643},
+	number = {1},
+	urldate = {2020-01-13},
+	journal = {Annual Review of Marine Science},
+	author = {Gregg, M.C. and D'Asaro, E.A. and Riley, J.J. and Kunze, E.},
+	year = {2018},
+	pmid = {28934598},
+	pages = {443--473},
 }
 
 @misc{transport_canada_protecting_2022,
 	title = {Protecting the {North} {Atlantic} right whale: speed restriction measures in the {Gulf} of {St}. {Lawrence} - {SSB} {No}.: 09/2022},
 	shorttitle = {Protecting the {North} {Atlantic} right whale},
 	url = {https://tc.canada.ca/en/marine-transportation/marine-safety/ship-safety-bulletins/protecting-north-atlantic-right-whale-speed-restriction-measures-gulf-st-lawrence-ssb-no-09-2022},
-	abstract = {This bulletin describes the speed restriction zones that vessels must follow in the Gulf of St. Lawrence. The Government of Canada has established these zones to reduce the risk of vessel colliding with North Atlantic right whales (NARW).},
-	language = {en-CA},
 	urldate = {2023-01-15},
 	journal = {AMSEC 18265176},
 	author = {{Transport Canada}},
 	month = apr,
 	year = {2022},
-	note = {Publisher: AMSEC},
 }
 
-@misc{pettis_north_2022,
-	title = {North {Atlantic} {Right} {Whale} {Consortium} 2021 {Annual} {Report} {Card}},
-	url = {https://www.narwc.org/uploads/1/1/6/6/116623219/2021report_cardfinal.pdf},
+@misc{pettis_north_2023,
+	title = {North {Atlantic} {Right} {Whale} {Consortium} 2022 {Annual} {Report} {Card}},
+	url = {https://www.narwc.org/uploads/1/1/6/6/116623219/2022reportcardfinal.pdf},
 	publisher = {North Atlantic Right Whale Consortium},
 	author = {Pettis, H. M. and Pace, R. M. and Hamilton, P. K.},
-	year = {2022},
-	file = {Pettis et al. - 2022 - North Atlantic Right Whale Consortium 2021 Annual .pdf:/Users/kelley/Dropbox/literature/p/Pettis et al. - 2022 - North Atlantic Right Whale Consortium 2021 Annual .pdf:application/pdf},
+	year = {2023}
 }
 
 @article{pace_state-space_2017,
@@ -202,7 +120,6 @@ this paper studies both sharp- and blunt-trauma cases
 	issn = {20457758},
 	url = {https://onlinelibrary.wiley.com/doi/10.1002/ece3.3406},
 	doi = {10.1002/ece3.3406},
-	language = {en},
 	number = {21},
 	urldate = {2023-01-15},
 	journal = {Ecology and Evolution},
@@ -210,40 +127,61 @@ this paper studies both sharp- and blunt-trauma cases
 	month = nov,
 	year = {2017},
 	pages = {8730--8741},
-	file = {Pace et al. - 2017 - State-space mark-recapture estimates reveal a rece.pdf:/Users/kelley/Dropbox/literature/p/Pace et al. - 2017 - State-space mark-recapture estimates reveal a rece.pdf:application/pdf},
 }
 
-@techreport{iucn_eubalaena_2020,
+@misc{iucn_eubalaena_2020,
 	title = {Eubalaena glacialis: {Cooke}, {J}.{G}.: {The} {IUCN} {Red} {List} of {Threatened} {Species} 2020: e.{T41712A178589687}},
 	shorttitle = {Eubalaena glacialis},
 	url = {https://www.iucnredlist.org/species/41712/178589687},
-	language = {en},
+	doi = {10.2305/IUCN.UK.2020-2.RLTS.T41712A178589687.en},
 	urldate = {2023-01-15},
-	institution = {International Union for Conservation of Nature},
+	publisher = {International Union for Conservation of Nature},
 	author = {{IUCN}},
 	month = jan,
 	year = {2020},
-	doi = {10.2305/IUCN.UK.2020-2.RLTS.T41712A178589687.en},
-	note = {Type: dataset},
-	file = {IUCN - 2020 - Eubalaena glacialis Cooke, J.G. The IUCN Red Lis.pdf:/Users/kelley/Dropbox/literature/i/IUCN - 2020 - Eubalaena glacialis Cooke, J.G. The IUCN Red Lis.pdf:application/pdf},
 }
 
-@misc{cran_comprehensive_2023,
+@misc{cran_comprehensive_2024,
 	title = {The {Comprehensive} {R} {Archive} {Network}},
 	url = {https://cran.r-project.org/},
-	urldate = {2023-01-16},
+	urldate = {2024-01-27},
 	author = {{CRAN}},
-	year = {2023},
+	year = {2024},
 }
 
-@article{soetaert_solving_2010-2,
-	title = {Solving differential equations in {R}: {Package} {deSolve}},
-	volume = {33},
-	doi = {10.18637/jss.v033.i09},
-	number = {9},
-	journal = {Journal of Statistical Software},
-	author = {Soetaert, Karline and Petzoldt, Thomas and Setzer, R. Woodrow},
-	year = {2010},
-	keywords = {C, differential algebraic equations, FORTRAN, initial value problems, ordinary differential equations, partial differential equations, R},
-	pages = {1--25},
+@article{schulz_winter_2023,
+	title = {Winter {Vertical} {Diffusion} {Rates} in the {Arctic} {Ocean}, {Estimated} {From} $^{\textrm{7}}$ {Be} {Measurements} and {Dissipation} {Rate} {Profiles}},
+	volume = {128},
+	issn = {2169-9275, 2169-9291},
+	url = {https://onlinelibrary.wiley.com/doi/10.1029/2022JC019197},
+	doi = {10.1029/2022JC019197},
+	number = {2},
+	urldate = {2023-02-15},
+	journal = {Journal of Geophysical Research: Oceans},
+	author = {Schulz, K. and Kadko, D. and Mohrholz, V. and Stephens, M. and Fer, I.},
+	month = feb,
+	year = {2023},
+    doi = {10.1029/2022JC019197},
+}
+
+@article{kelley_assessing_2020,
+	title = {Assessing the lethality of ship strikes on whales using simple biophysical models},
+	volume = {37},
+	url = {https://doi.org/10.1111%2Fmms.12745},
+	doi = {10.1111/mms.12745},
+	number = {1},
+	journal = {Marine Mammal Science},
+	author = {Dan E. Kelley and James P. Vlasic and Sean W. Brillant},
+	month = oct,
+	year = {2020},
+	pages = {251--267},
+}
+
+@misc{dan_kelley_using_2024,
+	title = {Using app2()  of the whalestrike {R} package},
+	url = {https://www.youtube.com/watch?v=kTMl3nXa5A4},
+	urldate = {2024-01-27},
+	author = {Dan E. Kelley},
+	month = jan,
+	year = {2024},
 }

@@ -36,12 +36,13 @@ and policy makers.
 # Statement of need
 
 Ship collisions pose significant threats to endangered marine mammals
-[@laist_collisions_2001]. Of particular concern is the North Atlantic right
-whale (*Eubalaena glacialis*), a "critically Endangered" species
-[@iucn_eubalaena_2020] with a world population estimated to be only $336\pm14$
-in 2021 [@pettis_north_2022], down from $483$ in 2010 [@pace_state-space_2017].
-Necropsies reveal that ship collisions account for over half of right whale
-deaths [@campbell-malone_gross_2008-1].
+[@laist_collisions_2001]. The case of the North Atlantic right whale
+(*Eubalaena glacialis*) is of particular concern, since it is considered a
+"critically Endangered" species [@iucn_eubalaena_2020].  The trend is not
+encouraging for this animal, the population of which was $340\pm7$ in 2021
+[@pettis_north_2023], down significantly from $483$ in 2010
+[@pace_state-space_2017].  According to necropsy studies, ship strikes are
+involved in over half of right whale deaths [@campbell-malone_gross_2008].
 
 Motivated by such studies, efforts have been made in recent years to mitigate
 the consequences of collision by imposing speed restrictions on ships, and
@@ -84,30 +85,30 @@ with both extension and compression forces, while only compression is
 considered for interior layers. Lacking reliable information on failure limits
 for these biomaterials, critical values for stresses are posited in the context
     of published results of the damage experienced in documented ship strikes.
-    For more on these and other scientific aspects of the model's context,
-    readers are directed to @kelley_assessing_2020.
+    @kelley_assessing_2020 provide more information on the methodologies
+    and issues involved.
 
-The model mechanics are simple, with acceleration and forces being linked via
-Newton's second law. Numerical integration of acceleration is done with the
-`lsoda()` function of the `deSolve` package in R [@soetaert_solving_2010-2]. A
-first integration yields velocities, which are used in computing water drag. A
-second integration yields the relative positions of ship and whale, from which
-extension and compression forces can be computed. Aspects of each dynamical
-element are distilled into the nearly 30 parameters of the model. Although a
-great deal of effort has been put into formulating these parameters
-appropriately (mainly for application to right whales), `whalestrike` offers a
-simple way for users to adjust each of them, if needed for new applications.
+The model is simple, with acceleration and forces being linked via Newton's
+second law. Numerical integration is carried out with the `lsoda()` function of
+the `deSolve` R package [@soetaert_solving_2010]. Predicted velocities are
+used in computing water drag and the relative positions of ship and whale.
+After contact is made, compressive forces arise, and the stresses associated
+with these forces are monitored in the context of a lethality index 
+[@kelley_assessing_2020]. Dynamical elements involved in this process are
+distilled into 30 model parameters. Although a great deal of effort has been
+put into formulating these parameters appropriately (mainly for application to
+right whales), `whalestrike` offers a simple way for users to adjust each of
+them, if needed for new applications.
 
 # Package installation and use
 
-Being developed on github.com/dankelley/whalestrike, the package may be
-installed by typing
+The package may be installed from its development website by typing
 ```R
 library(remotes)
 install_github("dankelley/whalestrike", ref="main")
 ```
 in an R console^[There are plans to submit `whalestrike` to the Comprehensive R
-Archive Network [@cran_comprehensive_2023].].  Once this is done, the user has
+Archive Network [@cran_comprehensive_2024].].  Once this is done, the user has
 access to over 20 functions and their documentation.  The latter makes frequent
 reference to the scientific literature, since the package is aimed at
 scientists and managers who seek to trace the sources of the formulae involved
@@ -120,42 +121,48 @@ then be plotted (using the R generic function system) in multiple ways.
 Three arguments must be provided to `strike()`.  The first sets the times at
 which model output is desired, the second establishes the initial locations and
 speeds of the ship and the whale, and the third describes the biological and
-physical properties of the ship and the whale. The examples in the
-documentation for `strike()` provide a good starting point for these three
-arguments.  For example, the first example produced by typing
+physical properties of the ship and the whale. An example is provided
+in the documentation of `strike()`, e.g. typing
+
+
 ```R
 library(whalestrike)
 example(strike)
 ```
+
 in an R console will run a sample simulation, and show a three-panel plot
-(reproduced here as Figure 1) of three key aspects of the collision: the
-relative position of whale and ship, the compression of the whale's layers, and
-a lethality index developed by @kelley_assessing_2020.
+(reproduced here as Figure 1) of the relative position of whale and ship, the
+compression of the whale's layers, and the associated lethality index.
 
 ![Diagram produced by typing `example(strike,package="whalestrike")` in an R session. Three of the possible 12 plots are shown. **Left:** positions of 45-tonne vessel initially moving at 10 knots (dashed line) and the boundaries between the three layers on the shipward side of the whale. Contact occurs at about $0.2$ s, and continues to about $0.6$ s. Note that a small fishing vessel is used in this simulation, and so its speed is significantly reduced by the collision.  **Middle:** As the left panel, but showing only the positions of the interfaces between the whale layers, relative to the whale's centre position. In this view, the thin skin can be seen at the bottom, with blubber, sublayer and then bone to the interior. **Right:** An index of lethality, with the line thickened for the interval during which stresses are predicted to exceed a threshold for lethal damage according to @kelley_assessing_2020.](figure1.png)
 
 Running the simulation and plotting the results as in Figure 1 takes a fraction
-of a second on a three-year old laptop, showing that the system is
-computationally inexpensive. This is helpful in detailed studies that involve
-calling `strike()` with a wide suite of parameter values, such as the creation
-of the diagrams in @kelley_assessing_2020, some of which involved of order
-$10^5$ model runs to cover parameter space in detail.
+of a second on a typical laptop, showing that the system is computationally
+inexpensive. This is helpful in detailed studies that involve calling
+`strike()` with a wide suite of parameter values, such as the creation of the
+diagrams in @kelley_assessing_2020, some of which involved of order $10^5$
+model runs to cover parameter space in detail.
 
 There are also applications for which a few model runs may suffice. For such
 work, `whalestrike` provides an R-shiny application that is run by executing
-```R library(whalestrike) app2() ``` in an R console. This creates a window
-(reproduced in Figure 2) in which there are sliders and other GUI elements for
-controlling the simulation. This tool makes it is easy to explore "what if"
-scenarios for ship strikes. For example, adjusting the slider controlling ship
-speed and monitoring the lethality index panel might be useful in motivating
-policies for a given ship class, and altering the ship mass or prow geometry at
-a given speed casts some light on the issue of whether one speed restriction
-ought to be applied to all types of ship.  One of the controller panes at the
-left (which is hidden in Figure 2) can be used to extract the R code required
-to reproduce the simulation without the app, providing users with a good
-starting point for more flexible and reproducible analysis.
+the following in an R console.
 
-![View of an interactive application for simulating ship-whale collisions. Only one of the controller panes is open in this view.  Adjusting that pane's slider for ship speed will reveal that the vessel in this simulation would have to be slowed to 6.5 knots to reduce the inferred Lethality Index below what is thought to be a critical value.](figure2.png)
+```R
+library(whalestrike)
+app2()
+```
+
+Doing this creates a window, shown in Figure 2 here and in video form online
+[@dan_kelley_using_2024]. With a variety of sliders and other GUI elements, the
+application makes it easy to explore "what if" scenarios for ship strikes. For
+example, monitoring the Lethality Index plot while adjusting the
+ship-specification tools and the impact speed might prove useful in discussions
+of speed restrictions across ship masses and classes. More detailed (and
+reproducible) work is also by `app2()`, because it can display the underlying
+code used in the simulation, providing a good starting point for more extensive
+analyses, such as the exploration of covarying parameters.
+
+![View of an interactive application for simulating ship-whale collisions. Adjusting the slider for ship speed will reveal that the vessel in this simulation would have to slow down to 6.5 knots in order to reduce the inferred Lethality Index below a critical value (dashed line in right panel).](figure2.png)
 
 
 # Conclusions

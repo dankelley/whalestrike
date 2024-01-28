@@ -6,14 +6,14 @@
   "name": "whalestrike: Simulate Whale Ship Strikes",
   "codeRepository": "https://github.com/dankelley/whalestrike",
   "issueTracker": "https://github.com/dankelley/whalestrike/issues",
-  "license": "https://spdx.org/licenses/GPL-2.0",
-  "version": "0.4.1",
+  "license": "https://spdx.org/licenses/GPL-3.0",
+  "version": "0.4.2",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.2.2 (2022-10-31)",
+  "runtimePlatform": "R version 4.3.2 (2023-10-31)",
   "author": [
     {
       "@type": "Person",
@@ -73,6 +73,18 @@
   "softwareRequirements": {
     "1": {
       "@type": "SoftwareApplication",
+      "identifier": "bslib",
+      "name": "bslib",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=bslib"
+    },
+    "2": {
+      "@type": "SoftwareApplication",
       "identifier": "deSolve",
       "name": "deSolve",
       "provider": {
@@ -83,13 +95,13 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=deSolve"
     },
-    "2": {
+    "3": {
       "@type": "SoftwareApplication",
       "identifier": "R",
       "name": "R",
       "version": ">= 3.5.0"
     },
-    "3": {
+    "4": {
       "@type": "SoftwareApplication",
       "identifier": "shiny",
       "name": "shiny",
@@ -103,9 +115,10 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "1875.054KB",
+  "fileSize": "410.414KB",
   "relatedLink": "https://dankelley.github.io/whalestrike/",
   "releaseNotes": "https://github.com/dankelley/whalestrike/blob/master/NEWS.md",
   "readme": "https://github.com/dankelley/whalestrike/blob/main/README.md",
+  "contIntegration": "https://github.com/dankelley/whalestrike/actions/workflows/R-CMD-check.yaml",
   "keywords": ["collision", "r", "ships", "whales"]
 }

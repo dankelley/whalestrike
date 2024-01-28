@@ -1,5 +1,8 @@
 # whalestrike 0.4.2
 
+* Create a [video recording](https://youtu.be/kTMl3nXa5A4) demonstrating
+  `app2()`.
+
 * Add `app2()`, an improved version of `app()`.
 * Subdivide code into smaller files; improve formatting.
 * Document overall package in the newly required way.
