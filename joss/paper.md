@@ -36,12 +36,13 @@ and policy makers.
 # Statement of need
 
 Ship collisions pose significant threats to endangered marine mammals
-[@laist_collisions_2001]. Of particular concern is the North Atlantic right
-whale (*Eubalaena glacialis*), a "critically Endangered" species
-[@iucn_eubalaena_2020] with a world population estimated to be only $336\pm14$
-in 2021 [@pettis_north_2022], down from $483$ in 2010 [@pace_state-space_2017].
-Necropsies reveal that ship collisions account for over half of right whale
-deaths [@campbell-malone_gross_2008-1].
+[@laist_collisions_2001]. The case of the North Atlantic right whale
+(*Eubalaena glacialis*) is of particular concern, since it is considered a
+"critically Endangered" species [@iucn_eubalaena_2020].  The trend is not
+encouraging for this animal, the population of which was $340\pm7$ in 2021
+[@pettis_north_2023], down significantly from $483$ in 2010
+[@pace_state-space_2017].  According to necropsy studies, ship strikes are
+involved in over half of right whale deaths [@campbell-malone_gross_2008].
 
 Motivated by such studies, efforts have been made in recent years to mitigate
 the consequences of collision by imposing speed restrictions on ships, and
@@ -120,14 +121,15 @@ then be plotted (using the R generic function system) in multiple ways.
 Three arguments must be provided to `strike()`.  The first sets the times at
 which model output is desired, the second establishes the initial locations and
 speeds of the ship and the whale, and the third describes the biological and
-physical properties of the ship and the whale.
+physical properties of the ship and the whale. An example is provided
+in the documentation of `strike()`, e.g. typing
 
-The examples in the documentation for `strike()` provide a good starting point
-for these three arguments.  For example, the first example produced by typing
+
 ```R
 library(whalestrike)
 example(strike)
 ```
+
 in an R console will run a sample simulation, and show a three-panel plot
 (reproduced here as Figure 1) of the relative position of whale and ship, the
 compression of the whale's layers, and the associated lethality index.
@@ -135,11 +137,11 @@ compression of the whale's layers, and the associated lethality index.
 ![Diagram produced by typing `example(strike,package="whalestrike")` in an R session. Three of the possible 12 plots are shown. **Left:** positions of 45-tonne vessel initially moving at 10 knots (dashed line) and the boundaries between the three layers on the shipward side of the whale. Contact occurs at about $0.2$ s, and continues to about $0.6$ s. Note that a small fishing vessel is used in this simulation, and so its speed is significantly reduced by the collision.  **Middle:** As the left panel, but showing only the positions of the interfaces between the whale layers, relative to the whale's centre position. In this view, the thin skin can be seen at the bottom, with blubber, sublayer and then bone to the interior. **Right:** An index of lethality, with the line thickened for the interval during which stresses are predicted to exceed a threshold for lethal damage according to @kelley_assessing_2020.](figure1.png)
 
 Running the simulation and plotting the results as in Figure 1 takes a fraction
-of a second on a three-year old laptop, showing that the system is
-computationally inexpensive. This is helpful in detailed studies that involve
-calling `strike()` with a wide suite of parameter values, such as the creation
-of the diagrams in @kelley_assessing_2020, some of which involved of order
-$10^5$ model runs to cover parameter space in detail.
+of a second on a typical laptop, showing that the system is computationally
+inexpensive. This is helpful in detailed studies that involve calling
+`strike()` with a wide suite of parameter values, such as the creation of the
+diagrams in @kelley_assessing_2020, some of which involved of order $10^5$
+model runs to cover parameter space in detail.
 
 There are also applications for which a few model runs may suffice. For such
 work, `whalestrike` provides an R-shiny application that is run by executing
@@ -160,7 +162,7 @@ reproducible) work is also by `app2()`, because it can display the underlying
 code used in the simulation, providing a good starting point for more extensive
 analyses, such as the exploration of covarying parameters.
 
-![View of an interactive application for simulating ship-whale collisions. Only one of the controller panes is open in this view.  Adjusting that pane's slider for ship speed will reveal that the vessel in this simulation would have to be slowed to 6.5 knots to reduce the inferred Lethality Index below what is thought to be a critical value.](figure2.png)
+![View of an interactive application for simulating ship-whale collisions. Adjusting the slider for ship speed will reveal that the vessel in this simulation would have to slow down to 6.5 knots in order to reduce the inferred Lethality Index below a critical value (dashed line in right panel).](figure2.png)
 
 
 # Conclusions

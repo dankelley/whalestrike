@@ -46,7 +46,7 @@ in an R session.  A window will open in your browser.  On the left-hand side is
 a region with controllers.  Only one marked `Ship` will be open at first.  Try
 adjusting the ship speed, to see what happens to the plots.  Then try other
 elements of the `Ship` controller.  Then try closing that controller, opening
-the others and exploring.  The app has a `Help` button that give smore
+the others and exploring.  The app has a `Help` button that gives more
 information.  The `Code` button is also handy: it presents a dialog box with
 the raw R code that could be used outside the app, to generate the plots shown.
 In other words, `app2()` acts as both a tool and a tutor.  A video

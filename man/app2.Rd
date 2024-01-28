@@ -26,7 +26,8 @@ coding to set up user's storage space, to prevent against web attacks, etc.,
 which is beyond the present purpose.  However, there is an addition with
 \code{\link[=app2]{app2()}} that might prove more useful: a button to display the code required
 to reproduce the simulated state.  This may be of help to the those seeking
-to explore the simulator in programmatically, for precision and reproducibility.
+to explore the results of simulations more precisely and with
+greater reproducibility.
 
 Sliders, buttons, and choosers are grouped into panes that appear on
 the left of the view. When \code{\link[=app2]{app2()}} first opens, all of these panes

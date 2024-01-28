@@ -54,7 +54,8 @@ simulation under view at any given time.
 #' which is beyond the present purpose.  However, there is an addition with
 #' [app2()] that might prove more useful: a button to display the code required
 #' to reproduce the simulated state.  This may be of help to the those seeking
-#' to explore the simulator in programmatically, for precision and reproducibility.
+#' to explore the results of simulations more precisely and with
+#' greater reproducibility.
 #'
 #' Sliders, buttons, and choosers are grouped into panes that appear on
 #' the left of the view. When [app2()] first opens, all of these panes
@@ -176,7 +177,7 @@ app2 <- function(debug = FALSE) {
                 ticks = FALSE,
                 min = 0.1, max = 5, value = 1, step = 0.05
             ),
-            shiny::sliderInput("vs", shiny::h6("Speed [knot]"),
+            shiny::sliderInput("vs", shiny::h6("Ship Speed [knot]"),
                 ticks = FALSE,
                 min = 1, max = 30, value = 10, step = 0.1
             ),
