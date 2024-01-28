@@ -48,7 +48,7 @@ Motivated by such studies, efforts have been made in recent years to mitigate
 the consequences of collision by imposing speed restrictions on ships, and
 evidence of successful results [e.g. @conn_vessel_2013] has led to marine
 policy changes, including both static and dynamic zones of speed restriction
-[e.g. @transport_canada_protecting_2022]. Even so, it seems unwise to measure
+[e.g. @transport_canada_protecting_2023]. Even so, it seems unwise to measure
 the success of speed restrictions by counting dead or injured whales, given the
 low numbers alive today. In addition, basic reasoning reveals that speed cannot
 be the only factor. Variations in ship mass, prow shape, etc. should also be
