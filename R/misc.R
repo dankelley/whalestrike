@@ -65,10 +65,12 @@ pin <- function(x, lower = NULL, upper = NULL) {
     na <- is.na(x)
     x[na] <- 0 # value is arbitrary because changed back to NA later
     if (!is.null(lower)) {
-        x <- ifelse(x > lower, x, lower)
+        #x <- ifelse(x > lower, x, lower)
+        x[x < lower] <- lower
     }
     if (!is.null(upper)) {
-        x <- ifelse(x < upper, x, upper)
+        #x <- ifelse(x < upper, x, upper)
+        x[x > upper] <- upper
     }
     x[na] <- NA
     x

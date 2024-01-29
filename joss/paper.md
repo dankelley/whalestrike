@@ -26,12 +26,12 @@ animal.  This is particularly concerning for endangered species such as the
 North Atlantic right whale. Although speed reduction policies have been
 developed and implemented, simple considerations suggest that other factors,
 such as ship mass and prow shape, should also be taken into account. An R
-package called `whalestrike` has been developed to address such issues. It has
-been used by @kelley_assessing_2020 in the development of a biomechanically
-based criterion for the lethality of ship strikes, but this is just a starting
-point. Indeed, the goal here is to introduce the model code to a wider
-community, in hopes of encouraging its wider use and development by researchers
-and policy makers.
+package called `whalestrike` has been developed to address such issues. It was
+used by @kelley_assessing_2020 in the development of a biomechanically based
+criterion for the lethality of ship strikes, but this was just a starting
+point. The next step, and goal of the present paper, is to introduce the model
+code to a broader community, encouraging its use and development by diverse
+researchers and policy makers.
 
 # Statement of need
 
@@ -48,7 +48,7 @@ Motivated by such studies, efforts have been made in recent years to mitigate
 the consequences of collision by imposing speed restrictions on ships, and
 evidence of successful results [e.g. @conn_vessel_2013] has led to marine
 policy changes, including both static and dynamic zones of speed restriction
-[e.g. @transport_canada_protecting_2022]. Even so, it seems unwise to measure
+[e.g. @transport_canada_protecting_2023]. Even so, it seems unwise to measure
 the success of speed restrictions by counting dead or injured whales, given the
 low numbers alive today. In addition, basic reasoning reveals that speed cannot
 be the only factor. Variations in ship mass, prow shape, etc. should also be
@@ -90,15 +90,15 @@ for these biomaterials, critical values for stresses are posited in the context
 
 The model is simple, with acceleration and forces being linked via Newton's
 second law. Numerical integration is carried out with the `lsoda()` function of
-the `deSolve` R package [@soetaert_solving_2010]. Predicted velocities are
-used in computing water drag and the relative positions of ship and whale.
-After contact is made, compressive forces arise, and the stresses associated
-with these forces are monitored in the context of a lethality index 
-[@kelley_assessing_2020]. Dynamical elements involved in this process are
-distilled into 30 model parameters. Although a great deal of effort has been
-put into formulating these parameters appropriately (mainly for application to
-right whales), `whalestrike` offers a simple way for users to adjust each of
-them, if needed for new applications.
+the `deSolve` R package [@soetaert_solving_2010]. Predicted velocities are used
+in computing water drag and the relative positions of ship and whale. After
+contact is made, extensive and compressive forces arise, and the stresses
+associated with these forces are monitored in the context of the lethality
+index proposed by [@kelley_assessing_2020]. Dynamical elements involved in this
+process are distilled into several dozen model parameters. Although a great deal of
+effort has been put into formulating these parameters appropriately (mainly for
+application to right whales), `whalestrike` offers a simple way for users to
+adjust each of them, if needed for new applications.
 
 # Package installation and use
 
@@ -158,9 +158,9 @@ application makes it easy to explore "what if" scenarios for ship strikes. For
 example, monitoring the Lethality Index plot while adjusting the
 ship-specification tools and the impact speed might prove useful in discussions
 of speed restrictions across ship masses and classes. More detailed (and
-reproducible) work is also by `app2()`, because it can display the underlying
-code used in the simulation, providing a good starting point for more extensive
-analyses, such as the exploration of covarying parameters.
+reproducible) work is also facilitated by `app2()`, because it can display the
+underlying code used in the simulation, providing a good starting point for
+more extensive analyses, such as the exploration of covarying parameters.
 
 ![View of an interactive application for simulating ship-whale collisions. Adjusting the slider for ship speed will reveal that the vessel in this simulation would have to slow down to 6.5 knots in order to reduce the inferred Lethality Index below a critical value (dashed line in right panel).](figure2.png)
 
@@ -172,7 +172,7 @@ of marine policies related to ship speeds.  It is written in R, a language that
 is familiar to many marine biologists, and one that also offers a vast array of
 statistical tools for analysing the results of model simulations. In addition
 to tools for detailed control of simulations, the package also provides a
-GUI-based tool for basic exploration, which may be useful in making or
+GUI-based tools for basic exploration, which may be useful in making or
 explaining policy decisions.
 
 Being founded on physical principles, `whalestrike` complements the more
