@@ -2,9 +2,10 @@
 
 <!-- badges: start -->
 
+
 [![GitHub last commit](https://img.shields.io/github/last-commit/dankelley/whalestrike)](https://img.shields.io/github/last-commit/dankelley/whalestrike)
 [![R-CMD-check](https://github.com/dankelley/whalestrike/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dankelley/whalestrike/actions/workflows/R-CMD-check.yaml)
-
+[![status](https://joss.theoj.org/papers/570201320eb0182aa487026819021c50/status.svg)](https://joss.theoj.org/papers/570201320eb0182aa487026819021c50)
 <!-- badges: end -->
 
 ## Purpose
