@@ -96,17 +96,17 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/" class="external-link">whalestrike</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/app2.html">app2</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>in an R session. A window will open in your browser. On the left-hand side is a region with controllers. Only one marked <code>Ship</code> will be open at first. Try adjusting the ship speed, to see what happens to the plots. Then try other elements of the <code>Ship</code> controller. Then try closing that controller, opening the others and exploring. The app has a <code>Help</code> button that gives more information. The <code>Code</code> button is also handy: it presents a dialog box with the raw R code that could be used outside the app, to generate the plots shown. In other words, <code><a href="reference/app2.html">app2()</a></code> acts as both a tool and a tutor. A video demonstrating <code><a href="reference/app2.html">app2()</a></code> is at available on <a href="https://youtu.be/kTMl3nXa5A4" class="external-link">youtube</a>.</p>
-<p>Users who want more control, and who want to deal with the results in numerical as opposed to graphical form, should then start exploring the <code><a href="reference/strike.html">strike()</a></code> function. To learn how it works, type</p>
+<p>in an R session. A window will open in your browser. On the left-hand side is a region with controllers, many hidden in sub-panels that can be opened by clicking on V-shaped icons. Before opening those sub-panels, try adjusting the ship speed, to see what happens to the plots, especially the one labelled <code>Lethality Index</code>. Think about whether the tendency of variations to the index are in line with your intuition. Next, open the <code>Ship</code> sub-panel, to explore the result of altering the ship mass. This sub-panel also has controllers specifying the geometry of the impact region, and you ought to explore them, also. Continuing to explore the app’s controllers ought to give you a good indication of what the tool provides. To learn more, try consulting the app’s documentation, provided (a) as the response to typing <code><a href="reference/app2.html">? app2</a></code> in the R console, (b) as information in a dialog box that opens when the <code>Help</code> button is clicked, and (c) in a <a href="https://youtu.be/kTMl3nXa5A4" class="external-link">youtube video</a>.</p>
+<p>Users who want more control, and who want to deal with the results in numerical as opposed to graphical form, should try clicking the <code>Code</code> button in <code><a href="reference/app2.html">app2()</a></code>, to see the R code that runs the simulation outside the app. The next step will be to explore the functions used in that code. Documentation exists for each of these functions e.g. typing</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/" class="external-link">whalestrike</a></span><span class="op">)</span></span>
 <span><span class="op">?</span><span class="va">strike</span></span></code></pre></div>
-<p>in an R session.</p>
+<p>in an R session will provide information on <code><a href="reference/strike.html">strike()</a></code>, which is a key function in the package.</p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<p>Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. “Assessing the Lethality of Ship Strikes on Whales Using Simple Biophysical Models.” Marine Mammal Science, October 12, 2020, mms.12745. (<a href="https://doi.org/10.1111/mms.12745" class="external-link uri">https://doi.org/10.1111/mms.12745</a>).</p>
+<p>Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. “Assessing the Lethality of Ship Strikes on Whales Using Simple Biophysical Models.” Marine Mammal Science, October 12, 2020, mms.12745. (<a href="https://doi.org/10.1111/mms.12745" class="external-link">journal site</a>; <a href="https://www.researchgate.net/profile/Dan-Kelley-3/publication/344748816_Assessing_the_lethality_of_ship_strikes_on_whales_using_simple_biophysical_models/links/6400e1410cf1030a56678284/Assessing-the-lethality-of-ship-strikes-on-whales-using-simple-biophysical-models.pdf?origin=publicationSearch&amp;_rtd=e30%3D&amp;_tp=eyJjb250ZXh0Ijp7ImZpcnN0UGFnZSI6ImhvbWUiLCJwYWdlIjoic2VhcmNoIiwicG9zaXRpb24iOiJwYWdlSGVhZGVyIn19" class="external-link">ResearchGate Preprint</a>.)</p>
 </div>
 </div>
   </div>
@@ -149,6 +149,8 @@
 <ul class="list-unstyled">
 <li><a href="https://img.shields.io/github/last-commit/dankelley/whalestrike" class="external-link"><img src="https://img.shields.io/github/last-commit/dankelley/whalestrike" alt="GitHub last commit"></a></li>
 <li><a href="https://github.com/dankelley/whalestrike/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/dankelley/whalestrike/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://joss.theoj.org/papers/570201320eb0182aa487026819021c50" class="external-link"><img src="https://joss.theoj.org/papers/570201320eb0182aa487026819021c50/status.svg" alt="status"></a></li>
+<li><a href="https://www.repostatus.org/#active" class="external-link"><img src="https://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active – The project has reached a stable, usable state and is being actively developed."></a></li>
 </ul>
 </div>
 
