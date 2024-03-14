@@ -3,6 +3,8 @@
 * Update code to address documentation problems reported in issues #25, #26 and
   #27, as well as comments on the vignette.  For all of these, I thank JOSS
   reviewer Alexandra Mayette.
+* Update year of Kelley et al. "assessing" paper to 2021 throughout all
+  documentation (issue #28).
 
 # whalestrike 0.4.2
 

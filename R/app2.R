@@ -66,7 +66,7 @@ simulation under view at any given time.
 #' that a half hour of such exploration will let users start to
 #' investigate practical applications.  For more about how the simulations
 #' are carried out, as well as comments on some applications that
-#' may be of interest, please consult Kelley et al. (2020).
+#' may be of interest, please consult Kelley et al. (2021).
 #'
 #' More information on [app2()] in video form on
 #' [youtube](https://youtu.be/kTMl3nXa5A4).
@@ -84,7 +84,7 @@ simulation under view at any given time.
 #'
 #' Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. "Assessing the Lethality
 #' of Ship Strikes on Whales Using Simple Biophysical Models." Marine Mammal
-#' Science, October 12, 2020, mms.12745. \doi{10.1111/mms.12745}.
+#' Science, 37(1), 2021. \doi{10.1111/mms.12745}.
 ##'
 #' @author Dan Kelley
 app2 <- function(debug = FALSE) {

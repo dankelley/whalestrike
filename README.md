@@ -22,7 +22,7 @@ the results in graphical form.
 
 To learn more about the scientific background, and to see the results of some
 detailed computations placed in the context of a database of observed strikes,
-see Kelley et al. (2020).
+see Kelley et al. (2021).
 
 ## Installation
 
@@ -74,7 +74,9 @@ in the package.
 
 ## References
 
-Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. “Assessing the Lethality of Ship
-Strikes on Whales Using Simple Biophysical Models.” Marine Mammal
-Science, October 12, 2020, mms.12745. ([journal site](https://doi.org/10.1111/mms.12745); 
-[ResearchGate Preprint](https://www.researchgate.net/publication/344748816_Assessing_the_lethality_of_ship_strikes_on_whales_using_simple_biophysical_models#fullTextFileContent).)
+
+Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. "Assessing the Lethality
+of Ship Strikes on Whales Using Simple Biophysical Models." Marine Mammal
+Science 37, no. 1 (January 2021): 251–67. https://doi.org/10.1111/mms.12745.
+([journal site](https://doi.org/10.1111/mms.12745); [ResearchGate
+Preprint](https://www.researchgate.net/publication/344748816_Assessing_the_lethality_of_ship_strikes_on_whales_using_simple_biophysical_models#fullTextFileContent))

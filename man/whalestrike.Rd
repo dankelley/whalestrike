@@ -13,7 +13,7 @@ that can be simulated in finite-element treatments such
 as that of Raymond (2007).  For an in-depth discussion
 of the reason for writing the model, of the principles involved
 in its framing, and its use in developing a criterion for
-strike lethality, please see Kelley et al. (2020).
+strike lethality, please see Kelley et al. (2021).
 }
 \details{
 The goal of the model is to establish a
@@ -34,7 +34,7 @@ criteria for whale damage.
 The documentation for \code{\link[=strike]{strike()}} provides
 a practical example of using the main functions of this package,
 while the package vignette provides a general overview.
-Kelley et al (2020) provide more
+Kelley et al (2021) provide more
 detail about the mathematical
 framework of the package, along with a discussion of its
 purpose and application to real-world problems of ship
@@ -66,8 +66,8 @@ Blubber--a Test of Anisotropy." Zoology 126 (2018): 137-44.
 
 \item
 Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. "Assessing the
-Lethality of Ship Strikes on Whales Using Simple Biophysical Models." Marine
-Mammal Science, October 12, 2020, mms.12745.
+Lethality of Ship Strikes on Whales Using Simple Biophysical Models."
+Marine Mammal Science 37, no. 1 (January 2021): 251–67.
 \doi{10.1111/mms.12745}.
 
 \item

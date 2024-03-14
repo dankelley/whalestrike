@@ -5,7 +5,7 @@ library(deSolve)
 #' Reference strike() solution
 #'
 #' This was produced with the package as it existed on 2020-jul-8,
-#' prior to the publication of Kelley et al. (2020).  It is used
+#' prior to the publication of Kelley et al. (2021).  It is used
 #' in testing, to ensure that the package does not inadvertently
 #' change in its predictions.
 #'
@@ -18,7 +18,7 @@ library(deSolve)
 #'
 #' Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. "Assessing the Lethality
 #' of Ship Strikes on Whales Using Simple Biophysical Models." Marine Mammal
-#' Science, October 12, 2020, mms.12745. \doi{10.1111/mms.12745}.
+#' Science, 37(1), 2021, mms.12745. \doi{10.1111/mms.12745}.
 #'
 #' @name sol20200708
 #'
@@ -68,7 +68,7 @@ NULL
 #' as that of Raymond (2007).  For an in-depth discussion
 #' of the reason for writing the model, of the principles involved
 #' in its framing, and its use in developing a criterion for
-#' strike lethality, please see Kelley et al. (2020).
+#' strike lethality, please see Kelley et al. (2021).
 #'
 #' The goal of the model is to establish a
 #' convenient framework for rapid computation of impacts in a
@@ -88,7 +88,7 @@ NULL
 #' The documentation for [strike()] provides
 #' a practical example of using the main functions of this package,
 #' while the package vignette provides a general overview.
-#' Kelley et al (2020) provide more
+#' Kelley et al (2021) provide more
 #' detail about the mathematical
 #' framework of the package, along with a discussion of its
 #' purpose and application to real-world problems of ship
@@ -119,8 +119,8 @@ NULL
 #'
 #' \item
 #' Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. "Assessing the
-#' Lethality of Ship Strikes on Whales Using Simple Biophysical Models." Marine
-#' Mammal Science, October 12, 2020, mms.12745.
+#' Lethality of Ship Strikes on Whales Using Simple Biophysical Models."
+#' Marine Mammal Science 37, no. 1 (January 2021): 251–67.
 #' \doi{10.1111/mms.12745}.
 #'
 #' \item

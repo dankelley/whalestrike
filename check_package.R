@@ -14,7 +14,7 @@ urlchecker::url_check()
 devtools::check_win_release()
 devtools::check_win_devel()
 devtools::check_win_oldrelease()
-# rhub in 2022 June/July but OK in 2022 August
+# rhub broken in 2022 June/July but OK in 2022 August
 rhub::check_for_cran(email = "Dan.Kelley@Dal.Ca", show_status = FALSE)
 rhub::check(platform = "debian-clang-devel", show_status = FALSE)
 #> rhub::platforms()
