@@ -7,13 +7,13 @@
   "codeRepository": "https://github.com/dankelley/whalestrike",
   "issueTracker": "https://github.com/dankelley/whalestrike/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.3.2 (2023-10-31)",
+  "runtimePlatform": "R version 4.3.3 (2024-02-29)",
   "author": [
     {
       "@type": "Person",
@@ -115,7 +115,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "411.885KB",
+  "fileSize": "406.397KB",
   "relatedLink": "https://dankelley.github.io/whalestrike/",
   "releaseNotes": "https://github.com/dankelley/whalestrike/blob/master/NEWS.md",
   "readme": "https://github.com/dankelley/whalestrike/blob/main/README.md",

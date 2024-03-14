@@ -22,7 +22,7 @@ rhub::check(platform = "debian-clang-devel", show_status = FALSE)
 #    Debian Linux, R-devel, clang, ISO-8859-15 locale
 #> rhub::check_rhub()
 # remotes::install_github("r-lib/revdepcheck")
-if (FALSE) { # enable this test if package is on CRAN
-    revdepcheck::revdep_reset()
-    revdepcheck::revdep_check(num_workers = 4)
-}
+#<if on CRAN> if (FALSE) { # enable this test if package is on CRAN
+#<if on CRAN>     revdepcheck::revdep_reset()
+#<if on CRAN>     revdepcheck::revdep_check(num_workers = 4)
+#<if on CRAN> }

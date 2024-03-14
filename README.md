@@ -77,4 +77,4 @@ in the package.
 Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. “Assessing the Lethality of Ship
 Strikes on Whales Using Simple Biophysical Models.” Marine Mammal
 Science, October 12, 2020, mms.12745. ([journal site](https://doi.org/10.1111/mms.12745); 
-[ResearchGate Preprint](https://www.researchgate.net/profile/Dan-Kelley-3/publication/344748816_Assessing_the_lethality_of_ship_strikes_on_whales_using_simple_biophysical_models/links/6400e1410cf1030a56678284/Assessing-the-lethality-of-ship-strikes-on-whales-using-simple-biophysical-models.pdf?origin=publicationSearch&_rtd=e30%3D&_tp=eyJjb250ZXh0Ijp7ImZpcnN0UGFnZSI6ImhvbWUiLCJwYWdlIjoic2VhcmNoIiwicG9zaXRpb24iOiJwYWdlSGVhZGVyIn19).)
+[ResearchGate Preprint](https://www.researchgate.net/publication/344748816_Assessing_the_lethality_of_ship_strikes_on_whales_using_simple_biophysical_models#fullTextFileContent).)
