@@ -11,7 +11,7 @@
 #' @param ms Ship mass (kg).
 #'
 #' @param Ss Ship wetted area (m^2). This, together with `Cs`, is used by
-#' used by [shipWaterForce()] to estimate ship drag force. If `Ss`
+#' [shipWaterForce()] to estimate ship drag force. If `Ss`
 #' is not given, then an estimate is made by calling [shipAreaFromMass()] with
 #' the provided value of `ms`.
 #'

@@ -1,3 +1,9 @@
+# whalestrike 0.4.3
+
+* Update code to address documentation problems reported in issues #25, #26 and
+  #27, as well as comments on the vignette.  For all of these, I thank JOSS
+  reviewer Alexandra Mayette.
+
 # whalestrike 0.4.2
 
 * Create a [video recording](https://youtu.be/kTMl3nXa5A4) demonstrating

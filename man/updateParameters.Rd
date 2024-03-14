@@ -32,7 +32,7 @@ and perhaps later altered by previous calls to \code{updateParameters()}.}
 \item{ms}{Ship mass (kg).}
 
 \item{Ss}{Ship wetted area (m^2). This, together with \code{Cs}, is used by
-used by \code{\link[=shipWaterForce]{shipWaterForce()}} to estimate ship drag force. If \code{Ss}
+\code{\link[=shipWaterForce]{shipWaterForce()}} to estimate ship drag force. If \code{Ss}
 is not given, then an estimate is made by calling \code{\link[=shipAreaFromMass]{shipAreaFromMass()}} with
 the provided value of \code{ms}.}
 

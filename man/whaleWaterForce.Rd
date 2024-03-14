@@ -10,7 +10,7 @@ whaleWaterForce(vw, parms)
 \item{vw}{Whale velocity (m/s).}
 
 \item{parms}{A named list holding model parameters, created by
-\code{\link{parameters}}.}
+\code{\link[=parameters]{parameters()}}.}
 }
 \value{
 Water drag force (N).

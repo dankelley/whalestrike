@@ -204,8 +204,9 @@ NULL
 #'
 #' @param L length in m.
 #'
-#' @param species A string indicating the whale species. For the permitted values,
-#' see [whaleMassFromLength()].
+#' @param species A string indicating the whale species.  With
+#' this version of the package, the only permitted choice is
+#' `"N. Atl. Right Whale"`.
 #'
 #' @param type character string indicating the type of area, with
 #' `"projected"` for a side-projected area, and
@@ -255,41 +256,6 @@ whaleAreaFromLength <- function(L, species = "N. Atl. Right Whale", type = "wett
     } else {
         stop("'type' must be 'projected' or 'wetted', but it is '", type, "'")
     }
-}
-
-#' Compute ship wetted area from mass
-#'
-#' Estimate the wetted area of a Cape Islander boat,
-#' given the vessel mass.
-#'
-#' The method is based on scaling up the results for a single Cape
-#' Islander ship, of displacement 20.46 tonnes, length 11.73m,
-#' beam 4.63m, and draft 1.58m, on the assumption that the wetted area
-#' is proportional to
-#' \eqn{length*(2*draft+beam)}{length*(2*draft+beam)}.
-#' This reference area is scaled to
-#' the specified mass, `ms`, by multiplying by the 2/3
-#' power of the mass ratio.
-#'
-#' Note that this is a crude calculation meant as a stop-gap measure, for
-#' estimates values of the `Ss` argument to [parameters()].
-#' It should not be used in preference to inferences
-#' made from architectural drawings of a given ship under study.
-#'
-#' @param ms Ship mass (kg).
-#'
-#' @return Estimated area (m^2).
-#'
-#' @author Dan Kelley
-#'
-#' @export
-shipAreaFromMass <- function(ms) {
-    length <- 11.73 # m
-    beam <- 4.63 # m
-    draft <- 1.58 # m
-    displacement <- 20.46e3 # m^3
-    factor <- (ms / displacement)^(1 / 3) # lengthscale factor
-    length * (beam + 2 * draft) * factor^2
 }
 
 #' Dynamical law

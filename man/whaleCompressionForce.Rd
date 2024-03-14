@@ -12,7 +12,7 @@ whaleCompressionForce(xs, xw, parms)
 \item{xw}{Whale position (m).}
 
 \item{parms}{A named list holding model parameters, created by
-\code{\link{parameters}}.}
+\code{\link[=parameters]{parameters()}}.}
 }
 \value{
 A list containing: \code{force} (N), the

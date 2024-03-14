@@ -40,13 +40,13 @@ difficult in the Moore et al. (2005) use of a single nonzero digit
 in the multiplier on \code{L} is illustrated in \dQuote{Examples}.
 \item \code{"fortune2012"} with \code{species="N. Atl. Right Whale"} yields the formula
 \eqn{exp(-10.095 + 2.825*log(100*L))}{exp(-10.095 + 2.825*log(100*L))}
-for North Atlantic right whales, according to corrected version of the
+for North Atlantic right whales, according to a corrected version of the
 erroneous formula given in the caption of Figure 4 in Fortune et al (2012).
 (The error, an exchange of slope and intercept, was confirmed by
 S. Fortune in an email to D. Kelley dated June 22, 2018.)
 \item \code{"fortune2012"} with \code{species="N. Pac. Right Whale"} yields the formula
 \eqn{exp(-12.286 + 3.158*log(100*L))}{exp(-12.286 + 3.158*log(100*L))}
-for North Pacific right whales, according to corrected version of the
+for North Pacific right whales, according to a corrected version of the
 erroneous formula given in the caption of Figure 4 in Fortune et al (2012).
 (The error, an exchange of slope and intercept, was confirmed by
 S. Fortune in an email to D. Kelley dated June 22, 2018.)

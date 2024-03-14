@@ -224,10 +224,12 @@ whaleSkinForce <- function(xs, xw, parms) {
 #'
 #' Compute the retarding force of water on the ship, based on a drag law
 #' \eqn{(1/2)*rho*Cs*A*vs^2}{(1/2)*rho*Cs*A*vs^2}
-#' where `rho` is 1024 (kg/m^3), `Cs` is `parms$Cs` and
-#' `A` is `parms$Ss`.
+#' where `rho` is water density taken to be 1024 (kg/m^3), `Cs` is drag coefficient
+#' stored in `parms` and `A` is area, also stored in `parms, and `vs` is
+#' the ship speed (m/s).
 #
-#' @param vs ship velocity (m/s).
+#' @param vs Ship speed in m/s. (Consider using [knot2mps()] if you
+#' prefer to think of speeds in knots.)
 #'
 #' @template parmsTemplate
 #'
@@ -259,24 +261,4 @@ shipWaterForce <- function(vs, parms) {
 #' @export
 whaleWaterForce <- function(vw, parms) {
     -(1 / 2) * 1024 * parms$Cw * parms$Sw * vw * abs(vw)
-}
-
-#' Ship water force
-#'
-#' Compute the retarding force of water on the ship, based on a drag law
-#' \eqn{(1/2)*rho*Cs*A*vs^2}{(1/2)*rho*Cs*A*vs^2}
-#' where `rho` is 1024 (kg/m^3), `Cs` is `parms$Cs` and
-#' `A` is `parms$Ss`.
-#
-#' @param vs ship velocity (m/s).
-#'
-#' @template parmsTemplate
-#'
-#' @return Water drag force (N).
-#'
-#' @author Dan Kelley
-#'
-#' @export
-shipWaterForce <- function(vs, parms) {
-    -(1 / 2) * 1024 * parms$Cs * parms$Ss * vs * abs(vs)
 }
