@@ -22,7 +22,7 @@ documentation to learn more about these things.
 
 More information on this app may be retrieved by typing <tt>?app2</tt>
 in the R console, and a video demonstration is provided on
-[youtube](https://youtu.be/kTMl3nXa5A4).
+<a href=\"https://youtu.be/kTMl3nXa5A4\">youtube</a>).
 
 </p>
 
@@ -304,7 +304,7 @@ app2 <- function(debug = FALSE) {
                 if (debug) print(range(t))
                 sol <- strike(t, state, parms)
                 if (sol$refinedGrid) {
-                    showNotification("Auto-refined grid to capture acceleration peak")
+                    showNotification("Refined grid for accel. peak")
                 }
                 npanels <- length(input$plot_panels)
                 nrows <- floor(sqrt(npanels))

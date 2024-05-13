@@ -103,7 +103,7 @@ the `deSolve` R package [@soetaert_solving_2010]. Predicted velocities are used
 in computing water drag and the relative positions of ship and whale. After
 contact is made, extensive and compressive forces arise, and the stresses
 associated with these forces are monitored in the context of the lethality
-index proposed by [@kelley_assessing_2021]. Dynamical elements involved in this
+index proposed by @kelley_assessing_2021. Dynamical elements involved in this
 process are distilled into several dozen model parameters. Although a great deal of
 effort has been put into formulating these parameters appropriately (mainly for
 application to right whales), `whalestrike` offers a simple way for users to

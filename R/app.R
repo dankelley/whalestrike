@@ -234,7 +234,7 @@ server <- function(input, output, session) {
             t <- seq(0, input$tmax, length.out = 2000)
             sol <- strike(t, state, parms)
             if (sol$refinedGrid) {
-                showNotification("Auto-refined grid to capture acceleration peak")
+                showNotification("Refined grid for accel. peak")
             }
             npanels <- length(input$plot_panels)
             nrows <- floor(sqrt(npanels))
