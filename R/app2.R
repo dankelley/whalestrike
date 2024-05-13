@@ -74,8 +74,10 @@ simulation under view at any given time.
 #' @param debug logical value indicating whether to print output to
 #' the R console as the computation is done.
 #'
-#' @importFrom bslib accordion accordion_panel card sidebar
+#' @importFrom bslib accordion accordion_panel card card_header sidebar tooltip
+#'
 #' @importFrom shiny actionButton checkboxGroupInput h6 observeEvent plotOutput selectInput shinyApp showModal sliderInput stopApp
+#'
 #' @export
 #'
 #' @family interactive apps
@@ -99,18 +101,36 @@ app2 <- function(debug = FALSE) {
     }
     ui <- bslib::page_sidebar(
         # title = "app2", # a waste of space (the user launched this, and can do help)
-        shiny::tags$script(paste0("$(document).on(\"keypress\", function (e) {",
+        shiny::tags$script(paste0(
+            "$(document).on(\"keypress\", function (e) {",
             "Shiny.onInputChange(\"keypress\", e.which);",
             "Shiny.onInputChange(\"keypressTrigger\", Math.random());",
-            "});")),
+            "});"
+        )),
         sidebar = bslib::sidebar(
             # title = "Controls", # a waste of space (who could not figure this out?)
+            tooltip(
+                "\u24D8",
+                paste(
+                    "The three 'accordion' menus below are used to select the",
+                    "desired plot types, and to set the characteristics of the",
+                    "whale and the ship that collides with it."
+                )
+            ),
             width = 280, # default, 250, too narrow for one of the plot types
             bslib::accordion(
                 open = FALSE,
                 multiple = TRUE,
                 accordion_panel(
                     "plot",
+                    tooltip(
+                        "\u24D8",
+                        paste(
+                            "The checkboxes select the plots to be displayed.",
+                            "To learn more about the choices, try typing",
+                            "'?whalestrike::plot.strike' in an R session."
+                        )
+                    ),
                     shiny::checkboxGroupInput("plot_panels", "",
                         choices = c(
                             "location",
@@ -129,6 +149,14 @@ app2 <- function(debug = FALSE) {
                 ),
                 accordion_panel(
                     "whale",
+                    tooltip(
+                        "\u24D8",
+                        paste(
+                            "These sliders set the whale characteristics.",
+                            "The default values are meant to represent",
+                            "an adult Right Whale."
+                        )
+                    ),
                     shiny::selectInput("species", "Species",
                         choices = c(
                             "N. Atl. Right", "Blue", "Bryde", "Fin", "Gray", "Humpback", "Minke",
@@ -159,7 +187,19 @@ app2 <- function(debug = FALSE) {
                 ),
                 accordion_panel(
                     "ship",
-                    shiny::sliderInput("ms", shiny::h6("Mass [tonne]"),
+                    tooltip(
+                        "\u24D8",
+                        paste(
+                            "These sliders set the mass of the ship and the",
+                            "geometry of the impact zone. For the latter,",
+                            "consider the area a few decimetres aft of the first",
+                            "contact point. The default values correspond to a small",
+                            "fishing vessel with a prow shape similar to that of a",
+                            "Cape Islander."
+                        )
+                    ),
+                    shiny::sliderInput("ms",
+                        shiny::h6("Mass [tonne]"),
                         ticks = FALSE,
                         min = 10, max = 500, value = 45, step = 1
                     ),
@@ -171,28 +211,57 @@ app2 <- function(debug = FALSE) {
                         ticks = FALSE,
                         min = 0.1, max = 2, value = 1.15, step = 0.05
                     )
+                ),
+            ),
+            bslib::tooltip(
+                shiny::sliderInput("tmax", shiny::h6("Max time [s]"),
+                    ticks = FALSE,
+                    min = 0.1, max = 5, value = 1, step = 0.05
+                ),
+                "Set the time interval to be simulated (in seconds)."
+            ),
+            bslib::tooltip(
+                shiny::sliderInput("vs", shiny::h6("Ship Speed [knot]"),
+                    ticks = FALSE,
+                    min = 1, max = 30, value = 10, step = 0.1
+                ),
+                "Set the initial (pre-impact) ship speed, in knots. Note that 1 knot is 0.514 m/s."
+            ),
+            bslib::tooltip(
+                shiny::actionButton("help", "Help"),
+                "Open a pop-up window that provides some information on using this app."
+            ),
+            bslib::tooltip(
+                shiny::actionButton("code", "Code"),
+                paste(
+                    "Open a pop-up window that provides R code that is aligned with",
+                    "the present app settings. This can be useful for users who want to set up",
+                    "a suite of simulations, e.g. to produce graphs of lethality index versus ship speed."
                 )
             ),
-            shiny::sliderInput("tmax", shiny::h6("Max time [s]"),
-                ticks = FALSE,
-                min = 0.1, max = 5, value = 1, step = 0.05
+            bslib::tooltip(
+                shiny::actionButton("quit", "Quit"),
+                "Quite this application."
             ),
-            shiny::sliderInput("vs", shiny::h6("Ship Speed [knot]"),
-                ticks = FALSE,
-                min = 1, max = 30, value = 10, step = 0.1
-            ),
-            shiny::actionButton("help", "Help"),
-            shiny::actionButton("code", "Code"),
-            shiny::actionButton("quit", "Quit")
         ),
-        bslib::card(
-            shiny::plotOutput("plot")
-        )
+        card(
+            card_header(
+                "", # Results of collision simulation",
+                tooltip(
+                    "\u24D8",
+                    paste(
+                        "This diagram represents the results of a simulation",
+                        "of a whale being struck by a ship, with parameters",
+                        "set by the controllers shown to the left."
+                    )
+                ),
+                plotOutput("plot")
+            ),
+        ),
     )
     server <- function(input, output, session) {
         dmsg("in server")
-        whaleMass <- function(length, species)
-        {
+        whaleMass <- function(length, species) {
             if (species == "N. Atl. Right") {
                 whaleMassFromLength(length, species = "N. Atl. Right Whale", model = "fortune2012")
             } else if (species == "Blue") {
@@ -217,18 +286,16 @@ app2 <- function(debug = FALSE) {
                 stop("programming error: species not handled: ", species)
             }
         }
-        shiny::observeEvent(input$keypressTrigger,
-            {
-                key <- intToUtf8(input$keypress)
-                # NOTE: this keystroke is not explained. I may delete
-                # it. And I might add other keystrokes. One that I
-                # think might be good would be to try small-ship and
-                # large-ship simulations.
-                if (key == "?") {
-                    shiny::showModal(shiny::modalDialog(shiny::HTML(help), title = "Using this application", size = "l"))
-                }
+        shiny::observeEvent(input$keypressTrigger, {
+            key <- intToUtf8(input$keypress)
+            # NOTE: this keystroke is not explained. I may delete
+            # it. And I might add other keystrokes. One that I
+            # think might be good would be to try small-ship and
+            # large-ship simulations.
+            if (key == "?") {
+                shiny::showModal(shiny::modalDialog(shiny::HTML(help), title = "Using this application", size = "l"))
             }
-        )
+        })
         shiny::observeEvent(input$help, {
             shiny::showModal(shiny::modalDialog(shiny::HTML(help), title = "Using this application", size = "l"))
         })
@@ -237,9 +304,11 @@ app2 <- function(debug = FALSE) {
         })
         shiny::observeEvent(input$code, {
             msg <- "<pre>library(whalestrike)<br>"
-            msg <- paste0(msg,
+            msg <- paste0(
+                msg,
                 "# Simulation time interval<br>",
-                "t <- seq(0.0, ", input$tmax, ", length.out = 2000)<br>")
+                "t <- seq(0.0, ", input$tmax, ", length.out = 2000)<br>"
+            )
             msg <- paste0(
                 msg,
                 "# Initial state<br>",
@@ -264,12 +333,16 @@ app2 <- function(debug = FALSE) {
                 ", ", input$l3 / 100,
                 ", ", input$l4 / 100, "))<br>"
             )
-            msg <- paste0(msg,
-                "# Perform the simulation<br>")
+            msg <- paste0(
+                msg,
+                "# Perform the simulation<br>"
+            )
             msg <- paste0(msg, "sol <- strike(t, state, parms)<br>")
             if (length(input$plot_panels)) {
-                msg <- paste0(msg,
-                    "# Plot results<br>")
+                msg <- paste0(
+                    msg,
+                    "# Plot results<br>"
+                )
                 npanels <- length(input$plot_panels)
                 nrows <- floor(sqrt(npanels))
                 ncols <- ceiling(npanels / nrows)

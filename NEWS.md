@@ -1,15 +1,22 @@
+# whalestrike 0.4.4
+
+* Update `app2()` to have popup information, as suggested by a Hansen
+  Johnson, who was a second reviewer of the JOSS manuscript. The code
+  and the JOSS paper were also altered as suggested in Johnson's
+  review.
+
 # whalestrike 0.4.3
 
-* Update code to address documentation problems reported in issues #25, #26 and
-  #27, as well as comments on the vignette.  For all of these, I thank JOSS
-  reviewer Alexandra Mayette.
-* Update year of Kelley et al. "assessing" paper to 2021 throughout all
-  documentation (issue #28).
+* Update code to address documentation problems reported in issues
+  #25, #26 and #27, as well as comments on the vignette.  For all of
+  these, I thank JOSS reviewer Alexandra Mayette.
+* Update year of Kelley et al. "assessing" paper to 2021 throughout
+  all documentation (issue #28).
 
 # whalestrike 0.4.2
 
-* Create a [video recording](https://youtu.be/kTMl3nXa5A4) demonstrating
-  `app2()`.
+* Create a [video recording](https://youtu.be/kTMl3nXa5A4)
+  demonstrating `app2()`.
 
 * Add `app2()`, an improved version of `app()`.
 * Subdivide code into smaller files; improve formatting.

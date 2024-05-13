@@ -314,7 +314,7 @@ plot.strike <- function(x, which = "default", drawEvents = TRUE,
         } else {
             labelWhale <- sprintf("%.1fg (whale)", awmax / g)
         }
-        mtext(paste("Peak Accel. ", labelWhale, "and", labelShip), side = 3, line = 0, cex = 0.8 * par("cex"))
+        mtext(paste("Max: ", labelWhale, ",", labelShip), side = 3, line = 0, cex = 0.8 * par("cex"))
         showEvents(xs, xw)
     }
     if (all || "section" %in% which) {
@@ -497,9 +497,9 @@ plot.strike <- function(x, which = "default", drawEvents = TRUE,
         }
         abline(h = 0.5, lty = "dotted")
         if (dangerTimeInterval == 0.0) {
-            mtext(sprintf("Max. %.3g", maxLI), side = 3, line = 0, cex = 0.8 * par("cex"))
+            mtext(sprintf("Max. %.2g", maxLI), side = 3, line = 0, cex = 0.8 * par("cex"))
         } else {
-            mtext(sprintf("Max. %.3g (exceeds 0.5 for %.2gs)", maxLI, dangerTimeInterval), side = 3, line = 0, cex = 0.8 * par("cex"))
+            mtext(sprintf("Max. %.2g (>0.5 for %.1gs)", maxLI, dangerTimeInterval), side = 3, line = 0, cex = 0.8 * par("cex"))
         }
         showEvents(xs, xw)
     }
