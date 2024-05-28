@@ -6,6 +6,7 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/dankelley/whalestrike)](https://img.shields.io/github/last-commit/dankelley/whalestrike)
 [![R-CMD-check](https://github.com/dankelley/whalestrike/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dankelley/whalestrike/actions/workflows/R-CMD-check.yaml)
 [![status](https://joss.theoj.org/papers/570201320eb0182aa487026819021c50/status.svg)](https://joss.theoj.org/papers/570201320eb0182aa487026819021c50)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11372537.svg)](https://doi.org/10.5281/zenodo.11372537)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 
 
