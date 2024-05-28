@@ -1,3 +1,8 @@
+# whalestrike 0.5.0
+
+* Add a DOI for a cited paper. Bump version number, for the JOSS
+  revision.
+
 # whalestrike 0.4.4
 
 * Update `app2()` to have popup information, as suggested by a Hansen

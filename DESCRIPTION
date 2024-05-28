@@ -1,6 +1,6 @@
 Package: whalestrike
 Title: Simulate Whale Ship Strikes
-Version: 0.4.4
+Version: 0.5.0
 Authors@R: c(
     person(given="Dan", family="Kelley", email="dan.kelley@dal.ca", role=c("aut", "cre"), comment=c(ORCID="0000-0001-7808-5911")),
     person(given="James", family="Vlasic", email="jvlasic@dal.ca", role="rtm", comment=c(ORCID="0000-0002-3846-4391")),
