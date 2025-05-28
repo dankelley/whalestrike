@@ -87,8 +87,9 @@ lines(L, whaleMassFromLength(L,
     species = "N. Pac. Right Whale",
     model = "fortune2012"
 ) / kpt, col = 3, lwd = 2)
+grid()
 legend("topleft",
-    lwd = 2, col = 1:3,
+    bg = "white", y.intersp = 1.4, lwd = 2, col = 1:3,
     legend = c("moore2005", "fortune2012 Atlantic", "fortune2012 Pacific")
 )
 
@@ -125,7 +126,8 @@ m <- whaleMassFromLength(L, species = "Gray Whale", model = "lockyer1976") / kpt
 lines(L, m, col = 3, lty = 3, lwd = 2)
 grid()
 legend("topleft",
-    col = c(1:3, 1:3, 1:2), lwd = 2, lty = c(rep(1, 3), rep(2, 3), rep(3, 3)),
+    bg = "white", y.intersp = 1.4, col = c(1:3, 1:3, 1:2),
+    lwd = 2, lty = c(rep(1, 3), rep(2, 3), rep(3, 3)),
     legend = c("Right", "Blue", "Fin", "Sei", "Bryde", "Minke", "Humpback", "Sperm", "Gray")
 )
 

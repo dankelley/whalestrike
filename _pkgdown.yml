@@ -1,1 +1,3 @@
 destination: docs
+figures:
+  fig.height: 5
