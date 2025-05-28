@@ -1,6 +1,6 @@
 # whalestrike 0.5.1
 
-* Fix typo in help for `whaleLengthFromMass()`, in which the exponents on `L`
+* Fix typo in help for `whaleMassFromLength()`, in which the exponents on `L`
   showed only the first digit.
 
 # whalestrike 0.5.0
