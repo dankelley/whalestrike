@@ -54,15 +54,15 @@ S. Fortune in an email to D. Kelley dated June 22, 2018.)
 permitted \code{species} and the formulae used are as follows (note that
 the \code{"Gray Whale"} formula is in the table's caption, not in the table itself).
 \itemize{
-\item \code{"Blue Whale"}:       \eqn{2.899 * L^3.25}{2.899 * L^3.25}
-\item \code{"Bryde Whale"}:      \eqn{12.965 * L^2.74}{12.965 * L^2.74}
-\item \code{"Fin Whale"}:        \eqn{7.996 * L^2.90}{7.996 * L^2.90}
-\item \code{"Gray Whale"}:       \eqn{5.4 * L^3.28}{5.4 * L^3.28}
-\item \code{"Humpback Whale"}:   \eqn{16.473 * L^2.95}{16.473 * L^2.95}
-\item \code{"Minke Whale"}:      \eqn{49.574 * L^2.31}{49.574 * L^2.31}
-\item \code{"Pac. Right Whale"}: \eqn{13.200 * L^3.06}{13.200 * L^3.06}
-\item \code{"Sei Whale"}:        \eqn{25.763 * L^2.43}{25.763 * L^2.43}
-\item \code{"Sperm Whale"}:      \eqn{6.648 * L^3.18}{6.648 * L^3.18}
+\item \code{"Blue Whale"}:       \eqn{2.899 L^{3.25}}{2.899 * L^3.25}
+\item \code{"Bryde Whale"}:      \eqn{12.965 L^{2.74}}{12.965 * L^2.74}
+\item \code{"Fin Whale"}:        \eqn{7.996 L^{2.90}}{7.996 * L^2.90}
+\item \code{"Gray Whale"}:       \eqn{5.4 L^{3.28}}{5.4 * L^3.28}
+\item \code{"Humpback Whale"}:   \eqn{16.473 L^{2.95}}{16.473 * L^2.95}
+\item \code{"Minke Whale"}:      \eqn{49.574 L^{2.31}}{49.574 * L^2.31}
+\item \code{"Pac. Right Whale"}: \eqn{13.200 L^{3.06}}{13.200 * L^3.06}
+\item \code{"Sei Whale"}:        \eqn{25.763 L^{2.43}}{25.763 * L^2.43}
+\item \code{"Sperm Whale"}:      \eqn{6.648 L^{3.18}}{6.648 * L^3.18}
 }
 }
 }

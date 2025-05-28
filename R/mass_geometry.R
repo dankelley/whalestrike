@@ -35,15 +35,15 @@
 #' * `"lockyer1976"` uses formulae from Table 1 of Lockyer (1976). The
 #' permitted `species` and the formulae used are as follows (note that
 #' the `"Gray Whale"` formula is in the table's caption, not in the table itself).
-#'     * `"Blue Whale"`:       \eqn{2.899 * L^3.25}{2.899 * L^3.25}
-#'     * `"Bryde Whale"`:      \eqn{12.965 * L^2.74}{12.965 * L^2.74}
-#'     * `"Fin Whale"`:        \eqn{7.996 * L^2.90}{7.996 * L^2.90}
-#'     * `"Gray Whale"`:       \eqn{5.4 * L^3.28}{5.4 * L^3.28}
-#'     * `"Humpback Whale"`:   \eqn{16.473 * L^2.95}{16.473 * L^2.95}
-#'     * `"Minke Whale"`:      \eqn{49.574 * L^2.31}{49.574 * L^2.31}
-#'     * `"Pac. Right Whale"`: \eqn{13.200 * L^3.06}{13.200 * L^3.06}
-#'     * `"Sei Whale"`:        \eqn{25.763 * L^2.43}{25.763 * L^2.43}
-#'     * `"Sperm Whale"`:      \eqn{6.648 * L^3.18}{6.648 * L^3.18}
+#'     * `"Blue Whale"`:       \eqn{2.899 L^{3.25}}{2.899 * L^3.25}
+#'     * `"Bryde Whale"`:      \eqn{12.965 L^{2.74}}{12.965 * L^2.74}
+#'     * `"Fin Whale"`:        \eqn{7.996 L^{2.90}}{7.996 * L^2.90}
+#'     * `"Gray Whale"`:       \eqn{5.4 L^{3.28}}{5.4 * L^3.28}
+#'     * `"Humpback Whale"`:   \eqn{16.473 L^{2.95}}{16.473 * L^2.95}
+#'     * `"Minke Whale"`:      \eqn{49.574 L^{2.31}}{49.574 * L^2.31}
+#'     * `"Pac. Right Whale"`: \eqn{13.200 L^{3.06}}{13.200 * L^3.06}
+#'     * `"Sei Whale"`:        \eqn{25.763 L^{2.43}}{25.763 * L^2.43}
+#'     * `"Sperm Whale"`:      \eqn{6.648 L^{3.18}}{6.648 * L^3.18}
 #'
 #' @param L whale length in m.
 #'
@@ -201,23 +201,23 @@ whaleMassFromLength <- function(L, species = "N. Atl. Right Whale", model = NULL
             }
         } else if (model[i] == "lockyer1976") {
             if (species[i] == "Blue Whale") {
-                rval[i] <- 2.899 * L[i]^3.25
+                rval[i] <- 2.899 * L[i]^(3.25)
             } else if (species[i] == "Bryde Whale") {
-                rval[i] <- 12.965 * L[i]^2.74
+                rval[i] <- 12.965 * L[i]^(2.74)
             } else if (species[i] == "Fin Whale") {
-                rval[i] <- 7.996 * L[i]^2.90
+                rval[i] <- 7.996 * L[i]^(2.90)
             } else if (species[i] == "Gray Whale") {
-                rval[i] <- 5.4 * L[i]^3.28
+                rval[i] <- 5.4 * L[i]^(3.28)
             } else if (species[i] == "Humpback Whale") {
-                rval[i] <- 16.473 * L[i]^2.95
+                rval[i] <- 16.473 * L[i]^(2.95)
             } else if (species[i] == "Minke Whale") {
-                rval[i] <- 49.574 * L[i]^2.31
+                rval[i] <- 49.574 * L[i]^(2.31)
             } else if (species[i] == "Pac. Right Whale") {
-                rval[i] <- 13.200 * L[i]^3.06
+                rval[i] <- 13.200 * L[i]^(3.06)
             } else if (species[i] == "Sei Whale") {
-                rval[i] <- 25.763 * L[i]^2.43
+                rval[i] <- 25.763 * L[i]^(2.43)
             } else if (species[i] == "Sperm Whale") {
-                rval[i] <- 6.648 * L[i]^3.18
+                rval[i] <- 6.648 * L[i]^(3.18)
             } else {
                 stop(
                     "species[", i, "]=\"", species[i], "\" must be one of the following:",
