@@ -220,7 +220,7 @@ whaleSkinForce <- function(xs, xw, parms) {
 }
 
 
-#' Ship water force
+#' Ship Drag Force
 #'
 #' Compute the retarding force of water on the ship, based on a drag law
 #' \eqn{(1/2)*rho*Cs*A*vs^2}{(1/2)*rho*Cs*A*vs^2}
@@ -243,7 +243,7 @@ shipWaterForce <- function(vs, parms) {
 }
 
 
-#' Whale force
+#' Whale Drag Force
 #'
 #' Compute the retarding force of water on the whale, based on a drag law
 #' \eqn{(1/2)*rho*Cw*A*vw^2}{(1/2)*rho*Cw*A*vw^2}

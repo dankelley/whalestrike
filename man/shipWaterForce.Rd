@@ -2,7 +2,7 @@
 % Please edit documentation in R/forces.R
 \name{shipWaterForce}
 \alias{shipWaterForce}
-\title{Ship water force}
+\title{Ship Drag Force}
 \usage{
 shipWaterForce(vs, parms)
 }

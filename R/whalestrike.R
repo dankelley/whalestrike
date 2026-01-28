@@ -313,6 +313,7 @@ dynamics <- function(t, y, parms) {
         stop("Fship[1] is NA, probably indicating a programming error.")
     }
     Fwhale <- Freactive + whaleWaterForce(vw, parms)
+    #cat("t=", t, ", whaleWaterForce=", whaleWaterForce(vw, parms), "\n")
     if (is.na(Fwhale[1])) {
         stop("Fwhale[1] is NA, probably indicating a programming error.")
     }
@@ -448,6 +449,7 @@ strike <- function(t, state, parms, debug = 0) {
         "ms", "mw", "s", "Ss", "stressFromStrain", "Sw",
         "theta"
     )
+    #cat("parms$Sw=", parms$Sw, "\n")
     if (!all(parmsRequired %in% names(parms))) {
         stop('parms must hold: "', paste(parmsRequired, collapse = '", "'), '"')
     }

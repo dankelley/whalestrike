@@ -2,7 +2,7 @@
 % Please edit documentation in R/forces.R
 \name{whaleWaterForce}
 \alias{whaleWaterForce}
-\title{Whale force}
+\title{Whale Drag Force}
 \usage{
 whaleWaterForce(vw, parms)
 }
