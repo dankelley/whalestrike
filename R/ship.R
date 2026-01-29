@@ -29,6 +29,12 @@
 #' @return `shipMassFromLength` returns ship displacement mass
 #' (in kg), according to Mayette and Brillant (2026) Table 3.
 #'
+#' @examples
+#' ```R
+#' library(whalestrike)
+#' shipMassFromLength("Tug", 50)/1e3 # 1920.648
+#' ```
+#'
 #' @references
 #'
 #' * Alexandra Mayette, Sean W. Brillant. "A regression-based method
@@ -37,7 +43,7 @@
 #'
 #' @export
 #'
-#' @author Dan Kelley
+#' @author Dan Kelley, with help from Alexandra Mayette
 shipMassFromLength <- function(type, L) {
     switch(type,
         "Bulk Carrier" = 5.64 * L^3.06, # ∆ = 5.64 ∗ LOA3.06

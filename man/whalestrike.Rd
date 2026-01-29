@@ -141,6 +141,7 @@ Other contributors:
 \itemize{
   \item James Vlasic \email{jvlasic@dal.ca} (\href{https://orcid.org/0000-0002-3846-4391}{ORCID}) [research team member]
   \item Sean Brilliant \email{seanb@cwf-fcf.org} (\href{https://orcid.org/0000-0001-5494-3475}{ORCID}) [research team member]
+  \item Alexandra Mayette \email{alexandram@cwf-fcf.org} (\href{https://orcid.org/0000-0002-9766-9565}{ORCID}) [research team member]
 }
 
 }

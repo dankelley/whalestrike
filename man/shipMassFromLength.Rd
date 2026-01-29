@@ -37,6 +37,13 @@ The formulae used are as follows.\tabular{lr}{
    "Tug" \tab 104.48 * L^2.51 \cr
 }
 }
+\examples{
+```R
+library(whalestrike)
+shipMassFromLength("Tug", 50)/1e3 # 1920.648
+```
+
+}
 \references{
 \itemize{
 \item Alexandra Mayette, Sean W. Brillant. "A regression-based method
@@ -45,5 +52,5 @@ PLoS One 21(2) e0339760. \doi{10.1371/journal.pone.0339760}
 }
 }
 \author{
-Dan Kelley
+Dan Kelley, with help from Alexandra Mayette
 }

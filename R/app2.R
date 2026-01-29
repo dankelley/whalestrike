@@ -36,6 +36,12 @@ simulation under view at any given time.
 
 </p>
 
+<p>Hints:</p>
+<ul>
+<li> You may wish to use shipMassFromLength() to look up the mass of various
+classes of ships, based on lengths.</li>
+</ul>
+
 "
 
 #' GUI application for whale simulation (version 2)

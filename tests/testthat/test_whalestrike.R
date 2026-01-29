@@ -39,3 +39,7 @@ test_that("strike produces same results as previously", {
   sol20200708$parms$stressFromStrain <- NULL
   expect_equal(sol, sol20200708)
 })
+
+test_that("shipMassFromLength", {
+  expect_equal(shipMassFromLength("Tug", 50) / 1e3, 1920.648427)
+})
