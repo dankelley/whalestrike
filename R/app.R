@@ -44,7 +44,7 @@ classes of ships, based on lengths.</li>
 
 "
 
-#' GUI application for whale simulation (version 2)
+#' GUI application for whale simulation
 #'
 #' This is similar to [app()], except that it relies on the `bslib` package
 #' to provide a cleaner interface, in which sub-windows for controllers
@@ -53,18 +53,18 @@ classes of ships, based on lengths.</li>
 #' report an issue on the package github page, so the author
 #' can make adjustments.
 #'
-#' Compared with [app()], the present function lacks the ability to save settings
+#' Compared with [app_2025()], the present function lacks the ability to save settings
 #' and reload them later. This is mainly because it only works with locally-run
 #' operations, not from server-run operations.  The latter would require extra
 #' coding to set up user's storage space, to prevent against web attacks, etc.,
 #' which is beyond the present purpose.  However, there is an addition with
-#' [app2()] that might prove more useful: a button to display the code required
+#' [app()] that might prove more useful: a button to display the code required
 #' to reproduce the simulated state.  This may be of help to the those seeking
 #' to explore the results of simulations more precisely and with
 #' greater reproducibility.
 #'
 #' Sliders, buttons, and choosers are grouped into panes that appear on
-#' the left of the view. When [app2()] first opens, all of these panes
+#' the left of the view. When [app()] first opens, all of these panes
 #' are closed. To get acquainted with the app, try adjusting the controllers
 #' that *are* visible on the initial view.  Then, open the "ship" pane and
 #' increase the ship mass.  Do you find that the results make qualitative

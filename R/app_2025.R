@@ -253,15 +253,15 @@ server <- function(input, output, session) {
     ) # , height=500)
 }
 
-#' GUI app for interactive whale-strike simulations
+#' GUI app for interactive whale-strike simulations (OLD VERSION, no longer maintained)
 #'
-#' The `app()` function starts a GUI application that makes it easy to
+#' The `app_2025()` function starts a GUI application that makes it easy to
 #' run simple simulations and see the results in graphical form. Sliders
 #' and buttons permit a fair degree of customization.  The application
 #' has some build-in documentation, which supplements what can be found
 #' in the \sQuote{Details} section of the present documentation.
 #'
-#' When `app()` is run, a window will appear within a few moments. At the top of that
+#' When `app_2025()` is run, a window will appear within a few moments. At the top of that
 #' is a textual introduction to the system, with a button to hide that information. Below is
 #' a user-interaction area, with buttons and sliders that control the simulation
 #' and the plotted output. Below that is a plotting area, the contents of which
