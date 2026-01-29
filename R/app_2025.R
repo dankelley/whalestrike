@@ -328,7 +328,7 @@ server <- function(input, output, session) {
 #' @family interactive apps
 #'
 #' @author Dan Kelley
-app <- function(mode = "simple", options = list(height = 500)) # NOTE: height has no effect
+app_2025 <- function(mode = "simple", options = list(height = 500)) # NOTE: height has no effect
 {
     if (mode == "simple") {
         shinyApp(ui = ui, server = server, options = options)

@@ -2,84 +2,55 @@
 % Please edit documentation in R/app.R
 \name{app}
 \alias{app}
-\title{GUI app for interactive whale-strike simulations}
+\title{GUI application for whale simulation (version 2)}
 \usage{
-app(mode = "simple", options = list(height = 500))
+app(debug = FALSE)
 }
 \arguments{
-\item{mode}{character value specifying the style to use.  Only
-the value \code{"simple"} is permitted at present. This yields a
-3-panel plot, constructed by \code{\link{plot.strike}},
-called with default arguments.}
-
-\item{options}{list containing options that are provided
-to \code{\link[shiny]{shinyApp}}, which creates the GUI app.}
+\item{debug}{logical value indicating whether to print output to
+the R console as the computation is done.}
 }
 \description{
-The \code{app()} function starts a GUI application that makes it easy to
-run simple simulations and see the results in graphical form. Sliders
-and buttons permit a fair degree of customization.  The application
-has some build-in documentation, which supplements what can be found
-in the \sQuote{Details} section of the present documentation.
+This is similar to \code{\link[=app]{app()}}, except that it relies on the \code{bslib} package
+to provide a cleaner interface, in which sub-windows for controllers
+can be opened and closed by the user. Since \code{bslib} is still experimental,
+\code{\link[=app2]{app2()}} may start failing in the future, and users are asked to
+report an issue on the package github page, so the author
+can make adjustments.
 }
 \details{
-When \code{app()} is run, a window will appear within a few moments. At the top of that
-is a textual introduction to the system, with a button to hide that information. Below is
-a user-interaction area, with buttons and sliders that control the simulation
-and the plotted output. Below that is a plotting area, the contents of which
-depend on the configuration of the simulation as well as the user's selection
-of items to display.
+Compared with \code{\link[=app]{app()}}, the present function lacks the ability to save settings
+and reload them later. This is mainly because it only works with locally-run
+operations, not from server-run operations.  The latter would require extra
+coding to set up user's storage space, to prevent against web attacks, etc.,
+which is beyond the present purpose.  However, there is an addition with
+\code{\link[=app2]{app2()}} that might prove more useful: a button to display the code required
+to reproduce the simulated state.  This may be of help to the those seeking
+to explore the results of simulations more precisely and with
+greater reproducibility.
 
-The default setup, which is shown before the user alters any of the sliders,
-etc., is a simulation of a small fishing boat, of mass 45 tonnes, moving at
-speed 10 knots towards a whale of length 13.7m. (The whale length is used to
-compute its mass, using a formula that is described by the output of typing
-\code{help("whaleMassFromLength","whalestrike")} in an R console).
+Sliders, buttons, and choosers are grouped into panes that appear on
+the left of the view. When \code{\link[=app2]{app2()}} first opens, all of these panes
+are closed. To get acquainted with the app, try adjusting the controllers
+that \emph{are} visible on the initial view.  Then, open the "ship" pane and
+increase the ship mass.  Do you find that the results make qualitative
+sense?  Continue this process, exploring all the panes. It is hoped
+that a half hour of such exploration will let users start to
+investigate practical applications.  For more about how the simulations
+are carried out, as well as comments on some applications that
+may be of interest, please consult Kelley et al. (2021).
 
-Sliders are provided for setting certain key properties of the ship and the
-whale, with italic labels for those properties that are deemed most likely to
-be adjusted during simulations.  The details of these and the other parameters
-are revealed by typing \code{help("parameters","whalestrike")} and
-\code{help("strike","whalestrike")} in an R console.
-
-To the right of the sliders is a column of checkboxes that control the plotted
-output. At startup, three of these boxes are ticked, yielding a display with
-three panels showing the time history of the simulation
-(\code{help("plot.strike","whalestrike")} provides details of the plots):
-\itemize{
-\item The left-hand plot panel shows whale and boat location, the former with an
-indication of the interfaces between skin, blubber, sublayer, and bone.
-\item The middle panel shows the same information as the left one, but with a
-whale-centred coordinate system, and with labels for the components. This
-makes it easier to see the degree to which the layers are compressed during the
-impact.
-\item The right panel is an indication of the estimated threat to the four layers
-of the whale, with curves that are filled with grey for time intervals when
-the impact stress (force/area) is less than the strength of the material in the
-layer, and black for times when that threshold is exceeded.
+More information on \code{\link[=app2]{app2()}} in video form on
+\href{https://youtu.be/kTMl3nXa5A4}{youtube}.
 }
-
-Much can be learned by adjusting the sliders and examining the plotted output.
-As an exercise, try setting to a particular ship mass of interest, and then to
-slide the ship speed to higher and lower values, whilst monitoring the "threat"
-panel for black regions. This will reveal a critical speed for conditions that
-threaten the whale.  Next, try altering the sublayer thickness, which is a
-surrogate for location along the whale body, because e.g. the sublayer is
-thinner near the mandible.
-
-Advanced users are likely to want to alter the values of impact width and
-height. The default setting are intended to mimic a small fishing boat, such as
-a Cape Islander. Try lowering the width, to simulate a strike by a daggerboard
-or keel of a sailing boat.
-
-Note that the pulldown menu for setting the whale species affects \emph{only} whale
-mass. It does not affect the thicknesses of blubber or sublayer, the values of
-which have been set up to represent a midsection strike on a North Atlantic
-Right Whale.
+\references{
+Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. "Assessing the Lethality
+of Ship Strikes on Whales Using Simple Biophysical Models." Marine Mammal
+Science, 37(1), 2021. \doi{10.1111/mms.12745}.
 }
 \seealso{
 Other interactive apps: 
-\code{\link{app2}()}
+\code{\link{app_2025}()}
 }
 \author{
 Dan Kelley

@@ -95,7 +95,7 @@ classes of ships, based on lengths.</li>
 #' Science, 37(1), 2021. \doi{10.1111/mms.12745}.
 ##'
 #' @author Dan Kelley
-app2 <- function(debug = FALSE) {
+app <- function(debug = FALSE) {
     dmsg <- function(...) {
         if (debug) message(...)
     }
@@ -174,21 +174,21 @@ app2 <- function(debug = FALSE) {
                         ticks = FALSE,
                         min = 5, max = 20, value = 13.7, step = 0.1
                     ),
-                    shiny::sliderInput("l3", shiny::h6("Sublayer thickness [cm]"),
-                        ticks = FALSE,
-                        min = 5, max = 200, value = 112, step = 1
-                    ),
                     shiny::sliderInput("l4", shiny::h6("Bone thickness [cm]"),
                         ticks = FALSE,
                         min = 5, max = 30, value = 10, step = 1
                     ),
-                    shiny::sliderInput("l1", shiny::h6("Skin thickness [cm]"),
+                    shiny::sliderInput("l3", shiny::h6("Sublayer thickness [cm]"),
                         ticks = FALSE,
-                        min = 1, max = 3, value = 2.5, step = 0.1
+                        min = 5, max = 200, value = 112, step = 1
                     ),
                     shiny::sliderInput("l2", shiny::h6("Blubber thickness [cm]"),
                         ticks = FALSE,
                         min = 5, max = 40, value = 16, step = 1
+                    ),
+                    shiny::sliderInput("l1", shiny::h6("Skin thickness [cm]"),
+                        ticks = FALSE,
+                        min = 1, max = 3, value = 2.5, step = 0.1
                     )
                 ),
                 accordion_panel(
