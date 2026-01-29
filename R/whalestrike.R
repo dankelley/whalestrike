@@ -148,6 +148,11 @@ NULL
 #' of Naval Architects and Marine Engineers (U.S.), 1988.
 #'
 #' \item
+#' Mayette, Alexandra and Sean W. Brillant. "A regression-based method
+#' to estimate vessel mass for use in whale-ship strike risk models."
+#' PLoS One 21(2) e0339760. \doi{10.1371/journal.pone.0339760}
+#'
+#' \item
 #' Miller, Carolyn A., Desray Reeb, Peter B. Best, Amy R. Knowlton, Moira W.
 #' Brown, and Michael J. Moore. "Blubber Thickness in Right Whales Eubalaena
 #' Glacialis and Eubalaena Australis Related with Reproduction, Life History
