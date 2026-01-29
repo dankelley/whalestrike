@@ -1,8 +1,8 @@
 # whalestrike 0.6.0
 
 * Add `shipMassFromLength()`.
-* Update `app` to use collapsible GUI elements. (The old `app` is still
-  provided, as `app_2025`, but it will not be maintained.)
+* Update `app()` to use collapsible GUI elements. (The old version is still
+  provided, as `app_2025()`, but it will not be maintained.)
 
 # whalestrike 0.5.1
 
@@ -33,7 +33,6 @@
 
 * Create a [video recording](https://youtu.be/kTMl3nXa5A4)
   demonstrating `app2()`.
-
 * Add `app2()`, an improved version of `app()`.
 * Subdivide code into smaller files; improve formatting.
 * Document overall package in the newly required way.

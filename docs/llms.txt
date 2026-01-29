@@ -35,7 +35,7 @@ about the package. To start this, type
 
 ``` r
 library(whalestrike)
-app2()
+app()
 ```
 
 in an R session. A window will open in your browser. On the left-hand
@@ -49,9 +49,10 @@ ship mass. This sub-panel also has controllers specifying the geometry
 of the impact region, and you ought to explore them, also. Continuing to
 explore the app’s controllers ought to give you a good indication of
 what the tool provides. To learn more, try consulting the app’s
-documentation, provided (a) as the response to typing `? app2` in the R
-console, (b) as information in a dialog box that opens when the `Help`
-button is clicked, and (c) in a [youtube
+documentation, provided (a) as the response to typing
+[`? app`](https://dankelley.github.io/whalestrike/reference/app.md) in
+the R console, (b) as information in a dialog box that opens when the
+`Help` button is clicked, and (c) in a [youtube
 video](https://youtu.be/kTMl3nXa5A4) and a brief [followup youtube
 video](https://youtu.be/f8nHGikb9ug) that illustrates an alteration made
 after a helpful comment from a review of a Journal of Open-Source
@@ -59,9 +60,11 @@ Software manuscript about the package.
 
 Users who want more control, and who want to deal with the results in
 numerical as opposed to graphical form, should try clicking the `Code`
-button in `app2()`, to see the R code that runs the simulation outside
-the app. The next step will be to explore the functions used in that
-code. Documentation exists for each of these functions e.g. typing
+button in
+[`app()`](https://dankelley.github.io/whalestrike/reference/app.md), to
+see the R code that runs the simulation outside the app. The next step
+will be to explore the functions used in that code. Documentation exists
+for each of these functions e.g. typing
 
 ``` r
 library(whalestrike)

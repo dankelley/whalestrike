@@ -46,7 +46,7 @@ package.  To start this, type
 
 ```R
 library(whalestrike)
-app2()
+app()
 ```
 
 in an R session.  A window will open in your browser.  On the
@@ -61,7 +61,7 @@ specifying the geometry of the impact region, and you ought to explore
 them, also. Continuing to explore the app's controllers ought to give
 you a good indication of what the tool provides. To learn more, try
 consulting the app's documentation, provided (a) as the response to
-typing `? app2` in the R console, (b) as information in a dialog box
+typing `? app` in the R console, (b) as information in a dialog box
 that opens when the `Help` button is clicked, and (c) in a [youtube
 video](https://youtu.be/kTMl3nXa5A4) and a brief [followup youtube
 video](https://youtu.be/f8nHGikb9ug) that illustrates an alteration
@@ -70,7 +70,7 @@ Software manuscript about the package.
 
 Users who want more control, and who want to deal with the results in
 numerical as opposed to graphical form, should try clicking the `Code`
-button in `app2()`, to see the R code that runs the simulation outside
+button in `app()`, to see the R code that runs the simulation outside
 the app.  The next step will be to explore the functions used in that
 code.  Documentation exists for each of these functions e.g. typing
 ```R

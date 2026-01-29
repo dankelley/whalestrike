@@ -78,18 +78,16 @@ attempt to simulate the biomechanical interactions that can be simulated
 in finite-element treatments such as that of Raymond (2007). The goal is
 to establish a convenient framework for rapid computation of impacts in
 a wide variety of conditions. The model runs quickly enough to keep up
-with mouse movements to select conditions, in a companion R shiny app.
-That app lets the user see the effects of changing contact area, ship
-speed, etc., as a way to build intuition for scenarios ranging from
-collision with a slow-moving fishing boat to collision with a thin
-dagger-board of a much swifter racing sailboat. Another advantage of the
-simple formulation is that it makes it easy to modify various dynamical
-and biomechanical parameters, to add new forces, and to explore a range
-of criteria for whale damage.</p>
+with mouse movements to select conditions, in a provided R shiny
+application called <code><a href="../reference/app.html">app()</a></code>. With this application, users can
+see the effects of changing contact area, ship speed, etc., as a way to
+build intuition for scenarios ranging from collision with a slow-moving
+fishing boat to collision with a thin dagger-board of a much swifter
+racing sailboat.</p>
 <p>The documentation for <code><a href="../reference/strike.html">strike()</a></code> provides an example of
 using the main functions of this package, and so it is a good place to
-start. A companion manuscript is intended to provide more detail about
-the analysis and the context.</p>
+start. Two companion manuscripts (see Further Reading) provide more
+detail about the analysis and the context.</p>
 </div>
 <div class="section level2">
 <h2 id="gui-usage">GUI usage<a class="anchor" aria-label="anchor" href="#gui-usage"></a>
@@ -97,7 +95,7 @@ the analysis and the context.</p>
 <p>The following launches a GUI application that should be somewhat
 self-explanatory.</p>
 <pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/">whalestrike</a></span><span class="op">)</span></span>
-<span><span class="fu">app2</span><span class="op">(</span><span class="op">)</span> <span class="co"># or app(), which is an older version</span></span></code></pre>
+<span><span class="fu"><a href="../reference/app.html">app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="non-gui-usage">Non-GUI usage<a class="anchor" aria-label="anchor" href="#non-gui-usage"></a>
@@ -243,6 +241,13 @@ properties and thickness on this graph.</p>
 many references to the literature. A good start is to use
 <code><a href="../reference/strike.html">help("strike",package="whalestrike")</a></code> to get help on a key
 function of the package.</p>
+<p>For more on the science involved, see Kelley, Dan E., James P.
+Vlasic, and Sean W. Brillant. “Assessing the Lethality of Ship Strikes
+on Whales Using Simple Biophysical Models.” Marine Mammal Science 37,
+no. 1 (January 2021): 251-67. <a href="https://doi.org/10.1111/mms.12745" class="external-link uri">https://doi.org/10.1111/mms.12745</a>.</p>
+<p>For more on the computing aspects, see Kelley, D. E., (2024).
+“whalestrike: An R package for simulating ship strikes on whales.”
+Journal of Open Source Software, 9(97), 6473, <a href="https://doi.org/10.21105/joss.06473" class="external-link uri">https://doi.org/10.21105/joss.06473</a></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
