@@ -48,7 +48,14 @@ stressFromLethalityIndex <- function(injury)
     10^(logistic$logStressCenter - logistic$logStressWidth * log(1 / injury - 1)) # note natural log
 }
 
-#' Compute maximum Lethality Index for a strike simulation
+#' Find maximum Lethality Index during a strike
+#'
+#' This works by finding the maximum Lethality Index encountered during
+#' a simulation created by calling [strike()], and so it is important to
+#' use a detailed setting for the output times. In the example, the
+#' results are reported every 0.7/200 seconds (i.e. 3.5 milliseconds),
+#' which is likely sufficient (see the example, where a plot is
+#' used for this assessment).
 #'
 #' @param strike the value returned by a call to strike.
 #'
@@ -58,8 +65,13 @@ stressFromLethalityIndex <- function(injury)
 #' state <- list(xs = -2, vs = knot2mps(10), xw = 0, vw = 0)
 #' parms <- parameters()
 #' s <- strike(t, state, parms)
-#' max(lethalityIndexFromStress(s[["WCF"]][["stress"]]))
+#' # Compute the desired value and (for context) show it on a plot
 #' maximumLethalityIndex(s)
+#' # For context, this is how this can be done "by hand"
+#' max(lethalityIndexFromStress(s[["WCF"]][["stress"]]))
+#' # Show the maximum on a plot (see also the plot title)
+#' plot(s, which = "lethality index")
+#' abline(h=maximumLethalityIndex(s), col=2)
 #'
 #' @author Dan Kelley, wrapping code provided by Alexandra Mayette
 #'
