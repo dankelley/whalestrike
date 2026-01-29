@@ -80,5 +80,5 @@ stressFromLethalityIndex <- function(injury)
 #' @export
 maximumLethalityIndex <- function(strike)
 {
-    max(lethalityIndexFromStress(s[["WCF"]][["stress"]]))
+    max(lethalityIndexFromStress(strike[["WCF"]][["stress"]]))
 }

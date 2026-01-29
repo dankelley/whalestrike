@@ -46,16 +46,41 @@ NULL
 #'
 #' @examples
 #' library(whalestrike)
-#' data(whaleshape)
-#' plot(whaleshape$x, whaleshape$y, asp = 1, type = "l")
-#' polygon(whaleshape$x, whaleshape$y, col = "lightgray")
+#' data(whale_shape)
+#' plot(whale_shape$x, whale_shape$y, asp = 1, type = "l")
+#' polygon(whale_shape$x, whale_shape$y, col = "lightgray")
 #' lw <- 13.7
-#' Rmax <- 0.5 * lw * diff(range(whaleshape$y))
+#' Rmax <- 0.5 * lw * diff(range(whale_shape$y))
 #' mtext(sprintf("Max. radius %.2fm for %.1fm-long whale", Rmax, lw), side = 3)
 #'
-#' @name whaleshape
+#' @name whale_shape
 #'
 #' @docType data
+NULL
+
+#' Whale measurements
+#'
+#' `whale_measurements` is a data frame containing information about several whale
+#' species, compiled by Alexandra Mayette and provided to Dan
+#' Kelley as a personal communication on 2026-01-28.
+#'
+#' The columns are follows.
+#' * `name` species name, as used in this package.
+#' * `Species` proper species name, not used in this package.
+#' * `length` whale length in metres.
+#' * `girth` whale girth in centimetres.
+#' * `bone` whale bone thickess in centimeters.
+#' * `sublayer` thickness of sublayer in centimeters; this was called muscle in the Mayette document
+#' * `blubber` whale blubber thickness in centimeters.
+#' * `skin` whale skin thicness in centimetres.
+#'
+#' @examples
+#' library(whalestrike)
+#' data(whale_measurements)
+#' whale_measurements
+#'
+#' @name whale_measurements
+#'
 NULL
 
 
@@ -194,7 +219,7 @@ NULL
 #' Whale projected area, as function of length
 #'
 #' This depends on calculations based on the digitized shape of
-#' a whale necropsy, which is provided as [whaleshape].
+#' a whale necropsy, which is provided as [whale_shape].
 #' The results are
 #' \eqn{0.143 * L^2}{0.143 * L^2}
 #' for the projected area (see reference 1)

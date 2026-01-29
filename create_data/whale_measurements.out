@@ -1,0 +1,27 @@
+
+R version 4.5.2 (2025-10-31) -- "[Not] Part in a Rumble"
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: aarch64-apple-darwin20
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> # Data from Alexandra Mayette, in a MSoft document sent 2026-01-28 to Dan Kelley
+> # Names: I changed some names to match the package (e.g. gray/grey).
+> # Values: I divided bone thickness by 2 (the variable used in the package)
+> # Units: length is in metres; all others are in centimetres.
+> whale_measurements <- read.csv("whale_measurements.csv", comment="#")
+> whale_measurements$bone <- 0.5 * whale_measurements$bone # FIX_mE: check with A_m
+> save(whale_measurements, file="whale_measurements.rda")
+> 

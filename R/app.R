@@ -20,7 +20,7 @@ documentation to learn more about these things.
 
 <p>
 
-More information on this app may be retrieved by typing <tt>?app2</tt>
+More information on this app may be retrieved by typing <tt>?app</tt>
 in the R console, and a video demonstration is provided on
 <a href=\"https://youtu.be/kTMl3nXa5A4\">youtube</a>).
 
@@ -46,12 +46,8 @@ classes of ships, based on lengths.</li>
 
 #' GUI application for whale simulation
 #'
-#' This is similar to [app()], except that it relies on the `bslib` package
-#' to provide a cleaner interface, in which sub-windows for controllers
-#' can be opened and closed by the user. Since `bslib` is still experimental,
-#' [app2()] may start failing in the future, and users are asked to
-#' report an issue on the package github page, so the author
-#' can make adjustments.
+#' This is a replacement to the older [app_2025()], which had a more
+#' awkward interface, and which is no longer maintained.
 #'
 #' Compared with [app_2025()], the present function lacks the ability to save settings
 #' and reload them later. This is mainly because it only works with locally-run
@@ -74,7 +70,7 @@ classes of ships, based on lengths.</li>
 #' are carried out, as well as comments on some applications that
 #' may be of interest, please consult Kelley et al. (2021).
 #'
-#' More information on [app2()] in video form on
+#' More information on [app()] in video form on
 #' [youtube](https://youtu.be/kTMl3nXa5A4).
 #'
 #' @param debug logical value indicating whether to print output to
@@ -100,13 +96,13 @@ app <- function(debug = FALSE) {
         if (debug) message(...)
     }
     if (!requireNamespace("bslib")) {
-        stop("must install.packages(\"bslib\") for app2() to work")
+        stop("must install.packages(\"bslib\") for app() to work")
     }
     if (!requireNamespace("shiny")) {
-        stop("must install.packages(\"shiny\") for app2() to work")
+        stop("must install.packages(\"shiny\") for app() to work")
     }
     ui <- bslib::page_sidebar(
-        # title = "app2", # a waste of space (the user launched this, and can do help)
+        # title = "app", # a waste of space (the user launched this, and can do help)
         shiny::tags$script(paste0(
             "$(document).on(\"keypress\", function (e) {",
             "Shiny.onInputChange(\"keypress\", e.which);",

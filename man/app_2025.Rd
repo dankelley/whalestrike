@@ -2,7 +2,7 @@
 % Please edit documentation in R/app_2025.R
 \name{app_2025}
 \alias{app_2025}
-\title{GUI app for interactive whale-strike simulations}
+\title{GUI app for interactive whale-strike simulations (OLD VERSION, no longer maintained)}
 \usage{
 app_2025(mode = "simple", options = list(height = 500))
 }
@@ -16,14 +16,14 @@ called with default arguments.}
 to \code{\link[shiny]{shinyApp}}, which creates the GUI app.}
 }
 \description{
-The \code{app()} function starts a GUI application that makes it easy to
+The \code{app_2025()} function starts a GUI application that makes it easy to
 run simple simulations and see the results in graphical form. Sliders
 and buttons permit a fair degree of customization.  The application
 has some build-in documentation, which supplements what can be found
 in the \sQuote{Details} section of the present documentation.
 }
 \details{
-When \code{app()} is run, a window will appear within a few moments. At the top of that
+When \code{app_2025()} is run, a window will appear within a few moments. At the top of that
 is a textual introduction to the system, with a button to hide that information. Below is
 a user-interaction area, with buttons and sliders that control the simulation
 and the plotted output. Below that is a plotting area, the contents of which

@@ -2,7 +2,7 @@
 % Please edit documentation in R/app.R
 \name{app}
 \alias{app}
-\title{GUI application for whale simulation (version 2)}
+\title{GUI application for whale simulation}
 \usage{
 app(debug = FALSE)
 }
@@ -11,26 +11,22 @@ app(debug = FALSE)
 the R console as the computation is done.}
 }
 \description{
-This is similar to \code{\link[=app]{app()}}, except that it relies on the \code{bslib} package
-to provide a cleaner interface, in which sub-windows for controllers
-can be opened and closed by the user. Since \code{bslib} is still experimental,
-\code{\link[=app2]{app2()}} may start failing in the future, and users are asked to
-report an issue on the package github page, so the author
-can make adjustments.
+This is a replacement to the older \code{\link[=app_2025]{app_2025()}}, which had a more
+awkward interface, and which is no longer maintained.
 }
 \details{
-Compared with \code{\link[=app]{app()}}, the present function lacks the ability to save settings
+Compared with \code{\link[=app_2025]{app_2025()}}, the present function lacks the ability to save settings
 and reload them later. This is mainly because it only works with locally-run
 operations, not from server-run operations.  The latter would require extra
 coding to set up user's storage space, to prevent against web attacks, etc.,
 which is beyond the present purpose.  However, there is an addition with
-\code{\link[=app2]{app2()}} that might prove more useful: a button to display the code required
+\code{\link[=app]{app()}} that might prove more useful: a button to display the code required
 to reproduce the simulated state.  This may be of help to the those seeking
 to explore the results of simulations more precisely and with
 greater reproducibility.
 
 Sliders, buttons, and choosers are grouped into panes that appear on
-the left of the view. When \code{\link[=app2]{app2()}} first opens, all of these panes
+the left of the view. When \code{\link[=app]{app()}} first opens, all of these panes
 are closed. To get acquainted with the app, try adjusting the controllers
 that \emph{are} visible on the initial view.  Then, open the "ship" pane and
 increase the ship mass.  Do you find that the results make qualitative
@@ -40,7 +36,7 @@ investigate practical applications.  For more about how the simulations
 are carried out, as well as comments on some applications that
 may be of interest, please consult Kelley et al. (2021).
 
-More information on \code{\link[=app2]{app2()}} in video form on
+More information on \code{\link[=app]{app()}} in video form on
 \href{https://youtu.be/kTMl3nXa5A4}{youtube}.
 }
 \references{
