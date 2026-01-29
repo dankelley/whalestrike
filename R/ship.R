@@ -30,10 +30,8 @@
 #' (in kg), according to Mayette and Brillant (2026) Table 3.
 #'
 #' @examples
-#' ```R
 #' library(whalestrike)
 #' shipMassFromLength("Tug", 50)/1e3 # 1920.648
-#' ```
 #'
 #' @references
 #'

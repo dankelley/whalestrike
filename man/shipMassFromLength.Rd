@@ -38,10 +38,8 @@ The formulae used are as follows.\tabular{lr}{
 }
 }
 \examples{
-```R
 library(whalestrike)
 shipMassFromLength("Tug", 50)/1e3 # 1920.648
-```
 
 }
 \references{
