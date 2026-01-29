@@ -286,6 +286,9 @@ app2 <- function(debug = FALSE) {
                 stop("programming error: species not handled: ", species)
             }
         }
+        shiny::observeEvent(input$species, {
+            message("FIXME DAN species changed to ", input$species)
+        })
         shiny::observeEvent(input$keypressTrigger, {
             key <- intToUtf8(input$keypress)
             # NOTE: this keystroke is not explained. I may delete

@@ -175,7 +175,7 @@ server <- function(input, output, session) {
         showNotification(paste0('Saved configuration to "', fullfile, '"'), type = "message")
     })
 
-    observeEvent(input$loadFile, {
+    shiny::observeEvent(input$loadFile, {
         config <- read.csv(input$loadFile$datapath)
         # Convert ship speed from m/s in the file, to knots in the GUI
         config$vs <- mps2knot(config$vs)
@@ -190,6 +190,11 @@ server <- function(input, output, session) {
         for (s in c("tmax", "ms", "lw", "vs", "Ly", "Lz", "l1", "l2", "l3", "l4")) {
             updateSliderInput(session, s, value = config[[s]])
         }
+    })
+
+    shiny::observeEvent(input$species, {
+        message("FIXME DAN: species changed to ", input$species)
+        message("FIXME DAN: alter slider values for blubber thickness etc")
     })
 
     output$plot <- renderPlot(

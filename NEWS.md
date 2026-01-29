@@ -1,3 +1,7 @@
+# whalestrike 0.6.0
+
+* Add `shipMassFromLength()`.
+
 # whalestrike 0.5.1
 
 * Fix typo in help for `whaleMassFromLength()`, in which the exponents on `L`
