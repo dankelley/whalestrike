@@ -9,16 +9,20 @@ species, compiled by Alexandra Mayette and provided to Dan
 Kelley as a personal communication on 2026-01-28.
 }
 \details{
+There are two additions to \code{whale_measurements} that are not in Mayette's table.
+These are \code{"Pac. Right"} and \code{"Bryde"}. For these, Mayette has suggesting
+using values for the \code{"N. Atl. Right"} and \code{"Sei"} cases, respectively,
+as conditional estimates for use in this package.
+
 The columns are follows.
 \itemize{
-\item \code{name} species name, as used in this package.
-\item \code{Species} proper species name, not used in this package.
+\item \code{name} species name, as used in e.g. whaleMassFromLength().
+\item \code{Species} proper species name. (This is not used in this package.)
 \item \code{length} whale length in metres.
-\item \code{girth} whale girth in centimetres.
-\item \code{bone} whale bone thickess in centimeters.
+\item \code{bone} whale bone thickness (measured from the centre to the sublayer).
 \item \code{sublayer} thickness of sublayer in centimeters; this was called muscle in the Mayette document
 \item \code{blubber} whale blubber thickness in centimeters.
-\item \code{skin} whale skin thicness in centimetres.
+\item \code{skin} whale skin thickness in centimetres.
 }
 }
 \examples{

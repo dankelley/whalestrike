@@ -157,13 +157,13 @@ whaleMassFromLength <- function(L, species = "N. Atl. Right Whale", model = NULL
                 species,
                 function(s) {
                     switch(s,
-                        "N. Atl. Right Whale" = "fortune2012",
                         "Blue Whale" = "lockyer1976",
                         "Bryde Whale" = "lockyer1976",
                         "Fin Whale" = "lockyer1976",
                         "Gray Whale" = "lockyer1976",
                         "Humpback Whale" = "lockyer1976",
                         "Minke Whale" = "lockyer1976",
+                        "N. Atl. Right Whale" = "fortune2012",
                         "Pac. Right Whale" = "lockyer1976",
                         "Sei Whale" = "lockyer1976",
                         "Sperm Whale" = "lockyer1976"
