@@ -6,24 +6,29 @@ Kelley as a personal communication on 2026-01-28.
 
 ## Details
 
+There are two additions to `whale_measurements` that are not in
+Mayette's table. These are `"Pac. Right"` and `"Bryde"`. For these,
+Mayette has suggesting using values for the `"N. Atl. Right"` and
+`"Sei"` cases, respectively, as conditional estimates for use in this
+package.
+
 The columns are follows.
 
-- `name` species name, as used in this package.
+- `name` species name, as used in e.g. whaleMassFromLength().
 
-- `Species` proper species name, not used in this package.
+- `Species` proper species name. (This is not used in this package.)
 
 - `length` whale length in metres.
 
-- `girth` whale girth in centimetres.
-
-- `bone` whale bone thickess in centimeters.
+- `bone` whale bone thickness (measured from the centre to the
+  sublayer).
 
 - `sublayer` thickness of sublayer in centimeters; this was called
   muscle in the Mayette document
 
 - `blubber` whale blubber thickness in centimeters.
 
-- `skin` whale skin thicness in centimetres.
+- `skin` whale skin thickness in centimetres.
 
 ## Examples
 
@@ -31,22 +36,15 @@ The columns are follows.
 library(whalestrike)
 data(whale_measurements)
 whale_measurements
-#>            name                    Species length girth bone muscle blubber
-#> 1          Blue      Balaenoptera musculus   21.9  1219 8.65  168.7     7.6
-#> 2           Fin      Balaenoptera physalus   16.9   546 7.20   71.4     5.8
-#> 3          Gray      Eschrichtius robustus   12.5   685 6.80   84.7     9.7
-#> 4      Humpback      Megaptera novaengliae   11.6  1008 7.10  137.2     8.2
-#> 5         Minke Balaenoptera acutorostrata    6.7   268 3.90   31.3     3.3
-#> 6 N. Atl. Right        Eubalaena glacialis   13.8  1030 7.15  132.5    16.3
-#> 7           Sei      Balaenoptera borealis   13.4   474 4.65   63.1     4.4
-#> 8         Sperm     Physeter macrocephalus   11.8   686 8.20   81.0    11.5
-#>   skin
-#> 1  0.4
-#> 2  0.5
-#> 3  1.0
-#> 4  0.9
-#> 5  0.3
-#> 6  0.9
-#> 7  0.2
-#> 8  0.4
+#>             name                    Species length bone muscle blubber skin
+#> 1           Blue      Balaenoptera musculus   21.9 17.3  168.7     7.6  0.4
+#> 2          Bryde        Balaenoptera brydei   13.4  9.3   63.1     4.4  0.2
+#> 3            Fin      Balaenoptera physalus   16.9 14.4   71.4     5.8  0.5
+#> 4           Gray      Eschrichtius robustus   12.5 13.6   84.7     9.7  1.0
+#> 5       Humpback      Megaptera novaengliae   11.6 14.2  137.2     8.2  0.9
+#> 6          Minke Balaenoptera acutorostrata    6.7  7.8   31.3     3.3  0.3
+#> 7  N. Atl. Right        Eubalaena glacialis   13.8 14.3  132.5    16.3  0.9
+#> 8     Pac. Right         Eubalaena japonica   13.8 14.3  132.5    16.3  0.9
+#> 9            Sei      Balaenoptera borealis   13.4  9.3   63.1     4.4  0.2
+#> 10         Sperm     Physeter macrocephalus   11.8 16.4   81.0    11.5  0.4
 ```
