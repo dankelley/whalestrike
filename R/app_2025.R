@@ -101,10 +101,18 @@ ui <- shiny::fluidPage(
             2,
             shiny::selectInput("species", "",
                 choices = c(
-                    "N. Atl. Right", "Blue", "Bryde", "Fin", "Gray", "Humpback", "Minke",
-                    "Pac. Right", "Sei", "Sperm"
+                    paste("N.", "Atl.", "Right", "Whale"),
+                    paste("Blue", "Whale"),
+                    paste("Bryde", "Whale"),
+                    paste("Fin", "Whale"),
+                    paste("Gray", "Whale"),
+                    paste("Humpback", "Whale"),
+                    paste("Minke", "Whale"),
+                    paste("Pac.", "Right", "Whale"),
+                    paste("Sei", "Whale"),
+                    paste("Sperm", "Whale")
                 ),
-                selected = "N. Atl. Right"
+                selected = "N. Atl. Right Whale"
             ),
             shiny::sliderInput("l3", h6(tags$i("Sublayer thickness [cm]")),
                 ticks = FALSE,
@@ -186,7 +194,6 @@ server <- function(input, output, session) {
         config$l2 <- config$l[2]
         config$l3 <- config$l[3]
         config$l4 <- config$l[4]
-        # FIXME: l1, l2 etc
         for (s in c("tmax", "ms", "lw", "vs", "Ly", "Lz", "l1", "l2", "l3", "l4")) {
             updateSliderInput(session, s, value = config[[s]])
         }
@@ -202,25 +209,25 @@ server <- function(input, output, session) {
             # message("species: ", input$species)
             # aDefault <- whalestrike::parameters()$a
             # cat(file=stderr(), "input$a23=", input$a23, "\n")
-            mw <- if (input$species == "N. Atl. Right") {
+            mw <- if (input$species == "N. Atl. Right Whale") {
                 whaleMassFromLength(input$lw, species = "N. Atl. Right Whale", model = "fortune2012")
-            } else if (input$species == "Blue") {
+            } else if (input$species == "Blue Whale") {
                 whaleMassFromLength(input$lw, species = "Blue Whale", model = "lockyer1976")
-            } else if (input$species == "Bryde") {
+            } else if (input$species == "Bryde Whale") {
                 whaleMassFromLength(input$lw, species = "Bryde Whale", model = "lockyer1976")
-            } else if (input$species == "Fin") {
+            } else if (input$species == "Fin Whale") {
                 whaleMassFromLength(input$lw, species = "Fin Whale", model = "lockyer1976")
-            } else if (input$species == "Gray") {
+            } else if (input$species == "Gray Whale") {
                 whaleMassFromLength(input$lw, species = "Gray Whale", model = "lockyer1976")
-            } else if (input$species == "Humpback") {
+            } else if (input$species == "Humpback Whale") {
                 whaleMassFromLength(input$lw, species = "Humpback Whale", model = "lockyer1976")
-            } else if (input$species == "Minke") {
+            } else if (input$species == "Minke Whale") {
                 whaleMassFromLength(input$lw, species = "Minke Whale", model = "lockyer1976")
-            } else if (input$species == "Pac. Right") {
+            } else if (input$species == "Pac. Right Whale") {
                 whaleMassFromLength(input$lw, species = "Pac. Right Whale", model = "lockyer1976")
-            } else if (input$species == "Sei") {
+            } else if (input$species == "Sei Whale") {
                 whaleMassFromLength(input$lw, species = "Sei Whale", model = "lockyer1976")
-            } else if (input$species == "Sperm") {
+            } else if (input$species == "Sperm Whale") {
                 whaleMassFromLength(input$lw, species = "Sperm Whale", model = "lockyer1976")
             } else {
                 stop("programming error: cannot compute mass from length, for species '", input$species)

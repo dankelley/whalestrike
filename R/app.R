@@ -161,10 +161,18 @@ app <- function(debug = FALSE) {
                     ),
                     shiny::selectInput("species", "Species",
                         choices = c(
-                            "N. Atl. Right", "Blue", "Bryde", "Fin", "Gray", "Humpback", "Minke",
-                            "Pac. Right", "Sei", "Sperm"
+                            paste("N.", "Atl.", "Right", "Whale"),
+                            paste("Blue", "Whale"),
+                            paste("Bryde", "Whale"),
+                            paste("Fin", "Whale"),
+                            paste("Gray", "Whale"),
+                            paste("Humpback", "Whale"),
+                            paste("Minke", "Whale"),
+                            paste("Pac.", "Right", "Whale"),
+                            paste("Sei", "Whale"),
+                            paste("Sperm", "Whale")
                         ),
-                        selected = "N. Atl. Right"
+                        selected = "N. Atl. Right Whale"
                     ),
                     shiny::sliderInput("lw", shiny::h6("Length [m]"),
                         ticks = FALSE,
@@ -264,26 +272,26 @@ app <- function(debug = FALSE) {
     server <- function(input, output, session) {
         dmsg("in server")
         whaleMass <- function(length, species) {
-            if (species == "N. Atl. Right") {
-                whaleMassFromLength(length, species = "N. Atl. Right Whale", model = "fortune2012")
-            } else if (species == "Blue") {
-                whaleMassFromLength(length, species = "Blue Whale", model = "lockyer1976")
-            } else if (species == "Bryde") {
-                whaleMassFromLength(length, species = "Bryde Whale", model = "lockyer1976")
-            } else if (species == "Fin") {
-                whaleMassFromLength(length, species = "Fin Whale", model = "lockyer1976")
-            } else if (species == "Gray") {
-                whaleMassFromLength(length, species = "Gray Whale", model = "lockyer1976")
-            } else if (species == "Humpback") {
-                whaleMassFromLength(length, species = "Humpback Whale", model = "lockyer1976")
-            } else if (species == "Minke") {
-                whaleMassFromLength(length, species = "Minke Whale", model = "lockyer1976")
-            } else if (species == "Pac. Right") {
-                whaleMassFromLength(length, species = "Pac. Right Whale", model = "lockyer1976")
-            } else if (species == "Sei") {
-                whaleMassFromLength(length, species = "Sei Whale", model = "lockyer1976")
-            } else if (species == "Sperm") {
-                whaleMassFromLength(length, species = "Sperm Whale", model = "lockyer1976")
+            if (species == "N. Atl. Right Whale") {
+                whaleMassFromLength(length, species = species, model = "fortune2012")
+            } else if (species == "Blue Whale") {
+                whaleMassFromLength(length, species = species, model = "lockyer1976")
+            } else if (species == "Bryde Whale") {
+                whaleMassFromLength(length, species = species, model = "lockyer1976")
+            } else if (species == "Fin Whale") {
+                whaleMassFromLength(length, species = species, model = "lockyer1976")
+            } else if (species == "Gray Whale") {
+                whaleMassFromLength(length, species = species, model = "lockyer1976")
+            } else if (species == "Humpback Whale") {
+                whaleMassFromLength(length, species = species, model = "lockyer1976")
+            } else if (species == "Minke Whale") {
+                whaleMassFromLength(length, species = species, model = "lockyer1976")
+            } else if (species == "Pac. Right Whale") {
+                whaleMassFromLength(length, species = species, model = "lockyer1976")
+            } else if (species == "Sei Whale") {
+                whaleMassFromLength(length, species = species, model = "lockyer1976")
+            } else if (species == "Sperm Whale") {
+                whaleMassFromLength(length, species = species, model = "lockyer1976")
             } else {
                 stop("programming error: species not handled: ", species)
             }

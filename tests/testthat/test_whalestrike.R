@@ -4,6 +4,13 @@ library(testthat)
 
 context("whale properties")
 
+test_that("parameters", {
+  expect_equal(parameters()$lw, 13.7)
+  expect_equal(parameters(lw = "from_species")$lw, 13.8)
+  expect_equal(parameters()$l, c(0.025, 0.160, 1.120, 0.100))
+  expect_equal(parameters(l = "from_species")$l, c(0.009, 0.163, 1.325, 0.143))
+})
+
 test_that("whaleMassFromLength and whaleLengthFromMass are inverses", {
   for (model in c("moore2005", "fortune2012atlantic", "fortune2012pacific")[1]) {
     L <- 1:20

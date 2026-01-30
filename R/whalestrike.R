@@ -65,18 +65,18 @@ NULL
 #' Kelley as a personal communication on 2026-01-28.
 #'
 #' There are two additions to `whale_measurements` that are not in Mayette's table.
-#' These are `"Pac. Right"` and `"Bryde"`. For these, Mayette has suggesting
-#' using values for the `"N. Atl. Right"` and `"Sei"` cases, respectively,
+#' These are `"Pac. Right Whale"` and `"Bryde Whale"`. For these, Mayette has suggesting
+#' using values for the `"N. Atl. Right Whale"` and `"Sei Whale"` cases, respectively,
 #' as conditional estimates for use in this package.
 #'
 #' The columns are follows.
 #' * `name` species name, as used in e.g. whaleMassFromLength().
 #' * `Species` proper species name. (This is not used in this package.)
 #' * `length` whale length in metres.
-#' * `bone` whale bone thickness (measured from the centre to the sublayer).
-#' * `sublayer` thickness of sublayer in centimeters; this was called muscle in the Mayette document
-#' * `blubber` whale blubber thickness in centimeters.
-#' * `skin` whale skin thickness in centimetres.
+#' * `bone` whale bone thickness in metres, measured from the centre to the sublayer.
+#' * `sublayer` thickness of sublayer in meters; this was called `muscle` in Mayette's document.
+#' * `blubber` whale blubber thickness in meters.
+#' * `skin` whale skin thickness in metres.
 #'
 #' @examples
 #' library(whalestrike)
@@ -236,11 +236,15 @@ NULL
 #' and that the coefficients used in the formulae
 #' agreed to under 0.7 percent percent between these digitizations.
 #'
-#' @param L length in m.
+#' @param L whale length in metres.
 #'
-#' @param species A string indicating the whale species.  With
-#' this version of the package, the only permitted choice is
-#' `"N. Atl. Right Whale"`.
+#' @param species a string indicating the whale species. In
+#' the present version of the package, this parameter is ignored,
+#' and it is assumed that the formula developed for North
+#' Atlantic Right Whales will be applicable to other species.
+#' This is not a large concern, because the area only affects
+#' the water drag, which will not be large during the
+#' short interval of a ship impact.
 #'
 #' @param type character string indicating the type of area, with
 #' `"projected"` for a side-projected area, and
@@ -248,6 +252,11 @@ NULL
 #' area was computed by mathematically spinning a spline fit to the
 #' side-view. In both cases, the original data source is the
 #' necropsy side-view presented in Daoust et al. (2018).
+#'
+#' @examples
+#' L <- 3:20
+#' A <- whaleAreaFromLength(L)
+#' plot(L, A, xlab="Length [m]", ylab="Area [m^2]", type="l")
 #'
 #' @references
 #' 1. Dan Kelley's internal document `dek/20180623_whale_area.Rmd`, available
@@ -265,13 +274,13 @@ NULL
 #'
 #' @export
 whaleAreaFromLength <- function(L, species = "N. Atl. Right Whale", type = "wetted") {
-    speciesAllowed <- c("N. Atl. Right Whale")
-    if (!(species %in% speciesAllowed)) {
-        stop(
-            "unknown species \"", species, "\"; use one of the following: \"",
-            paste(speciesAllowed, collapse = "\", \""), "\""
-        )
-    }
+    #<uncomment later, perhaps> speciesAllowed <- c("N. Atl. Right Whale")
+    #<uncomment later, perhaps> if (!(species %in% speciesAllowed)) {
+    #<uncomment later, perhaps>     stop(
+    #<uncomment later, perhaps>         "unknown species \"", species, "\"; use one of the following: \"",
+    #<uncomment later, perhaps>         paste(speciesAllowed, collapse = "\", \""), "\""
+    #<uncomment later, perhaps>     )
+    #<uncomment later, perhaps> }
     # below from dek/20180623_whale_area.Rmd, updated 20180802.
     #
     # * Projected area, with fins: 0.1466 * L^2 where L is body length in metres.
