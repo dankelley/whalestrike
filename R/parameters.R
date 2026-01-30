@@ -37,7 +37,7 @@ whale_measurements_table <- structure(list(species = c(
 #' using values for the `"N. Atl. Right Whale"` and `"Sei Whale"` cases, respectively,
 #' as conditional estimates for use in this package.
 #'
-#' @param either (1) the name of a species or (2) NULL. In the first
+#' @param species either (1) the name of a species or (2) NULL. In the first
 #' case, the table is consulted to find a row with the given species
 #' name, and that row is returned. In the second case, the whole table
 #' is returned.
@@ -108,7 +108,7 @@ whale_measurements <- function(species = NULL) {
 #' the thicknesses in metres of skin, blubber, sublayer and bone; (2) NULL
 #' to set these four values to 0.025, 0.16, 1.12, and 0.1; or (3) the
 #' string `"from_species"`, in which case these four values are
-#' determined by calling [whale_measureents()].
+#' determined by calling [whale_measurements()].
 #' The default skin thickness of 0.025 m represents the 0.9-1.0 inch value
 #' stated in Section 2.2.3 of Raymond (2007).
 #' The blubber default of 0.16 m is a rounded average of the values inferred
