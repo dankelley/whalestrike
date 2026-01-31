@@ -143,6 +143,9 @@
 #'
 #' @export
 whaleMassFromLength <- function(L, species = "N. Atl. Right Whale", model = NULL) {
+    if (identical(species, "Default")) {
+        species <- "N. Atl. Right Whale"
+    }
     n <- length(species)
     if (length(L) < n) {
         L <- rep(L, n)
@@ -172,7 +175,7 @@ whaleMassFromLength <- function(L, species = "N. Atl. Right Whale", model = NULL
             )
         )
     }
-    #print(data.frame(species = species, model = model))
+    # print(data.frame(species = species, model = model))
     if (length(model) == 1) {
         model <- rep(model, n)
     }

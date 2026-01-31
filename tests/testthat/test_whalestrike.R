@@ -11,6 +11,12 @@ test_that("parameters", {
   expect_equal(parameters(l = "from_species")$l, c(0.009, 0.163, 1.325, 0.143))
 })
 
+test_that("whaleMassFromLength() simple call as in app()", {
+  expect_equal(whaleMassFromLength(13.7), 29993.89, tolerance=0.01)
+  expect_equal(whaleMassFromLength(13.7, "Default"), 29993.89, tolerance=0.01)
+  expect_equal(whaleMassFromLength(13.7, "N. Atl. Right Whale"), 29993.89, tolerance=0.01)
+})
+
 test_that("whaleMassFromLength and whaleLengthFromMass are inverses", {
   for (model in c("moore2005", "fortune2012atlantic", "fortune2012pacific")[1]) {
     L <- 1:20

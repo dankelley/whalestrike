@@ -161,38 +161,43 @@ app <- function(debug = FALSE) {
                     ),
                     shiny::selectInput("species", "Species",
                         choices = c(
-                            paste("N.", "Atl.", "Right", "Whale"),
+                            paste("Default"),
                             paste("Blue", "Whale"),
                             paste("Bryde", "Whale"),
                             paste("Fin", "Whale"),
                             paste("Gray", "Whale"),
                             paste("Humpback", "Whale"),
                             paste("Minke", "Whale"),
+                            paste("N.", "Atl.", "Right", "Whale"),
                             paste("Pac.", "Right", "Whale"),
                             paste("Sei", "Whale"),
                             paste("Sperm", "Whale")
                         ),
-                        selected = "N. Atl. Right Whale"
+                        selected = "Default"
                     ),
                     shiny::sliderInput("lw", shiny::h6("Length [m]"),
                         ticks = FALSE,
-                        min = 5, max = 20, value = 13.7, step = 0.1
+                        min = 5, max = 25, value = 13.7, step = 0.1
                     ),
+                    # bone: range in whale_measurements() is 7.8 to 17.3 cm
                     shiny::sliderInput("l4", shiny::h6("Bone thickness [cm]"),
                         ticks = FALSE,
-                        min = 5, max = 30, value = 10, step = 1
+                        min = 1, max = 20, value = 10, step = 1
                     ),
+                    # sublayer: range in whale_measurements() is 31.3 to 168.7 cm
                     shiny::sliderInput("l3", shiny::h6("Sublayer thickness [cm]"),
                         ticks = FALSE,
-                        min = 5, max = 200, value = 112, step = 1
+                        min = 20, max = 200, value = 112, step = 1
                     ),
+                    # blubber: range in whale_measurements() is 3.3 to 16.3 cm
                     shiny::sliderInput("l2", shiny::h6("Blubber thickness [cm]"),
                         ticks = FALSE,
-                        min = 5, max = 40, value = 16, step = 1
+                        min = 1, max = 40, value = 16, step = 1
                     ),
+                    # skin: range in whale_measurements() is 0.2 to 1.0 cm
                     shiny::sliderInput("l1", shiny::h6("Skin thickness [cm]"),
                         ticks = FALSE,
-                        min = 1, max = 3, value = 2.5, step = 0.1
+                        min = 0.0, max = 3, value = 2.5, step = 0.1
                     )
                 ),
                 accordion_panel(
@@ -272,7 +277,9 @@ app <- function(debug = FALSE) {
     server <- function(input, output, session) {
         dmsg("in server")
         whaleMass <- function(length, species) {
-            if (species == "N. Atl. Right Whale") {
+            if (species == "Default") {
+                whaleMassFromLength(length, species = "N. Atl. Right Whale", model = "fortune2012")
+            } else if (species == "N. Atl. Right Whale") {
                 whaleMassFromLength(length, species = species, model = "fortune2012")
             } else if (species == "Blue Whale") {
                 whaleMassFromLength(length, species = species, model = "lockyer1976")
@@ -297,7 +304,17 @@ app <- function(debug = FALSE) {
             }
         }
         shiny::observeEvent(input$species, {
-            message("FIXME DAN species changed to ", input$species)
+            wm <- if (identical(input$species, "Default")) {
+                p <- parameters()
+                with(p, list(length = lw, skin = l[1], blubber = l[2], sublayer = l[3], bone = l[4]))
+            } else {
+                whale_measurements(input$species)
+            }
+            shiny::updateSliderInput(session, "lw", "Length [m]", wm$length)
+            shiny::updateSliderInput(session, "l4", "Bone thickness [cm]", 100 * wm$bone)
+            shiny::updateSliderInput(session, "l3", "Sublayer thickness [cm]", 100 * wm$sublayer)
+            shiny::updateSliderInput(session, "l2", "Blubber thickness [cm]", 100 * wm$blubber)
+            shiny::updateSliderInput(session, "l1", "skin thickness [cm]", 100 * wm$skin)
         })
         shiny::observeEvent(input$keypressTrigger, {
             key <- intToUtf8(input$keypress)
@@ -339,8 +356,8 @@ app <- function(debug = FALSE) {
                 "    Ly = ", input$Ly, ",<br>",
                 "    Lz = ", input$Lz, ",<br>",
                 "    lw = ", input$lw, ",<br>",
-                "    mw = whaleMassFromLength(", input$lw, ", \"", input$species, " Whale\"),<br>",
-                "    Sw = whaleAreaFromLength(", input$lw, ", \"", input$species, " Whale\"),<br>",
+                "    mw = whaleMassFromLength(", input$lw, ", \"", input$species, "\"),<br>",
+                "    Sw = whaleAreaFromLength(", input$lw, ", \"", input$species, "\"),<br>",
                 "    l = c(", input$l1 / 100,
                 ", ", input$l2 / 100,
                 ", ", input$l3 / 100,
@@ -372,7 +389,6 @@ app <- function(debug = FALSE) {
         output$plot <- renderPlot(
             {
                 mw <- whaleMass(input$lw, input$species)
-                dmsg("mw=", mw)
                 parms <- whalestrike::parameters(
                     ms = 1000 * input$ms,
                     Ss = shipAreaFromMass(1000 * input$ms),

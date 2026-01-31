@@ -314,7 +314,7 @@ plot.strike <- function(x, which = "default", drawEvents = TRUE,
         } else {
             labelWhale <- sprintf("%.1fg (whale)", awmax / g)
         }
-        mtext(paste("Max: ", labelWhale, ",", labelShip), side = 3, line = 0, cex = 0.8 * par("cex"))
+        mtext(paste0("Max acc ", labelWhale, ", ", labelShip), side = 3, line = 0, cex = 0.8 * par("cex"))
         showEvents(xs, xw)
     }
     if (all || "section" %in% which) {
