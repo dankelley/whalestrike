@@ -46,17 +46,50 @@ NULL
 #'
 #' @examples
 #' library(whalestrike)
-#' data(whale_shape)
-#' plot(whale_shape$x, whale_shape$y, asp = 1, type = "l")
-#' polygon(whale_shape$x, whale_shape$y, col = "lightgray")
+#' shape <- whaleShape()
+#' plot(shape$x, shape$y, asp = 1, type = "l")
+#' polygon(shape$x, shape$y, col = "lightgray")
 #' lw <- 13.7
-#' Rmax <- 0.5 * lw * diff(range(whale_shape$y))
+#' Rmax <- 0.5 * lw * diff(range(shape$y))
 #' mtext(sprintf("Max. radius %.2fm for %.1fm-long whale", Rmax, lw), side = 3)
 #'
-#' @name whale_shape
+#' @export
 #'
-#' @docType data
-NULL
+#' @author Dan Kelley
+whaleShape <- function() {
+    structure(list(x = c(
+        0, 0.00790510432232446, 0.0316204955297698,
+        0.0592882041769615, 0.104084003978059, 0.134387321162819, 0.160737147300755,
+        0.191040464485515, 0.20685051664922, 0.225295707907663, 0.262186872829267,
+        0.31225216841512, 0.372858020379922, 0.429511946107337, 0.462449619982116,
+        0.496705645808983, 0.546770941394835, 0.607376793359637, 0.685111049440232,
+        0.762845305520828, 0.840577214387265, 0.919631387229387, 0.96178735350743,
+        1, 0.963109617483115, 0.920945827157878, 0.882741004712502, 0.844528358219932,
+        0.772069857161847, 0.731224418788698, 0.683793479892864, 0.62450519747543,
+        0.553358789131679, 0.496705645808983, 0.459814480887378, 0.403161337564682,
+        0.334650068315668, 0.276679355445603, 0.21739107302817, 0.166007425490229,
+        0.115942129904377, 0.0632409128190676, 0.0197627608058111, 0.00263498261379353,
+        0.00131749130689676
+    ), y = c(
+        0, 0.0184404968301264, 0.030294710732848,
+        0.0461008508729563, 0.0645413477030828, 0.075078774463155, 0.0790307007005417,
+        0.0790307007005417, 0.0856162012232272, 0.0961536279832994, 0.101422341363336,
+        0.10800862429074, 0.10932541143339, 0.111959768123408, 0.110642980980758,
+        0.106691054743372, 0.101422341363336, 0.0948368408406501, 0.0816650573905598,
+        0.0658589172504515, 0.0461008508729563, 0.0263435669001806, 0.0144885705927397,
+        0.00395114383266745, -0.00658628292740479, -0.0105374267600722,
+        -0.0184404968301264, -0.0276611364475493, -0.0487359899676937,
+        -0.059273416727766, -0.0698108434878382, -0.0777139135578923,
+        -0.0882513403179646, -0.0974711975306681, -0.101423123768055,
+        -0.100105554220686, -0.0908856970079826, -0.0856169836279465,
+        -0.0763963440105236, -0.0671764867978201, -0.061907773417784,
+        -0.0553214904903792, -0.0461016332776756, -0.0276611364475493,
+        -0.00526871338003609
+    )), class = "data.frame", row.names = c(
+        NA,
+        -45L
+    ))
+}
 
 
 
@@ -195,7 +228,7 @@ NULL
 #' Whale projected area, as function of length
 #'
 #' This depends on calculations based on the digitized shape of
-#' a whale necropsy, which is provided as [whale_shape].
+#' a whale necropsy, which is provided by [whaleShape()].
 #' The results are
 #' \eqn{0.143 * L^2}{0.143 * L^2}
 #' for the projected area (see reference 1)
@@ -228,7 +261,7 @@ NULL
 #' @examples
 #' L <- 3:20
 #' A <- whaleAreaFromLength(L)
-#' plot(L, A, xlab="Length [m]", ylab="Area [m^2]", type="l")
+#' plot(L, A, xlab = "Length [m]", ylab = "Area [m^2]", type = "l")
 #'
 #' @references
 #' 1. Dan Kelley's internal document `dek/20180623_whale_area.Rmd`, available
@@ -328,7 +361,7 @@ dynamics <- function(t, y, parms) {
         stop("Fship[1] is NA, probably indicating a programming error.")
     }
     Fwhale <- Freactive + whaleWaterForce(vw, parms)
-    #cat("t=", t, ", whaleWaterForce=", whaleWaterForce(vw, parms), "\n")
+    # cat("t=", t, ", whaleWaterForce=", whaleWaterForce(vw, parms), "\n")
     if (is.na(Fwhale[1])) {
         stop("Fwhale[1] is NA, probably indicating a programming error.")
     }
@@ -395,10 +428,14 @@ dynamics <- function(t, y, parms) {
 #' parms <- parameters(ms = 200 * 1000) # 1 metric tonne is 1000 kg
 #' sol <- strike(t, state, parms)
 #' par(mfrow = c(2, 1), mar = c(3, 3, 0.5, 2), mgp = c(2, 0.7, 0), cex = 0.7)
-#' plot(t, sol$WCF$stress / 1e6, type = "l",
-#'      xlab = "Time [s]", ylab = "Blubber stress [MPa]")
-#' plot(t, sol$WCF$stress / sol$parms$s[2], type = "l",
-#'      xlab = "Time [s]", ylab = "Blubber stress / strength")
+#' plot(t, sol$WCF$stress / 1e6,
+#'     type = "l",
+#'     xlab = "Time [s]", ylab = "Blubber stress [MPa]"
+#' )
+#' plot(t, sol$WCF$stress / sol$parms$s[2],
+#'     type = "l",
+#'     xlab = "Time [s]", ylab = "Blubber stress / strength"
+#' )
 #'
 #' # Example 3: max stress and stress/strength, for a 200 tonne ship
 #' # moving at various speeds. This is a slow calculation, so we do
@@ -464,7 +501,7 @@ strike <- function(t, state, parms, debug = 0) {
         "ms", "mw", "s", "Ss", "stressFromStrain", "Sw",
         "theta"
     )
-    #cat("parms$Sw=", parms$Sw, "\n")
+    # cat("parms$Sw=", parms$Sw, "\n")
     if (!all(parmsRequired %in% names(parms))) {
         stop('parms must hold: "', paste(parmsRequired, collapse = '", "'), '"')
     }

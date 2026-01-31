@@ -19,10 +19,9 @@
 #' | "Sailing"             |   1.23 * L^3.53 |
 #' | "Tanker"              |   7.25 * L^3.03 |
 #' | "Tug"                 | 104.48 * L^2.51 |
-
 #'
-#' @param type a string identifying the ship type, from the list
-#' given in \sQuote{Details}.
+#' @param type a string identifying the ship type (see \sQuote{Details}
+#' for a list of allowed values of `type`).
 #'
 #' @param L vessel length in metres.
 #'
@@ -31,7 +30,7 @@
 #'
 #' @examples
 #' library(whalestrike)
-#' shipMassFromLength("Tug", 50)/1e3 # 1920.648
+#' shipMassFromLength("Tug", 50) / 1e3 # 1920.648
 #'
 #' @references
 #'
@@ -42,7 +41,27 @@
 #' @export
 #'
 #' @author Dan Kelley, with help from Alexandra Mayette
-shipMassFromLength <- function(type, L) {
+shipMassFromLength <- function(type = NULL, L) {
+    knownTypes <- c(
+        paste("Bulk", "Carrier"),
+        paste("Container", "Ship"),
+        "Cruise",
+        "Ferry",
+        "Fishing",
+        "Government/Research",
+        "Other",
+        "Passenger",
+        paste("Pleasure", "Craft"),
+        "Sailing",
+        "Tanker",
+        "Tug"
+    )
+    if (!(type %in% knownTypes)) {
+        stop(
+            "type=\"", type, "\" not handled; try one of \"",
+            paste(knownTypes, collapse = "\", \""), "\""
+        )
+    }
     switch(type,
         "Bulk Carrier" = 5.64 * L^3.06, # ∆ = 5.64 ∗ LOA3.06
         "Container Ship" = 86.40 * L^2.46, # ∆ = 86.40 ∗ LOA2.46

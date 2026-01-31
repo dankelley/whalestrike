@@ -1,6 +1,6 @@
 # vim:textwidth=128:expandtab:shiftwidth=4:softtabstop=4
 
-whale_measurements_table <- structure(list(species = c(
+whaleMeasurementsTable <- structure(list(species = c(
     "Blue Whale", "Bryde Whale", "Fin Whale",
     "Gray Whale", "Humpback Whale", "Minke Whale", "N. Atl. Right Whale",
     "Pac. Right Whale", "Sei Whale", "Sperm Whale"
@@ -50,17 +50,27 @@ whale_measurements_table <- structure(list(species = c(
 #' * `sublayer` thickness of sublayer in meters; this was called `muscle` in Mayette's document.
 #' * `blubber` whale blubber thickness in meters.
 #' * `skin` whale skin thickness in metres.
+#'
+#' @examples
+#' library(whalestrike)
+#' # All species in database
+#' whaleMeasurements()
+#' # A particular species
+#' whaleMeasurements("N. Atl. Right Whale")
+#'
 #' @export
+#'
+#'
 #' @author Dan Kelley, using data and advice from Alexandra Mayette
-whale_measurements <- function(species = NULL) {
+whaleMeasurements <- function(species = NULL) {
     if (is.null(species)) {
-        whale_measurements_table
+        whaleMeasurementsTable
     } else {
-        i <- which(species == whale_measurements_table$species)
+        i <- which(species == whaleMeasurementsTable$species)
         if (length(i) != 1) {
             stop("cannot find measurements for species '", species, "'")
         }
-        whale_measurements_table[i, ]
+        whaleMeasurementsTable[i, ]
     }
 }
 
@@ -87,7 +97,7 @@ whale_measurements <- function(species = NULL) {
 #' based on the same analysis as for Ly.
 #'
 #' @param lw either (1) whale length in metres or (2) the string `"from_species"`.
-#' If the latter, then the length is determined from [whale_measurements()].
+#' If the latter, then the length is determined from [whaleMeasurements()].
 #' In either case, the length is used by [whaleAreaFromLength()] to
 #' calculate area, which is needed for the water drag calculation done by
 #' [whaleWaterForce()].
@@ -108,7 +118,7 @@ whale_measurements <- function(species = NULL) {
 #' the thicknesses in metres of skin, blubber, sublayer and bone; (2) NULL
 #' to set these four values to 0.025, 0.16, 1.12, and 0.1; or (3) the
 #' string `"from_species"`, in which case these four values are
-#' determined by calling [whale_measurements()].
+#' determined by calling [whaleMeasurements()].
 #' The default skin thickness of 0.025 m represents the 0.9-1.0 inch value
 #' stated in Section 2.2.3 of Raymond (2007).
 #' The blubber default of 0.16 m is a rounded average of the values inferred
@@ -120,7 +130,7 @@ whale_measurements <- function(species = NULL) {
 #' The sum of these default values, 1.40 m, is a whale radius that
 #' is consistent with a half-circumference of 4.4 m, reported in Table 2.2
 #' of Raymond (2007).  Note, however, that these values are not identical
-#' to those found in `whale_measurements`.
+#' to those found in `whaleMeasurements`.
 #'
 #' @param a,b Numerical vectors of length 4, giving values to use in the
 #' stress-strain law `stress=a*(exp(b*strain)-1)`, where `a` is in Pa
@@ -310,7 +320,7 @@ parameters <- function(
             stop("lw must be a string or a single numeric value")
         }
         if (identical(lw, "from_species")) {
-            lw <- whale_measurements(species)$length
+            lw <- whaleMeasurements(species)$length
         }
         if (lw <= 0) {
             stop("lw must be positive, but it is ", lw)
@@ -343,7 +353,7 @@ parameters <- function(
             stop("'s' must be a vector with 4 positive numbers")
         }
         if (identical(l, "from_species")) {
-            tmp <- whale_measurements(species)
+            tmp <- whaleMeasurements(species)
             l <- c(tmp$skin, tmp$blubber, tmp$sublayer, tmp$bone)
             # message("l: ", paste(l, collapse = " "))
         }

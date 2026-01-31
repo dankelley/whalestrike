@@ -4,11 +4,11 @@
 \alias{shipMassFromLength}
 \title{Compute ship displacement from vessel type and length}
 \usage{
-shipMassFromLength(type, L)
+shipMassFromLength(type = NULL, L)
 }
 \arguments{
-\item{type}{a string identifying the ship type, from the list
-given in \sQuote{Details}.}
+\item{type}{a string identifying the ship type (see \sQuote{Details}
+for a list of allowed values of \code{type}).}
 
 \item{L}{vessel length in metres.}
 }
@@ -39,7 +39,7 @@ The formulae used are as follows.\tabular{lr}{
 }
 \examples{
 library(whalestrike)
-shipMassFromLength("Tug", 50)/1e3 # 1920.648
+shipMassFromLength("Tug", 50) / 1e3 # 1920.648
 
 }
 \references{

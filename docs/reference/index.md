@@ -63,7 +63,7 @@
   : Skin force
 - [`whaleWaterForce()`](https://dankelley.github.io/whalestrike/reference/whaleWaterForce.md)
   : Whale Drag Force
-- [`whale_measurements`](https://dankelley.github.io/whalestrike/reference/whale_measurements.md)
-  : Whale measurements
+- [`whale_measurements()`](https://dankelley.github.io/whalestrike/reference/whale_measurements.md)
+  : Get values for various whale measurements
 - [`whale_shape`](https://dankelley.github.io/whalestrike/reference/whale_shape.md)
   : Whale side-view shape

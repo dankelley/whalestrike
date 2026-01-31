@@ -26,7 +26,7 @@ necropsy side-view presented in Daoust et al. (2018).}
 }
 \description{
 This depends on calculations based on the digitized shape of
-a whale necropsy, which is provided as \link{whale_shape}.
+a whale necropsy, which is provided by \code{\link[=whaleShape]{whaleShape()}}.
 The results are
 \eqn{0.143 * L^2}{0.143 * L^2}
 for the projected area (see reference 1)
@@ -43,7 +43,7 @@ agreed to under 0.7 percent percent between these digitizations.
 \examples{
 L <- 3:20
 A <- whaleAreaFromLength(L)
-plot(L, A, xlab="Length [m]", ylab="Area [m^2]", type="l")
+plot(L, A, xlab = "Length [m]", ylab = "Area [m^2]", type = "l")
 
 }
 \references{

@@ -72,13 +72,17 @@ for the wetted area
 
 
 <dl><dt id="arg-l">L<a class="anchor" aria-label="anchor" href="#arg-l"></a></dt>
-<dd><p>length in m.</p></dd>
+<dd><p>whale length in metres.</p></dd>
 
 
 <dt id="arg-species">species<a class="anchor" aria-label="anchor" href="#arg-species"></a></dt>
-<dd><p>A string indicating the whale species.  With
-this version of the package, the only permitted choice is
-<code>"N. Atl. Right Whale"</code>.</p></dd>
+<dd><p>a string indicating the whale species. In
+the present version of the package, this parameter is ignored,
+and it is assumed that the formula developed for North
+Atlantic Right Whales will be applicable to other species.
+This is not a large concern, because the area only affects
+the water drag, which will not be large during the
+short interval of a ship impact.</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
@@ -114,6 +118,15 @@ Society, and Fisheries and Oceans Canada, 2018.
     <p>Dan Kelley</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">L</span> <span class="op">&lt;-</span> <span class="fl">3</span><span class="op">:</span><span class="fl">20</span></span></span>
+<span class="r-in"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu">whaleAreaFromLength</span><span class="op">(</span><span class="va">L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">L</span>, <span class="va">A</span>, xlab<span class="op">=</span><span class="st">"Length [m]"</span>, ylab<span class="op">=</span><span class="st">"Area [m^2]"</span>, type<span class="op">=</span><span class="st">"l"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="whaleAreaFromLength-1.png" alt="" width="700" height="480"></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

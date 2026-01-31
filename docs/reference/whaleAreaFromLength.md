@@ -17,12 +17,16 @@ whaleAreaFromLength(L, species = "N. Atl. Right Whale", type = "wetted")
 
 - L:
 
-  length in m.
+  whale length in metres.
 
 - species:
 
-  A string indicating the whale species. With this version of the
-  package, the only permitted choice is `"N. Atl. Right Whale"`.
+  a string indicating the whale species. In the present version of the
+  package, this parameter is ignored, and it is assumed that the formula
+  developed for North Atlantic Right Whales will be applicable to other
+  species. This is not a large concern, because the area only affects
+  the water drag, which will not be large during the short interval of a
+  ship impact.
 
 - type:
 
@@ -56,3 +60,12 @@ digitizations.
 ## Author
 
 Dan Kelley
+
+## Examples
+
+``` r
+L <- 3:20
+A <- whaleAreaFromLength(L)
+plot(L, A, xlab="Length [m]", ylab="Area [m^2]", type="l")
+
+```

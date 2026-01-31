@@ -101,32 +101,38 @@ based on the same analysis as for Ly.</p></dd>
 
 
 <dt id="arg-species">species<a class="anchor" aria-label="anchor" href="#arg-species"></a></dt>
-<dd><p>A string indicating the whale species. For the permitted values,
-see <code><a href="whaleMassFromLength.html">whaleMassFromLength()</a></code>.</p></dd>
+<dd><p>a string indicating the whale species. For the permitted values,
+see <code><a href="whaleMassFromLength.html">whaleMassFromLength()</a></code>. (The <code>species</code> value can also set the
+<code>lw</code> and <code>l</code> values, as noted in their portions of this documention.)</p></dd>
 
 
 <dt id="arg-lw">lw<a class="anchor" aria-label="anchor" href="#arg-lw"></a></dt>
-<dd><p>Whale length (m). This is used by <code><a href="whaleAreaFromLength.html">whaleAreaFromLength()</a></code> to
+<dd><p>either (1) whale length in metres or (2) the string <code>"from_species"</code>.
+If the latter, then the length is determined from <code><a href="whale_measurements.html">whale_measurements()</a></code>.
+In either case, the length is used by <code><a href="whaleAreaFromLength.html">whaleAreaFromLength()</a></code> to
 calculate area, which is needed for the water drag calculation done by
 <code><a href="whaleWaterForce.html">whaleWaterForce()</a></code>.</p></dd>
 
 
 <dt id="arg-mw">mw<a class="anchor" aria-label="anchor" href="#arg-mw"></a></dt>
-<dd><p>Whale mass (kg). If this value is not provided, then
-it is calculated from whale length, using <code><a href="whaleMassFromLength.html">whaleMassFromLength()</a></code>
+<dd><p>either (1) the whale mass in kg or (2) NULL. In the latter case,
+the mass is calculated from whale length, using <code><a href="whaleMassFromLength.html">whaleMassFromLength()</a></code>
 with <code>type="wetted"</code>.</p></dd>
 
 
 <dt id="arg-sw">Sw<a class="anchor" aria-label="anchor" href="#arg-sw"></a></dt>
-<dd><p>Whale surface area (m^2). If not provided, this is calculated
-from whale length using <code><a href="whaleAreaFromLength.html">whaleAreaFromLength()</a></code>.</p></dd>
+<dd><p>either (1) the whale surface area in m^2 or (2) NULL. If the
+latter case, the area is calculated from whale length using
+<code><a href="whaleAreaFromLength.html">whaleAreaFromLength()</a></code>.</p></dd>
 
 
 <dt id="arg-l">l<a class="anchor" aria-label="anchor" href="#arg-l"></a></dt>
-<dd><p>Numerical vector of length 4, giving thickness (m) of skin, blubber,
-sublayer, and bone. If not provided, this is set to
-<code>c(0.025, 0.16, 1.12, 0.1)</code>.
-The skin thickness default of 0.025 m represents the 0.9-1.0 inch value
+<dd><p>either (1) a numerical vector of length 4 that indicates
+the thicknesses in metres of skin, blubber, sublayer and bone; (2) NULL
+to set these four values to 0.025, 0.16, 1.12, and 0.1; or (3) the
+string <code>"from_species"</code>, in which case these four values are
+determined by calling <code><a href="whale_measurements.html">whale_measurements()</a></code>.
+The default skin thickness of 0.025 m represents the 0.9-1.0 inch value
 stated in Section 2.2.3 of Raymond (2007).
 The blubber default of 0.16 m is a rounded average of the values inferred
 by whale necropsy, reported in Appendix 2 of Daoust et al., 2018.
@@ -134,7 +140,8 @@ The sublayer default of 1.12 m may be reasonable at some spots on the whale body
 The bone default of 0.1 m may be reasonable at some spots on the whale body.
 The sum of these default values, 1.40 m, is a whale radius that
 is consistent with a half-circumference of 4.4 m, reported in Table 2.2
-of Raymond (2007).</p></dd>
+of Raymond (2007).  Note, however, that these values are not identical
+to those found in <code>whale_measurements</code>.</p></dd>
 
 
 <dt id="arg-a-b">a, b<a class="anchor" aria-label="anchor" href="#arg-a-b"></a></dt>

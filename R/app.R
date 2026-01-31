@@ -46,32 +46,29 @@ classes of ships, based on lengths.</li>
 
 #' GUI application for whale simulation
 #'
-#' This is a replacement to the older [app_2025()], which had a more
-#' awkward interface, and which is no longer maintained.
-#'
-#' Compared with [app_2025()], the present function lacks the ability to save settings
-#' and reload them later. This is mainly because it only works with locally-run
-#' operations, not from server-run operations.  The latter would require extra
-#' coding to set up user's storage space, to prevent against web attacks, etc.,
-#' which is beyond the present purpose.  However, there is an addition with
-#' [app()] that might prove more useful: a button to display the code required
-#' to reproduce the simulated state.  This may be of help to the those seeking
-#' to explore the results of simulations more precisely and with
-#' greater reproducibility.
+#' Graphical-user-interface tool for exploring whale-strike simulations.
 #'
 #' Sliders, buttons, and choosers are grouped into panes that appear on
 #' the left of the view. When [app()] first opens, all of these panes
 #' are closed. To get acquainted with the app, try adjusting the controllers
 #' that *are* visible on the initial view.  Then, open the "ship" pane and
 #' increase the ship mass.  Do you find that the results make qualitative
-#' sense?  Continue this process, exploring all the panes. It is hoped
-#' that a half hour of such exploration will let users start to
-#' investigate practical applications.  For more about how the simulations
-#' are carried out, as well as comments on some applications that
-#' may be of interest, please consult Kelley et al. (2021).
+#' sense?  Continue this process, exploring all the panes. A
+#' half-hour of such exploration should be enough to build enough
+#' confidence to start investigating practical applications.
+#' To learn more about how the simulations are carried out, and
+#' to read more about the underlying goals of this tool,
+#' please consult Kelley et al. (2021) and Kelley (2024). Extensive
+#' details on the calculations are provided in the help pages
+#' for the various functions of the whalestrike package, of
+#' which that for [whalestrike()] is a good starting point.
 #'
 #' More information on [app()] in video form on
 #' [youtube](https://youtu.be/kTMl3nXa5A4).
+#'
+#' Note that an older version of a similar GUI application is
+#' still available as [app_2025()], but it is not maintained
+#' and is slated for removal in the early months of 2026.
 #'
 #' @param debug logical value indicating whether to print output to
 #' the R console as the computation is done.
@@ -89,7 +86,10 @@ classes of ships, based on lengths.</li>
 #' Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. "Assessing the Lethality
 #' of Ship Strikes on Whales Using Simple Biophysical Models." Marine Mammal
 #' Science, 37(1), 2021. \doi{10.1111/mms.12745}.
-##'
+#'
+#' Kelley, Dan E. “Whalestrike: An R Package for Simulating Ship Strikes on Whales.”
+#' Journal of Open Source Software 9, no. 97 (2024): 6473. https://doi.org/10.21105/joss.06473.
+#'
 #' @author Dan Kelley
 app <- function(debug = FALSE) {
     dmsg <- function(...) {
@@ -179,22 +179,22 @@ app <- function(debug = FALSE) {
                         ticks = FALSE,
                         min = 5, max = 25, value = 13.7, step = 0.1
                     ),
-                    # bone: range in whale_measurements() is 7.8 to 17.3 cm
+                    # bone: range in whaleMeasurements() is 7.8 to 17.3 cm
                     shiny::sliderInput("l4", shiny::h6("Bone thickness [cm]"),
                         ticks = FALSE,
                         min = 1, max = 20, value = 10, step = 1
                     ),
-                    # sublayer: range in whale_measurements() is 31.3 to 168.7 cm
+                    # sublayer: range in whaleMeasurements() is 31.3 to 168.7 cm
                     shiny::sliderInput("l3", shiny::h6("Sublayer thickness [cm]"),
                         ticks = FALSE,
                         min = 20, max = 200, value = 112, step = 1
                     ),
-                    # blubber: range in whale_measurements() is 3.3 to 16.3 cm
+                    # blubber: range in whaleMeasurements() is 3.3 to 16.3 cm
                     shiny::sliderInput("l2", shiny::h6("Blubber thickness [cm]"),
                         ticks = FALSE,
                         min = 1, max = 40, value = 16, step = 1
                     ),
-                    # skin: range in whale_measurements() is 0.2 to 1.0 cm
+                    # skin: range in whaleMeasurements() is 0.2 to 1.0 cm
                     shiny::sliderInput("l1", shiny::h6("Skin thickness [cm]"),
                         ticks = FALSE,
                         min = 0.0, max = 3, value = 2.5, step = 0.1
@@ -213,10 +213,38 @@ app <- function(debug = FALSE) {
                             "Cape Islander."
                         )
                     ),
-                    shiny::sliderInput("ms",
-                        shiny::h6("Mass [tonne]"),
-                        ticks = FALSE,
-                        min = 10, max = 500, value = 45, step = 1
+                    shiny::selectInput("vessel", "Vessel",
+                        choices = c(
+                            "Generic",
+                            paste("Bulk", "Carrier"),
+                            paste("Container", "Ship"),
+                            "Cruise",
+                            "Ferry",
+                            "Fishing",
+                            "Government/Research",
+                            "Other",
+                            "Passenger",
+                            paste("Pleasure", "Craft"),
+                            "Sailing",
+                            "Tanker",
+                            "Tug"
+                        )
+                    ),
+                    shiny::conditionalPanel(
+                        condition = "input.vessel == 'Generic'",
+                        shiny::sliderInput("ms",
+                            shiny::h6("Mass [tonne]"),
+                            ticks = FALSE,
+                            min = 10, max = 500, value = 45, step = 1
+                        ),
+                    ),
+                    shiny::conditionalPanel(
+                        condition = "input.vessel != 'Generic'",
+                        shiny::sliderInput("vesselLength",
+                            shiny::h6("Length [m]"),
+                            ticks = FALSE,
+                            min = 10, max = 500, value = 50, step = 5
+                        ),
                     ),
                     shiny::sliderInput("Ly", shiny::h6("Impact width [m]"),
                         ticks = FALSE,
@@ -308,13 +336,13 @@ app <- function(debug = FALSE) {
                 p <- parameters()
                 with(p, list(length = lw, skin = l[1], blubber = l[2], sublayer = l[3], bone = l[4]))
             } else {
-                whale_measurements(input$species)
+                whaleMeasurements(input$species)
             }
-            shiny::updateSliderInput(session, "lw", "Length [m]", wm$length)
-            shiny::updateSliderInput(session, "l4", "Bone thickness [cm]", 100 * wm$bone)
-            shiny::updateSliderInput(session, "l3", "Sublayer thickness [cm]", 100 * wm$sublayer)
-            shiny::updateSliderInput(session, "l2", "Blubber thickness [cm]", 100 * wm$blubber)
-            shiny::updateSliderInput(session, "l1", "skin thickness [cm]", 100 * wm$skin)
+            shiny::updateSliderInput(session, "lw", shiny::h6("Length [m]"), wm$length)
+            shiny::updateSliderInput(session, "l4", shiny::h6("Bone thickness [cm]"), 100 * wm$bone)
+            shiny::updateSliderInput(session, "l3", shiny::h6("Sublayer thickness [cm]"), 100 * wm$sublayer)
+            shiny::updateSliderInput(session, "l2", shiny::h6("Blubber thickness [cm]"), 100 * wm$blubber)
+            shiny::updateSliderInput(session, "l1", shiny::h6("skin thickness [cm]"), 100 * wm$skin)
         })
         shiny::observeEvent(input$keypressTrigger, {
             key <- intToUtf8(input$keypress)
@@ -388,10 +416,23 @@ app <- function(debug = FALSE) {
         })
         output$plot <- renderPlot(
             {
+                message("DEBUGGING output")
+                message("  input$vessel: ", input$vessel)
+                message("  input$vesselLength: ", input$vesselLength, " [m]")
+                message("  input$ms: ", input$ms, " [tonne]")
+                # ship mass
+                shipMass <- if (input$vessel == "Generic") {
+                    1000 * input$ms
+                } else {
+                    shipMassFromLength(input$vessel, input$vesselLength)
+                }
+                shipArea <- shipAreaFromMass(shipMass)
+                message("  therefore ship mass is ", shipMass / 1000, " [tonne]")
+                message("  therefore ship area is ", shipArea, " [m^2]")
                 mw <- whaleMass(input$lw, input$species)
                 parms <- whalestrike::parameters(
-                    ms = 1000 * input$ms,
-                    Ss = shipAreaFromMass(1000 * input$ms),
+                    ms = shipMass,
+                    Ss = shipArea,
                     Ly = input$Ly,
                     Lz = input$Lz,
                     lw = input$lw,

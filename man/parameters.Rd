@@ -45,7 +45,7 @@ see \code{\link[=whaleMassFromLength]{whaleMassFromLength()}}. (The \code{specie
 \code{lw} and \code{l} values, as noted in their portions of this documention.)}
 
 \item{lw}{either (1) whale length in metres or (2) the string \code{"from_species"}.
-If the latter, then the length is determined from \code{\link[=whale_measurements]{whale_measurements()}}.
+If the latter, then the length is determined from \code{\link[=whaleMeasurements]{whaleMeasurements()}}.
 In either case, the length is used by \code{\link[=whaleAreaFromLength]{whaleAreaFromLength()}} to
 calculate area, which is needed for the water drag calculation done by
 \code{\link[=whaleWaterForce]{whaleWaterForce()}}.}
@@ -62,7 +62,7 @@ latter case, the area is calculated from whale length using
 the thicknesses in metres of skin, blubber, sublayer and bone; (2) NULL
 to set these four values to 0.025, 0.16, 1.12, and 0.1; or (3) the
 string \code{"from_species"}, in which case these four values are
-determined by calling \code{\link[=whale_measurements]{whale_measurements()}}.
+determined by calling \code{\link[=whaleMeasurements]{whaleMeasurements()}}.
 The default skin thickness of 0.025 m represents the 0.9-1.0 inch value
 stated in Section 2.2.3 of Raymond (2007).
 The blubber default of 0.16 m is a rounded average of the values inferred
@@ -72,7 +72,7 @@ The bone default of 0.1 m may be reasonable at some spots on the whale body.
 The sum of these default values, 1.40 m, is a whale radius that
 is consistent with a half-circumference of 4.4 m, reported in Table 2.2
 of Raymond (2007).  Note, however, that these values are not identical
-to those found in \code{whale_measurements}.}
+to those found in \code{whaleMeasurements}.}
 
 \item{a, b}{Numerical vectors of length 4, giving values to use in the
 stress-strain law \code{stress=a*(exp(b*strain)-1)}, where \code{a} is in Pa
