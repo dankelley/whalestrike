@@ -143,7 +143,7 @@
 #'
 #' @export
 whaleMassFromLength <- function(L, species = "N. Atl. Right Whale", model = NULL) {
-    if (identical(species, "Default")) {
+    if (identical(species, "Generic")) {
         species <- "N. Atl. Right Whale"
     }
     n <- length(species)

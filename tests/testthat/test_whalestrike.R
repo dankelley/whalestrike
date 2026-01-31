@@ -13,7 +13,7 @@ test_that("parameters", {
 
 test_that("whaleMassFromLength() simple call as in app()", {
   expect_equal(whaleMassFromLength(13.7), 29993.89, tolerance=0.01)
-  expect_equal(whaleMassFromLength(13.7, "Default"), 29993.89, tolerance=0.01)
+  expect_equal(whaleMassFromLength(13.7, "Generic"), 29993.89, tolerance=0.01)
   expect_equal(whaleMassFromLength(13.7, "N. Atl. Right Whale"), 29993.89, tolerance=0.01)
 })
 

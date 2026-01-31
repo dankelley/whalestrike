@@ -1,48 +1,25 @@
 # vim:textwidth=100:expandtab:shiftwidth=4:softtabstop=4
 
-help <- "
-<p>
+helpText <- "<p>When this app starts, the sliders and tick-boxes are set
+up to model a small (45 tonne) fishing boat moving at 10 knots towards a
+North Atlantic Right Whale of length 13.7m.</p>
 
-When this app starts, the sliders and tick-boxes are set up to model a
-small (45 tonne) fishing boat moving at 10 knots towards a whale of
-length 13.7m.
-
-</p>
-
-<p>
-
-Clicking on the down-arrow icons labelled <tt>plot</tt>,
+<p>Clicking on the down-arrow icons labelled <tt>plot</tt>,
 <tt>whale</tt> and <tt>ship</tt> opens up controllers for setting
-certain key properties of the simulation. See the package
-documentation to learn more about these things.
+certain key properties of the simulation. Hovering the mouse
+over the circled 'i' symbols provides more information on
+how to work with these controllers.</p>
 
-</p>
-
-<p>
-
-More information on this app may be retrieved by typing <tt>?app</tt>
-in the R console, and a video demonstration is provided on
-<a href=\"https://youtu.be/kTMl3nXa5A4\">youtube</a>).
-
-</p>
-
-<p>
-
-The simulation works by calling the <tt>strike()</tt> function within
+<p>The simulation works by calling the <tt>strike()</tt> function within
 the package, so a good way to learn more about it is to type
 <tt>?strike</tt> in the R console. Also, please note that clicking the
-</ttCode</tt> button, which displays the code used to set up the
-simulation under view at any given time.
+</tt>Code</tt> button will show a pop-up box that displays code that
+will mimic the simulation being viewed.</p>
 
-</p>
-
-<p>Hints:</p>
-<ul>
-<li> You may wish to use shipMassFromLength() to look up the mass of various
-classes of ships, based on lengths.</li>
-</ul>
-
-"
+<p>A video demonstration of an older version of this app
+is at <a href=\"https://youtu.be/kTMl3nXa5A4\">youtube</a>).
+You can learn more about this app, and about the whalestrike
+package, by consulting the package documentation.</p>"
 
 #' GUI application for whale simulation
 #'
@@ -85,10 +62,18 @@ classes of ships, based on lengths.</li>
 #'
 #' Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. "Assessing the Lethality
 #' of Ship Strikes on Whales Using Simple Biophysical Models." Marine Mammal
-#' Science, 37(1), 2021. \doi{10.1111/mms.12745}.
+#' Science 37, no. 1 (2021): 251–67. https://doi.org/10.1111/mms.12745.
 #'
-#' Kelley, Dan E. “Whalestrike: An R Package for Simulating Ship Strikes on Whales.”
-#' Journal of Open Source Software 9, no. 97 (2024): 6473. https://doi.org/10.21105/joss.06473.
+#' Kelley, Dan E."“Whalestrike: An R Package for Simulating Ship Strikes on Whales."
+#' Journal of Open Source Software 9, no. 97 (2024): 6473.
+#' https://doi.org/10.21105/joss.06473.
+#'
+#' Mayette, Alexandra. "Whale Layer Thickness." December 15, 2025. (Personal
+#' communication of a 5-page document.)
+#'
+#' Mayette, Alexandra, and Sean W. Brillant. "A Regression-Based Method to Estimate
+#' Vessel Mass for Use in Whale-Ship Strike Risk Models." PloS One 21, no. 1 (2026):
+#' e0339760. https://doi.org/10.1371/journal.pone.0339760.
 #'
 #' @author Dan Kelley
 app <- function(debug = FALSE) {
@@ -155,13 +140,15 @@ app <- function(debug = FALSE) {
                         "\u24D8",
                         paste(
                             "These sliders set the whale characteristics.",
-                            "The default values are meant to represent",
-                            "an adult Right Whale."
+                            "Select 'Generic' for the whale model discussed in Kelley et al. (2021)",
+                            "and Kelley (2024). Otherwise, select one of the provided list of species.",
+                            "In this latter case, the sliders are adjusted according to a tabulation",
+                            "of whale properties assembled by Alexandra Mayette."
                         )
                     ),
                     shiny::selectInput("species", "Species",
                         choices = c(
-                            paste("Default"),
+                            paste("Generic"),
                             paste("Blue", "Whale"),
                             paste("Bryde", "Whale"),
                             paste("Fin", "Whale"),
@@ -173,7 +160,7 @@ app <- function(debug = FALSE) {
                             paste("Sei", "Whale"),
                             paste("Sperm", "Whale")
                         ),
-                        selected = "Default"
+                        selected = "Generic"
                     ),
                     shiny::sliderInput("lw", shiny::h6("Length [m]"),
                         ticks = FALSE,
@@ -205,12 +192,13 @@ app <- function(debug = FALSE) {
                     tooltip(
                         "\u24D8",
                         paste(
-                            "These sliders set the mass of the ship and the",
-                            "geometry of the impact zone. For the latter,",
-                            "consider the area a few decimetres aft of the first",
-                            "contact point. The default values correspond to a small",
-                            "fishing vessel with a prow shape similar to that of a",
-                            "Cape Islander."
+                            "These sliders set the ship characteristics.",
+                            "Select 'Generic' for a vessel model discussed in Kelley et al. (2021)",
+                            "and Kelley (2024). Otherwise, select one of the provided list of vessel",
+                            "types. In the first case, a slider is provided for specifying the ship",
+                            "mass. In the latter case, a slider is provided for specifying the ship",
+                            "length, and mass is determined by using shipMassFromLength(), which uses",
+                            "information provided by in Mayette and Brillant (2026)."
                         )
                     ),
                     shiny::selectInput("vessel", "Vessel",
@@ -305,7 +293,7 @@ app <- function(debug = FALSE) {
     server <- function(input, output, session) {
         dmsg("in server")
         whaleMass <- function(length, species) {
-            if (species == "Default") {
+            if (species == "Generic") {
                 whaleMassFromLength(length, species = "N. Atl. Right Whale", model = "fortune2012")
             } else if (species == "N. Atl. Right Whale") {
                 whaleMassFromLength(length, species = species, model = "fortune2012")
@@ -332,7 +320,7 @@ app <- function(debug = FALSE) {
             }
         }
         shiny::observeEvent(input$species, {
-            wm <- if (identical(input$species, "Default")) {
+            wm <- if (identical(input$species, "Generic")) {
                 p <- parameters()
                 with(p, list(length = lw, skin = l[1], blubber = l[2], sublayer = l[3], bone = l[4]))
             } else {
@@ -344,18 +332,22 @@ app <- function(debug = FALSE) {
             shiny::updateSliderInput(session, "l2", shiny::h6("Blubber thickness [cm]"), 100 * wm$blubber)
             shiny::updateSliderInput(session, "l1", shiny::h6("skin thickness [cm]"), 100 * wm$skin)
         })
-        shiny::observeEvent(input$keypressTrigger, {
-            key <- intToUtf8(input$keypress)
-            # NOTE: this keystroke is not explained. I may delete
-            # it. And I might add other keystrokes. One that I
-            # think might be good would be to try small-ship and
-            # large-ship simulations.
-            if (key == "?") {
-                shiny::showModal(shiny::modalDialog(shiny::HTML(help), title = "Using this application", size = "l"))
-            }
-        })
+        #<unused> shiny::observeEvent(input$keypressTrigger, {
+        #<unused>     key <- intToUtf8(input$keypress)
+        #<unused>     # NOTE: this keystroke is not explained. I may delete
+        #<unused>     # it. And I might add other keystrokes. One that I
+        #<unused>     # think might be good would be to try small-ship and
+        #<unused>     # large-ship simulations.
+        #<unused>     if (key == "?") {
+        #<unused>         shiny::showModal(shiny::modalDialog(shiny::HTML(help), title = "Using this application", size = "xl"))
+        #<unused>     }
+        #<unused> })
         shiny::observeEvent(input$help, {
-            shiny::showModal(shiny::modalDialog(shiny::HTML(help), title = "Using this application", size = "l"))
+            shiny::showModal(shiny::modalDialog(shiny::HTML(helpText),
+                title = "Using this application", size = "l"
+            ))
+            # print(help)
+            # shiny::showModal(shiny::modalDialog(shiny::HTML("WTF"), title = "Using this application", size = "l"))
         })
         observeEvent(input$quit, {
             shiny::stopApp()
@@ -416,10 +408,12 @@ app <- function(debug = FALSE) {
         })
         output$plot <- renderPlot(
             {
-                message("DEBUGGING output")
-                message("  input$vessel: ", input$vessel)
-                message("  input$vesselLength: ", input$vesselLength, " [m]")
-                message("  input$ms: ", input$ms, " [tonne]")
+                if (debug) {
+                    message("About to run the simulation. Next is a test of GUI changes 2026-01-31")
+                    message("  input$vessel: ", input$vessel)
+                    message("  input$vesselLength: ", input$vesselLength, " [m]")
+                    message("  input$ms: ", input$ms, " [tonne]")
+                }
                 # ship mass
                 shipMass <- if (input$vessel == "Generic") {
                     1000 * input$ms
@@ -427,8 +421,10 @@ app <- function(debug = FALSE) {
                     shipMassFromLength(input$vessel, input$vesselLength)
                 }
                 shipArea <- shipAreaFromMass(shipMass)
-                message("  therefore ship mass is ", shipMass / 1000, " [tonne]")
-                message("  therefore ship area is ", shipArea, " [m^2]")
+                if (debug) {
+                    message("  therefore ship mass is ", shipMass / 1000, " [tonne]")
+                    message("  therefore ship area is ", shipArea, " [m^2]")
+                }
                 mw <- whaleMass(input$lw, input$species)
                 parms <- whalestrike::parameters(
                     ms = shipMass,
