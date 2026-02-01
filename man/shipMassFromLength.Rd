@@ -2,13 +2,15 @@
 % Please edit documentation in R/ship.R
 \name{shipMassFromLength}
 \alias{shipMassFromLength}
-\title{Compute ship displacement from vessel type and length}
+\title{Ship displacement in kg based on vessel type and length}
 \usage{
 shipMassFromLength(type = NULL, L)
 }
 \arguments{
-\item{type}{a string identifying the ship type (see \sQuote{Details}
-for a list of allowed values of \code{type}).}
+\item{type}{either (1) a string identifying the ship type, in
+which case the average overall length of the named vessel is
+returned, or (2) NULL, in which case a vector of permitted
+values of \code{type} is returned.}
 
 \item{L}{vessel length in metres.}
 }
@@ -43,12 +45,18 @@ shipMassFromLength("Tug", 50) / 1e3 # 1920.648
 
 }
 \references{
-\itemize{
-\item Alexandra Mayette, Sean W. Brillant. "A regression-based method
-to estimate vessel mass for use in whale-ship strike risk models."
-PLoS One 21(2) e0339760. \doi{10.1371/journal.pone.0339760}
+Mayette, Alexandra, and Sean W. Brillant. "A Regression-Based Method
+to Estimate Vessel Mass for Use in Whale-Ship Strike Risk Models."
+PloS One 21, no. 1 (2026): e0339760.
+https://doi.org/10.1371/journal.pone.0339760.
 }
+\seealso{
+Other functions relating to ship characteristics: 
+\code{\link{shipAreaFromMass}()},
+\code{\link{shipLength}()},
+\code{\link{shipWaterForce}()}
 }
 \author{
 Dan Kelley, with help from Alexandra Mayette
 }
+\concept{functions relating to ship characteristics}

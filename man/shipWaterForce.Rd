@@ -23,6 +23,20 @@ where \code{rho} is water density taken to be 1024 (kg/m^3), \code{Cs} is drag c
 stored in \code{parms} and \code{A} is area, also stored in \verb{parms, and }vs` is
 the ship speed (m/s).
 }
+\seealso{
+Other functions relating to ship characteristics: 
+\code{\link{shipAreaFromMass}()},
+\code{\link{shipLength}()},
+\code{\link{shipMassFromLength}()}
+
+Other functions relating to forces: 
+\code{\link{stressFromStrainFunction}()},
+\code{\link{whaleCompressionForce}()},
+\code{\link{whaleSkinForce}()},
+\code{\link{whaleWaterForce}()}
+}
 \author{
 Dan Kelley
 }
+\concept{functions relating to forces}
+\concept{functions relating to ship characteristics}

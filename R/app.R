@@ -192,13 +192,11 @@ app <- function(debug = FALSE) {
                     tooltip(
                         "\u24D8",
                         paste(
-                            "These sliders set the ship characteristics.",
-                            "Select 'Generic' for a vessel model discussed in Kelley et al. (2021)",
-                            "and Kelley (2024). Otherwise, select one of the provided list of vessel",
-                            "types. In the first case, a slider is provided for specifying the ship",
-                            "mass. In the latter case, a slider is provided for specifying the ship",
-                            "length, and mass is determined by using shipMassFromLength(), which uses",
-                            "information provided by in Mayette and Brillant (2026)."
+                            "These sliders set the ship characteristics. There are two choices.",
+                            "Choise 1: select 'Generic' for a vessel model discussed in Kelley et al. (2021)",
+                            "and Kelley (2024). Choice 2: select one of the specified vessel",
+                            "types, and then use a slider to set vessel length, after which the app",
+                            "computes ship mass using shipMassFromLength()."
                         )
                     ),
                     shiny::selectInput("vessel", "Vessel",
@@ -286,7 +284,7 @@ app <- function(debug = FALSE) {
                         "set by the controllers shown to the left."
                     )
                 ),
-                plotOutput("plot")
+                plotOutput("plot", width="100%", height="700px")
             ),
         ),
     )
@@ -319,6 +317,12 @@ app <- function(debug = FALSE) {
                 stop("programming error: species not handled: ", species)
             }
         }
+        shiny::observeEvent(input$vessel, {
+            if (input$vessel != "Generic") {
+                length <- shipLength(input$vessel)
+                shiny::updateSliderInput(session, "vesselLength", shiny::h6("Length [m]"), length)
+            }
+        })
         shiny::observeEvent(input$species, {
             wm <- if (identical(input$species, "Generic")) {
                 p <- parameters()
@@ -359,6 +363,7 @@ app <- function(debug = FALSE) {
                 "# Simulation time interval<br>",
                 "t <- seq(0.0, ", input$tmax, ", length.out = 2000)<br>"
             )
+            # BEGIN bookmark 1 (MUST keep in-synch with bookmark 2 below)
             msg <- paste0(
                 msg,
                 "# Initial state<br>",
@@ -367,17 +372,26 @@ app <- function(debug = FALSE) {
                 "    vs = knot2mps(", input$vs, "),<br>",
                 "    xw = 0, vw = 0)<br>"
             )
+            ms <- if (input$vessel == "Generic") {
+                1000 * input$ms
+            } else {
+                shipMassFromLength(input$vessel, input$vesselLength)
+            }
+            Ss <- shipAreaFromMass(ms)
+            Sw <- whaleAreaFromLength(input$lw, species = "N. Atl. Right Whale", "wetted")
+            mw <- whaleMass(input$lw, input$species)
+            # END bookmark 1
             msg <- paste0(
                 msg,
                 "# Whale parameters<br>",
                 "parms <- parameters(<br>",
-                "    ms = ", 1000 * input$ms, ",<br",
-                "    Ss = shipAreaFromMass(1000 * ", input$ms, "),<br>",
+                "    ms = ", round(ms), ",<br",
+                "    Ss = ", round(Ss), ",<br>",
                 "    Ly = ", input$Ly, ",<br>",
                 "    Lz = ", input$Lz, ",<br>",
                 "    lw = ", input$lw, ",<br>",
-                "    mw = whaleMassFromLength(", input$lw, ", \"", input$species, "\"),<br>",
-                "    Sw = whaleAreaFromLength(", input$lw, ", \"", input$species, "\"),<br>",
+                "    mw = ", round(mw), ",<br>",
+                "    Sw = ", round(Sw), ",<br>",
                 "    l = c(", input$l1 / 100,
                 ", ", input$l2 / 100,
                 ", ", input$l3 / 100,
@@ -408,39 +422,46 @@ app <- function(debug = FALSE) {
         })
         output$plot <- renderPlot(
             {
-                if (debug) {
-                    message("About to run the simulation. Next is a test of GUI changes 2026-01-31")
-                    message("  input$vessel: ", input$vessel)
-                    message("  input$vesselLength: ", input$vesselLength, " [m]")
-                    message("  input$ms: ", input$ms, " [tonne]")
-                }
-                # ship mass
-                shipMass <- if (input$vessel == "Generic") {
+                # BEGIN bookmark 2 (MUST keep in-synch with bookmark 1 above)
+                ms <- if (input$vessel == "Generic") {
                     1000 * input$ms
                 } else {
                     shipMassFromLength(input$vessel, input$vesselLength)
                 }
-                shipArea <- shipAreaFromMass(shipMass)
-                if (debug) {
-                    message("  therefore ship mass is ", shipMass / 1000, " [tonne]")
-                    message("  therefore ship area is ", shipArea, " [m^2]")
-                }
+                Ss <- shipAreaFromMass(ms)
+                Sw <- whaleAreaFromLength(input$lw, species = "N. Atl. Right Whale", "wetted")
                 mw <- whaleMass(input$lw, input$species)
+                # END bookmark 2
+                l <- c(input$l1 / 100, input$l2 / 100, input$l3 / 100, input$l4 / 100)
+                if (debug) {
+                    message("About to run strike with params:")
+                    message("  ms=", round(ms), " [kg] ship mass")
+                    message("  Ss=", round(Ss), " [m^2] ship area")
+                    message("  Ly=", input$Ly, " [m] impact area width")
+                    message("  Lz=", input$Lz, " [m] impact area height")
+                    message("  mw=", round(mw), " [kg] whale mass")
+                    message("  Sw=", round(Sw), " [m^2] whale area")
+                    message("  l=", paste(l, collapse=","), " [m] whale layer thicknesses")
+                }
                 parms <- whalestrike::parameters(
-                    ms = shipMass,
-                    Ss = shipArea,
+                    ms = ms,
+                    Ss = Ss,
                     Ly = input$Ly,
                     Lz = input$Lz,
                     lw = input$lw,
                     mw = mw,
-                    Sw = whalestrike::whaleAreaFromLength(input$lw, species = "N. Atl. Right Whale", "wetted"),
-                    l = c(input$l1 / 100, input$l2 / 100, input$l3 / 100, input$l4 / 100)
+                    Sw = Sw,
+                    l = l
                 )
-                if (debug) print(parms)
                 state <- list(xs = -(1 + parms$lsum), vs = whalestrike::knot2mps(input$vs), xw = 0, vw = 0)
-                if (debug) print(state)
+                if (debug) {
+                    message("and with state:")
+                    message("  xs=", state$xs, " [m] ship position")
+                    message("  vs=", round(state$vs,2), " [m/s] ship speed")
+                    message("  xs=", state$xw, " [m] whale position")
+                    message("  vs=", state$vw, " [m/s] whale speed\n")
+                }
                 t <- seq(0, input$tmax, length.out = 2000)
-                if (debug) print(range(t))
                 sol <- strike(t, state, parms)
                 if (sol$refinedGrid) {
                     showNotification("Refined grid for accel. peak")

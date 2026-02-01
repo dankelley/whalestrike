@@ -1,8 +1,10 @@
 # whalestrike 0.6.0
 
 * Add `shipMassFromLength()`.
-* Update `app()` to use collapsible GUI elements. (The old version is still
-  provided, as `app_2025()`, but it will not be maintained.)
+* Add `shipLength()`.
+* Update `app()` to use collapsible GUI elements and to have pull-down menus
+  for ship type and whale species, the selection of which alters the sliders
+    that set for ship and whale properties.
 
 # whalestrike 0.5.1
 
