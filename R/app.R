@@ -270,7 +270,7 @@ app <- function(debug = FALSE) {
             ),
             bslib::tooltip(
                 shiny::actionButton("quit", "Quit"),
-                "Quite this application."
+                "Quit this application."
             ),
         ),
         card(
