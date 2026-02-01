@@ -58,6 +58,21 @@ create a piecewise-linear representation of the relationship between
 present function. (The purpose of using a piecewise-linear
 representation to reduce computation time.)
 
+## See also
+
+Other functions relating to whale characteristics:
+[`whaleCompressionForce()`](https://dankelley.github.io/whalestrike/reference/whaleCompressionForce.md),
+[`whaleLengthFromMass()`](https://dankelley.github.io/whalestrike/reference/whaleLengthFromMass.md),
+[`whaleMassFromLength()`](https://dankelley.github.io/whalestrike/reference/whaleMassFromLength.md),
+[`whaleSkinForce()`](https://dankelley.github.io/whalestrike/reference/whaleSkinForce.md),
+[`whaleWaterForce()`](https://dankelley.github.io/whalestrike/reference/whaleWaterForce.md)
+
+Other functions relating to forces:
+[`shipWaterForce()`](https://dankelley.github.io/whalestrike/reference/shipWaterForce.md),
+[`whaleCompressionForce()`](https://dankelley.github.io/whalestrike/reference/whaleCompressionForce.md),
+[`whaleSkinForce()`](https://dankelley.github.io/whalestrike/reference/whaleSkinForce.md),
+[`whaleWaterForce()`](https://dankelley.github.io/whalestrike/reference/whaleWaterForce.md)
+
 ## Author
 
 Dan Kelley

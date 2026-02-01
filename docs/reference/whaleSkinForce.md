@@ -40,6 +40,21 @@ See
 [`whalestrike()`](https://dankelley.github.io/whalestrike/reference/whalestrike.md)
 for a list of references.
 
+## See also
+
+Other functions relating to whale characteristics:
+[`stressFromStrainFunction()`](https://dankelley.github.io/whalestrike/reference/stressFromStrainFunction.md),
+[`whaleCompressionForce()`](https://dankelley.github.io/whalestrike/reference/whaleCompressionForce.md),
+[`whaleLengthFromMass()`](https://dankelley.github.io/whalestrike/reference/whaleLengthFromMass.md),
+[`whaleMassFromLength()`](https://dankelley.github.io/whalestrike/reference/whaleMassFromLength.md),
+[`whaleWaterForce()`](https://dankelley.github.io/whalestrike/reference/whaleWaterForce.md)
+
+Other functions relating to forces:
+[`shipWaterForce()`](https://dankelley.github.io/whalestrike/reference/shipWaterForce.md),
+[`stressFromStrainFunction()`](https://dankelley.github.io/whalestrike/reference/stressFromStrainFunction.md),
+[`whaleCompressionForce()`](https://dankelley.github.io/whalestrike/reference/whaleCompressionForce.md),
+[`whaleWaterForce()`](https://dankelley.github.io/whalestrike/reference/whaleWaterForce.md)
+
 ## Author
 
 Dan Kelley

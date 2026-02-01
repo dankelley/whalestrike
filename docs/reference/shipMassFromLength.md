@@ -1,18 +1,20 @@
-# Compute ship displacement from vessel type and length
+# Ship displacement in kg based on vessel type and length
 
 This is done using formulae in Table 3 of Mayette and Brillant (2026).
 
 ## Usage
 
 ``` r
-shipMassFromLength(type, L)
+shipMassFromLength(type = NULL, L)
 ```
 
 ## Arguments
 
 - type:
 
-  a string identifying the ship type, from the list given in ‘Details’.
+  either (1) a string identifying the ship type, in which case the
+  average overall length of the named vessel is returned, or (2) NULL,
+  in which case a vector of permitted values of `type` is returned.
 
 - L:
 
@@ -45,10 +47,17 @@ The formulae used are as follows.
 
 ## References
 
-- Alexandra Mayette, Sean W. Brillant. "A regression-based method to
-  estimate vessel mass for use in whale-ship strike risk models." PLoS
-  One 21(2) e0339760.
-  [doi:10.1371/journal.pone.0339760](https://doi.org/10.1371/journal.pone.0339760)
+Mayette, Alexandra, and Sean W. Brillant. "A Regression-Based Method to
+Estimate Vessel Mass for Use in Whale-Ship Strike Risk Models." PloS One
+21, no. 1 (2026): e0339760.
+https://doi.org/10.1371/journal.pone.0339760.
+
+## See also
+
+Other functions relating to ship characteristics:
+[`shipAreaFromMass()`](https://dankelley.github.io/whalestrike/reference/shipAreaFromMass.md),
+[`shipLength()`](https://dankelley.github.io/whalestrike/reference/shipLength.md),
+[`shipWaterForce()`](https://dankelley.github.io/whalestrike/reference/shipWaterForce.md)
 
 ## Author
 
@@ -58,6 +67,6 @@ Dan Kelley, with help from Alexandra Mayette
 
 ``` r
 library(whalestrike)
-shipMassFromLength("Tug", 50)/1e3 # 1920.648
+shipMassFromLength("Tug", 50) / 1e3 # 1920.648
 #> [1] 1920.648
 ```

@@ -284,7 +284,7 @@ app <- function(debug = FALSE) {
                         "set by the controllers shown to the left."
                     )
                 ),
-                plotOutput("plot", width="100%", height="700px")
+                plotOutput("plot", width="100%", height="600px")
             ),
         ),
     )

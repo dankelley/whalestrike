@@ -106,6 +106,13 @@ species.
 [`whaleLengthFromMass()`](https://dankelley.github.io/whalestrike/reference/whaleLengthFromMass.md)
 is the reverse of this.
 
+Other functions relating to whale characteristics:
+[`stressFromStrainFunction()`](https://dankelley.github.io/whalestrike/reference/stressFromStrainFunction.md),
+[`whaleCompressionForce()`](https://dankelley.github.io/whalestrike/reference/whaleCompressionForce.md),
+[`whaleLengthFromMass()`](https://dankelley.github.io/whalestrike/reference/whaleLengthFromMass.md),
+[`whaleSkinForce()`](https://dankelley.github.io/whalestrike/reference/whaleSkinForce.md),
+[`whaleWaterForce()`](https://dankelley.github.io/whalestrike/reference/whaleWaterForce.md)
+
 ## Author
 
 Dan Kelley

@@ -25,6 +25,21 @@ whaleWaterForce(vw, parms)
 
 Water drag force (N).
 
+## See also
+
+Other functions relating to whale characteristics:
+[`stressFromStrainFunction()`](https://dankelley.github.io/whalestrike/reference/stressFromStrainFunction.md),
+[`whaleCompressionForce()`](https://dankelley.github.io/whalestrike/reference/whaleCompressionForce.md),
+[`whaleLengthFromMass()`](https://dankelley.github.io/whalestrike/reference/whaleLengthFromMass.md),
+[`whaleMassFromLength()`](https://dankelley.github.io/whalestrike/reference/whaleMassFromLength.md),
+[`whaleSkinForce()`](https://dankelley.github.io/whalestrike/reference/whaleSkinForce.md)
+
+Other functions relating to forces:
+[`shipWaterForce()`](https://dankelley.github.io/whalestrike/reference/shipWaterForce.md),
+[`stressFromStrainFunction()`](https://dankelley.github.io/whalestrike/reference/stressFromStrainFunction.md),
+[`whaleCompressionForce()`](https://dankelley.github.io/whalestrike/reference/whaleCompressionForce.md),
+[`whaleSkinForce()`](https://dankelley.github.io/whalestrike/reference/whaleSkinForce.md)
+
 ## Author
 
 Dan Kelley

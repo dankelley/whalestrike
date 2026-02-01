@@ -108,7 +108,7 @@ see <code><a href="whaleMassFromLength.html">whaleMassFromLength()</a></code>. (
 
 <dt id="arg-lw">lw<a class="anchor" aria-label="anchor" href="#arg-lw"></a></dt>
 <dd><p>either (1) whale length in metres or (2) the string <code>"from_species"</code>.
-If the latter, then the length is determined from <code><a href="whale_measurements.html">whale_measurements()</a></code>.
+If the latter, then the length is determined from <code><a href="whaleMeasurements.html">whaleMeasurements()</a></code>.
 In either case, the length is used by <code><a href="whaleAreaFromLength.html">whaleAreaFromLength()</a></code> to
 calculate area, which is needed for the water drag calculation done by
 <code><a href="whaleWaterForce.html">whaleWaterForce()</a></code>.</p></dd>
@@ -131,7 +131,7 @@ latter case, the area is calculated from whale length using
 the thicknesses in metres of skin, blubber, sublayer and bone; (2) NULL
 to set these four values to 0.025, 0.16, 1.12, and 0.1; or (3) the
 string <code>"from_species"</code>, in which case these four values are
-determined by calling <code><a href="whale_measurements.html">whale_measurements()</a></code>.
+determined by calling <code><a href="whaleMeasurements.html">whaleMeasurements()</a></code>.
 The default skin thickness of 0.025 m represents the 0.9-1.0 inch value
 stated in Section 2.2.3 of Raymond (2007).
 The blubber default of 0.16 m is a rounded average of the values inferred
@@ -141,7 +141,7 @@ The bone default of 0.1 m may be reasonable at some spots on the whale body.
 The sum of these default values, 1.40 m, is a whale radius that
 is consistent with a half-circumference of 4.4 m, reported in Table 2.2
 of Raymond (2007).  Note, however, that these values are not identical
-to those found in <code>whale_measurements</code>.</p></dd>
+to those found in <code>whaleMeasurements</code>.</p></dd>
 
 
 <dt id="arg-a-b">a, b<a class="anchor" aria-label="anchor" href="#arg-a-b"></a></dt>

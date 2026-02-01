@@ -123,8 +123,10 @@ which is a key function in the package.
   : Server for app, with standard arguments.
 - [`shipAreaFromMass()`](https://dankelley.github.io/whalestrike/reference/shipAreaFromMass.md)
   : Compute ship wetted area from mass
+- [`shipLength()`](https://dankelley.github.io/whalestrike/reference/shipLength.md)
+  : Nominal ship length in m
 - [`shipMassFromLength()`](https://dankelley.github.io/whalestrike/reference/shipMassFromLength.md)
-  : Compute ship displacement from vessel type and length
+  : Ship displacement in kg based on vessel type and length
 - [`shipWaterForce()`](https://dankelley.github.io/whalestrike/reference/shipWaterForce.md)
   : Ship Drag Force
 - [`sol20200708`](https://dankelley.github.io/whalestrike/reference/sol20200708.md)
@@ -149,14 +151,14 @@ which is a key function in the package.
   : Compute whale length from mass
 - [`whaleMassFromLength()`](https://dankelley.github.io/whalestrike/reference/whaleMassFromLength.md)
   : Whale mass inferred from length
+- [`whaleMeasurements()`](https://dankelley.github.io/whalestrike/reference/whaleMeasurements.md)
+  : Get values for various whale measurements
+- [`whaleShape()`](https://dankelley.github.io/whalestrike/reference/whaleShape.md)
+  : Whale side-view shape
 - [`whaleSkinForce()`](https://dankelley.github.io/whalestrike/reference/whaleSkinForce.md)
   : Skin force
 - [`whaleWaterForce()`](https://dankelley.github.io/whalestrike/reference/whaleWaterForce.md)
   : Whale Drag Force
-- [`whale_measurements()`](https://dankelley.github.io/whalestrike/reference/whale_measurements.md)
-  : Get values for various whale measurements
-- [`whale_shape`](https://dankelley.github.io/whalestrike/reference/whale_shape.md)
-  : Whale side-view shape
 
 # Articles
 

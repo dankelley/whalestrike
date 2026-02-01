@@ -32,6 +32,13 @@ estimates values of the `Ss` argument to
 It should not be used in preference to inferences made from
 architectural drawings of a given ship under study.
 
+## See also
+
+Other functions relating to ship characteristics:
+[`shipLength()`](https://dankelley.github.io/whalestrike/reference/shipLength.md),
+[`shipMassFromLength()`](https://dankelley.github.io/whalestrike/reference/shipMassFromLength.md),
+[`shipWaterForce()`](https://dankelley.github.io/whalestrike/reference/shipWaterForce.md)
+
 ## Author
 
 Dan Kelley

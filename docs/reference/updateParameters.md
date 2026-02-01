@@ -73,7 +73,7 @@ updateParameters(
 
   either (1) whale length in metres or (2) the string `"from_species"`.
   If the latter, then the length is determined from
-  [`whale_measurements()`](https://dankelley.github.io/whalestrike/reference/whale_measurements.md).
+  [`whaleMeasurements()`](https://dankelley.github.io/whalestrike/reference/whaleMeasurements.md).
   In either case, the length is used by
   [`whaleAreaFromLength()`](https://dankelley.github.io/whalestrike/reference/whaleAreaFromLength.md)
   to calculate area, which is needed for the water drag calculation done
@@ -100,7 +100,7 @@ updateParameters(
   set these four values to 0.025, 0.16, 1.12, and 0.1; or (3) the string
   `"from_species"`, in which case these four values are determined by
   calling
-  [`whale_measurements()`](https://dankelley.github.io/whalestrike/reference/whale_measurements.md).
+  [`whaleMeasurements()`](https://dankelley.github.io/whalestrike/reference/whaleMeasurements.md).
   The default skin thickness of 0.025 m represents the 0.9-1.0 inch
   value stated in Section 2.2.3 of Raymond (2007). The blubber default
   of 0.16 m is a rounded average of the values inferred by whale
@@ -110,7 +110,7 @@ updateParameters(
   body. The sum of these default values, 1.40 m, is a whale radius that
   is consistent with a half-circumference of 4.4 m, reported in Table
   2.2 of Raymond (2007). Note, however, that these values are not
-  identical to those found in `whale_measurements`.
+  identical to those found in `whaleMeasurements`.
 
 - a, b:
 

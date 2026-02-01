@@ -28,6 +28,19 @@ shipWaterForce(vs, parms)
 
 Water drag force (N).
 
+## See also
+
+Other functions relating to ship characteristics:
+[`shipAreaFromMass()`](https://dankelley.github.io/whalestrike/reference/shipAreaFromMass.md),
+[`shipLength()`](https://dankelley.github.io/whalestrike/reference/shipLength.md),
+[`shipMassFromLength()`](https://dankelley.github.io/whalestrike/reference/shipMassFromLength.md)
+
+Other functions relating to forces:
+[`stressFromStrainFunction()`](https://dankelley.github.io/whalestrike/reference/stressFromStrainFunction.md),
+[`whaleCompressionForce()`](https://dankelley.github.io/whalestrike/reference/whaleCompressionForce.md),
+[`whaleSkinForce()`](https://dankelley.github.io/whalestrike/reference/whaleSkinForce.md),
+[`whaleWaterForce()`](https://dankelley.github.io/whalestrike/reference/whaleWaterForce.md)
+
 ## Author
 
 Dan Kelley
