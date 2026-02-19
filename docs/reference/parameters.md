@@ -64,7 +64,7 @@ parameters(
   a string indicating the whale species. For the permitted values, see
   [`whaleMassFromLength()`](https://dankelley.github.io/whalestrike/reference/whaleMassFromLength.md).
   (The `species` value can also set the `lw` and `l` values, as noted in
-  their portions of this documention.)
+  their portions of this documentation.)
 
 - lw:
 
