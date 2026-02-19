@@ -50,7 +50,7 @@ package, by consulting the package documentation.</p>"
 #' @param debug logical value indicating whether to print output to
 #' the R console as the computation is done.
 #'
-#' @importFrom bslib accordion accordion_panel card card_header sidebar tooltip
+#' @importFrom bslib accordion accordion_panel card card_header page_sidebar sidebar tooltip
 #'
 #' @importFrom shiny actionButton checkboxGroupInput h6 observeEvent plotOutput selectInput shinyApp showModal sliderInput stopApp
 #'
