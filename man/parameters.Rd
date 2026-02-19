@@ -42,7 +42,7 @@ based on the same analysis as for Ly.}
 
 \item{species}{a string indicating the whale species. For the permitted values,
 see \code{\link[=whaleMassFromLength]{whaleMassFromLength()}}. (The \code{species} value can also set the
-\code{lw} and \code{l} values, as noted in their portions of this documention.)}
+\code{lw} and \code{l} values, as noted in their portions of this documentation.)}
 
 \item{lw}{either (1) whale length in metres or (2) the string \code{"from_species"}.
 If the latter, then the length is determined from \code{\link[=whaleMeasurements]{whaleMeasurements()}}.

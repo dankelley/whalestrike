@@ -104,7 +104,7 @@ whaleMeasurements <- function(species = NULL) {
 #'
 #' @param species a string indicating the whale species. For the permitted values,
 #' see [whaleMassFromLength()]. (The `species` value can also set the
-#' `lw` and `l` values, as noted in their portions of this documention.)
+#' `lw` and `l` values, as noted in their portions of this documentation.)
 #'
 #' @param mw either (1) the whale mass in kg or (2) NULL. In the latter case,
 #' the mass is calculated from whale length, using [whaleMassFromLength()]
