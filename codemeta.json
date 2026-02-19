@@ -7,13 +7,13 @@
   "codeRepository": "https://github.com/dankelley/whalestrike",
   "issueTracker": "https://github.com/dankelley/whalestrike/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.3.2 (2023-10-31)",
+  "runtimePlatform": "R version 4.3.3 (2024-02-29)",
   "author": [
     {
       "@type": "Person",
@@ -115,10 +115,11 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "410.414KB",
+  "fileSize": "398.757KB",
   "relatedLink": "https://dankelley.github.io/whalestrike/",
   "releaseNotes": "https://github.com/dankelley/whalestrike/blob/master/NEWS.md",
   "readme": "https://github.com/dankelley/whalestrike/blob/main/README.md",
   "contIntegration": "https://github.com/dankelley/whalestrike/actions/workflows/R-CMD-check.yaml",
+  "developmentStatus": "https://www.repostatus.org/#active",
   "keywords": ["collision", "r", "ships", "whales"]
 }

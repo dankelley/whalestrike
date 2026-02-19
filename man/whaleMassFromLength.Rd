@@ -40,13 +40,13 @@ difficult in the Moore et al. (2005) use of a single nonzero digit
 in the multiplier on \code{L} is illustrated in \dQuote{Examples}.
 \item \code{"fortune2012"} with \code{species="N. Atl. Right Whale"} yields the formula
 \eqn{exp(-10.095 + 2.825*log(100*L))}{exp(-10.095 + 2.825*log(100*L))}
-for North Atlantic right whales, according to corrected version of the
+for North Atlantic right whales, according to a corrected version of the
 erroneous formula given in the caption of Figure 4 in Fortune et al (2012).
 (The error, an exchange of slope and intercept, was confirmed by
 S. Fortune in an email to D. Kelley dated June 22, 2018.)
 \item \code{"fortune2012"} with \code{species="N. Pac. Right Whale"} yields the formula
 \eqn{exp(-12.286 + 3.158*log(100*L))}{exp(-12.286 + 3.158*log(100*L))}
-for North Pacific right whales, according to corrected version of the
+for North Pacific right whales, according to a corrected version of the
 erroneous formula given in the caption of Figure 4 in Fortune et al (2012).
 (The error, an exchange of slope and intercept, was confirmed by
 S. Fortune in an email to D. Kelley dated June 22, 2018.)
@@ -54,15 +54,15 @@ S. Fortune in an email to D. Kelley dated June 22, 2018.)
 permitted \code{species} and the formulae used are as follows (note that
 the \code{"Gray Whale"} formula is in the table's caption, not in the table itself).
 \itemize{
-\item \code{"Blue Whale"}:       \eqn{2.899 * L^3.25}{2.899 * L^3.25}
-\item \code{"Bryde Whale"}:      \eqn{12.965 * L^2.74}{12.965 * L^2.74}
-\item \code{"Fin Whale"}:        \eqn{7.996 * L^2.90}{7.996 * L^2.90}
-\item \code{"Gray Whale"}:       \eqn{5.4 * L^3.28}{5.4 * L^3.28}
-\item \code{"Humpback Whale"}:   \eqn{16.473 * L^2.95}{16.473 * L^2.95}
-\item \code{"Minke Whale"}:      \eqn{49.574 * L^2.31}{49.574 * L^2.31}
-\item \code{"Pac. Right Whale"}: \eqn{13.200 * L^3.06}{13.200 * L^3.06}
-\item \code{"Sei Whale"}:        \eqn{25.763 * L^2.43}{25.763 * L^2.43}
-\item \code{"Sperm Whale"}:      \eqn{6.648 * L^3.18}{6.648 * L^3.18}
+\item \code{"Blue Whale"}:       \eqn{2.899 L^{3.25}}{2.899 * L^3.25}
+\item \code{"Bryde Whale"}:      \eqn{12.965 L^{2.74}}{12.965 * L^2.74}
+\item \code{"Fin Whale"}:        \eqn{7.996 L^{2.90}}{7.996 * L^2.90}
+\item \code{"Gray Whale"}:       \eqn{5.4 L^{3.28}}{5.4 * L^3.28}
+\item \code{"Humpback Whale"}:   \eqn{16.473 L^{2.95}}{16.473 * L^2.95}
+\item \code{"Minke Whale"}:      \eqn{49.574 L^{2.31}}{49.574 * L^2.31}
+\item \code{"Pac. Right Whale"}: \eqn{13.200 L^{3.06}}{13.200 * L^3.06}
+\item \code{"Sei Whale"}:        \eqn{25.763 L^{2.43}}{25.763 * L^2.43}
+\item \code{"Sperm Whale"}:      \eqn{6.648 L^{3.18}}{6.648 * L^3.18}
 }
 }
 }
@@ -87,8 +87,9 @@ lines(L, whaleMassFromLength(L,
     species = "N. Pac. Right Whale",
     model = "fortune2012"
 ) / kpt, col = 3, lwd = 2)
+grid()
 legend("topleft",
-    lwd = 2, col = 1:3,
+    bg = "white", y.intersp = 1.4, lwd = 2, col = 1:3,
     legend = c("moore2005", "fortune2012 Atlantic", "fortune2012 Pacific")
 )
 
@@ -125,7 +126,8 @@ m <- whaleMassFromLength(L, species = "Gray Whale", model = "lockyer1976") / kpt
 lines(L, m, col = 3, lty = 3, lwd = 2)
 grid()
 legend("topleft",
-    col = c(1:3, 1:3, 1:2), lwd = 2, lty = c(rep(1, 3), rep(2, 3), rep(3, 3)),
+    bg = "white", y.intersp = 1.4, col = c(1:3, 1:3, 1:2),
+    lwd = 2, lty = c(rep(1, 3), rep(2, 3), rep(3, 3)),
     legend = c("Right", "Blue", "Fin", "Sei", "Bryde", "Minke", "Humpback", "Sperm", "Gray")
 )
 
@@ -146,7 +148,15 @@ no. 5 (2012): 1342-54. \doi{10.1644/11-MAMM-A-297.1}.
 }
 \seealso{
 \code{\link[=whaleLengthFromMass]{whaleLengthFromMass()}} is the reverse of this.
+
+Other functions relating to whale characteristics: 
+\code{\link{stressFromStrainFunction}()},
+\code{\link{whaleCompressionForce}()},
+\code{\link{whaleLengthFromMass}()},
+\code{\link{whaleSkinForce}()},
+\code{\link{whaleWaterForce}()}
 }
 \author{
 Dan Kelley
 }
+\concept{functions relating to whale characteristics}

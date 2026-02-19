@@ -2,7 +2,7 @@
 % Please edit documentation in R/forces.R
 \name{whaleWaterForce}
 \alias{whaleWaterForce}
-\title{Whale force}
+\title{Whale Drag Force}
 \usage{
 whaleWaterForce(vw, parms)
 }
@@ -10,7 +10,7 @@ whaleWaterForce(vw, parms)
 \item{vw}{Whale velocity (m/s).}
 
 \item{parms}{A named list holding model parameters, created by
-\code{\link{parameters}}.}
+\code{\link[=parameters]{parameters()}}.}
 }
 \value{
 Water drag force (N).
@@ -21,6 +21,22 @@ Compute the retarding force of water on the whale, based on a drag law
 where \code{rho} is 1024 (kg/m^3), \code{Cw} is \code{parms$Cw} and
 \code{A} is \code{parms$Sw}.
 }
+\seealso{
+Other functions relating to whale characteristics: 
+\code{\link{stressFromStrainFunction}()},
+\code{\link{whaleCompressionForce}()},
+\code{\link{whaleLengthFromMass}()},
+\code{\link{whaleMassFromLength}()},
+\code{\link{whaleSkinForce}()}
+
+Other functions relating to forces: 
+\code{\link{shipWaterForce}()},
+\code{\link{stressFromStrainFunction}()},
+\code{\link{whaleCompressionForce}()},
+\code{\link{whaleSkinForce}()}
+}
 \author{
 Dan Kelley
 }
+\concept{functions relating to forces}
+\concept{functions relating to whale characteristics}

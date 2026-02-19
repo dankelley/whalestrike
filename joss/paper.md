@@ -27,7 +27,7 @@ North Atlantic right whale. Although speed reduction policies have been
 developed and implemented, simple considerations suggest that other factors,
 such as ship mass and prow shape, should also be taken into account. An R
 package called `whalestrike` has been developed to address such issues. It was
-used by @kelley_assessing_2020 in the development of a biomechanically based
+used by @kelley_assessing_2021 in the development of a biomechanically based
 criterion for the lethality of ship strikes, but this was just a starting
 point. The next step, and goal of the present paper, is to introduce the model
 code to a broader community, encouraging its use and development by diverse
@@ -38,7 +38,7 @@ researchers and policy makers.
 Ship collisions pose significant threats to endangered marine mammals
 [@laist_collisions_2001]. The case of the North Atlantic right whale
 (*Eubalaena glacialis*) is of particular concern, since it is considered a
-"critically Endangered" species [@iucn_eubalaena_2020].  The trend is not
+"Critically Endangered" species [@iucn_eubalaena_2020].  The trend is not
 encouraging for this animal, the population of which was $340\pm7$ in 2021
 [@pettis_north_2023], down significantly from $483$ in 2010
 [@pace_state-space_2017].  According to necropsy studies, ship strikes are
@@ -52,18 +52,27 @@ policy changes, including both static and dynamic zones of speed restriction
 the success of speed restrictions by counting dead or injured whales, given the
 low numbers alive today. In addition, basic reasoning reveals that speed cannot
 be the only factor. Variations in ship mass, prow shape, etc. should also be
-considered, making for a multifactorial problem that requires even more data to
-achieve statistical reliability.
+considered, along with whale morphometric parameters, making for a
+multifactorial problem that requires even more data to achieve statistical
+reliability.
 
-With this in mind, @kelley_assessing_2020 devised a simple numerical model of
+With this in mind, @kelley_assessing_2021 devised a simple numerical model of
 the biophysical dynamics of collisions between vessels and whales. This
-involved using published records of whale injury and death to calibrate a
-lethality criterion that depends not just on vessel speed, but also on other
-factors such as vessel mass, prow geometry, etc. The model was expressed in the
-R language, because it is familiar to many marine biologists and because it
+involved using published records of whale injury and death (across multiple
+species) to calibrate a lethality criterion that depends not just on vessel
+speed, but also on other factors such as vessel mass, prow geometry, etc., in
+addition to whale morphometric parameters. The model was expressed in the R
+language, because it is familiar to many marine biologists and because it
 provides a wide scope of statistical tools for followup work. The purpose of
-the present paper is not to recapitulate the results of @kelley_assessing_2020,
-but rather to introduce readers to the code.
+the present paper is not to recapitulate the results of @kelley_assessing_2021,
+but rather to introduce readers to the `whalestrike` code.
+
+To the author's knowledge, there are no other R packages that address the topic
+of collision mechanics and whale lethality in this way.  Readers interested in
+the related topic of the probability of collision given shipping patterns and
+whale distributions might find it helpful to start with R packages named
+`whalemap` (@johnson_whalemap_2021) and `shipstrike`
+(@keen_ericmkeenshipstrike_2023).
 
 # Model formulation
 
@@ -85,7 +94,7 @@ with both extension and compression forces, while only compression is
 considered for interior layers. Lacking reliable information on failure limits
 for these biomaterials, critical values for stresses are posited in the context
     of published results of the damage experienced in documented ship strikes.
-    @kelley_assessing_2020 provide more information on the methodologies
+    @kelley_assessing_2021 provide more information on the methodologies
     and issues involved.
 
 The model is simple, with acceleration and forces being linked via Newton's
@@ -94,7 +103,7 @@ the `deSolve` R package [@soetaert_solving_2010]. Predicted velocities are used
 in computing water drag and the relative positions of ship and whale. After
 contact is made, extensive and compressive forces arise, and the stresses
 associated with these forces are monitored in the context of the lethality
-index proposed by [@kelley_assessing_2020]. Dynamical elements involved in this
+index proposed by @kelley_assessing_2021. Dynamical elements involved in this
 process are distilled into several dozen model parameters. Although a great deal of
 effort has been put into formulating these parameters appropriately (mainly for
 application to right whales), `whalestrike` offers a simple way for users to
@@ -134,13 +143,13 @@ in an R console will run a sample simulation, and show a three-panel plot
 (reproduced here as Figure 1) of the relative position of whale and ship, the
 compression of the whale's layers, and the associated lethality index.
 
-![Diagram produced by typing `example(strike,package="whalestrike")` in an R session. Three of the possible 12 plots are shown. **Left:** positions of 45-tonne vessel initially moving at 10 knots (dashed line) and the boundaries between the three layers on the shipward side of the whale. Contact occurs at about $0.2$ s, and continues to about $0.6$ s. Note that a small fishing vessel is used in this simulation, and so its speed is significantly reduced by the collision.  **Middle:** As the left panel, but showing only the positions of the interfaces between the whale layers, relative to the whale's centre position. In this view, the thin skin can be seen at the bottom, with blubber, sublayer and then bone to the interior. **Right:** An index of lethality, with the line thickened for the interval during which stresses are predicted to exceed a threshold for lethal damage according to @kelley_assessing_2020.](figure1.png)
+![Diagram produced by typing `example(strike,package="whalestrike")` in an R session. Three of the possible 12 plots are shown. **Left:** positions of 45-tonne vessel initially moving at 10 knots (dashed line) and the boundaries between the three layers on the shipward side of the whale. Contact occurs at about $0.2$ s, and continues to about $0.6$ s. Note that a small fishing vessel is used in this simulation, and so its speed is significantly reduced by the collision.  **Middle:** As the left panel, but showing only the positions of the interfaces between the whale layers, relative to the whale's centre position. In this view, the thin skin can be seen at the bottom, with blubber, sublayer and then bone to the interior. **Right:** An index of lethality, with the line thickened for the interval during which stresses are predicted to exceed a threshold for lethal damage according to @kelley_assessing_2021.](figure1.png)
 
 Running the simulation and plotting the results as in Figure 1 takes a fraction
 of a second on a typical laptop, showing that the system is computationally
 inexpensive. This is helpful in detailed studies that involve calling
 `strike()` with a wide suite of parameter values, such as the creation of the
-diagrams in @kelley_assessing_2020, some of which involved of order $10^5$
+diagrams in @kelley_assessing_2021, some of which involved of order $10^5$
 model runs to cover parameter space in detail.
 
 There are also applications for which a few model runs may suffice. For such
@@ -192,6 +201,8 @@ properties with me. I would not have considered writing the `whalestrike`
 package without the motivation of working with these two fine collaborators.
 Jaimie Harbin provided useful comments on this manuscript.  I am also grateful
 to Christopher T. Taggart, for discussions about whales and other things that I
-never realized would interest me as much as they do.
+never realized would interest me as much as they do. Finally, I thank the
+reviewers of this manuscript, for careful reading of this document and
+thoughtful examination of the `whalestrike` package code.
 
 # References

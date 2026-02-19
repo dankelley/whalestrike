@@ -88,6 +88,8 @@ NULL
 #' @export
 #'
 #' @importFrom stats approxfun uniroot
+#' @family functions relating to whale characteristics
+#' @family functions relating to forces
 stressFromStrainFunction <- function(l, a, b, N = 1000) {
     use <- rep(TRUE, length(l))
     fcn <- function(sigma) {
@@ -155,6 +157,8 @@ stressFromStrainFunction <- function(l, a, b, N = 1000) {
 #' @author Dan Kelley
 #'
 #' @export
+#' @family functions relating to whale characteristics
+#' @family functions relating to forces
 whaleCompressionForce <- function(xs, xw, parms) {
     touching <- xs < xw & xs > (xw - parms$lsum)
     dx <- ifelse(touching, xs - (xw - parms$lsum), 0) # penetration distance
@@ -199,6 +203,8 @@ whaleCompressionForce <- function(xs, xw, parms) {
 #' @author Dan Kelley
 #'
 #' @export
+#' @family functions relating to whale characteristics
+#' @family functions relating to forces
 whaleSkinForce <- function(xs, xw, parms) {
     touching <- xs < xw & xs > (xw - parms$lsum)
     dx <- ifelse(touching, xs - (xw - parms$lsum), 0) # penetration distance
@@ -220,14 +226,16 @@ whaleSkinForce <- function(xs, xw, parms) {
 }
 
 
-#' Ship water force
+#' Ship Drag Force
 #'
 #' Compute the retarding force of water on the ship, based on a drag law
 #' \eqn{(1/2)*rho*Cs*A*vs^2}{(1/2)*rho*Cs*A*vs^2}
-#' where `rho` is 1024 (kg/m^3), `Cs` is `parms$Cs` and
-#' `A` is `parms$Ss`.
+#' where `rho` is water density taken to be 1024 (kg/m^3), `Cs` is drag coefficient
+#' stored in `parms` and `A` is area, also stored in `parms, and `vs` is
+#' the ship speed (m/s).
 #
-#' @param vs ship velocity (m/s).
+#' @param vs Ship speed in m/s. (Consider using [knot2mps()] if you
+#' prefer to think of speeds in knots.)
 #'
 #' @template parmsTemplate
 #'
@@ -236,12 +244,14 @@ whaleSkinForce <- function(xs, xw, parms) {
 #' @author Dan Kelley
 #'
 #' @export
+#' @family functions relating to ship characteristics
+#' @family functions relating to forces
 shipWaterForce <- function(vs, parms) {
     -(1 / 2) * 1024 * parms$Cs * parms$Ss * vs * abs(vs)
 }
 
 
-#' Whale force
+#' Whale Drag Force
 #'
 #' Compute the retarding force of water on the whale, based on a drag law
 #' \eqn{(1/2)*rho*Cw*A*vw^2}{(1/2)*rho*Cw*A*vw^2}
@@ -257,26 +267,8 @@ shipWaterForce <- function(vs, parms) {
 #' @author Dan Kelley
 #'
 #' @export
+#' @family functions relating to whale characteristics
+#' @family functions relating to forces
 whaleWaterForce <- function(vw, parms) {
     -(1 / 2) * 1024 * parms$Cw * parms$Sw * vw * abs(vw)
-}
-
-#' Ship water force
-#'
-#' Compute the retarding force of water on the ship, based on a drag law
-#' \eqn{(1/2)*rho*Cs*A*vs^2}{(1/2)*rho*Cs*A*vs^2}
-#' where `rho` is 1024 (kg/m^3), `Cs` is `parms$Cs` and
-#' `A` is `parms$Ss`.
-#
-#' @param vs ship velocity (m/s).
-#'
-#' @template parmsTemplate
-#'
-#' @return Water drag force (N).
-#'
-#' @author Dan Kelley
-#'
-#' @export
-shipWaterForce <- function(vs, parms) {
-    -(1 / 2) * 1024 * parms$Cs * parms$Ss * vs * abs(vs)
 }

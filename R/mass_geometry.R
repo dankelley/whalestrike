@@ -20,14 +20,14 @@
 #'
 #' * `"fortune2012"` with `species="N. Atl. Right Whale"` yields the formula
 #' \eqn{exp(-10.095 + 2.825*log(100*L))}{exp(-10.095 + 2.825*log(100*L))}
-#' for North Atlantic right whales, according to corrected version of the
+#' for North Atlantic right whales, according to a corrected version of the
 #' erroneous formula given in the caption of Figure 4 in Fortune et al (2012).
 #' (The error, an exchange of slope and intercept, was confirmed by
 #' S. Fortune in an email to D. Kelley dated June 22, 2018.)
 #'
 #' * `"fortune2012"` with `species="N. Pac. Right Whale"` yields the formula
 #' \eqn{exp(-12.286 + 3.158*log(100*L))}{exp(-12.286 + 3.158*log(100*L))}
-#' for North Pacific right whales, according to corrected version of the
+#' for North Pacific right whales, according to a corrected version of the
 #' erroneous formula given in the caption of Figure 4 in Fortune et al (2012).
 #' (The error, an exchange of slope and intercept, was confirmed by
 #' S. Fortune in an email to D. Kelley dated June 22, 2018.)
@@ -35,15 +35,15 @@
 #' * `"lockyer1976"` uses formulae from Table 1 of Lockyer (1976). The
 #' permitted `species` and the formulae used are as follows (note that
 #' the `"Gray Whale"` formula is in the table's caption, not in the table itself).
-#'     * `"Blue Whale"`:       \eqn{2.899 * L^3.25}{2.899 * L^3.25}
-#'     * `"Bryde Whale"`:      \eqn{12.965 * L^2.74}{12.965 * L^2.74}
-#'     * `"Fin Whale"`:        \eqn{7.996 * L^2.90}{7.996 * L^2.90}
-#'     * `"Gray Whale"`:       \eqn{5.4 * L^3.28}{5.4 * L^3.28}
-#'     * `"Humpback Whale"`:   \eqn{16.473 * L^2.95}{16.473 * L^2.95}
-#'     * `"Minke Whale"`:      \eqn{49.574 * L^2.31}{49.574 * L^2.31}
-#'     * `"Pac. Right Whale"`: \eqn{13.200 * L^3.06}{13.200 * L^3.06}
-#'     * `"Sei Whale"`:        \eqn{25.763 * L^2.43}{25.763 * L^2.43}
-#'     * `"Sperm Whale"`:      \eqn{6.648 * L^3.18}{6.648 * L^3.18}
+#'     * `"Blue Whale"`:       \eqn{2.899 L^{3.25}}{2.899 * L^3.25}
+#'     * `"Bryde Whale"`:      \eqn{12.965 L^{2.74}}{12.965 * L^2.74}
+#'     * `"Fin Whale"`:        \eqn{7.996 L^{2.90}}{7.996 * L^2.90}
+#'     * `"Gray Whale"`:       \eqn{5.4 L^{3.28}}{5.4 * L^3.28}
+#'     * `"Humpback Whale"`:   \eqn{16.473 L^{2.95}}{16.473 * L^2.95}
+#'     * `"Minke Whale"`:      \eqn{49.574 L^{2.31}}{49.574 * L^2.31}
+#'     * `"Pac. Right Whale"`: \eqn{13.200 L^{3.06}}{13.200 * L^3.06}
+#'     * `"Sei Whale"`:        \eqn{25.763 L^{2.43}}{25.763 * L^2.43}
+#'     * `"Sperm Whale"`:      \eqn{6.648 L^{3.18}}{6.648 * L^3.18}
 #'
 #' @param L whale length in m.
 #'
@@ -79,8 +79,9 @@
 #'     species = "N. Pac. Right Whale",
 #'     model = "fortune2012"
 #' ) / kpt, col = 3, lwd = 2)
+#' grid()
 #' legend("topleft",
-#'     lwd = 2, col = 1:3,
+#'     bg = "white", y.intersp = 1.4, lwd = 2, col = 1:3,
 #'     legend = c("moore2005", "fortune2012 Atlantic", "fortune2012 Pacific")
 #' )
 #'
@@ -117,7 +118,8 @@
 #' lines(L, m, col = 3, lty = 3, lwd = 2)
 #' grid()
 #' legend("topleft",
-#'     col = c(1:3, 1:3, 1:2), lwd = 2, lty = c(rep(1, 3), rep(2, 3), rep(3, 3)),
+#'     bg = "white", y.intersp = 1.4, col = c(1:3, 1:3, 1:2),
+#'     lwd = 2, lty = c(rep(1, 3), rep(2, 3), rep(3, 3)),
 #'     legend = c("Right", "Blue", "Fin", "Sei", "Bryde", "Minke", "Humpback", "Sperm", "Gray")
 #' )
 #'
@@ -140,7 +142,11 @@
 #' @author Dan Kelley
 #'
 #' @export
+#' @family functions relating to whale characteristics
 whaleMassFromLength <- function(L, species = "N. Atl. Right Whale", model = NULL) {
+    if (identical(species, "Generic")) {
+        species <- "N. Atl. Right Whale"
+    }
     n <- length(species)
     if (length(L) < n) {
         L <- rep(L, n)
@@ -155,13 +161,13 @@ whaleMassFromLength <- function(L, species = "N. Atl. Right Whale", model = NULL
                 species,
                 function(s) {
                     switch(s,
-                        "N. Atl. Right Whale" = "fortune2012",
                         "Blue Whale" = "lockyer1976",
                         "Bryde Whale" = "lockyer1976",
                         "Fin Whale" = "lockyer1976",
                         "Gray Whale" = "lockyer1976",
                         "Humpback Whale" = "lockyer1976",
                         "Minke Whale" = "lockyer1976",
+                        "N. Atl. Right Whale" = "fortune2012",
                         "Pac. Right Whale" = "lockyer1976",
                         "Sei Whale" = "lockyer1976",
                         "Sperm Whale" = "lockyer1976"
@@ -170,7 +176,7 @@ whaleMassFromLength <- function(L, species = "N. Atl. Right Whale", model = NULL
             )
         )
     }
-    #print(data.frame(species = species, model = model))
+    # print(data.frame(species = species, model = model))
     if (length(model) == 1) {
         model <- rep(model, n)
     }
@@ -201,23 +207,23 @@ whaleMassFromLength <- function(L, species = "N. Atl. Right Whale", model = NULL
             }
         } else if (model[i] == "lockyer1976") {
             if (species[i] == "Blue Whale") {
-                rval[i] <- 2.899 * L[i]^3.25
+                rval[i] <- 2.899 * L[i]^(3.25)
             } else if (species[i] == "Bryde Whale") {
-                rval[i] <- 12.965 * L[i]^2.74
+                rval[i] <- 12.965 * L[i]^(2.74)
             } else if (species[i] == "Fin Whale") {
-                rval[i] <- 7.996 * L[i]^2.90
+                rval[i] <- 7.996 * L[i]^(2.90)
             } else if (species[i] == "Gray Whale") {
-                rval[i] <- 5.4 * L[i]^3.28
+                rval[i] <- 5.4 * L[i]^(3.28)
             } else if (species[i] == "Humpback Whale") {
-                rval[i] <- 16.473 * L[i]^2.95
+                rval[i] <- 16.473 * L[i]^(2.95)
             } else if (species[i] == "Minke Whale") {
-                rval[i] <- 49.574 * L[i]^2.31
+                rval[i] <- 49.574 * L[i]^(2.31)
             } else if (species[i] == "Pac. Right Whale") {
-                rval[i] <- 13.200 * L[i]^3.06
+                rval[i] <- 13.200 * L[i]^(3.06)
             } else if (species[i] == "Sei Whale") {
-                rval[i] <- 25.763 * L[i]^2.43
+                rval[i] <- 25.763 * L[i]^(2.43)
             } else if (species[i] == "Sperm Whale") {
-                rval[i] <- 6.648 * L[i]^3.18
+                rval[i] <- 6.648 * L[i]^(3.18)
             } else {
                 stop(
                     "species[", i, "]=\"", species[i], "\" must be one of the following:",
@@ -259,6 +265,7 @@ whaleMassFromLength <- function(L, species = "N. Atl. Right Whale", model = NULL
 #' @importFrom stats uniroot
 #'
 #' @seealso [whaleMassFromLength()] is the reverse of this.
+#' @family functions relating to whale characteristics
 whaleLengthFromMass <- function(M, species = "N. Atl. Right Whale", model = "fortune2012") {
     n <- length(M)
     if (length(species) == 1) {
@@ -285,37 +292,3 @@ whaleLengthFromMass <- function(M, species = "N. Atl. Right Whale", model = "for
     rval
 }
 
-#' Compute ship wetted area from mass
-#'
-#' Estimate the wetted area of a Cape Islander boat,
-#' given the vessel mass.
-#'
-#' The method is based on scaling up the results for a single Cape
-#' Islander ship, of displacement 20.46 tonnes, length 11.73m,
-#' beam 4.63m, and draft 1.58m, on the assumption that the wetted area
-#' is proportional to
-#' \eqn{length*(2*draft+beam)}{length*(2*draft+beam)}.
-#' This reference area is scaled to
-#' the specified mass, `ms`, by multiplying by the 2/3
-#' power of the mass ratio.
-#'
-#' Note that this is a crude calculation meant as a stop-gap measure, for
-#' estimates values of the `Ss` argument to [parameters()].
-#' It should not be used in preference to inferences
-#' made from architectural drawings of a given ship under study.
-#'
-#' @param ms Ship mass (kg).
-#'
-#' @return Estimated area (m^2).
-#'
-#' @author Dan Kelley
-#'
-#' @export
-shipAreaFromMass <- function(ms) {
-    length <- 11.73 # m
-    beam <- 4.63 # m
-    draft <- 1.58 # m
-    displacement <- 20.46e3 # m^3
-    factor <- (ms / displacement)^(1 / 3) # lengthscale factor
-    length * (beam + 2 * draft) * factor^2
-}

@@ -7,10 +7,15 @@
 whaleAreaFromLength(L, species = "N. Atl. Right Whale", type = "wetted")
 }
 \arguments{
-\item{L}{length in m.}
+\item{L}{whale length in metres.}
 
-\item{species}{A string indicating the whale species. For the permitted values,
-see \code{\link[=whaleMassFromLength]{whaleMassFromLength()}}.}
+\item{species}{a string indicating the whale species. In
+the present version of the package, this parameter is ignored,
+and it is assumed that the formula developed for North
+Atlantic Right Whales will be applicable to other species.
+This is not a large concern, because the area only affects
+the water drag, which will not be large during the
+short interval of a ship impact.}
 
 \item{type}{character string indicating the type of area, with
 \code{"projected"} for a side-projected area, and
@@ -21,7 +26,7 @@ necropsy side-view presented in Daoust et al. (2018).}
 }
 \description{
 This depends on calculations based on the digitized shape of
-a whale necropsy, which is provided as \link{whaleshape}.
+a whale necropsy, which is provided by \code{\link[=whaleShape]{whaleShape()}}.
 The results are
 \eqn{0.143 * L^2}{0.143 * L^2}
 for the projected area (see reference 1)
@@ -34,6 +39,12 @@ for the wetted area
 Note that multiple digitizations were done,
 and that the coefficients used in the formulae
 agreed to under 0.7 percent percent between these digitizations.
+}
+\examples{
+L <- 3:20
+A <- whaleAreaFromLength(L)
+plot(L, A, xlab = "Length [m]", ylab = "Area [m^2]", type = "l")
+
 }
 \references{
 \enumerate{

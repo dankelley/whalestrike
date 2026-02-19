@@ -1,0 +1,28 @@
+# Whale blubber stress-strain relationship
+
+This is a data frame with elements `strain` and `stress`, found by
+digitizing (accurate to perhaps 1 percent) the curve shown in Figure
+2.13 of Raymond (2007). It is used to develop a stress-strain
+relationship used by
+[`parameters()`](https://dankelley.github.io/whalestrike/reference/parameters.md),
+as shown in “Examples”.
+
+## References
+
+Raymond, J. J. "Development of a Numerical Model to Predict Impact
+Forces on a North Atlantic Right Whale during Collision with a Vessel."
+University of New Hampshire, 2007.
+<https://scholars.unh.edu/thesis/309/>.
+
+## Examples
+
+``` r
+data(raymond2007)
+attach(raymond2007)
+# Next yields \code{a=1.64e5} Pa and \code{b=2.47}.
+m <- nls(stress ~ a * (exp(b * strain) - 1), start = list(a = 1e5, b = 1))
+plot(strain, stress, xaxs = "i", yaxs = "i")
+x <- seq(0, max(strain), length.out = 100)
+lines(x, predict(m, list(strain = x)))
+
+```

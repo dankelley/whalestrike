@@ -4,71 +4,50 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Simulate Whale Ship Strikes • whalestrike</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
-<script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Simulate Whale Ship Strikes">
+<script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Simulate Whale Ship Strikes">
+<meta name="description" content="Simple simulation of the mechanics of a boat striking a whale.">
 <meta property="og:description" content="Simple simulation of the mechanics of a boat striking a whale.">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
 </head>
-<body data-spy="scroll" data-target="#toc">
-    
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
-    <div class="container template-home">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">whalestrike</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.2</span>
-      </span>
-    </div>
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="articles/whalestrike.html">Get started</a>
-</li>
-<li>
-  <a href="reference/index.html">Reference</a>
-</li>
-<li>
-  <a href="news/index.html">Changelog</a>
-</li>
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
+    <a class="navbar-brand me-2" href="index.html">whalestrike</a>
+
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item"><a class="nav-link" href="articles/whalestrike.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/dankelley/whalestrike/" class="external-link">
-    <span class="fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/dankelley/whalestrike/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
-<!--/.nav-collapse -->
+
+
   </div>
-<!--/.container -->
-</div>
-<!--/.navbar -->
-
-      
-
-      </header><div class="row">
-  <div class="contents col-md-9">
-<div class="section level1">
+</nav><div class="container template-home">
+<div class="row">
+  <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="the-whalestrike-package">The whalestrike package<a class="anchor" aria-label="anchor" href="#the-whalestrike-package"></a>
 </h1></div>
 <!-- badges: start -->
@@ -78,7 +57,7 @@
 <h2 id="purpose">Purpose<a class="anchor" aria-label="anchor" href="#purpose"></a>
 </h2>
 <p>This package provides tools for simulating the collisions of ships with whales, using a simplified dynamical structure involving point masses separated by compressible materials. Along with functions for computations of forces, deformations, accelerations, etc., the package provides a easy-to-use GUI tool that makes it easy to set up some common simulation scenarios, and to display the results in graphical form.</p>
-<p>To learn more about the scientific background, and to see the results of some detailed computations placed in the context of a database of observed strikes, see Kelley et al. (2020).</p>
+<p>To learn more about the scientific background, and to see the results of some detailed computations placed in the context of a database of observed strikes, see Kelley et al. (2021). For more information on the coding, see Kelley (2024).</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -94,25 +73,25 @@
 </h2>
 <p>Most users will find that the GUI application is a good way to learn about the package. To start this, type</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/" class="external-link">whalestrike</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/app2.html">app2</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>in an R session. A window will open in your browser. On the left-hand side is a region with controllers. Only one marked <code>Ship</code> will be open at first. Try adjusting the ship speed, to see what happens to the plots. Then try other elements of the <code>Ship</code> controller. Then try closing that controller, opening the others and exploring. The app has a <code>Help</code> button that gives more information. The <code>Code</code> button is also handy: it presents a dialog box with the raw R code that could be used outside the app, to generate the plots shown. In other words, <code><a href="reference/app2.html">app2()</a></code> acts as both a tool and a tutor. A video demonstrating <code><a href="reference/app2.html">app2()</a></code> is at available on <a href="https://youtu.be/kTMl3nXa5A4" class="external-link">youtube</a>.</p>
-<p>Users who want more control, and who want to deal with the results in numerical as opposed to graphical form, should then start exploring the <code><a href="reference/strike.html">strike()</a></code> function. To learn how it works, type</p>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/">whalestrike</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/app.html">app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>in an R session. A window will open in your browser. On the left-hand side is a region with controllers, many hidden in sub-panels that can be opened by clicking on V-shaped icons. Before opening those sub-panels, try adjusting the ship speed, to see what happens to the plots, especially the one labelled <code>Lethality Index</code>. Think about whether the tendency of variations to the index are in line with your intuition. Next, open the <code>Ship</code> sub-panel, to explore the result of altering the ship mass. This sub-panel also has controllers specifying the geometry of the impact region, and you ought to explore them, also. Continuing to explore the app’s controllers ought to give you a good indication of what the tool provides. To learn more, try consulting the app’s documentation, provided (a) as the response to typing <code><a href="reference/app.html">? app</a></code> in the R console, (b) as information in a dialog box that opens when the <code>Help</code> button is clicked, and (c) in a <a href="https://youtu.be/kTMl3nXa5A4" class="external-link">youtube video</a> and a brief <a href="https://youtu.be/f8nHGikb9ug" class="external-link">followup youtube video</a> that illustrates an alteration made after a helpful comment from a review of a Journal of Open-Source Software manuscript about the package.</p>
+<p>Users who want more control, and who want to deal with the results in numerical as opposed to graphical form, should try clicking the <code>Code</code> button in <code><a href="reference/app.html">app()</a></code>, to see the R code that runs the simulation outside the app. The next step will be to explore the functions used in that code. Documentation exists for each of these functions e.g. typing</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/" class="external-link">whalestrike</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/">whalestrike</a></span><span class="op">)</span></span>
 <span><span class="op">?</span><span class="va">strike</span></span></code></pre></div>
-<p>in an R session.</p>
+<p>in an R session will provide information on <code><a href="reference/strike.html">strike()</a></code>, which is a key function in the package.</p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<p>Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. “Assessing the Lethality of Ship Strikes on Whales Using Simple Biophysical Models.” Marine Mammal Science, October 12, 2020, mms.12745. (<a href="https://doi.org/10.1111/mms.12745" class="external-link uri">https://doi.org/10.1111/mms.12745</a>).</p>
+<ul>
+<li><p>Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. “Assessing the Lethality of Ship Strikes on Whales Using Simple Biophysical Models.” Marine Mammal Science 37, no. 1 (January 2021): 251–67. <a href="https://doi.org/10.1111/mms.12745" class="external-link uri">https://doi.org/10.1111/mms.12745</a>. (<a href="https://doi.org/10.1111/mms.12745" class="external-link">journal site</a>; <a href="https://www.researchgate.net/publication/344748816_Assessing_the_lethality_of_ship_strikes_on_whales_using_simple_biophysical_models" class="external-link">ResearchGate Preprint</a>)</p></li>
+<li><p>Kelley, D. E., (2024). whalestrike: An R package for simulating ship strikes on whales. Journal of Open Source Software, 9(97), 6473, <a href="https://doi.org/10.21105/joss.06473" class="external-link uri">https://doi.org/10.21105/joss.06473</a></p></li>
+</ul>
 </div>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="links">
+  </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/dankelley/whalestrike/" class="external-link">Browse source code</a></li>
@@ -139,7 +118,7 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Dan Kelley <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-7808-5911" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Dan Kelley <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-7808-5911" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
@@ -149,30 +128,30 @@
 <ul class="list-unstyled">
 <li><a href="https://img.shields.io/github/last-commit/dankelley/whalestrike" class="external-link"><img src="https://img.shields.io/github/last-commit/dankelley/whalestrike" alt="GitHub last commit"></a></li>
 <li><a href="https://github.com/dankelley/whalestrike/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/dankelley/whalestrike/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://doi.org/10.21105/joss.06473" class="external-link"><img src="https://joss.theoj.org/papers/10.21105/joss.06473/status.svg" alt="DOI"></a></li>
+<li><a href="https://doi.org/10.5281/zenodo.11372537" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.11372537.svg" alt="DOI"></a></li>
+<li><a href="https://www.repostatus.org/#active" class="external-link"><img src="https://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active – The project has reached a stable, usable state and is being actively developed."></a></li>
 </ul>
 </div>
 
-  </div>
+  </aside>
 </div>
 
 
-      <footer><div class="copyright">
-  <p></p>
-<p>Developed by Dan Kelley.</p>
+    <footer><div class="pkgdown-footer-left">
+  <p>Developed by Dan Kelley.</p>
 </div>
 
-<div class="pkgdown">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.9000.</p>
+<div class="pkgdown-footer-right">
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
-      </footer>
+    </footer>
 </div>
 
-  
 
 
-  
+
 
   </body>
 </html>

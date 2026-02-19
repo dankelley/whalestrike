@@ -6,7 +6,7 @@
 \title{Reference strike() solution}
 \description{
 This was produced with the package as it existed on 2020-jul-8,
-prior to the publication of Kelley et al. (2020).  It is used
+prior to the publication of Kelley et al. (2021).  It is used
 in testing, to ensure that the package does not inadvertently
 change in its predictions.
 }
@@ -19,5 +19,5 @@ plot(sol20200708)
 \references{
 Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. "Assessing the Lethality
 of Ship Strikes on Whales Using Simple Biophysical Models." Marine Mammal
-Science, October 12, 2020, mms.12745. \doi{10.1111/mms.12745}.
+Science, 37(1), 2021, mms.12745. \doi{10.1111/mms.12745}.
 }

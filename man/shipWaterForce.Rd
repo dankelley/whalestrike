@@ -2,34 +2,41 @@
 % Please edit documentation in R/forces.R
 \name{shipWaterForce}
 \alias{shipWaterForce}
-\title{Ship water force}
+\title{Ship Drag Force}
 \usage{
-shipWaterForce(vs, parms)
-
 shipWaterForce(vs, parms)
 }
 \arguments{
-\item{vs}{ship velocity (m/s).}
+\item{vs}{Ship speed in m/s. (Consider using \code{\link[=knot2mps]{knot2mps()}} if you
+prefer to think of speeds in knots.)}
 
 \item{parms}{A named list holding model parameters, created by
-\code{\link{parameters}}.}
+\code{\link[=parameters]{parameters()}}.}
 }
 \value{
-Water drag force (N).
-
 Water drag force (N).
 }
 \description{
 Compute the retarding force of water on the ship, based on a drag law
 \eqn{(1/2)*rho*Cs*A*vs^2}{(1/2)*rho*Cs*A*vs^2}
-where \code{rho} is 1024 (kg/m^3), \code{Cs} is \code{parms$Cs} and
-\code{A} is \code{parms$Ss}.
+where \code{rho} is water density taken to be 1024 (kg/m^3), \code{Cs} is drag coefficient
+stored in \code{parms} and \code{A} is area, also stored in \verb{parms, and }vs` is
+the ship speed (m/s).
+}
+\seealso{
+Other functions relating to ship characteristics: 
+\code{\link{shipAreaFromMass}()},
+\code{\link{shipLength}()},
+\code{\link{shipMassFromLength}()}
 
-Compute the retarding force of water on the ship, based on a drag law
-\eqn{(1/2)*rho*Cs*A*vs^2}{(1/2)*rho*Cs*A*vs^2}
-where \code{rho} is 1024 (kg/m^3), \code{Cs} is \code{parms$Cs} and
-\code{A} is \code{parms$Ss}.
+Other functions relating to forces: 
+\code{\link{stressFromStrainFunction}()},
+\code{\link{whaleCompressionForce}()},
+\code{\link{whaleSkinForce}()},
+\code{\link{whaleWaterForce}()}
 }
 \author{
 Dan Kelley
 }
+\concept{functions relating to forces}
+\concept{functions relating to ship characteristics}

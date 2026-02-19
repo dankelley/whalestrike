@@ -12,7 +12,7 @@ whaleCompressionForce(xs, xw, parms)
 \item{xw}{Whale position (m).}
 
 \item{parms}{A named list holding model parameters, created by
-\code{\link{parameters}}.}
+\code{\link[=parameters]{parameters()}}.}
 }
 \value{
 A list containing: \code{force} (N), the
@@ -37,6 +37,22 @@ exceed 1.
 \references{
 See \code{\link[=whalestrike]{whalestrike()}} for a list of references.
 }
+\seealso{
+Other functions relating to whale characteristics: 
+\code{\link{stressFromStrainFunction}()},
+\code{\link{whaleLengthFromMass}()},
+\code{\link{whaleMassFromLength}()},
+\code{\link{whaleSkinForce}()},
+\code{\link{whaleWaterForce}()}
+
+Other functions relating to forces: 
+\code{\link{shipWaterForce}()},
+\code{\link{stressFromStrainFunction}()},
+\code{\link{whaleSkinForce}()},
+\code{\link{whaleWaterForce}()}
+}
 \author{
 Dan Kelley
 }
+\concept{functions relating to forces}
+\concept{functions relating to whale characteristics}

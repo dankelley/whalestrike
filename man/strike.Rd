@@ -29,7 +29,7 @@ whale position \code{xw} (m),
 and whale speed \code{vw} (m/s).}
 
 \item{parms}{A named list holding model parameters, created by
-\code{\link{parameters}}.}
+\code{\link[=parameters]{parameters()}}.}
 
 \item{debug}{Integer indicating debugging level, 0 for quiet operation and
 higher values for more verbose monitoring of progress through the function.}
@@ -70,10 +70,14 @@ state <- list(xs = -2, vs = knot2mps(10), xw = 0, vw = 0) # ship 10 knots
 parms <- parameters(ms = 200 * 1000) # 1 metric tonne is 1000 kg
 sol <- strike(t, state, parms)
 par(mfrow = c(2, 1), mar = c(3, 3, 0.5, 2), mgp = c(2, 0.7, 0), cex = 0.7)
-plot(t, sol$WCF$stress / 1e6, type = "l",
-     xlab = "Time [s]", ylab = "Blubber stress [MPa]")
-plot(t, sol$WCF$stress / sol$parms$s[2], type = "l",
-     xlab = "Time [s]", ylab = "Blubber stress / strength")
+plot(t, sol$WCF$stress / 1e6,
+    type = "l",
+    xlab = "Time [s]", ylab = "Blubber stress [MPa]"
+)
+plot(t, sol$WCF$stress / sol$parms$s[2],
+    type = "l",
+    xlab = "Time [s]", ylab = "Blubber stress / strength"
+)
 
 # Example 3: max stress and stress/strength, for a 200 tonne ship
 # moving at various speeds. This is a slow calculation, so we do

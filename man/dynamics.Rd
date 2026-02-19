@@ -14,7 +14,7 @@ ship speed \code{vs} (m/s), whale position \code{xw} (m),
 and whale speed \code{vw} (m/s).}
 
 \item{parms}{A named list holding model parameters, created by
-\code{\link{parameters}}.}
+\code{\link[=parameters]{parameters()}}.}
 }
 \description{
 This function handles Newton's second law, which is the dynamical

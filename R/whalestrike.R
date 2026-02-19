@@ -5,7 +5,7 @@ library(deSolve)
 #' Reference strike() solution
 #'
 #' This was produced with the package as it existed on 2020-jul-8,
-#' prior to the publication of Kelley et al. (2020).  It is used
+#' prior to the publication of Kelley et al. (2021).  It is used
 #' in testing, to ensure that the package does not inadvertently
 #' change in its predictions.
 #'
@@ -18,7 +18,7 @@ library(deSolve)
 #'
 #' Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. "Assessing the Lethality
 #' of Ship Strikes on Whales Using Simple Biophysical Models." Marine Mammal
-#' Science, October 12, 2020, mms.12745. \doi{10.1111/mms.12745}.
+#' Science, 37(1), 2021, mms.12745. \doi{10.1111/mms.12745}.
 #'
 #' @name sol20200708
 #'
@@ -46,17 +46,51 @@ NULL
 #'
 #' @examples
 #' library(whalestrike)
-#' data(whaleshape)
-#' plot(whaleshape$x, whaleshape$y, asp = 1, type = "l")
-#' polygon(whaleshape$x, whaleshape$y, col = "lightgray")
+#' shape <- whaleShape()
+#' plot(shape$x, shape$y, asp = 1, type = "l")
+#' polygon(shape$x, shape$y, col = "lightgray")
 #' lw <- 13.7
-#' Rmax <- 0.5 * lw * diff(range(whaleshape$y))
+#' Rmax <- 0.5 * lw * diff(range(shape$y))
 #' mtext(sprintf("Max. radius %.2fm for %.1fm-long whale", Rmax, lw), side = 3)
 #'
-#' @name whaleshape
+#' @export
 #'
-#' @docType data
-NULL
+#' @author Dan Kelley
+whaleShape <- function() {
+    structure(list(x = c(
+        0, 0.00790510432232446, 0.0316204955297698,
+        0.0592882041769615, 0.104084003978059, 0.134387321162819, 0.160737147300755,
+        0.191040464485515, 0.20685051664922, 0.225295707907663, 0.262186872829267,
+        0.31225216841512, 0.372858020379922, 0.429511946107337, 0.462449619982116,
+        0.496705645808983, 0.546770941394835, 0.607376793359637, 0.685111049440232,
+        0.762845305520828, 0.840577214387265, 0.919631387229387, 0.96178735350743,
+        1, 0.963109617483115, 0.920945827157878, 0.882741004712502, 0.844528358219932,
+        0.772069857161847, 0.731224418788698, 0.683793479892864, 0.62450519747543,
+        0.553358789131679, 0.496705645808983, 0.459814480887378, 0.403161337564682,
+        0.334650068315668, 0.276679355445603, 0.21739107302817, 0.166007425490229,
+        0.115942129904377, 0.0632409128190676, 0.0197627608058111, 0.00263498261379353,
+        0.00131749130689676
+    ), y = c(
+        0, 0.0184404968301264, 0.030294710732848,
+        0.0461008508729563, 0.0645413477030828, 0.075078774463155, 0.0790307007005417,
+        0.0790307007005417, 0.0856162012232272, 0.0961536279832994, 0.101422341363336,
+        0.10800862429074, 0.10932541143339, 0.111959768123408, 0.110642980980758,
+        0.106691054743372, 0.101422341363336, 0.0948368408406501, 0.0816650573905598,
+        0.0658589172504515, 0.0461008508729563, 0.0263435669001806, 0.0144885705927397,
+        0.00395114383266745, -0.00658628292740479, -0.0105374267600722,
+        -0.0184404968301264, -0.0276611364475493, -0.0487359899676937,
+        -0.059273416727766, -0.0698108434878382, -0.0777139135578923,
+        -0.0882513403179646, -0.0974711975306681, -0.101423123768055,
+        -0.100105554220686, -0.0908856970079826, -0.0856169836279465,
+        -0.0763963440105236, -0.0671764867978201, -0.061907773417784,
+        -0.0553214904903792, -0.0461016332776756, -0.0276611364475493,
+        -0.00526871338003609
+    )), class = "data.frame", row.names = c(
+        NA,
+        -45L
+    ))
+}
+
 
 
 #' whalestrike: A Package to Simulate Ship-Whale Collisions
@@ -68,7 +102,7 @@ NULL
 #' as that of Raymond (2007).  For an in-depth discussion
 #' of the reason for writing the model, of the principles involved
 #' in its framing, and its use in developing a criterion for
-#' strike lethality, please see Kelley et al. (2020).
+#' strike lethality, please see Kelley et al. (2021).
 #'
 #' The goal of the model is to establish a
 #' convenient framework for rapid computation of impacts in a
@@ -88,7 +122,7 @@ NULL
 #' The documentation for [strike()] provides
 #' a practical example of using the main functions of this package,
 #' while the package vignette provides a general overview.
-#' Kelley et al (2020) provide more
+#' Kelley et al (2021) provide more
 #' detail about the mathematical
 #' framework of the package, along with a discussion of its
 #' purpose and application to real-world problems of ship
@@ -119,21 +153,29 @@ NULL
 #'
 #' \item
 #' Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. "Assessing the
-#' Lethality of Ship Strikes on Whales Using Simple Biophysical Models." Marine
-#' Mammal Science, October 12, 2020, mms.12745.
+#' Lethality of Ship Strikes on Whales Using Simple Biophysical Models."
+#' Marine Mammal Science 37, no. 1 (January 2021): 251–67.
 #' \doi{10.1111/mms.12745}.
 #'
 #' \item
-#' Kelley, Dan E. "Composite Spring," May 28, 2018. 20180528_composite_string. Dan Kelley's working notes.
+#' Kelley, Dan E. "Composite Spring," May 28, 2018. 20180528_composite_string.
+#' Dan Kelley's working notes.
 #'
 #' \item
-#' Kelley, Dan. "Whale Area," June 23, 2018. 20180623_whale_area. Dan Kelley's working notes.
+#' Kelley, Dan. "Whale Area," June 23, 2018. 20180623_whale_area.
+#' Dan Kelley's working notes.
 #'
 #' \item
-#' Kelley, Dan. "Ship Propulsion," July 1, 2018. 20180701_ship_propulsion. Dan Kelley's working notes.
+#' Kelley, Dan. "Ship Propulsion," July 1, 2018. 20180701_ship_propulsion.
+#' Dan Kelley's working notes.
 #'
 #' \item
 #' Kelley, Dan. "Whale Mass," July 7, 2018. 20180707_whale_mass. Dan Kelley's working notes.
+#'
+#' \item
+#' Kelley, Dan E."“Whalestrike: An R Package for Simulating Ship Strikes on Whales."
+#' Journal of Open Source Software 9, no. 97 (2024): 6473.
+#' https://doi.org/10.21105/joss.06473.
 #'
 #' \item
 #' MAN Diesel & Turbo. "Basic Principles of Propulsion." MAN Diesel & Turbo, 2011.
@@ -146,6 +188,15 @@ NULL
 #' Architecture (Second Revision), Volume II - Resistance, Propulsion and
 #' Vibration, edited by Edward V Lewis, Second Edition, 1-125. Jersey City, NJ: Society
 #' of Naval Architects and Marine Engineers (U.S.), 1988.
+#'
+#' \item
+#' Mayette, Alexandra. "Whale Layer Thickness." December 15, 2025. (Personal
+#' communication of a 5-page document.)
+#'
+#' \item
+#' Mayette, Alexandra, and Sean W. Brillant. "A Regression-Based Method to Estimate
+#' Vessel Mass for Use in Whale-Ship Strike Risk Models." PloS One 21, no. 1 (2026):
+#' e0339760. https://doi.org/10.1371/journal.pone.0339760.
 #'
 #' \item
 #' Miller, Carolyn A., Desray Reeb, Peter B. Best, Amy R. Knowlton, Moira W.
@@ -189,7 +240,7 @@ NULL
 #' Whale projected area, as function of length
 #'
 #' This depends on calculations based on the digitized shape of
-#' a whale necropsy, which is provided as [whaleshape].
+#' a whale necropsy, which is provided by [whaleShape()].
 #' The results are
 #' \eqn{0.143 * L^2}{0.143 * L^2}
 #' for the projected area (see reference 1)
@@ -202,10 +253,15 @@ NULL
 #' and that the coefficients used in the formulae
 #' agreed to under 0.7 percent percent between these digitizations.
 #'
-#' @param L length in m.
+#' @param L whale length in metres.
 #'
-#' @param species A string indicating the whale species. For the permitted values,
-#' see [whaleMassFromLength()].
+#' @param species a string indicating the whale species. In
+#' the present version of the package, this parameter is ignored,
+#' and it is assumed that the formula developed for North
+#' Atlantic Right Whales will be applicable to other species.
+#' This is not a large concern, because the area only affects
+#' the water drag, which will not be large during the
+#' short interval of a ship impact.
 #'
 #' @param type character string indicating the type of area, with
 #' `"projected"` for a side-projected area, and
@@ -213,6 +269,11 @@ NULL
 #' area was computed by mathematically spinning a spline fit to the
 #' side-view. In both cases, the original data source is the
 #' necropsy side-view presented in Daoust et al. (2018).
+#'
+#' @examples
+#' L <- 3:20
+#' A <- whaleAreaFromLength(L)
+#' plot(L, A, xlab = "Length [m]", ylab = "Area [m^2]", type = "l")
 #'
 #' @references
 #' 1. Dan Kelley's internal document `dek/20180623_whale_area.Rmd`, available
@@ -230,13 +291,13 @@ NULL
 #'
 #' @export
 whaleAreaFromLength <- function(L, species = "N. Atl. Right Whale", type = "wetted") {
-    speciesAllowed <- c("N. Atl. Right Whale")
-    if (!(species %in% speciesAllowed)) {
-        stop(
-            "unknown species \"", species, "\"; use one of the following: \"",
-            paste(speciesAllowed, collapse = "\", \""), "\""
-        )
-    }
+    #<uncomment later, perhaps> speciesAllowed <- c("N. Atl. Right Whale")
+    #<uncomment later, perhaps> if (!(species %in% speciesAllowed)) {
+    #<uncomment later, perhaps>     stop(
+    #<uncomment later, perhaps>         "unknown species \"", species, "\"; use one of the following: \"",
+    #<uncomment later, perhaps>         paste(speciesAllowed, collapse = "\", \""), "\""
+    #<uncomment later, perhaps>     )
+    #<uncomment later, perhaps> }
     # below from dek/20180623_whale_area.Rmd, updated 20180802.
     #
     # * Projected area, with fins: 0.1466 * L^2 where L is body length in metres.
@@ -255,41 +316,6 @@ whaleAreaFromLength <- function(L, species = "N. Atl. Right Whale", type = "wett
     } else {
         stop("'type' must be 'projected' or 'wetted', but it is '", type, "'")
     }
-}
-
-#' Compute ship wetted area from mass
-#'
-#' Estimate the wetted area of a Cape Islander boat,
-#' given the vessel mass.
-#'
-#' The method is based on scaling up the results for a single Cape
-#' Islander ship, of displacement 20.46 tonnes, length 11.73m,
-#' beam 4.63m, and draft 1.58m, on the assumption that the wetted area
-#' is proportional to
-#' \eqn{length*(2*draft+beam)}{length*(2*draft+beam)}.
-#' This reference area is scaled to
-#' the specified mass, `ms`, by multiplying by the 2/3
-#' power of the mass ratio.
-#'
-#' Note that this is a crude calculation meant as a stop-gap measure, for
-#' estimates values of the `Ss` argument to [parameters()].
-#' It should not be used in preference to inferences
-#' made from architectural drawings of a given ship under study.
-#'
-#' @param ms Ship mass (kg).
-#'
-#' @return Estimated area (m^2).
-#'
-#' @author Dan Kelley
-#'
-#' @export
-shipAreaFromMass <- function(ms) {
-    length <- 11.73 # m
-    beam <- 4.63 # m
-    draft <- 1.58 # m
-    displacement <- 20.46e3 # m^3
-    factor <- (ms / displacement)^(1 / 3) # lengthscale factor
-    length * (beam + 2 * draft) * factor^2
 }
 
 #' Dynamical law
@@ -347,6 +373,7 @@ dynamics <- function(t, y, parms) {
         stop("Fship[1] is NA, probably indicating a programming error.")
     }
     Fwhale <- Freactive + whaleWaterForce(vw, parms)
+    # cat("t=", t, ", whaleWaterForce=", whaleWaterForce(vw, parms), "\n")
     if (is.na(Fwhale[1])) {
         stop("Fwhale[1] is NA, probably indicating a programming error.")
     }
@@ -413,10 +440,14 @@ dynamics <- function(t, y, parms) {
 #' parms <- parameters(ms = 200 * 1000) # 1 metric tonne is 1000 kg
 #' sol <- strike(t, state, parms)
 #' par(mfrow = c(2, 1), mar = c(3, 3, 0.5, 2), mgp = c(2, 0.7, 0), cex = 0.7)
-#' plot(t, sol$WCF$stress / 1e6, type = "l",
-#'      xlab = "Time [s]", ylab = "Blubber stress [MPa]")
-#' plot(t, sol$WCF$stress / sol$parms$s[2], type = "l",
-#'      xlab = "Time [s]", ylab = "Blubber stress / strength")
+#' plot(t, sol$WCF$stress / 1e6,
+#'     type = "l",
+#'     xlab = "Time [s]", ylab = "Blubber stress [MPa]"
+#' )
+#' plot(t, sol$WCF$stress / sol$parms$s[2],
+#'     type = "l",
+#'     xlab = "Time [s]", ylab = "Blubber stress / strength"
+#' )
 #'
 #' # Example 3: max stress and stress/strength, for a 200 tonne ship
 #' # moving at various speeds. This is a slow calculation, so we do
@@ -482,6 +513,7 @@ strike <- function(t, state, parms, debug = 0) {
         "ms", "mw", "s", "Ss", "stressFromStrain", "Sw",
         "theta"
     )
+    # cat("parms$Sw=", parms$Sw, "\n")
     if (!all(parmsRequired %in% names(parms))) {
         stop('parms must hold: "', paste(parmsRequired, collapse = '", "'), '"')
     }

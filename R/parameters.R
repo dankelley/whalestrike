@@ -1,5 +1,79 @@
 # vim:textwidth=128:expandtab:shiftwidth=4:softtabstop=4
 
+whaleMeasurementsTable <- structure(list(species = c(
+    "Blue Whale", "Bryde Whale", "Fin Whale",
+    "Gray Whale", "Humpback Whale", "Minke Whale", "N. Atl. Right Whale",
+    "Pac. Right Whale", "Sei Whale", "Sperm Whale"
+), properName = c(
+    "Balaenoptera musculus",
+    "Balaenoptera brydei", "Balaenoptera physalus", "Eschrichtius robustus",
+    "Megaptera novaengliae", "Balaenoptera acutorostrata", "Eubalaena glacialis",
+    "Eubalaena japonica", "Balaenoptera borealis", "Physeter macrocephalus"
+), length = c(
+    21.9, 13.4, 16.9, 12.5, 11.6, 6.7, 13.8, 13.8,
+    13.4, 11.8
+), bone = c(
+    0.173, 0.093, 0.144, 0.136, 0.142, 0.078,
+    0.143, 0.143, 0.093, 0.164
+), sublayer = c(
+    1.687, 0.631, 0.714,
+    0.847, 1.372, 0.313, 1.325, 1.325, 0.631, 0.81
+), blubber = c(
+    0.076,
+    0.044, 0.058, 0.097, 0.082, 0.033, 0.163, 0.163, 0.044, 0.115
+), skin = c(
+    0.004, 0.002, 0.005, 0.01, 0.009, 0.003, 0.009, 0.009,
+    0.002, 0.004
+)), row.names = c(NA, -10L), class = "data.frame")
+
+#' Get values for various whale measurements
+#'
+#' This uses a data frame containing information about several whale
+#' species, compiled by Alexandra Mayette and provided to Dan
+#' Kelley as a personal communication on 2026-01-28.
+#'
+#' There are two species in the table that are not in Mayette's table.
+#' These are `"Pac. Right Whale"` and `"Bryde Whale"`. For these, Mayette has suggesting
+#' using values for the `"N. Atl. Right Whale"` and `"Sei Whale"` cases, respectively,
+#' as conditional estimates for use in this package.
+#'
+#' @param species either (1) the name of a species or (2) NULL. In the first
+#' case, the table is consulted to find a row with the given species
+#' name, and that row is returned. In the second case, the whole table
+#' is returned.
+#'
+#' @return The return value contains
+#' * `name` species name, as used in e.g. whaleMassFromLength().
+#' * `Species` proper species name. (This is not used in this package.)
+#' * `length` whale length in metres.
+#' * `bone` whale bone thickness in metres, measured from the centre to the sublayer.
+#' * `sublayer` thickness of sublayer in meters; this was called `muscle` in Mayette's document.
+#' * `blubber` whale blubber thickness in meters.
+#' * `skin` whale skin thickness in metres.
+#'
+#' @examples
+#' library(whalestrike)
+#' # All species in database
+#' whaleMeasurements()
+#' # A particular species
+#' whaleMeasurements("N. Atl. Right Whale")
+#'
+#' @export
+#'
+#'
+#' @author Dan Kelley, using data and advice from Alexandra Mayette
+whaleMeasurements <- function(species = NULL) {
+    if (is.null(species)) {
+        whaleMeasurementsTable
+    } else {
+        i <- which(species == whaleMeasurementsTable$species)
+        if (length(i) != 1) {
+            stop("cannot find measurements for species '", species, "'")
+        }
+        whaleMeasurementsTable[i, ]
+    }
+}
+
 #' Set parameters for a whale strike simulation
 #'
 #' Assembles control parameters into a list suitable for passing to [strike()]
@@ -11,7 +85,7 @@
 #' @param ms Ship mass (kg).
 #'
 #' @param Ss Ship wetted area (m^2). This, together with `Cs`, is used by
-#' used by [shipWaterForce()] to estimate ship drag force. If `Ss`
+#' [shipWaterForce()] to estimate ship drag force. If `Ss`
 #' is not given, then an estimate is made by calling [shipAreaFromMass()] with
 #' the provided value of `ms`.
 #'
@@ -22,24 +96,30 @@
 #' @param Lz Ship impact vertical extent (m); defaults to 1.15m if not specified,
 #' based on the same analysis as for Ly.
 #'
-#' @param lw Whale length (m). This is used by [whaleAreaFromLength()] to
+#' @param lw either (1) whale length in metres or (2) the string `"from_species"`.
+#' If the latter, then the length is determined from [whaleMeasurements()].
+#' In either case, the length is used by [whaleAreaFromLength()] to
 #' calculate area, which is needed for the water drag calculation done by
 #' [whaleWaterForce()].
 #'
-#' @param species A string indicating the whale species. For the permitted values,
-#' see [whaleMassFromLength()].
+#' @param species a string indicating the whale species. For the permitted values,
+#' see [whaleMassFromLength()]. (The `species` value can also set the
+#' `lw` and `l` values, as noted in their portions of this documention.)
 #'
-#' @param mw Whale mass (kg). If this value is not provided, then
-#' it is calculated from whale length, using [whaleMassFromLength()]
+#' @param mw either (1) the whale mass in kg or (2) NULL. In the latter case,
+#' the mass is calculated from whale length, using [whaleMassFromLength()]
 #' with `type="wetted"`.
 #'
-#' @param Sw Whale surface area (m^2). If not provided, this is calculated
-#' from whale length using [whaleAreaFromLength()].
+#' @param Sw either (1) the whale surface area in m^2 or (2) NULL. If the
+#' latter case, the area is calculated from whale length using
+#' [whaleAreaFromLength()].
 #'
-#' @param l Numerical vector of length 4, giving thickness (m) of skin, blubber,
-#' sublayer, and bone. If not provided, this is set to
-#' `c(0.025, 0.16, 1.12, 0.1)`.
-#' The skin thickness default of 0.025 m represents the 0.9-1.0 inch value
+#' @param l either (1) a numerical vector of length 4 that indicates
+#' the thicknesses in metres of skin, blubber, sublayer and bone; (2) NULL
+#' to set these four values to 0.025, 0.16, 1.12, and 0.1; or (3) the
+#' string `"from_species"`, in which case these four values are
+#' determined by calling [whaleMeasurements()].
+#' The default skin thickness of 0.025 m represents the 0.9-1.0 inch value
 #' stated in Section 2.2.3 of Raymond (2007).
 #' The blubber default of 0.16 m is a rounded average of the values inferred
 #' by whale necropsy, reported in Appendix 2 of Daoust et al., 2018.
@@ -49,7 +129,8 @@
 #' The bone default of 0.1 m may be reasonable at some spots on the whale body.
 #' The sum of these default values, 1.40 m, is a whale radius that
 #' is consistent with a half-circumference of 4.4 m, reported in Table 2.2
-#' of Raymond (2007).
+#' of Raymond (2007).  Note, however, that these values are not identical
+#' to those found in `whaleMeasurements`.
 #'
 #' @param a,b Numerical vectors of length 4, giving values to use in the
 #' stress-strain law `stress=a*(exp(b*strain)-1)`, where `a` is in Pa
@@ -236,7 +317,10 @@ parameters <- function(
             stop("Lz must be positive, but it is ", Lz)
         }
         if (length(lw) != 1) {
-            stop("lw must be a single numeric value")
+            stop("lw must be a string or a single numeric value")
+        }
+        if (identical(lw, "from_species")) {
+            lw <- whaleMeasurements(species)$length
         }
         if (lw <= 0) {
             stop("lw must be positive, but it is ", lw)
@@ -268,8 +352,13 @@ parameters <- function(
         if (any(s <= 0) || length(s) != 4) {
             stop("'s' must be a vector with 4 positive numbers")
         }
+        if (identical(l, "from_species")) {
+            tmp <- whaleMeasurements(species)
+            l <- c(tmp$skin, tmp$blubber, tmp$sublayer, tmp$bone)
+            # message("l: ", paste(l, collapse = " "))
+        }
         if (any(l <= 0) || length(l) != 4) {
-            stop("'l' must be a vector with 4 positive numbers")
+            stop("'l' must be a vector with 4 positive numbers (even if 'from_species')")
         }
         if (any(a <= 0) || length(a) != 4) {
             stop("'a' must be a vector with 4 positive numbers")
