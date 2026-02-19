@@ -26,7 +26,15 @@ See \code{\link[=whalestrike]{whalestrike()}} for a list of references.
 }
 \seealso{
 \code{\link[=whaleMassFromLength]{whaleMassFromLength()}} is the reverse of this.
+
+Other functions relating to whale characteristics: 
+\code{\link{stressFromStrainFunction}()},
+\code{\link{whaleCompressionForce}()},
+\code{\link{whaleMassFromLength}()},
+\code{\link{whaleSkinForce}()},
+\code{\link{whaleWaterForce}()}
 }
 \author{
 Dan Kelley
 }
+\concept{functions relating to whale characteristics}

@@ -43,24 +43,30 @@ of the Cape Islander variety.}
 \item{Lz}{Ship impact vertical extent (m); defaults to 1.15m if not specified,
 based on the same analysis as for Ly.}
 
-\item{species}{A string indicating the whale species. For the permitted values,
-see \code{\link[=whaleMassFromLength]{whaleMassFromLength()}}.}
+\item{species}{a string indicating the whale species. For the permitted values,
+see \code{\link[=whaleMassFromLength]{whaleMassFromLength()}}. (The \code{species} value can also set the
+\code{lw} and \code{l} values, as noted in their portions of this documention.)}
 
-\item{lw}{Whale length (m). This is used by \code{\link[=whaleAreaFromLength]{whaleAreaFromLength()}} to
+\item{lw}{either (1) whale length in metres or (2) the string \code{"from_species"}.
+If the latter, then the length is determined from \code{\link[=whaleMeasurements]{whaleMeasurements()}}.
+In either case, the length is used by \code{\link[=whaleAreaFromLength]{whaleAreaFromLength()}} to
 calculate area, which is needed for the water drag calculation done by
 \code{\link[=whaleWaterForce]{whaleWaterForce()}}.}
 
-\item{mw}{Whale mass (kg). If this value is not provided, then
-it is calculated from whale length, using \code{\link[=whaleMassFromLength]{whaleMassFromLength()}}
+\item{mw}{either (1) the whale mass in kg or (2) NULL. In the latter case,
+the mass is calculated from whale length, using \code{\link[=whaleMassFromLength]{whaleMassFromLength()}}
 with \code{type="wetted"}.}
 
-\item{Sw}{Whale surface area (m^2). If not provided, this is calculated
-from whale length using \code{\link[=whaleAreaFromLength]{whaleAreaFromLength()}}.}
+\item{Sw}{either (1) the whale surface area in m^2 or (2) NULL. If the
+latter case, the area is calculated from whale length using
+\code{\link[=whaleAreaFromLength]{whaleAreaFromLength()}}.}
 
-\item{l}{Numerical vector of length 4, giving thickness (m) of skin, blubber,
-sublayer, and bone. If not provided, this is set to
-\code{c(0.025, 0.16, 1.12, 0.1)}.
-The skin thickness default of 0.025 m represents the 0.9-1.0 inch value
+\item{l}{either (1) a numerical vector of length 4 that indicates
+the thicknesses in metres of skin, blubber, sublayer and bone; (2) NULL
+to set these four values to 0.025, 0.16, 1.12, and 0.1; or (3) the
+string \code{"from_species"}, in which case these four values are
+determined by calling \code{\link[=whaleMeasurements]{whaleMeasurements()}}.
+The default skin thickness of 0.025 m represents the 0.9-1.0 inch value
 stated in Section 2.2.3 of Raymond (2007).
 The blubber default of 0.16 m is a rounded average of the values inferred
 by whale necropsy, reported in Appendix 2 of Daoust et al., 2018.
@@ -68,7 +74,8 @@ The sublayer default of 1.12 m may be reasonable at some spots on the whale body
 The bone default of 0.1 m may be reasonable at some spots on the whale body.
 The sum of these default values, 1.40 m, is a whale radius that
 is consistent with a half-circumference of 4.4 m, reported in Table 2.2
-of Raymond (2007).}
+of Raymond (2007).  Note, however, that these values are not identical
+to those found in \code{whaleMeasurements}.}
 
 \item{a, b}{Numerical vectors of length 4, giving values to use in the
 stress-strain law \code{stress=a*(exp(b*strain)-1)}, where \code{a} is in Pa

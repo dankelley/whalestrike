@@ -148,7 +148,15 @@ no. 5 (2012): 1342-54. \doi{10.1644/11-MAMM-A-297.1}.
 }
 \seealso{
 \code{\link[=whaleLengthFromMass]{whaleLengthFromMass()}} is the reverse of this.
+
+Other functions relating to whale characteristics: 
+\code{\link{stressFromStrainFunction}()},
+\code{\link{whaleCompressionForce}()},
+\code{\link{whaleLengthFromMass}()},
+\code{\link{whaleSkinForce}()},
+\code{\link{whaleWaterForce}()}
 }
 \author{
 Dan Kelley
 }
+\concept{functions relating to whale characteristics}

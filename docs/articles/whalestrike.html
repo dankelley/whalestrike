@@ -4,78 +4,60 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Using the whalestrike package • whalestrike</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
-<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Using the whalestrike package">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Using the whalestrike package">
 </head>
-<body data-spy="scroll" data-target="#toc">
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <div class="container template-article">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">whalestrike</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
-      </span>
-    </div>
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="../articles/whalestrike.html">Get started</a>
-</li>
-<li>
-  <a href="../reference/index.html">Reference</a>
-</li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
+    <a class="navbar-brand me-2" href="../index.html">whalestrike</a>
+
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="active nav-item"><a class="nav-link" href="../articles/whalestrike.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/dankelley/whalestrike/" class="external-link">
-    <span class="fab fa-github fa-lg"></span>
-
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/dankelley/whalestrike/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
-<!--/.nav-collapse -->
+
+
   </div>
-<!--/.container -->
-</div>
-<!--/.navbar -->
+</nav><div class="container template-article">
 
 
 
-      </header><div class="row">
-  <div class="col-md-9 contents">
-    <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Using the whalestrike package</h1>
+
+<div class="row">
+  <main id="main" class="col-md-9"><div class="page-header">
+
+      <h1>Using the whalestrike package</h1>
                         <h4 data-toc-skip class="author">Dan Kelley (<a href="https://orcid.org/0000-0001-7808-5911" class="external-link uri">https://orcid.org/0000-0001-7808-5911</a>)</h4>
             
-            <h4 data-toc-skip class="date">2025-05-28</h4>
+            <h4 data-toc-skip class="date">2026-02-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/dankelley/whalestrike/blob/HEAD/vignettes/whalestrike.Rmd" class="external-link"><code>vignettes/whalestrike.Rmd</code></a></small>
-      <div class="hidden name"><code>whalestrike.Rmd</code></div>
-
+      <div class="d-none name"><code>whalestrike.Rmd</code></div>
     </div>
 
     
@@ -96,26 +78,36 @@ attempt to simulate the biomechanical interactions that can be simulated
 in finite-element treatments such as that of Raymond (2007). The goal is
 to establish a convenient framework for rapid computation of impacts in
 a wide variety of conditions. The model runs quickly enough to keep up
-with mouse movements to select conditions, in a companion R shiny app.
-That app lets the user see the effects of changing contact area, ship
-speed, etc., as a way to build intuition for scenarios ranging from
-collision with a slow-moving fishing boat to collision with a thin
-dagger-board of a much swifter racing sailboat. Another advantage of the
-simple formulation is that it makes it easy to modify various dynamical
-and biomechanical parameters, to add new forces, and to explore a range
-of criteria for whale damage.</p>
+with mouse movements to select conditions, in a provided R shiny
+application called <code><a href="../reference/app.html">app()</a></code>. With this application, users can
+see the effects of changing contact area, ship speed, etc., as a way to
+build intuition for scenarios ranging from collision with a slow-moving
+fishing boat to collision with a thin dagger-board of a much swifter
+racing sailboat.</p>
 <p>The documentation for <code><a href="../reference/strike.html">strike()</a></code> provides an example of
 using the main functions of this package, and so it is a good place to
-start. A companion manuscript is intended to provide more detail about
-the analysis and the context.</p>
+start. Two companion manuscripts (see Further Reading) provide more
+detail about the analysis and the context.</p>
 </div>
 <div class="section level2">
 <h2 id="gui-usage">GUI usage<a class="anchor" aria-label="anchor" href="#gui-usage"></a>
 </h2>
 <p>The following launches a GUI application that should be somewhat
 self-explanatory.</p>
-<pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/" class="external-link">whalestrike</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/app2.html">app2</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># or app(), which is an older version</span></span></code></pre>
+<pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/">whalestrike</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/app.html">app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre>
+<p>To learn more, try the above, and then click the icon next to the
+word “Whale” in the side panel, and select “N. Atl. Right. Whale” in
+that pulldown menu. You will see a view as is shown below. Note that
+there are sliders to permit adjustment of whale length, and the
+thickesses of the four sublayers in the model. Try adjusting them,
+paying attention to the effects on the graphs (particularly the “Lethal
+Index” graph). Then, with these whale parameters set, try expanding the
+“Ship” item in the side panel, perhaps exploring the effect of ship
+mass. Having built intution from this, try adjusting the ship speed.
+Note, through all of these tests, that there are many choices for the
+panels to show in the plot area.</p>
+<p><img src="app_narw.png"></p>
 </div>
 <div class="section level2">
 <h2 id="non-gui-usage">Non-GUI usage<a class="anchor" aria-label="anchor" href="#non-gui-usage"></a>
@@ -148,7 +140,7 @@ characteristics. Simulations in which the peak LI exceeds 0.5, as in the
 case shown below, are indicative of serious risk to the life of the
 whale.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/" class="external-link">whalestrike</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/">whalestrike</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loading required package: bslib</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Attaching package: 'bslib'</span></span>
@@ -163,7 +155,7 @@ whale.</p>
 <span><span class="va">sol</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/strike.html">strike</a></span><span class="op">(</span><span class="va">t</span>, <span class="va">state</span>, <span class="va">parms</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfcol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3.3</span>, <span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, mgp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">0.7</span>, <span class="fl">0</span><span class="op">)</span>, cex <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sol</span><span class="op">)</span></span></code></pre></div>
-<p><img src="whalestrike_files/figure-html/unnamed-chunk-2-1.png" width="672"></p>
+<p><img src="whalestrike_files/figure-html/unnamed-chunk-2-1.png" class="r-plt" width="672"></p>
 <p><strong>Exercises.</strong> Rerun the simulation with different
 parameters, e.g. (1) lower the speed until the peak LI is below 0.5, (2)
 vary whale length to consider the effects of strikes on immature
@@ -181,7 +173,7 @@ simulations, to create a graphical display that is not part of the
 default list. For clarity, this is done with a loop rather than using
 e.g <code>lapply</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/" class="external-link">whalestrike</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/">whalestrike</a></span><span class="op">)</span></span>
 <span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
 <span><span class="va">state</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>xs <span class="op">=</span> <span class="op">-</span><span class="fl">1.5</span>, vs <span class="op">=</span> <span class="fu"><a href="../reference/knot2mps.html">knot2mps</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>, xw <span class="op">=</span> <span class="fl">0</span>, vw <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="co"># 10 knots</span></span>
 <span><span class="va">area</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">2</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
@@ -203,7 +195,7 @@ e.g <code>lapply</code>.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html" class="external-link">mtext</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Compression stress [MPa]\n(injurious if &gt; %.2f MPa)"</span>, <span class="va">danger</span><span class="op">)</span>,</span>
 <span>    side <span class="op">=</span> <span class="fl">3</span>, line <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="whalestrike_files/figure-html/unnamed-chunk-3-1.png" width="672"></p>
+<p><img src="whalestrike_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" width="672"></p>
 <p><strong>Exercise.</strong> Look at the help for
 <code><a href="../reference/plot.strike.html">plot.strike()</a></code>, to learn how to examine skin stress in the y
 and z directions separately, and then explore the effect of adjusting
@@ -219,7 +211,7 @@ and blubber thickness. Note that the contour lines are thickened when
 the strain exceeds an estimate of the ratio of blubber ultimate tensile
 strength to blubber modulus.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/" class="external-link">whalestrike</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/">whalestrike</a></span><span class="op">)</span></span>
 <span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
 <span><span class="co"># Hint: the following creates x and y of different lengths,</span></span>
 <span><span class="co"># so that mismatches between row/col and i/j values will</span></span>
@@ -249,7 +241,7 @@ strength to blubber modulus.</p>
 <span>    <span class="st">"Compression stress [MPa]\n(injurious if &gt; %.2f MPa, dashed contour)"</span>,</span>
 <span>    <span class="va">danger</span></span>
 <span><span class="op">)</span>, side <span class="op">=</span> <span class="fl">3</span>, line <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="whalestrike_files/figure-html/unnamed-chunk-4-1.png" width="672"></p>
+<p><img src="whalestrike_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" width="672"></p>
 <p><strong>Exercise.</strong> Explore the effect of varying sublayer
 properties and thickness on this graph.</p>
 </div>
@@ -261,30 +253,30 @@ properties and thickness on this graph.</p>
 many references to the literature. A good start is to use
 <code><a href="../reference/strike.html">help("strike",package="whalestrike")</a></code> to get help on a key
 function of the package.</p>
+<p>For more on the science involved, see Kelley, Dan E., James P.
+Vlasic, and Sean W. Brillant. “Assessing the Lethality of Ship Strikes
+on Whales Using Simple Biophysical Models.” Marine Mammal Science 37,
+no. 1 (January 2021): 251-67. <a href="https://doi.org/10.1111/mms.12745" class="external-link uri">https://doi.org/10.1111/mms.12745</a>.</p>
+<p>For more on the computing aspects, see Kelley, D. E., (2024).
+“whalestrike: An R package for simulating ship strikes on whales.”
+Journal of Open Source Software, 9(97), 6473, <a href="https://doi.org/10.21105/joss.06473" class="external-link uri">https://doi.org/10.21105/joss.06473</a></p>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-
-      </div>
-
-</div>
-
-
-
-      <footer><div class="copyright">
-  <p></p>
-<p>Developed by Dan Kelley.</p>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
-<div class="pkgdown">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+
+
+    <footer><div class="pkgdown-footer-left">
+  <p>Developed by Dan Kelley.</p>
 </div>
 
-      </footer>
+<div class="pkgdown-footer-right">
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
+    </footer>
+</div>
 
 
 

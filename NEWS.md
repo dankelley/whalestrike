@@ -1,3 +1,11 @@
+# whalestrike 0.6.0
+
+* Add `shipMassFromLength()`.
+* Add `shipLength()`.
+* Update `app()` to use collapsible GUI elements and to have pull-down menus
+  for ship type and whale species, the selection of which alters the sliders
+    that set for ship and whale properties.
+
 # whalestrike 0.5.1
 
 * Fix typo in help for `whaleMassFromLength()`, in which the exponents on `L`
@@ -27,7 +35,6 @@
 
 * Create a [video recording](https://youtu.be/kTMl3nXa5A4)
   demonstrating `app2()`.
-
 * Add `app2()`, an improved version of `app()`.
 * Subdivide code into smaller files; improve formatting.
 * Document overall package in the newly required way.

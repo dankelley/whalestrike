@@ -1,3 +1,4 @@
+*.out
 .Rproj.user
 .Rhistory
 .RData
@@ -8,7 +9,7 @@
 .build.timestamp
 .DS_Store
 Rplot.pdf
-
 .DS_Store
 /doc/
 /Meta/
+*.out

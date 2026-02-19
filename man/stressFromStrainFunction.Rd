@@ -63,6 +63,22 @@ data("raymond2007")
 points(raymond2007$strain, raymond2007$stress, col = 2)
 
 }
+\seealso{
+Other functions relating to whale characteristics: 
+\code{\link{whaleCompressionForce}()},
+\code{\link{whaleLengthFromMass}()},
+\code{\link{whaleMassFromLength}()},
+\code{\link{whaleSkinForce}()},
+\code{\link{whaleWaterForce}()}
+
+Other functions relating to forces: 
+\code{\link{shipWaterForce}()},
+\code{\link{whaleCompressionForce}()},
+\code{\link{whaleSkinForce}()},
+\code{\link{whaleWaterForce}()}
+}
 \author{
 Dan Kelley
 }
+\concept{functions relating to forces}
+\concept{functions relating to whale characteristics}

@@ -23,7 +23,8 @@ stressFromLethalityIndex(0.5) # approx. 254000 Pa, i.e. parameters()$logistic$ta
 }
 \seealso{
 Other functions dealing with Whale Lethality index: 
-\code{\link{lethalityIndexFromStress}()}
+\code{\link{lethalityIndexFromStress}()},
+\code{\link{maximumLethalityIndex}()}
 }
 \author{
 Dan Kelley

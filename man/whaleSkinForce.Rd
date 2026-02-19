@@ -29,6 +29,22 @@ degrees, measured from a vector normal to undisturbed skin).
 \references{
 See \code{\link[=whalestrike]{whalestrike()}} for a list of references.
 }
+\seealso{
+Other functions relating to whale characteristics: 
+\code{\link{stressFromStrainFunction}()},
+\code{\link{whaleCompressionForce}()},
+\code{\link{whaleLengthFromMass}()},
+\code{\link{whaleMassFromLength}()},
+\code{\link{whaleWaterForce}()}
+
+Other functions relating to forces: 
+\code{\link{shipWaterForce}()},
+\code{\link{stressFromStrainFunction}()},
+\code{\link{whaleCompressionForce}()},
+\code{\link{whaleWaterForce}()}
+}
 \author{
 Dan Kelley
 }
+\concept{functions relating to forces}
+\concept{functions relating to whale characteristics}

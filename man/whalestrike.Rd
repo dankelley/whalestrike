@@ -71,16 +71,24 @@ Marine Mammal Science 37, no. 1 (January 2021): 251–67.
 \doi{10.1111/mms.12745}.
 
 \item
-Kelley, Dan E. "Composite Spring," May 28, 2018. 20180528_composite_string. Dan Kelley's working notes.
+Kelley, Dan E. "Composite Spring," May 28, 2018. 20180528_composite_string.
+Dan Kelley's working notes.
 
 \item
-Kelley, Dan. "Whale Area," June 23, 2018. 20180623_whale_area. Dan Kelley's working notes.
+Kelley, Dan. "Whale Area," June 23, 2018. 20180623_whale_area.
+Dan Kelley's working notes.
 
 \item
-Kelley, Dan. "Ship Propulsion," July 1, 2018. 20180701_ship_propulsion. Dan Kelley's working notes.
+Kelley, Dan. "Ship Propulsion," July 1, 2018. 20180701_ship_propulsion.
+Dan Kelley's working notes.
 
 \item
 Kelley, Dan. "Whale Mass," July 7, 2018. 20180707_whale_mass. Dan Kelley's working notes.
+
+\item
+Kelley, Dan E."“Whalestrike: An R Package for Simulating Ship Strikes on Whales."
+Journal of Open Source Software 9, no. 97 (2024): 6473.
+https://doi.org/10.21105/joss.06473.
 
 \item
 MAN Diesel & Turbo. "Basic Principles of Propulsion." MAN Diesel & Turbo, 2011.
@@ -91,6 +99,15 @@ Manen, J. D. van, and P. van Oossanen. "Resistance." In Principles of Naval
 Architecture (Second Revision), Volume II - Resistance, Propulsion and
 Vibration, edited by Edward V Lewis, Second Edition, 1-125. Jersey City, NJ: Society
 of Naval Architects and Marine Engineers (U.S.), 1988.
+
+\item
+Mayette, Alexandra. "Whale Layer Thickness." December 15, 2025. (Personal
+communication of a 5-page document.)
+
+\item
+Mayette, Alexandra, and Sean W. Brillant. "A Regression-Based Method to Estimate
+Vessel Mass for Use in Whale-Ship Strike Risk Models." PloS One 21, no. 1 (2026):
+e0339760. https://doi.org/10.1371/journal.pone.0339760.
 
 \item
 Miller, Carolyn A., Desray Reeb, Peter B. Best, Amy R. Knowlton, Moira W.
@@ -141,6 +158,7 @@ Other contributors:
 \itemize{
   \item James Vlasic \email{jvlasic@dal.ca} (\href{https://orcid.org/0000-0002-3846-4391}{ORCID}) [research team member]
   \item Sean Brilliant \email{seanb@cwf-fcf.org} (\href{https://orcid.org/0000-0001-5494-3475}{ORCID}) [research team member]
+  \item Alexandra Mayette \email{alexandram@cwf-fcf.org} (\href{https://orcid.org/0000-0002-9766-9565}{ORCID}) [research team member]
 }
 
 }

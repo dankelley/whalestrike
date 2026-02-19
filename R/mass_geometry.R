@@ -142,7 +142,11 @@
 #' @author Dan Kelley
 #'
 #' @export
+#' @family functions relating to whale characteristics
 whaleMassFromLength <- function(L, species = "N. Atl. Right Whale", model = NULL) {
+    if (identical(species, "Generic")) {
+        species <- "N. Atl. Right Whale"
+    }
     n <- length(species)
     if (length(L) < n) {
         L <- rep(L, n)
@@ -157,13 +161,13 @@ whaleMassFromLength <- function(L, species = "N. Atl. Right Whale", model = NULL
                 species,
                 function(s) {
                     switch(s,
-                        "N. Atl. Right Whale" = "fortune2012",
                         "Blue Whale" = "lockyer1976",
                         "Bryde Whale" = "lockyer1976",
                         "Fin Whale" = "lockyer1976",
                         "Gray Whale" = "lockyer1976",
                         "Humpback Whale" = "lockyer1976",
                         "Minke Whale" = "lockyer1976",
+                        "N. Atl. Right Whale" = "fortune2012",
                         "Pac. Right Whale" = "lockyer1976",
                         "Sei Whale" = "lockyer1976",
                         "Sperm Whale" = "lockyer1976"
@@ -172,7 +176,7 @@ whaleMassFromLength <- function(L, species = "N. Atl. Right Whale", model = NULL
             )
         )
     }
-    #print(data.frame(species = species, model = model))
+    # print(data.frame(species = species, model = model))
     if (length(model) == 1) {
         model <- rep(model, n)
     }
@@ -261,6 +265,7 @@ whaleMassFromLength <- function(L, species = "N. Atl. Right Whale", model = NULL
 #' @importFrom stats uniroot
 #'
 #' @seealso [whaleMassFromLength()] is the reverse of this.
+#' @family functions relating to whale characteristics
 whaleLengthFromMass <- function(M, species = "N. Atl. Right Whale", model = "fortune2012") {
     n <- length(M)
     if (length(species) == 1) {
@@ -287,37 +292,3 @@ whaleLengthFromMass <- function(M, species = "N. Atl. Right Whale", model = "for
     rval
 }
 
-#' Compute ship wetted area from mass
-#'
-#' Estimate the wetted area of a Cape Islander boat,
-#' given the vessel mass.
-#'
-#' The method is based on scaling up the results for a single Cape
-#' Islander ship, of displacement 20.46 tonnes, length 11.73m,
-#' beam 4.63m, and draft 1.58m, on the assumption that the wetted area
-#' is proportional to
-#' \eqn{length*(2*draft+beam)}{length*(2*draft+beam)}.
-#' This reference area is scaled to
-#' the specified mass, `ms`, by multiplying by the 2/3
-#' power of the mass ratio.
-#'
-#' Note that this is a crude calculation meant as a stop-gap measure, for
-#' estimates values of the `Ss` argument to [parameters()].
-#' It should not be used in preference to inferences
-#' made from architectural drawings of a given ship under study.
-#'
-#' @param ms Ship mass (kg).
-#'
-#' @return Estimated area (m^2).
-#'
-#' @author Dan Kelley
-#'
-#' @export
-shipAreaFromMass <- function(ms) {
-    length <- 11.73 # m
-    beam <- 4.63 # m
-    draft <- 1.58 # m
-    displacement <- 20.46e3 # m^3
-    factor <- (ms / displacement)^(1 / 3) # lengthscale factor
-    length * (beam + 2 * draft) * factor^2
-}
