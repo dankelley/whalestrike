@@ -36,12 +36,12 @@ self-explanatory.
 To learn more, try the above, and then click the icon next to the word
 “Whale” in the side panel, and select “N. Atl. Right. Whale” in that
 pulldown menu. You will see a view as is shown below. Note that there
-are sliders to permit adjustment of whale length, and the thickesses of
+are sliders to permit adjustment of whale length, and the thicknesses of
 the four sublayers in the model. Try adjusting them, paying attention to
 the effects on the graphs (particularly the “Lethal Index” graph). Then,
 with these whale parameters set, try expanding the “Ship” item in the
 side panel, perhaps exploring the effect of ship mass. Having built
-intution from this, try adjusting the ship speed. Note, through all of
+intuition from this, try adjusting the ship speed. Note, through all of
 these tests, that there are many choices for the panels to show in the
 plot area.
 
@@ -206,9 +206,8 @@ to get help on a key function of the package.
 For more on the science involved, see Kelley, Dan E., James P. Vlasic,
 and Sean W. Brillant. “Assessing the Lethality of Ship Strikes on Whales
 Using Simple Biophysical Models.” Marine Mammal Science 37, no. 1
-(January 2021): 251-67. <https://doi.org/10.1111/mms.12745>.
+(January 2021): 251-67,
 
 For more on the computing aspects, see Kelley, D. E., (2024).
 “whalestrike: An R package for simulating ship strikes on whales.”
 Journal of Open Source Software, 9(97), 6473,
-<https://doi.org/10.21105/joss.06473>

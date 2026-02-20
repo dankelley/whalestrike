@@ -80,9 +80,7 @@ which is a key function in the package.
 - Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. “Assessing the
   Lethality of Ship Strikes on Whales Using Simple Biophysical Models.”
   Marine Mammal Science 37, no. 1 (January 2021): 251–67.
-  <https://doi.org/10.1111/mms.12745>. ([journal
-  site](https://doi.org/10.1111/mms.12745); [ResearchGate
-  Preprint](https://www.researchgate.net/publication/344748816_Assessing_the_lethality_of_ship_strikes_on_whales_using_simple_biophysical_models))
+  <https://doi.org/10.1111/mms.12745>
 
 - Kelley, D. E., (2024). whalestrike: An R package for simulating ship
   strikes on whales. Journal of Open Source Software, 9(97), 6473,

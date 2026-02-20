@@ -19,3 +19,5 @@ check_package.R
 ^codemeta\.json$
 ^revdep$
 ^LICENSE\.md$
+^CRAN-SUBMISSION$
+^cran-comments\.md$

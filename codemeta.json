@@ -7,13 +7,13 @@
   "codeRepository": "https://github.com/dankelley/whalestrike",
   "issueTracker": "https://github.com/dankelley/whalestrike/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.4.3",
+  "version": "0.6.0",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.3.3 (2024-02-29)",
+  "runtimePlatform": "R version 4.5.2 (2025-10-31)",
   "author": [
     {
       "@type": "Person",
@@ -115,9 +115,9 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "398.757KB",
+  "fileSize": "1117.954KB",
   "relatedLink": "https://dankelley.github.io/whalestrike/",
-  "releaseNotes": "https://github.com/dankelley/whalestrike/blob/master/NEWS.md",
+  "releaseNotes": "https://github.com/dankelley/whalestrike/blob/main/NEWS.md",
   "readme": "https://github.com/dankelley/whalestrike/blob/main/README.md",
   "contIntegration": "https://github.com/dankelley/whalestrike/actions/workflows/R-CMD-check.yaml",
   "developmentStatus": "https://www.repostatus.org/#active",

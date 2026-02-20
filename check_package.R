@@ -15,8 +15,8 @@ devtools::check_win_release()
 devtools::check_win_devel()
 devtools::check_win_oldrelease()
 # rhub broken in 2022 June/July but OK in 2022 August
-rhub::check_for_cran(email = "Dan.Kelley@Dal.Ca", show_status = FALSE)
-rhub::check(platform = "debian-clang-devel", show_status = FALSE)
+#DEPRECATED rhub::check_for_cran(email = "Dan.Kelley@Dal.Ca", show_status = FALSE)
+#DEPRECATED rhub::check(platform = "debian-clang-devel", show_status = FALSE)
 #> rhub::platforms()
 # debian-clang-devel:
 #    Debian Linux, R-devel, clang, ISO-8859-15 locale
