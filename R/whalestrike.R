@@ -293,6 +293,9 @@ NULL
 #' \url{https://publications.gc.ca/site/eng/9.850838/publication.html}.
 #' @author Dan Kelley
 #'
+#' @return `whaleAreaFromLength` returns the surface area of the whale,
+#' in square metres.
+#'
 #' @export
 whaleAreaFromLength <- function(L, species = "N. Atl. Right Whale", type = "wetted") {
     #<uncomment later, perhaps> speciesAllowed <- c("N. Atl. Right Whale")

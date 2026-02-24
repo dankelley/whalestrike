@@ -24,6 +24,10 @@ area was computed by mathematically spinning a spline fit to the
 side-view. In both cases, the original data source is the
 necropsy side-view presented in Daoust et al. (2018).}
 }
+\value{
+\code{whaleAreaFromLength} returns the surface area of the whale,
+in square metres.
+}
 \description{
 This depends on calculations based on the digitized shape of
 a whale necropsy, which is provided by \code{\link[=whaleShape]{whaleShape()}}.
