@@ -11,6 +11,11 @@
 
 \item{\dots}{ignored}
 }
+\value{
+\code{summary.parameters} returns nothing. It is called for
+its side effect of printing information about the parameters
+in a ship-whale collision simulation.
+}
 \description{
 This provides an overview of the contents of an object
 created with \code{\link[=parameters]{parameters()}}.

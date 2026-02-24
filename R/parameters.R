@@ -414,6 +414,10 @@ parameters <- function(
 #'
 #' @author Dan Kelley
 #'
+#' @return `summary.parameters` returns nothing. It is called for
+#' its side effect of printing information about the parameters
+#' in a ship-whale collision simulation.
+#'
 #' @export
 summary.parameters <- function(object, ...) {
     cat("Whale and ship properties, as created by parameters():\n")
