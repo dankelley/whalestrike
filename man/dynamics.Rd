@@ -16,6 +16,15 @@ and whale speed \code{vw} (m/s).}
 \item{parms}{A named list holding model parameters, created by
 \code{\link[=parameters]{parameters()}}.}
 }
+\value{
+An List contain items named \code{dxsdt} (time derivative of
+ship location), \code{dvsdt} (time derivative of ship speed),
+\code{dxwdt} (time derivative of whale location) and \code{dvwdt}
+(time derivative of whale speed). These are computed by
+solving the dynamical system using Newton's second law,
+based on the known masses of ship and whale, and the forces
+involved in the collision.
+}
 \description{
 This function handles Newton's second law, which is the dynamical
 law that relates the accelerations of whale and ship to the forces
