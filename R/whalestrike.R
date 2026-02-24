@@ -55,6 +55,10 @@ NULL
 #'
 #' @export
 #'
+#' @return `whaleShape` returns a data frame with entries named `x` and `y`, which trace
+#' out the side-view shape of a Right Whale, using values digitized from a diagram
+#' in Daoust et al. (2017).
+#'
 #' @author Dan Kelley
 whaleShape <- function() {
     structure(list(x = c(

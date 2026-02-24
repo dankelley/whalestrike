@@ -6,6 +6,11 @@
 \usage{
 whaleShape()
 }
+\value{
+\code{whaleShape} returns a data frame with entries named \code{x} and \code{y}, which trace
+out the side-view shape of a Right Whale, using values digitized from a diagram
+in Daoust et al. (2017).
+}
 \description{
 This is a data frame containing 45 points specifying the shape
 of a right whale, viewed from the side. It was created
