@@ -40,6 +40,8 @@
 #'
 #' @author Dan Kelley
 #'
+#' @return None. This function is called to add to a plot.
+#'
 #' @export
 #'
 #' @importFrom graphics polygon

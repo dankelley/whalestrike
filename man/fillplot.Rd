@@ -20,6 +20,9 @@ will contain \code{col}, the fill colour, and possibly \code{border},
 the border colour, although cross-hatching with \code{density}
 and \code{angle} is also a good choice.}
 }
+\value{
+None. This function is called to add to a plot.
+}
 \description{
 This adds to an existing plot by filling the area between the
 lower=lower(x) and upper=upper(x) curves.  In most cases, as
