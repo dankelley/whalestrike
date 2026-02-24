@@ -349,6 +349,17 @@ whaleAreaFromLength <- function(L, species = "N. Atl. Right Whale", type = "wett
 #' and whale speed `vw` (m/s).
 #'
 #' @template parmsTemplate
+
+#' @return An List contain items named `dxsdt` (time derivative of
+#' ship location), `dvsdt` (time derivative of ship speed),
+#' `dxwdt` (time derivative of whale location) and `dvwdt`
+#' (time derivative of whale speed). These are computed by
+#' solving the dynamical system using Newton's second law,
+#' based on the known masses of ship and whale, and the forces
+#' involved in the collision.
+#
+#  list(c(dxsdt = vs, dvsdt = Fship / parms$ms,
+#  dxwdt = vw, dvwdt = Fwhale / parms$mw))
 #'
 #' @references
 #' See [whalestrike()] for a list of references.
