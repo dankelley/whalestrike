@@ -10,6 +10,9 @@ app(debug = FALSE)
 \item{debug}{logical value indicating whether to print output to
 the R console as the computation is done.}
 }
+\value{
+A Shiny app object, created by a call to \code{shinyApp()}.
+}
 \description{
 Graphical-user-interface tool for exploring whale-strike simulations.
 }

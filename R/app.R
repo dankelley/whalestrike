@@ -75,6 +75,8 @@ package, by consulting the package documentation.</p>"
 #' Vessel Mass for Use in Whale-Ship Strike Risk Models." PloS One 21, no. 1 (2026):
 #' e0339760. https://doi.org/10.1371/journal.pone.0339760.
 #'
+#' @return A Shiny app object, created by a call to `shinyApp()`.
+#'
 #' @author Dan Kelley
 app <- function(debug = FALSE) {
     dmsg <- function(...) {

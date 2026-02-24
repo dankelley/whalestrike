@@ -334,14 +334,15 @@ server <- function(input, output, session) {
 #'
 #' @family interactive apps
 #'
+#' @return A Shiny app object, created by a call to `shinyApp()`.
+#'
 #' @author Dan Kelley
 app_2025 <- function(mode = "simple", options = list(height = 500)) # NOTE: height has no effect
 {
-    if (mode == "simple") {
-        shinyApp(ui = ui, server = server, options = options)
-    } else {
+    if (mode != "simple") {
         stop("unknown mode; only \"simple\" is permitted")
     }
+    shinyApp(ui = ui, server = server, options = options)
 }
 
 shinyApp(ui, server)

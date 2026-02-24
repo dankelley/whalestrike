@@ -15,6 +15,9 @@ called with default arguments.}
 \item{options}{list containing options that are provided
 to \code{\link[shiny]{shinyApp}}, which creates the GUI app.}
 }
+\value{
+A Shiny app object, created by a call to \code{shinyApp()}.
+}
 \description{
 The \code{app_2025()} function starts a GUI application that makes it easy to
 run simple simulations and see the results in graphical form. Sliders
