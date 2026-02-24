@@ -11,6 +11,10 @@
 
 \item{\dots}{ignored}
 }
+\value{
+None. This function is called for its side-effect of
+printing information about the ship-whale collision simulation.
+}
 \description{
 Summarize the parameters of a simulation, and its results
 }

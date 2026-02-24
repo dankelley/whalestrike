@@ -639,6 +639,9 @@ strike <- function(t, state, parms, debug = 0) {
 #'
 #' @author Dan Kelley
 #'
+#' @return None. This function is called for its side-effect of
+#' printing information about the ship-whale collision simulation.
+#'
 #' @export
 summary.strike <- function(object, ...) {
     parm <- object$parm
