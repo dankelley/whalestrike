@@ -77,7 +77,16 @@ stressFromLethalityIndex <- function(injury)
 #'
 #' @family functions dealing with Whale Lethality index
 #'
+#' @return The maximum value of the Lethality Index that is
+#' involved in the simulation of the ship-whale collision event.
+#' This is a unitless number; see Kelley et al. (2021).
+#'
 #' @export
+#'
+#' @references
+#' Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. "Assessing the
+#' Lethality of Ship Strikes on Whales Using Simple Biophysical Models." Marine
+#' Mammal Science 37, no. 1 (January 2021): 251–67.
 maximumLethalityIndex <- function(strike)
 {
     max(lethalityIndexFromStress(strike[["WCF"]][["stress"]]))
