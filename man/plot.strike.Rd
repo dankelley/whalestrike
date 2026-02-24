@@ -121,6 +121,9 @@ for more verbose monitoring of progress through the function.}
 
 \item{...}{Ignored.}
 }
+\value{
+None. This function is called to add to a plot.
+}
 \description{
 Creates displays of various results of a simulation performed
 with \code{\link[=strike]{strike()}}.

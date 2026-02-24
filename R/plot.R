@@ -217,6 +217,8 @@ fillplot4 <- function(x, y, yOffset = 0, breaks, col, ...) {
 #'
 #' @author Dan Kelley
 #'
+#' @return None. This function is called to add to a plot.
+#'
 #' @export
 #'
 #' @importFrom graphics abline axis box lines legend mtext par plot text
