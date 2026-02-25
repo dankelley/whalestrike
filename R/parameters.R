@@ -29,8 +29,7 @@ whaleMeasurementsTable <- structure(list(species = c(
 #' Get values for various whale measurements
 #'
 #' This uses a data frame containing information about several whale
-#' species, compiled by Alexandra Mayette and provided to Dan
-#' Kelley as a personal communication on 2026-01-28.
+#' species, compiled by Alexandra Mayette (2026).
 #'
 #' There are two species in the table that are not in Mayette's table.
 #' These are `"Pac. Right Whale"` and `"Bryde Whale"`. For these, Mayette has suggesting

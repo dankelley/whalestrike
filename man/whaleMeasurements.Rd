@@ -26,8 +26,7 @@ The return value contains
 }
 \description{
 This uses a data frame containing information about several whale
-species, compiled by Alexandra Mayette and provided to Dan
-Kelley as a personal communication on 2026-01-28.
+species, compiled by Alexandra Mayette (2026).
 }
 \details{
 There are two species in the table that are not in Mayette's table.

@@ -434,13 +434,23 @@ dynamics <- function(t, y, parms) {
 #'
 #' @template debugTemplate
 #'
-#' @return An object of class `"strike"`, consisting of a
-#' list containing vectors for time (`t` (s)), ship position (`xs` (m)),
-#' boat speed (`vs` (m/s)), whale position (`xw` (m)), whale speed (`vw` (m/s)),
-#' boat acceleration (`dvsdt` (m/s^2)), and whale acceleration (`dvwdt` (m/s^2)),
-#' a list containing the model parameters (`parms`), a list with the results of
-#' the skin force calculation (`SWF`), a list with the results of the compression
-#' force calculations (`WCF`), and a vector of whale water force (`WWF`).
+#' @return `strike` returns an object of class `"strike"`, which is a
+#' list holding 13 items. Nine of these items are time-series vectors,
+#' namely time `t`, ship position `xs`, ship speed `vs`,
+#' whale position `xw`, whale speed `vw`, ship acceleration
+#' `dvsdt`, whale acceleration `dvwdt`, drag force on the ship `SWF`,
+#' and drag force on the whale `WWF`. In addition to these
+#' time-series items, there are 3 items that are lists:
+#' `WSF` holds time-series of surface forces on the whale;
+#' `WCF` holds time-series of compressive forces on the whale;
+#' and `parameters` holds parameters of the simulation (see
+#' [parameters()] for more information). Finally, there is a logical value
+#' named `refinedGrid` that indicates whether the simulation required
+#' a restart because the initial timestep proved inadequate to track
+#' the high forces that may arise quickly if bone starts to
+#' be compressed appreciably.  All quantities are in SI units,
+#' s for time, m/s for speed, m/s^2 for acceleration, N for force,
+#' etc.
 #'
 #' @examples
 #' library(whalestrike)

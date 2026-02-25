@@ -35,13 +35,23 @@ and whale speed \code{vw} (m/s).}
 higher values for more verbose monitoring of progress through the function.}
 }
 \value{
-An object of class \code{"strike"}, consisting of a
-list containing vectors for time (\code{t} (s)), ship position (\code{xs} (m)),
-boat speed (\code{vs} (m/s)), whale position (\code{xw} (m)), whale speed (\code{vw} (m/s)),
-boat acceleration (\code{dvsdt} (m/s^2)), and whale acceleration (\code{dvwdt} (m/s^2)),
-a list containing the model parameters (\code{parms}), a list with the results of
-the skin force calculation (\code{SWF}), a list with the results of the compression
-force calculations (\code{WCF}), and a vector of whale water force (\code{WWF}).
+\code{strike} returns an object of class \code{"strike"}, which is a
+list holding 13 items. Nine of these items are time-series vectors,
+namely time \code{t}, ship position \code{xs}, ship speed \code{vs},
+whale position \code{xw}, whale speed \code{vw}, ship acceleration
+\code{dvsdt}, whale acceleration \code{dvwdt}, drag force on the ship \code{SWF},
+and drag force on the whale \code{WWF}. In addition to these
+time-series items, there are 3 items that are lists:
+\code{WSF} holds time-series of surface forces on the whale;
+\code{WCF} holds time-series of compressive forces on the whale;
+and \code{parameters} holds parameters of the simulation (see
+\code{\link[=parameters]{parameters()}} for more information). Finally, there is a logical value
+named \code{refinedGrid} that indicates whether the simulation required
+a restart because the initial timestep proved inadequate to track
+the high forces that may arise quickly if bone starts to
+be compressed appreciably.  All quantities are in SI units,
+s for time, m/s for speed, m/s^2 for acceleration, N for force,
+etc.
 }
 \description{
 Newtonian mechanics are used, taking the ship as non-deformable,
