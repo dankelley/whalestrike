@@ -6,6 +6,7 @@ Address CRAN comments on a submission of 0.6.0, including the following.
 * Change http-type reference to doi-type references, in the DESCRIPTION file.
 * Document return values from all functions.
 * Save `par` values before plotting, returning to original values afterwards.
+* Save configuration to a temporary file, not a user-space file.
 
 # whalestrike 0.6.0
 

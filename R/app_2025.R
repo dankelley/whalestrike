@@ -325,7 +325,7 @@ server <- function(input, output, session) {
 #' @param options list containing options that are provided
 #' to \code{\link[shiny]{shinyApp}}, which creates the GUI app.
 #'
-#' @importFrom shiny shinyApp reactiveValuesToList renderPlot showNotification updateSliderInput write.csv
+#' @importFrom shiny shinyApp reactiveValuesToList renderPlot showNotification updateSliderInput
 #'
 #' @importFrom utils write.csv
 #'
