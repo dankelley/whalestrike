@@ -12,7 +12,7 @@ Address CRAN comments on a submission of 0.6.0, including the following.
 
 Remote builds (e.g. with `devtools::check_win_release()`) produced some NOTE
 messages about spelling errors in the DESCRIPTION file. These are now enclosed
-in backticks.  (They are also listed in the inst/WORDLIST file, but that does
+in backticks.  (They are also listed in the `inst/WORDLIST` file, but that does
 not prevent the NOTE messages on the remote builds.)
 
 # whalestrike 0.6.0
