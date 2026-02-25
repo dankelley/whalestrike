@@ -27,4 +27,15 @@ messages about spelling errors in the DESCRIPTION file. These are now enclosed
 in backticks.  (They are also listed in the inst/WORDLIST file, but that does
 not prevent the NOTE messages on the remote builds.)
 
+## A note on spelling in the DESCRIPTION file
 
+The following messages appear in win-builder tests, even though I have enclosed
+those words in backwards tick marks in the DESCRIPTION and also included them
+in `inst/WORDLIST`. I see no way to get around the NOTE messages, and I hope this is not a problem with CRAN submission.
+
+```
+Possibly misspelled words in DESCRIPTION:
+  Lethality (10:958, 10:1082)
+  lethality (10:276)
+  whalestrike (10:1221)
+```
