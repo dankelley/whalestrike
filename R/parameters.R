@@ -62,6 +62,10 @@ whaleMeasurementsTable <- structure(list(species = c(
 #'
 #'
 #' @author Dan Kelley, using data and advice from Alexandra Mayette
+#'
+#' @references
+#' Mayette, A. (2026). Measurements of large whale tissue thickness (Data set).
+#' Zenodo. \doi{10.5281/zenodo.18764979}.
 whaleMeasurements <- function(species = NULL) {
     if (is.null(species)) {
         whaleMeasurementsTable
