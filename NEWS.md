@@ -6,7 +6,14 @@ Address CRAN comments on a submission of 0.6.0, including the following.
 * Change http-type reference to doi-type references, in the DESCRIPTION file.
 * Document return values from all functions.
 * Save `par` values before plotting, returning to original values afterwards.
-* Save configuration to a temporary file, not a user-space file.
+* `app_2025()` saves configuration to a temporary file, not a user-space file.
+* Trim an example in the documentation for `strike()` so it performs in under
+  1s on my machine.
+
+Remote builds (e.g. with `devtools::check_win_release()`) produced some NOTE
+messages about spelling errors in the DESCRIPTION file. These are now enclosed
+in backticks.  (They are also listed in the inst/WORDLIST file, but that does
+not prevent the NOTE messages on the remote builds.)
 
 # whalestrike 0.6.0
 

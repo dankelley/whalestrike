@@ -14,8 +14,17 @@ with the full comments that I received from the very helpful CRAN reviewer.)
 
 * Add a full paragraph for Description, within the DESCRIPTION file.
 * Change http-type reference to doi-type references, in the DESCRIPTION file.
-* Update function documentation to state return values.
+* Document return values from all functions.
 * Save `par` values before plotting, returning to original values afterwards.
 * `app_2025()` saves configuration to a temporary file, not a user-space file.
+* Trim an example in the documentation for `strike()` so it performs in under
+  1s on my machine.
+
+## Changes to address NOTES on remote builds
+
+Remote builds (e.g. with `devtools::check_win_release()`) produced some NOTE
+messages about spelling errors in the DESCRIPTION file. These are now enclosed
+in backticks.  (They are also listed in the inst/WORDLIST file, but that does
+not prevent the NOTE messages on the remote builds.)
 
 

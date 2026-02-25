@@ -92,10 +92,8 @@ plot(t, sol$WCF$stress / sol$parms$s[2],
 par(opar)
 
 # Example 3: max stress and stress/strength, for a 200 tonne ship
-# moving at various speeds. This is a slow calculation, so we do
-# not run it by default.
-\dontrun{
-knots <- seq(0, 20, 0.5)
+# moving at various speeds.
+knots <- seq(0, 10, 1)
 maxStress <- NULL
 maxStressOverStrength <- NULL
 for (speed in knot2mps(knots)) {
@@ -119,7 +117,6 @@ plot(knots[nonzero], log10(maxStressOverStrength[nonzero]),
 )
 abline(h = 0, lty = 2)
 par(opar)
-}
 
 }
 \references{
