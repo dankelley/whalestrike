@@ -12,8 +12,9 @@ change in its predictions.
 }
 \examples{
 data(sol20200708)
-par(mfrow = c(1, 3))
+opar <- par(mfrow = c(1, 3))
 plot(sol20200708)
+par(opar)
 
 }
 \references{

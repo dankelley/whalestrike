@@ -11,8 +11,9 @@ library(deSolve)
 #'
 #' @examples
 #' data(sol20200708)
-#' par(mfrow = c(1, 3))
+#' opar <- par(mfrow = c(1, 3))
 #' plot(sol20200708)
+#' par(opar)
 #'
 #' @references
 #'
@@ -448,8 +449,9 @@ dynamics <- function(t, y, parms) {
 #' state <- list(xs = -2, vs = knot2mps(10), xw = 0, vw = 0) # ship speed 10 knots
 #' parms <- parameters()
 #' sol <- strike(t, state, parms)
-#' par(mfcol = c(1, 3), mar = c(3, 3, 0.5, 2), mgp = c(2, 0.7, 0), cex = 0.7)
+#' opar <- par(mfcol = c(1, 3), mar = c(3, 3, 0.5, 2), mgp = c(2, 0.7, 0), cex = 0.7)
 #' plot(sol)
+#' par(opar)
 #'
 #' # Example 2: time-series plots of blubber stress and stress/strength,
 #' # for a 200 tonne ship moving at 10 knots
@@ -457,7 +459,7 @@ dynamics <- function(t, y, parms) {
 #' state <- list(xs = -2, vs = knot2mps(10), xw = 0, vw = 0) # ship 10 knots
 #' parms <- parameters(ms = 200 * 1000) # 1 metric tonne is 1000 kg
 #' sol <- strike(t, state, parms)
-#' par(mfrow = c(2, 1), mar = c(3, 3, 0.5, 2), mgp = c(2, 0.7, 0), cex = 0.7)
+#' opar <- par(mfrow = c(2, 1), mar = c(3, 3, 0.5, 2), mgp = c(2, 0.7, 0), cex = 0.7)
 #' plot(t, sol$WCF$stress / 1e6,
 #'     type = "l",
 #'     xlab = "Time [s]", ylab = "Blubber stress [MPa]"
@@ -466,6 +468,7 @@ dynamics <- function(t, y, parms) {
 #'     type = "l",
 #'     xlab = "Time [s]", ylab = "Blubber stress / strength"
 #' )
+#' par(opar)
 #'
 #' # Example 3: max stress and stress/strength, for a 200 tonne ship
 #' # moving at various speeds. This is a slow calculation, so we do
@@ -482,7 +485,7 @@ dynamics <- function(t, y, parms) {
 #'     maxStress <- c(maxStress, max(sol$WCF$stress))
 #'     maxStressOverStrength <- c(maxStressOverStrength, max(sol$WCF$stress / sol$parms$s[2]))
 #' }
-#' par(mfrow = c(2, 1), mar = c(3, 3, 0.5, 2), mgp = c(2, 0.7, 0), cex = 0.7)
+#' opar <- par(mfrow = c(2, 1), mar = c(3, 3, 0.5, 2), mgp = c(2, 0.7, 0), cex = 0.7)
 #' nonzero <- maxStress > 0
 #' plot(knots[nonzero], log10(maxStress[nonzero]),
 #'     type = "o", pch = 20, xaxs = "i", yaxs = "i",
@@ -494,6 +497,7 @@ dynamics <- function(t, y, parms) {
 #'     xlab = "Ship Speed [knots]", ylab = "log10 peak blubber stress / strength"
 #' )
 #' abline(h = 0, lty = 2)
+#' par(opar)
 #' }
 #'
 #' @references

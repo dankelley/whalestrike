@@ -209,11 +209,12 @@ fillplot4 <- function(x, y, yOffset = 0, breaks, col, ...) {
 #' state <- c(xs = -2, vs = knot2mps(12), xw = 0, vw = 0) # 12 knot ship
 #' parms <- parameters() # default values
 #' sol <- strike(t, state, parms)
-#' par(mar = c(3, 3, 1, 1), mgp = c(2, 0.7, 0), mfrow = c(1, 3))
+#' opar <- par(mar = c(3, 3, 1, 1), mgp = c(2, 0.7, 0), mfrow = c(1, 3))
 #' plot(sol)
 #' # 2. all 12 plot types
 #' par(mar = c(3, 3, 1, 1), mgp = c(2, 0.7, 0), mfrow = c(4, 3))
 #' plot(sol, "all")
+#' par(opar)
 #'
 #' @author Dan Kelley
 #'
@@ -508,8 +509,7 @@ plot.strike <- function(x, which = "default", drawEvents = TRUE,
         showEvents(xs, xw)
     }
     if (all || "values" %in% which) {
-        omar <- par("mar")
-        par(mar = rep(0, 4))
+        opar <- par(mar = rep(0, 4))
         parms <- x$parms[unlist(lapply(x$parms, function(p) is.vector(p)))]
         parms$logistic <- NULL # we have no GUI for this, so do not display
         parms$engineForce <- NULL # inserted during calculation, not user-supplied
@@ -525,7 +525,7 @@ plot.strike <- function(x, which = "default", drawEvents = TRUE,
         for (i in seq_along(values)) {
             text(1, i + 0.5, paste(names[o[i]], "=", values[o[i]]), pos = 4, cex = 1)
         }
-        par(mar = omar)
+        par(opar)
     }
 }
 

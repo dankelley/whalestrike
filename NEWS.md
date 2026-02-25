@@ -1,3 +1,12 @@
+# whalestrike 0.6.1
+
+Address CRAN comments on a submission of 0.6.0, including the following.
+
+* Add a full paragraph for Description, in the DESCRIPTION file.
+* Change http-type reference to doi-type references, in the DESCRIPTION file.
+* Document return values from all functions.
+* Save `par` values before plotting, returning to original values afterwards.
+
 # whalestrike 0.6.0
 
 * Add `shipMassFromLength()`.

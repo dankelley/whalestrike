@@ -422,7 +422,7 @@ app <- function(debug = FALSE) {
             msg <- paste0(msg, "</pre><br>")
             shiny::showModal(shiny::modalDialog(shiny::HTML(msg), size = "l"))
         })
-        output$plot <- renderPlot(
+        output$plot <- shiny::renderPlot(
             {
                 # BEGIN bookmark 2 (MUST keep in-synch with bookmark 1 above)
                 ms <- if (input$vessel == "Generic") {
@@ -466,15 +466,16 @@ app <- function(debug = FALSE) {
                 t <- seq(0, input$tmax, length.out = 2000)
                 sol <- strike(t, state, parms)
                 if (sol$refinedGrid) {
-                    showNotification("Refined grid for accel. peak")
+                    shiny::showNotification("Refined grid for accel. peak")
                 }
                 npanels <- length(input$plot_panels)
                 nrows <- floor(sqrt(npanels))
                 ncols <- ceiling(npanels / nrows)
-                par(mfrow = c(nrows, ncols), mar = c(3.2, 3, 2.5, 2), mgp = c(1.7, 0.6, 0), cex = 1)
+                opar <- par(mfrow = c(nrows, ncols), mar = c(3.2, 3, 2.5, 2), mgp = c(1.7, 0.6, 0), cex = 1)
                 for (which in input$plot_panels) {
                     plot(sol, which = which)
                 }
+                par(opar)
             },
             pointsize = 18
         )

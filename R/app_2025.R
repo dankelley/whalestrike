@@ -153,12 +153,6 @@ ui <- shiny::fluidPage(
 )
 
 
-#' Server for app, with standard arguments.
-#' @param input A list created by the shiny server, with entries for slider settings, etc.
-#' @param output A list of output entries, for plotting, etc.
-#' @param session A list used for various purposes.
-#' @importFrom utils write.csv
-#' @importFrom shiny observeEvent reactiveValuesToList renderPlot showNotification updateSliderInput
 server <- function(input, output, session) {
     observeEvent(input$quit, {
         shiny::stopApp()
@@ -169,7 +163,7 @@ server <- function(input, output, session) {
         # Remove the load and save file items from the list of input items to save
         home <- normalizePath("~")
         fullfile <- paste0(home, .Platform$file.sep, file)
-        config <- reactiveValuesToList(input)
+        config <- shiny::reactiveValuesToList(input)
         configNames <- names(config)
         w <- which("loadFile" == configNames | "saveFile" == configNames | "plot_panels" == configNames)
         config <- config[-w]
@@ -179,8 +173,10 @@ server <- function(input, output, session) {
         config$ms <- 1e3 * config$ms
         # save in alphabetical order
         o <- order(names(config))
-        write.csv(config[o], row.names = FALSE, file = fullfile)
-        showNotification(paste0('Saved configuration to "', fullfile, '"'), type = "message")
+        filedir <- tempdir()
+        CSVfile <- tempfile(fileext = ".csv")
+        utils::write.csv(config[o], row.names = FALSE, file = CSVfile)
+        shiny::showNotification(paste0('Saved configuration to temporary file "', CSVfile, '". Hint: copy this to your own workspace'), type = "message", duration = NULL)
     })
 
     shiny::observeEvent(input$loadFile, {
@@ -195,16 +191,16 @@ server <- function(input, output, session) {
         config$l3 <- config$l[3]
         config$l4 <- config$l[4]
         for (s in c("tmax", "ms", "lw", "vs", "Ly", "Lz", "l1", "l2", "l3", "l4")) {
-            updateSliderInput(session, s, value = config[[s]])
+            shiny::updateSliderInput(session, s, value = config[[s]])
         }
     })
 
-    shiny::observeEvent(input$species, {
-        message("FIXME DAN: species changed to ", input$species)
-        message("FIXME DAN: alter slider values for blubber thickness etc")
-    })
+    # shiny::observeEvent(input$species, {
+    #    message("FIXME DAN: species changed to ", input$species)
+    #    message("FIXME DAN: alter slider values for blubber thickness etc")
+    # })
 
-    output$plot <- renderPlot(
+    output$plot <- shiny::renderPlot(
         {
             # message("species: ", input$species)
             # aDefault <- whalestrike::parameters()$a
@@ -246,15 +242,16 @@ server <- function(input, output, session) {
             t <- seq(0, input$tmax, length.out = 2000)
             sol <- strike(t, state, parms)
             if (sol$refinedGrid) {
-                showNotification("Refined grid for accel. peak")
+                shiny::showNotification("Refined grid for accel. peak")
             }
             npanels <- length(input$plot_panels)
             nrows <- floor(sqrt(npanels))
             ncols <- ceiling(npanels / nrows)
-            par(mfrow = c(nrows, ncols), mar = c(3.2, 3, 2.5, 2), mgp = c(1.7, 0.6, 0), cex = 1)
+            opar <- par(mfrow = c(nrows, ncols), mar = c(3.2, 3, 2.5, 2), mgp = c(1.7, 0.6, 0), cex = 1)
             for (which in input$plot_panels) {
                 plot(sol, which = which)
             }
+            par(opar)
         },
         pointsize = 14
     ) # , height=500)
@@ -328,9 +325,11 @@ server <- function(input, output, session) {
 #' @param options list containing options that are provided
 #' to \code{\link[shiny]{shinyApp}}, which creates the GUI app.
 #'
-#' @export
+#' @importFrom shiny shinyApp reactiveValuesToList renderPlot showNotification updateSliderInput write.csv
 #'
-#' @importFrom shiny shinyApp
+#' @importFrom utils write.csv
+#'
+#' @export
 #'
 #' @family interactive apps
 #'
