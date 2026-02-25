@@ -2,7 +2,7 @@
   "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
   "@type": "SoftwareSourceCode",
   "identifier": "whalestrike",
-  "description": "Provides tools for simulating the biophysical effects of vessel-strikes on whales. The aim is to support the evaluation of marine policies limiting ship speeds through regions in which whales reside. This is important because ship strikes are a major source of lethality for several whale species, including the critically endangered North Atlantic right whale. In this analysis, whales are modelled with a four-layer system comprising skin, blubber, `sublayer` (muscle or organ) and bone. Reasonable values for the material properties of these layers, along with other factors such as whale surface area and mass, are provided for a variety of whale species. Similarly, key values are provided for several ship types. The collision is modelled according to Newtonian dynamics, with stresses and strains within the whale layers being simulated over time. The simulation results are analyzed in the context of whale-strike data, to develop a `Lethality` Index for the whale in the modelled collision. For the underlying science, see Kelley `et` `al` \"Assessing the `Lethality` of Ship Strikes on Whales Using Simple Biophysical Models.\" (2021) <doi:10.1111/mms.12745>. For more on the R code, see Kelley \"whalestrike: An R package for simulating ship strikes on whales\" (2024) <doi:10.21105/joss.06473>.",
+  "description": "Provides tools for simulating the biophysical effects of vessel-strikes on whales. The aim is to support the evaluation of marine policies limiting ship speeds through regions in which whales reside. This is important because ship strikes are a major source of `lethality` for several whale species, including the critically endangered North Atlantic right whale. In this analysis, whales are modelled with a four-layer system comprising skin, blubber, sub-layer (muscle or organ) and bone. Reasonable values for the material properties of these layers, along with other factors such as whale surface area and mass, are provided for a variety of whale species. Similarly, key values are provided for several ship types. The collision is modelled according to Newtonian dynamics, with stresses and strains within the whale layers being simulated over time. The simulation results are analyzed in the context of whale-strike data, to develop a `Lethality` Index for the whale in the modelled collision. For the underlying science, see Kelley and other \"Assessing the `Lethality` of Ship Strikes on Whales Using Simple Biophysical Models.\" (2021) <doi:10.1111/mms.12745>. For more on the R code, see Kelley \"whalestrike: An R package for simulating ship strikes on whales\" (2024) <doi:10.21105/joss.06473>.",
   "name": "whalestrike: Simulate Whale Ship Strikes",
   "codeRepository": "https://github.com/dankelley/whalestrike",
   "issueTracker": "https://github.com/dankelley/whalestrike/issues",
@@ -115,7 +115,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "1124.645KB",
+  "fileSize": "1124.887KB",
   "relatedLink": "https://dankelley.github.io/whalestrike/",
   "releaseNotes": "https://github.com/dankelley/whalestrike/blob/main/NEWS.md",
   "readme": "https://github.com/dankelley/whalestrike/blob/main/README.md",
