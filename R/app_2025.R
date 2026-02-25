@@ -48,8 +48,15 @@ ship, exploring the effect of changing ship speed, ship mass, and the width and
 height of the impact zone."
 
 # app for simulating the effect of a vessel strike on a whale
+
+css <- "body {
+font-family: 'Arial';
+font-size: 12px;
+margin-left: 1ex
+}"
+
 ui <- shiny::fluidPage(
-    shiny::tags$style(shiny::HTML("body {font-family: 'Arial'; font-size: 12px; margin-left:1ex}")),
+    shiny::tags$style(shiny::HTML(css)),
     shiny::fluidRow(shiny::radioButtons("instructions", "Instructions", choices = c("Hide", "Show"), selected = "Show", inline = TRUE)),
     shiny::conditionalPanel(
         condition = "input.instructions=='Show'",
@@ -176,7 +183,7 @@ server <- function(input, output, session) {
         filedir <- tempdir()
         CSVfile <- tempfile(fileext = ".csv")
         utils::write.csv(config[o], row.names = FALSE, file = CSVfile)
-        shiny::showNotification(paste0('Saved configuration to temporary file "', CSVfile, '". Hint: copy this to your own workspace'), type = "message", duration = NULL)
+        shiny::showNotification(paste0('Saved configuration to temporary file "', CSVfile, '" which you should copy to your own workspace'), duration = NULL)
     })
 
     shiny::observeEvent(input$loadFile, {

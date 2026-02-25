@@ -43,6 +43,10 @@ whaleMeasurements()
 whaleMeasurements("N. Atl. Right Whale")
 
 }
+\references{
+Mayette, A. (2026). Measurements of large whale tissue thickness (Data set).
+Zenodo. \doi{10.5281/zenodo.18764979}.
+}
 \author{
 Dan Kelley, using data and advice from Alexandra Mayette
 }
