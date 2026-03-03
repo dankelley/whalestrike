@@ -21,6 +21,12 @@ summary(object, ...)
 
   ignored
 
+## Value
+
+`summary.parameters` returns nothing. It is called for its side effect
+of printing information about the parameters in a ship-whale collision
+simulation.
+
 ## Author
 
 Dan Kelley

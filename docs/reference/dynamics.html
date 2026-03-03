@@ -21,7 +21,7 @@ described in the &amp;#8220;Details&amp;#8221; section."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">whalestrike</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,6 +83,16 @@ and whale speed <code>vw</code> (m/s).</p></dd>
 <code><a href="parameters.html">parameters()</a></code>.</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>An List contain items named <code>dxsdt</code> (time derivative of
+ship location), <code>dvsdt</code> (time derivative of ship speed),
+<code>dxwdt</code> (time derivative of whale location) and <code>dvwdt</code>
+(time derivative of whale speed). These are computed by
+solving the dynamical system using Newton's second law,
+based on the known masses of ship and whale, and the forces
+involved in the collision.</p>
+    </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Given a present state (defined by the positions and

@@ -34,6 +34,10 @@ fillplot(x, lower, upper, ...)
   `border`, the border colour, although cross-hatching with `density`
   and `angle` is also a good choice.
 
+## Value
+
+None. This function is called to add to a plot.
+
 ## Author
 
 Dan Kelley

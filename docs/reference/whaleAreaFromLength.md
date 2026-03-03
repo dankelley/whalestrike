@@ -36,6 +36,11 @@ whaleAreaFromLength(L, species = "N. Atl. Right Whale", type = "wetted")
   the side-view. In both cases, the original data source is the necropsy
   side-view presented in Daoust et al. (2018).
 
+## Value
+
+`whaleAreaFromLength` returns the surface area of the whale, in square
+metres.
+
 ## Details
 
 Note that multiple digitizations were done, and that the coefficients

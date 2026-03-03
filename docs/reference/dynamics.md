@@ -32,6 +32,15 @@ dynamics(t, y, parms)
   A named list holding model parameters, created by
   [`parameters()`](https://dankelley.github.io/whalestrike/reference/parameters.md).
 
+## Value
+
+An List contain items named `dxsdt` (time derivative of ship location),
+`dvsdt` (time derivative of ship speed), `dxwdt` (time derivative of
+whale location) and `dvwdt` (time derivative of whale speed). These are
+computed by solving the dynamical system using Newton's second law,
+based on the known masses of ship and whale, and the forces involved in
+the collision.
+
 ## Details
 
 Given a present state (defined by the positions and velocities of ship

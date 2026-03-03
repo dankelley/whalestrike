@@ -1,3 +1,16 @@
+# whalestrike 0.6.2
+
+Address CRAN comments on a submission of 0.6.0, including the following.
+
+* The `on.exit()` function is called immediately after calls to `par()`.
+* In the `DESCRIPTION` file, the use of backticks has been removed for words
+  that are not package names. I had tried doing this in version 0.6.1 as a way
+  to prevent warnings about spelling (which occur even though the words are
+  listed in `inst/WORDLIST`). For reference, the words (as reported with a
+  remote test using R version 4.5.2 Patched) are: "Lethality", "lethality" and
+  "whalestrike". (The last of these is enclosed in backticks, as it is the name
+  of an R package.)
+
 # whalestrike 0.6.1
 
 Address CRAN comments on a submission of 0.6.0, including the following.

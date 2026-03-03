@@ -1,8 +1,7 @@
 # Get values for various whale measurements
 
 This uses a data frame containing information about several whale
-species, compiled by Alexandra Mayette and provided to Dan Kelley as a
-personal communication on 2026-01-28.
+species, compiled by Alexandra Mayette (2026).
 
 ## Usage
 
@@ -45,6 +44,12 @@ These are `"Pac. Right Whale"` and `"Bryde Whale"`. For these, Mayette
 has suggesting using values for the `"N. Atl. Right Whale"` and
 `"Sei Whale"` cases, respectively, as conditional estimates for use in
 this package.
+
+## References
+
+Mayette, A. (2026). Measurements of large whale tissue thickness (Data
+set). Zenodo.
+[doi:10.5281/zenodo.18764979](https://doi.org/10.5281/zenodo.18764979) .
 
 ## Author
 

@@ -21,7 +21,7 @@ deSolve::lsoda()."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">whalestrike</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,13 +105,23 @@ higher values for more verbose monitoring of progress through the function.</p><
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An object of class <code>"strike"</code>, consisting of a
-list containing vectors for time (<code>t</code> (s)), ship position (<code>xs</code> (m)),
-boat speed (<code>vs</code> (m/s)), whale position (<code>xw</code> (m)), whale speed (<code>vw</code> (m/s)),
-boat acceleration (<code>dvsdt</code> (m/s^2)), and whale acceleration (<code>dvwdt</code> (m/s^2)),
-a list containing the model parameters (<code>parms</code>), a list with the results of
-the skin force calculation (<code>SWF</code>), a list with the results of the compression
-force calculations (<code>WCF</code>), and a vector of whale water force (<code>WWF</code>).</p>
+    <p><code>strike</code> returns an object of class <code>"strike"</code>, which is a
+list holding 13 items. Nine of these items are time-series vectors,
+namely time <code>t</code>, ship position <code>xs</code>, ship speed <code>vs</code>,
+whale position <code>xw</code>, whale speed <code>vw</code>, ship acceleration
+<code>dvsdt</code>, whale acceleration <code>dvwdt</code>, drag force on the ship <code>SWF</code>,
+and drag force on the whale <code>WWF</code>. In addition to these
+time-series items, there are 3 items that are lists:
+<code>WSF</code> holds time-series of surface forces on the whale;
+<code>WCF</code> holds time-series of compressive forces on the whale;
+and <code>parameters</code> holds parameters of the simulation (see
+<code><a href="parameters.html">parameters()</a></code> for more information). Finally, there is a logical value
+named <code>refinedGrid</code> that indicates whether the simulation required
+a restart because the initial timestep proved inadequate to track
+the high forces that may arise quickly if bone starts to
+be compressed appreciably.  All quantities are in SI units,
+s for time, m/s for speed, m/s^2 for acceleration, N for force,
+etc.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -125,14 +135,15 @@ force calculations (<code>WCF</code>), and a vector of whale water force (<code>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dankelley.github.io/whalestrike/">whalestrike</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># Example 1: graphs, as in the shiny app</span></span></span>
+<span class="r-in"><span><span class="co"># Example 1: three plots, as in the default three panels of app()</span></span></span>
 <span class="r-in"><span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.7</span>, length.out <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">state</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>xs <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, vs <span class="op">=</span> <span class="fu"><a href="knot2mps.html">knot2mps</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>, xw <span class="op">=</span> <span class="fl">0</span>, vw <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="co"># ship speed 10 knots</span></span></span>
 <span class="r-in"><span><span class="va">parms</span> <span class="op">&lt;-</span> <span class="fu"><a href="parameters.html">parameters</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sol</span> <span class="op">&lt;-</span> <span class="fu">strike</span><span class="op">(</span><span class="va">t</span>, <span class="va">state</span>, <span class="va">parms</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfcol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">0.5</span>, <span class="fl">2</span><span class="op">)</span>, mgp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">0.7</span>, <span class="fl">0</span><span class="op">)</span>, cex <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sol</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="strike-1.png" alt="" width="700" height="480"></span>
+<span class="r-plt img"><img src="strike-2.png" alt="" width="700" height="480"></span>
+<span class="r-plt img"><img src="strike-3.png" alt="" width="700" height="480"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 2: time-series plots of blubber stress and stress/strength,</span></span></span>
 <span class="r-in"><span><span class="co"># for a 200 tonne ship moving at 10 knots</span></span></span>
@@ -140,22 +151,20 @@ force calculations (<code>WCF</code>), and a vector of whale water force (<code>
 <span class="r-in"><span><span class="va">state</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>xs <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, vs <span class="op">=</span> <span class="fu"><a href="knot2mps.html">knot2mps</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>, xw <span class="op">=</span> <span class="fl">0</span>, vw <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="co"># ship 10 knots</span></span></span>
 <span class="r-in"><span><span class="va">parms</span> <span class="op">&lt;-</span> <span class="fu"><a href="parameters.html">parameters</a></span><span class="op">(</span>ms <span class="op">=</span> <span class="fl">200</span> <span class="op">*</span> <span class="fl">1000</span><span class="op">)</span> <span class="co"># 1 metric tonne is 1000 kg</span></span></span>
 <span class="r-in"><span><span class="va">sol</span> <span class="op">&lt;-</span> <span class="fu">strike</span><span class="op">(</span><span class="va">t</span>, <span class="va">state</span>, <span class="va">parms</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">0.5</span>, <span class="fl">2</span><span class="op">)</span>, mgp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">0.7</span>, <span class="fl">0</span><span class="op">)</span>, cex <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">t</span>, <span class="va">sol</span><span class="op">$</span><span class="va">WCF</span><span class="op">$</span><span class="va">stress</span> <span class="op">/</span> <span class="fl">1e6</span>,</span></span>
 <span class="r-in"><span>    type <span class="op">=</span> <span class="st">"l"</span>,</span></span>
 <span class="r-in"><span>    xlab <span class="op">=</span> <span class="st">"Time [s]"</span>, ylab <span class="op">=</span> <span class="st">"Blubber stress [MPa]"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="strike-4.png" alt="" width="700" height="480"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">t</span>, <span class="va">sol</span><span class="op">$</span><span class="va">WCF</span><span class="op">$</span><span class="va">stress</span> <span class="op">/</span> <span class="va">sol</span><span class="op">$</span><span class="va">parms</span><span class="op">$</span><span class="va">s</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>    type <span class="op">=</span> <span class="st">"l"</span>,</span></span>
 <span class="r-in"><span>    xlab <span class="op">=</span> <span class="st">"Time [s]"</span>, ylab <span class="op">=</span> <span class="st">"Blubber stress / strength"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="strike-2.png" alt="" width="700" height="480"></span>
+<span class="r-plt img"><img src="strike-5.png" alt="" width="700" height="480"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 3: max stress and stress/strength, for a 200 tonne ship</span></span></span>
-<span class="r-in"><span><span class="co"># moving at various speeds. This is a slow calculation, so we do</span></span></span>
-<span class="r-in"><span><span class="co"># not run it by default.</span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">knots</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span>, <span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># moving at various speeds.</span></span></span>
+<span class="r-in"><span><span class="va">knots</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span>, <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">maxStress</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
 <span class="r-in"><span><span class="va">maxStressOverStrength</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
 <span class="r-in"><span><span class="kw">for</span> <span class="op">(</span><span class="va">speed</span> <span class="kw">in</span> <span class="fu"><a href="knot2mps.html">knot2mps</a></span><span class="op">(</span><span class="va">knots</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
@@ -166,19 +175,19 @@ force calculations (<code>WCF</code>), and a vector of whale water force (<code>
 <span class="r-in"><span>    <span class="va">maxStress</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">maxStress</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">sol</span><span class="op">$</span><span class="va">WCF</span><span class="op">$</span><span class="va">stress</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="va">maxStressOverStrength</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">maxStressOverStrength</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">sol</span><span class="op">$</span><span class="va">WCF</span><span class="op">$</span><span class="va">stress</span> <span class="op">/</span> <span class="va">sol</span><span class="op">$</span><span class="va">parms</span><span class="op">$</span><span class="va">s</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">0.5</span>, <span class="fl">2</span><span class="op">)</span>, mgp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">0.7</span>, <span class="fl">0</span><span class="op">)</span>, cex <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">nonzero</span> <span class="op">&lt;-</span> <span class="va">maxStress</span> <span class="op">&gt;</span> <span class="fl">0</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">knots</span><span class="op">[</span><span class="va">nonzero</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">maxStress</span><span class="op">[</span><span class="va">nonzero</span><span class="op">]</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    type <span class="op">=</span> <span class="st">"o"</span>, pch <span class="op">=</span> <span class="fl">20</span>, xaxs <span class="op">=</span> <span class="st">"i"</span>, yaxs <span class="op">=</span> <span class="st">"i"</span>,</span></span>
 <span class="r-in"><span>    xlab <span class="op">=</span> <span class="st">"Ship Speed [knots]"</span>, ylab <span class="op">=</span> <span class="st">"log10 peak blubber stress"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">sol</span><span class="op">$</span><span class="va">parms</span><span class="op">$</span><span class="va">s</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="strike-6.png" alt="" width="700" height="480"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">knots</span><span class="op">[</span><span class="va">nonzero</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">maxStressOverStrength</span><span class="op">[</span><span class="va">nonzero</span><span class="op">]</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    type <span class="op">=</span> <span class="st">"o"</span>, pch <span class="op">=</span> <span class="fl">20</span>, xaxs <span class="op">=</span> <span class="st">"i"</span>, yaxs <span class="op">=</span> <span class="st">"i"</span>,</span></span>
 <span class="r-in"><span>    xlab <span class="op">=</span> <span class="st">"Ship Speed [knots]"</span>, ylab <span class="op">=</span> <span class="st">"log10 peak blubber stress / strength"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">0</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-plt img"><img src="strike-7.png" alt="" width="700" height="480"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

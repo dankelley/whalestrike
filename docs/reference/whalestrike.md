@@ -71,7 +71,7 @@ real-world problems of ship strikes on whales.
 
 - Kelley, Dan E."“Whalestrike: An R Package for Simulating Ship Strikes
   on Whales." Journal of Open Source Software 9, no. 97 (2024): 6473.
-  https://doi.org/10.21105/joss.06473.
+  [doi:10.21105/joss.06473](https://doi.org/10.21105/joss.06473) .
 
 - MAN Diesel & Turbo. "Basic Principles of Propulsion." MAN Diesel &
   Turbo, 2011.
@@ -89,7 +89,8 @@ real-world problems of ship strikes on whales.
 - Mayette, Alexandra, and Sean W. Brillant. "A Regression-Based Method
   to Estimate Vessel Mass for Use in Whale-Ship Strike Risk Models."
   PloS One 21, no. 1 (2026): e0339760.
-  https://doi.org/10.1371/journal.pone.0339760.
+  [doi:10.1371/journal.pone.0339760](https://doi.org/10.1371/journal.pone.0339760)
+  .
 
 - Miller, Carolyn A., Desray Reeb, Peter B. Best, Amy R. Knowlton,
   Moira W. Brown, and Michael J. Moore. "Blubber Thickness in Right

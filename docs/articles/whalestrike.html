@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">whalestrike</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,7 @@
       <h1>Using the whalestrike package</h1>
                         <h4 data-toc-skip class="author">Dan Kelley (<a href="https://orcid.org/0000-0001-7808-5911" class="external-link uri">https://orcid.org/0000-0001-7808-5911</a>)</h4>
             
-            <h4 data-toc-skip class="date">2026-02-19</h4>
+            <h4 data-toc-skip class="date">2026-03-03</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/dankelley/whalestrike/blob/HEAD/vignettes/whalestrike.Rmd" class="external-link"><code>vignettes/whalestrike.Rmd</code></a></small>
       <div class="d-none name"><code>whalestrike.Rmd</code></div>
@@ -153,9 +153,8 @@ whale.</p>
 <span><span class="va">state</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>xs <span class="op">=</span> <span class="op">-</span><span class="fl">2.5</span>, vs <span class="op">=</span> <span class="fu"><a href="../reference/knot2mps.html">knot2mps</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>, xw <span class="op">=</span> <span class="fl">0</span>, vw <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="co"># 10 knot ship</span></span>
 <span><span class="va">parms</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/parameters.html">parameters</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># defaults</span></span>
 <span><span class="va">sol</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/strike.html">strike</a></span><span class="op">(</span><span class="va">t</span>, <span class="va">state</span>, <span class="va">parms</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfcol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3.3</span>, <span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, mgp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">0.7</span>, <span class="fl">0</span><span class="op">)</span>, cex <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sol</span><span class="op">)</span></span></code></pre></div>
-<p><img src="whalestrike_files/figure-html/unnamed-chunk-2-1.png" class="r-plt" width="672"></p>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sol</span><span class="op">)</span> <span class="co"># makes 3 plots</span></span></code></pre></div>
+<p><img src="whalestrike_files/figure-html/unnamed-chunk-2-1.png" class="r-plt" width="672"><img src="whalestrike_files/figure-html/unnamed-chunk-2-2.png" class="r-plt" width="672"><img src="whalestrike_files/figure-html/unnamed-chunk-2-3.png" class="r-plt" width="672"></p>
 <p><strong>Exercises.</strong> Rerun the simulation with different
 parameters, e.g. (1) lower the speed until the peak LI is below 0.5, (2)
 vary whale length to consider the effects of strikes on immature

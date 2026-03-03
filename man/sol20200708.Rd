@@ -11,10 +11,9 @@ in testing, to ensure that the package does not inadvertently
 change in its predictions.
 }
 \examples{
+# Three plots
 data(sol20200708)
-opar <- par(mfrow = c(1, 3))
 plot(sol20200708)
-par(opar)
 
 }
 \references{

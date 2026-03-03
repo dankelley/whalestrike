@@ -15,6 +15,11 @@ app(debug = FALSE)
   logical value indicating whether to print output to the R console as
   the computation is done.
 
+## Value
+
+A Shiny app object, created by a call to
+[`shinyApp()`](https://rdrr.io/pkg/shiny/man/shinyApp.html).
+
 ## Details
 
 Sliders, buttons, and choosers are grouped into panes that appear on the
@@ -46,11 +51,11 @@ of 2026.
 Kelley, Dan E., James P. Vlasic, and Sean W. Brillant. "Assessing the
 Lethality of Ship Strikes on Whales Using Simple Biophysical Models."
 Marine Mammal Science 37, no. 1 (2021): 251–67.
-https://doi.org/10.1111/mms.12745.
+[doi:10.1111/mms.12745](https://doi.org/10.1111/mms.12745) .
 
 Kelley, Dan E."“Whalestrike: An R Package for Simulating Ship Strikes on
 Whales." Journal of Open Source Software 9, no. 97 (2024): 6473.
-https://doi.org/10.21105/joss.06473.
+[doi:10.21105/joss.06473](https://doi.org/10.21105/joss.06473) .
 
 Mayette, Alexandra. "Whale Layer Thickness." December 15, 2025.
 (Personal communication of a 5-page document.)
@@ -58,7 +63,8 @@ Mayette, Alexandra. "Whale Layer Thickness." December 15, 2025.
 Mayette, Alexandra, and Sean W. Brillant. "A Regression-Based Method to
 Estimate Vessel Mass for Use in Whale-Ship Strike Risk Models." PloS One
 21, no. 1 (2026): e0339760.
-https://doi.org/10.1371/journal.pone.0339760.
+[doi:10.1371/journal.pone.0339760](https://doi.org/10.1371/journal.pone.0339760)
+.
 
 ## See also
 

@@ -29,8 +29,6 @@
   : Plot a strike object
 - [`raymond2007`](https://dankelley.github.io/whalestrike/reference/raymond2007.md)
   : Whale blubber stress-strain relationship
-- [`server()`](https://dankelley.github.io/whalestrike/reference/server.md)
-  : Server for app, with standard arguments.
 - [`shipAreaFromMass()`](https://dankelley.github.io/whalestrike/reference/shipAreaFromMass.md)
   : Compute ship wetted area from mass
 - [`shipLength()`](https://dankelley.github.io/whalestrike/reference/shipLength.md)

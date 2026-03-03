@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">whalestrike</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,6 +33,24 @@
       <small>Source: <a href="https://github.com/dankelley/whalestrike/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.2" id="whalestrike-062">whalestrike 0.6.2<a class="anchor" aria-label="anchor" href="#whalestrike-062"></a></h2>
+<p>Address CRAN comments on a submission of 0.6.0, including the following.</p>
+<ul><li>The <code><a href="https://rdrr.io/r/base/on.exit.html" class="external-link">on.exit()</a></code> function is called immediately after calls to <code><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par()</a></code>.</li>
+<li>In the <code>DESCRIPTION</code> file, the use of backticks has been removed for words that are not package names. I had tried doing this in version 0.6.1 as a way to prevent warnings about spelling (which occur even though the words are listed in <code>inst/WORDLIST</code>). For reference, the words (as reported with a remote test using R version 4.5.2 Patched) are: “Lethality”, “lethality” and “whalestrike”. (The last of these is enclosed in backticks, as it is the name of an R package.)</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.1" id="whalestrike-061">whalestrike 0.6.1<a class="anchor" aria-label="anchor" href="#whalestrike-061"></a></h2>
+<p>Address CRAN comments on a submission of 0.6.0, including the following.</p>
+<ul><li>Add a full paragraph for Description, in the DESCRIPTION file.</li>
+<li>Change http-type reference to doi-type references, in the DESCRIPTION file.</li>
+<li>Document return values from all functions.</li>
+<li>Save <code>par</code> values before plotting, returning to original values afterwards.</li>
+<li>
+<code><a href="../reference/app_2025.html">app_2025()</a></code> saves configuration to a temporary file, not a user-space file.</li>
+<li>Trim an example in the documentation for <code><a href="../reference/strike.html">strike()</a></code> so it performs in under 1s on my machine.</li>
+</ul><p>In addition, add a citation to the <code><a href="../reference/whaleMeasurements.html">whaleMeasurements()</a></code> documentation for AM’s Zenodo new entry on whale measurements.</p>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0" id="whalestrike-060">whalestrike 0.6.0<a class="anchor" aria-label="anchor" href="#whalestrike-060"></a></h2>
 <ul><li>Add <code><a href="../reference/shipMassFromLength.html">shipMassFromLength()</a></code>.</li>

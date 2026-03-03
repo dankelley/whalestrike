@@ -13,6 +13,12 @@ from 0 to 1. The point at the front of the whale is designated as x=y=0.
 whaleShape()
 ```
 
+## Value
+
+`whaleShape` returns a data frame with entries named `x` and `y`, which
+trace out the side-view shape of a Right Whale, using values digitized
+from a diagram in Daoust et al. (2017).
+
 ## References
 
 Daoust, Pierre-Yves, Emilie L. Couture, Tonya Wimmer, and Laura Bourque.

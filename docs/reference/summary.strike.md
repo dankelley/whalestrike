@@ -20,6 +20,11 @@ summary(object, ...)
 
   ignored
 
+## Value
+
+None. This function is called for its side-effect of printing
+information about the ship-whale collision simulation.
+
 ## Author
 
 Dan Kelley

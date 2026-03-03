@@ -93,11 +93,10 @@ t <- seq(0, 1, length.out = 200)
 state <- list(xs = -2.5, vs = knot2mps(10), xw = 0, vw = 0) # 10 knot ship
 parms <- parameters() # defaults
 sol <- strike(t, state, parms)
-par(mfcol = c(1, 3), mar = c(3.3, 3, 1, 2), mgp = c(2, 0.7, 0), cex = 0.7)
-plot(sol)
+plot(sol) # makes 3 plots
 ```
 
-![](whalestrike_files/figure-html/unnamed-chunk-2-1.png)
+![](whalestrike_files/figure-html/unnamed-chunk-2-1.png)![](whalestrike_files/figure-html/unnamed-chunk-2-2.png)![](whalestrike_files/figure-html/unnamed-chunk-2-3.png)
 
 **Exercises.** Rerun the simulation with different parameters, e.g. (1)
 lower the speed until the peak LI is below 0.5, (2) vary whale length to

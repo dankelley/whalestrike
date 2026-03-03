@@ -65,14 +65,12 @@ The forces are calculated by
 }
 \examples{
 library(whalestrike)
-# Example 1: graphs, as in the shiny app
+# Example 1: three plots, as in the default three panels of app()
 t <- seq(0, 0.7, length.out = 200)
 state <- list(xs = -2, vs = knot2mps(10), xw = 0, vw = 0) # ship speed 10 knots
 parms <- parameters()
 sol <- strike(t, state, parms)
-opar <- par(mfcol = c(1, 3), mar = c(3, 3, 0.5, 2), mgp = c(2, 0.7, 0), cex = 0.7)
 plot(sol)
-par(opar)
 
 # Example 2: time-series plots of blubber stress and stress/strength,
 # for a 200 tonne ship moving at 10 knots
@@ -80,7 +78,6 @@ t <- seq(0, 0.7, length.out = 1000)
 state <- list(xs = -2, vs = knot2mps(10), xw = 0, vw = 0) # ship 10 knots
 parms <- parameters(ms = 200 * 1000) # 1 metric tonne is 1000 kg
 sol <- strike(t, state, parms)
-opar <- par(mfrow = c(2, 1), mar = c(3, 3, 0.5, 2), mgp = c(2, 0.7, 0), cex = 0.7)
 plot(t, sol$WCF$stress / 1e6,
     type = "l",
     xlab = "Time [s]", ylab = "Blubber stress [MPa]"
@@ -89,7 +86,6 @@ plot(t, sol$WCF$stress / sol$parms$s[2],
     type = "l",
     xlab = "Time [s]", ylab = "Blubber stress / strength"
 )
-par(opar)
 
 # Example 3: max stress and stress/strength, for a 200 tonne ship
 # moving at various speeds.
@@ -104,7 +100,6 @@ for (speed in knot2mps(knots)) {
     maxStress <- c(maxStress, max(sol$WCF$stress))
     maxStressOverStrength <- c(maxStressOverStrength, max(sol$WCF$stress / sol$parms$s[2]))
 }
-opar <- par(mfrow = c(2, 1), mar = c(3, 3, 0.5, 2), mgp = c(2, 0.7, 0), cex = 0.7)
 nonzero <- maxStress > 0
 plot(knots[nonzero], log10(maxStress[nonzero]),
     type = "o", pch = 20, xaxs = "i", yaxs = "i",
@@ -116,7 +111,6 @@ plot(knots[nonzero], log10(maxStressOverStrength[nonzero]),
     xlab = "Ship Speed [knots]", ylab = "log10 peak blubber stress / strength"
 )
 abline(h = 0, lty = 2)
-par(opar)
 
 }
 \references{

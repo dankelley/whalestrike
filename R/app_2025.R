@@ -254,11 +254,11 @@ server <- function(input, output, session) {
             npanels <- length(input$plot_panels)
             nrows <- floor(sqrt(npanels))
             ncols <- ceiling(npanels / nrows)
-            opar <- par(mfrow = c(nrows, ncols), mar = c(3.2, 3, 2.5, 2), mgp = c(1.7, 0.6, 0), cex = 1)
+            oldpar <- par(mfrow = c(nrows, ncols), mar = c(3.2, 3, 2.5, 2), mgp = c(1.7, 0.6, 0), cex = 1)
+            on.exit(par(oldpar))
             for (which in input$plot_panels) {
                 plot(sol, which = which)
             }
-            par(opar)
         },
         pointsize = 14
     ) # , height=500)

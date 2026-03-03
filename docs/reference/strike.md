@@ -55,14 +55,22 @@ strike(t, state, parms, debug = 0)
 
 ## Value
 
-An object of class `"strike"`, consisting of a list containing vectors
-for time (`t` (s)), ship position (`xs` (m)), boat speed (`vs` (m/s)),
-whale position (`xw` (m)), whale speed (`vw` (m/s)), boat acceleration
-(`dvsdt` (m/s^2)), and whale acceleration (`dvwdt` (m/s^2)), a list
-containing the model parameters (`parms`), a list with the results of
-the skin force calculation (`SWF`), a list with the results of the
-compression force calculations (`WCF`), and a vector of whale water
-force (`WWF`).
+`strike` returns an object of class `"strike"`, which is a list holding
+13 items. Nine of these items are time-series vectors, namely time `t`,
+ship position `xs`, ship speed `vs`, whale position `xw`, whale speed
+`vw`, ship acceleration `dvsdt`, whale acceleration `dvwdt`, drag force
+on the ship `SWF`, and drag force on the whale `WWF`. In addition to
+these time-series items, there are 3 items that are lists: `WSF` holds
+time-series of surface forces on the whale; `WCF` holds time-series of
+compressive forces on the whale; and `parameters` holds parameters of
+the simulation (see
+[`parameters()`](https://dankelley.github.io/whalestrike/reference/parameters.md)
+for more information). Finally, there is a logical value named
+`refinedGrid` that indicates whether the simulation required a restart
+because the initial timestep proved inadequate to track the high forces
+that may arise quickly if bone starts to be compressed appreciably. All
+quantities are in SI units, s for time, m/s for speed, m/s^2 for
+acceleration, N for force, etc.
 
 ## References
 
@@ -78,13 +86,14 @@ Dan Kelley
 
 ``` r
 library(whalestrike)
-# Example 1: graphs, as in the shiny app
+# Example 1: three plots, as in the default three panels of app()
 t <- seq(0, 0.7, length.out = 200)
 state <- list(xs = -2, vs = knot2mps(10), xw = 0, vw = 0) # ship speed 10 knots
 parms <- parameters()
 sol <- strike(t, state, parms)
-par(mfcol = c(1, 3), mar = c(3, 3, 0.5, 2), mgp = c(2, 0.7, 0), cex = 0.7)
 plot(sol)
+
+
 
 
 # Example 2: time-series plots of blubber stress and stress/strength,
@@ -93,11 +102,11 @@ t <- seq(0, 0.7, length.out = 1000)
 state <- list(xs = -2, vs = knot2mps(10), xw = 0, vw = 0) # ship 10 knots
 parms <- parameters(ms = 200 * 1000) # 1 metric tonne is 1000 kg
 sol <- strike(t, state, parms)
-par(mfrow = c(2, 1), mar = c(3, 3, 0.5, 2), mgp = c(2, 0.7, 0), cex = 0.7)
 plot(t, sol$WCF$stress / 1e6,
     type = "l",
     xlab = "Time [s]", ylab = "Blubber stress [MPa]"
 )
+
 plot(t, sol$WCF$stress / sol$parms$s[2],
     type = "l",
     xlab = "Time [s]", ylab = "Blubber stress / strength"
@@ -105,10 +114,8 @@ plot(t, sol$WCF$stress / sol$parms$s[2],
 
 
 # Example 3: max stress and stress/strength, for a 200 tonne ship
-# moving at various speeds. This is a slow calculation, so we do
-# not run it by default.
-if (FALSE) { # \dontrun{
-knots <- seq(0, 20, 0.5)
+# moving at various speeds.
+knots <- seq(0, 10, 1)
 maxStress <- NULL
 maxStressOverStrength <- NULL
 for (speed in knot2mps(knots)) {
@@ -119,17 +126,17 @@ for (speed in knot2mps(knots)) {
     maxStress <- c(maxStress, max(sol$WCF$stress))
     maxStressOverStrength <- c(maxStressOverStrength, max(sol$WCF$stress / sol$parms$s[2]))
 }
-par(mfrow = c(2, 1), mar = c(3, 3, 0.5, 2), mgp = c(2, 0.7, 0), cex = 0.7)
 nonzero <- maxStress > 0
 plot(knots[nonzero], log10(maxStress[nonzero]),
     type = "o", pch = 20, xaxs = "i", yaxs = "i",
     xlab = "Ship Speed [knots]", ylab = "log10 peak blubber stress"
 )
 abline(h = log10(sol$parms$s[2]), lty = 2)
+
 plot(knots[nonzero], log10(maxStressOverStrength[nonzero]),
     type = "o", pch = 20, xaxs = "i", yaxs = "i",
     xlab = "Ship Speed [knots]", ylab = "log10 peak blubber stress / strength"
 )
 abline(h = 0, lty = 2)
-} # }
+
 ```

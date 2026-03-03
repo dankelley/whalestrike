@@ -27,7 +27,8 @@ Brillant (2026).
 Mayette, Alexandra, and Sean W. Brillant. "A Regression-Based Method to
 Estimate Vessel Mass for Use in Whale-Ship Strike Risk Models." PloS One
 21, no. 1 (2026): e0339760.
-https://doi.org/10.1371/journal.pone.0339760.
+[doi:10.1371/journal.pone.0339760](https://doi.org/10.1371/journal.pone.0339760)
+.
 
 ## See also
 
