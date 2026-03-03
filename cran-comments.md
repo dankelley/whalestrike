@@ -13,6 +13,8 @@
 2. In DESCRIPTION, the use of backticks has been removed for words that are not
    package names. I had tried doing this as a way to prevent warnings about
    spelling (which occur even though the words are listed in inst/WORDLIST).
-   For reference, the words are as follows.
+   For reference, the words (as reported with a remote test using R version
+   4.5.2 Patched) are: "Lethality", "lethality" and "whalestrike". (The last of
+   these is enclosed in backticks, as it is the name of an R package.)
 
 
