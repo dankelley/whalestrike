@@ -29,26 +29,28 @@ the coding, see Kelley (2024).
 
 ## Installation
 
-The package is not yet available on CRAN, and must be installed from
-source. This can be done either by downloading the source and building
-it locally, or by the simpler method of typing
+A version of the package is on CRAN, and it may be installed by typing
+```R
+install.packages("whalestrike")
+```
+in an R session.
+
+If you would like to try a newer version that is still in development, type
 ```R
 # install.package("remotes")
 remotes::install_github("dankelley/whalestrike", ref="main")
 ```
-in an R session.  (Uncomment the first line, if the `remotes`
-package is not yet installed on your machine.)
+in an R session.  (You should delete the `#` character on the first line, if
+the `remotes` package has not yet been installed on your machine.)
 
 ## Usage
 
 Most users will find that the GUI application is a good way to learn about the
 package.  To start this, type
-
 ```R
 library(whalestrike)
 app()
 ```
-
 in an R session.  A window will open in your browser.  On the
 left-hand side is a region with controllers, many hidden in sub-panels
 that can be opened by clicking on V-shaped icons.  Before opening

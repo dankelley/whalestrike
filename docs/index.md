@@ -16,17 +16,24 @@ coding, see Kelley (2024).
 
 ## Installation
 
-The package is not yet available on CRAN, and must be installed from
-source. This can be done either by downloading the source and building
-it locally, or by the simpler method of typing
+A version of the package is on CRAN, and it may be installed by typing
+
+``` r
+install.packages("whalestrike")
+```
+
+in an R session.
+
+If you would like to try a newer version that is still in development,
+type
 
 ``` r
 # install.package("remotes")
 remotes::install_github("dankelley/whalestrike", ref="main")
 ```
 
-in an R session. (Uncomment the first line, if the `remotes` package is
-not yet installed on your machine.)
+in an R session. (You should delete the `#` character on the first line,
+if the `remotes` package has not yet been installed on your machine.)
 
 ## Usage
 

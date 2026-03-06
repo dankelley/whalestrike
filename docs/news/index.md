@@ -2,6 +2,8 @@
 
 ## whalestrike 0.6.2
 
+CRAN release: 2026-03-06
+
 Address CRAN comments on a submission of 0.6.0, including the following.
 
 - The [`on.exit()`](https://rdrr.io/r/base/on.exit.html) function is

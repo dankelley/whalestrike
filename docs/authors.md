@@ -20,12 +20,12 @@ Source:
 [`DESCRIPTION`](https://github.com/dankelley/whalestrike/blob/HEAD/DESCRIPTION)
 
 Kelley D (2026). *whalestrike: Simulate Whale Ship Strikes*. R package
-version 0.6.2, <https://dankelley.github.io/whalestrike/>.
+version 0.6.3, <https://dankelley.github.io/whalestrike/>.
 
     @Manual{,
       title = {whalestrike: Simulate Whale Ship Strikes},
       author = {Dan Kelley},
       year = {2026},
-      note = {R package version 0.6.2},
+      note = {R package version 0.6.3},
       url = {https://dankelley.github.io/whalestrike/},
     }
